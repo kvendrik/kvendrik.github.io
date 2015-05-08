@@ -1,0 +1,38 @@
+//Typography
+$family-body: 'adelle-sans', 'Museo', Helvetica, Arial, sans-serif;
+$family-heading: 'adelle', 'Museo', Helvetica, Arial, sans-serif;
+
+$weight-body: 500;
+$weight-body-bold: 700;
+$weight-heading: 500;
+
+$line-height-body: 2em;
+$line-height-heading: 1.2em;
+
+$size-s: .85em;
+$size-m: 16px;
+
+
+//Colors
+$color-base: #333;
+
+$color-gray-light: rgba($color-base, .1);
+$color-gray-lightest: #f5f5f5;
+
+
+//Spacings
+$spacing-xxs: .3em;
+$spacing-s: .8em;
+$spacing-m: 1.8em;
+$spacing-l: 2.4em;
+$spacing-xl: 3.4em;
+
+
+//Borders
+$border-style: solid;
+$border-width: 2px;
+
+
+//Animations
+$transition-duration: .3s;
+$transition-timing: ease;

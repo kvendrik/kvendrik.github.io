@@ -1,0 +1,18 @@
+* {
+    margin: 0;
+    padding: 0;
+}
+
+html,body {
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    font: $weight-body $size-m $family-body;
+    color: $color-base;
+    line-height: $line-height-body;
+
+    background-color: $color-gray-lightest;
+    overflow-x: hidden;
+}

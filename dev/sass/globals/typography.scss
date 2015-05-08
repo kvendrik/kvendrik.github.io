@@ -1,0 +1,79 @@
+h1,h2,h3,h4,h5,h6 {
+    font-family: $family-heading;
+    font-weight: $weight-heading;
+    line-height: $line-height-heading;
+    margin-bottom: $spacing-m;
+
+    &.h--sub {
+        font-family: $family-body;
+    }
+
+    &.h--has-sub {
+        margin-bottom: $spacing-xxs;
+    }
+}
+
+h1 {
+    font-size: 3.2em;
+}
+
+h2 {
+    font-size: 2.6em;
+}
+
+h3 {
+    font-size: 2.2em;
+}
+
+h4 {
+    font-size: 1.8em;
+}
+
+h5 {
+    font-size: 1.4em;
+}
+
+h6 {
+    font-size: 1.2em;
+}
+
+p {
+    margin-bottom: $spacing-m;
+    line-height: $line-height-body;
+}
+
+strong, b {
+    font-weight: $weight-body-bold;
+}
+
+a {
+    color: $color-base;
+    @include border(bottom);
+    text-decoration: none;
+
+    @include transition(border-color);
+
+    &:hover {
+        border-color: $color-base;
+    }
+
+    &.a--spaced {
+        line-height: $line-height-body;
+        display: inline-block;
+    }
+}
+
+ul {
+
+    &.ul--inline {
+        li {
+            display: inline-block;
+            margin-right: $spacing-m;
+
+            &:last-child {
+                margin-right: 0;
+            }
+        }
+    }
+
+}
