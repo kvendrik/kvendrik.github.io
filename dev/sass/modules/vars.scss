@@ -1,5 +1,12 @@
+//Container widths
+$container-sm: 90%;
+$container-md: 750px;
+$container-lg: 960px;
+$container-xl: 1024px;
+
+
 //Typography
-$family-body: 'adelle-sans', 'Museo', Helvetica, Arial, sans-serif;
+$family-body: 'adelle-sans', 'Open Sans', Helvetica, Arial, sans-serif;
 $family-heading: 'adelle', 'Museo', Helvetica, Arial, sans-serif;
 
 $weight-body: 500;
@@ -7,10 +14,12 @@ $weight-body-bold: 700;
 $weight-heading: 500;
 
 $line-height-body: 2em;
+$line-height-body-s: 1.5em;
 $line-height-heading: 1.2em;
 
-$size-s: .85em;
+$size-s: .9em;
 $size-m: 16px;
+$size-m-sm: 14px;
 
 
 //Colors
@@ -20,10 +29,12 @@ $color-gray-lightest: #f7f7f7;
 
 //Spacings
 $spacing-xxs: .3em;
+$spacing-xs: .5em;
 $spacing-s: .8em;
 $spacing-m: 1.8em;
-$spacing-l: 2.4em;
-$spacing-xl: 3.4em;
+$spacing-l: 3em;
+$spacing-xl: 5em;
+$spacing-xxl: 10em;
 
 
 //Borders

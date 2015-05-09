@@ -39,3 +39,19 @@
 
     }
 }
+
+@mixin media-lg {
+    @include media($container-lg, $container-xl){
+        @content;
+    }
+}
+@mixin media-md {
+    @include media($container-md, $container-lg){
+        @content;
+    }
+}
+@mixin media-sm {
+    @include media($max-width: $container-md){
+        @content;
+    }
+}

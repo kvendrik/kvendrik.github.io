@@ -2,69 +2,123 @@ extend inc/template
 
 block content
 
-    .container
+    .container-lg.container-md
         section.hero
+
+            .hero__content
+                .container
+                    h1.h--has-sub
+                        u Koen
+                        span.text-faded  Vendrik
+                    h6.h--sub.text-faded.hero__content__sub-title A young tech entrepreneur
+
+                    ul.list--clean.text-faded.hero__content__list
+                        li
+                            a.a--clean(href="#") @kvendrik
+                        li
+                            a.a--clean(href="#") @_whitespell
+                        li
+                            a.a--clean(href="#") @duxil_io
+
             .hero__img
                 img(src="/img/koen-shirt.jpg")
 
-            .hero__content
-                h1.h--has-sub
-                    u Koen
-                    span.text-faded  Vendrik
-                h6.h--sub.text-faded A young tech entrepreneur
-
-                ul.list--clean.text-faded
-                    li
-                        a.a--clean(href="#") @kvendrik
-                    li
-                        a.a--clean(href="#") @_whitespell
-                    li
-                        a.a--clean(href="#") @duxil_io
-
     .container
+
         section.column.block.block--big
 
-            .column.column--4
-                h5
-                    u What I (try to) do
+            .column.column--4.column--sm--12
+                h5.h--title What I (try to) do
 
-            .column.column--5
+            .column.column--5.column--md--7.column--sm--12
                 :markdown
                     [**How you doing?**](https://www.youtube.com/watch?v=YjQ1xD6UL-4)
                     I’m Koen, a young entrepreneur who loves tech. I am a full stack web developer
-                    who works to make technology more people friendly every single day.
-                    
+                    who works to make technology more human friendly every day.
+
                     **Working** at and having co-founded companies like [Whitespell](http://whitespell.com) and [Duxilio](http://duxilio.com)
-                    I have the pleasure to work with
-                    great talented folks from companies like [Google](http://www.bbc.com/news/health-31970731),
-                    [MSF](http://www.msf.org.uk/) and [Hack4Good](http://hack4good.io/) on awesome humanitarian projects
+                    I have had the pleasure to work with great talented folks from companies like [Google](http://www.bbc.com/news/health-31970731),
+                    [MSF](http://www.msf.org.uk/) and [Hack4Good](http://hack4good.io/) on awesome projects
                     like [Project Buendia](https://github.com/projectbuendia).
-                    
+
                     **Contact** me at any time for anything, I love a good talk.
 
-        section.column.block
-            .column.column--3
-                h5
-                    u Get in touch
+        section.column.block.text-small
+            .column.column--4.column--sm--12
+                h5.h--title Recent Highlights
 
-            .column.column--3
+            .column.column--4.column--sm--12
+                ul.list--multi-line
+                    li
+                        a.a--clean(href="#")
+                            b BBC News
+                            |  wrote about Project Buendia
+                            br
+                            small March 2015
+                    li
+                        a.a--clean(href="#")
+                            b GOOD
+                            |  wrote about Project Buendia
+                            br
+                            small March 2015
+                    li
+                        a.a--clean(href="#")
+                            b Engadget
+                            |  wrote about Project Buendia
+                            br
+                            small March 2015
+                    li
+                        a.a--clean(href="#")
+                            b City A.M.
+                            |  wrote about Project Buendia
+                            br
+                            small March 2015
+            .column.column--4.column--sm--12
+                ul.list--multi-line
+                    li
+                        a.a--clean(href="#")
+                            b The Verge
+                            |  wrote about Project Buendia
+                            br
+                            small March 2015
+                    li
+                        a.a--clean(href="#")
+                            b The Telegraph
+                            |  wrote about Project Buendia
+                            br
+                            small March 2015
+                    li
+                        a.a--clean(href="#")
+                            b Wired
+                            |  wrote about Project Buendia
+                            br
+                            small March 2015
+                    li
+                        a.a--clean(href="#")
+                            b fd
+                            |  wrote about Project Buendia
+                            br
+                            small March 2015
+
+        section.column.block.text-small
+            .column.column--4.column--sm--12
+                h5.h--title Get in touch
+
+            .column.column--3.column--sm--12
                 ul
                     li
                         a.a--clean(href="tel:+31657357246") +31 6 57 35 72 46
                     li
                         a.a--clean(href="mailto:k.vendrik@gmail.com") k.vendrik@gmail.com
 
-            .column.column--3
+            .column.column--3.column--sm--12
                 ul
                     li
                         a.a--clean(href="http://linkedin.com/in/kvendrik") linkedin.com/in/kvendrik
                     li
                         a.a--clean(href="http://github.com/kvendrik") github.com/kvendrik
-
-            .column.column--3
-                ul
                     li
-                        a.a--clean(href="http://linkedin.com/in/kvendrik") @kvendrik
+                        a.a--clean(href="http://twitter.com/kvendrik") twitter.com/kvendrik
 
 
 

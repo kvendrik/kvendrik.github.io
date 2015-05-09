@@ -8,4 +8,20 @@
         }
     }
 
+    @include media-md {
+        @for $i from 1 through 12 {
+            &.column--md--#{$i} {
+                @include column($i);
+            }
+        }
+    }
+
+    @include media-sm {
+        @for $i from 1 through 12 {
+            &.column--sm--#{$i} {
+                @include column($i);
+            }
+        }
+    }
+
 }

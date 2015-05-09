@@ -1,8 +1,22 @@
+body {
+    font: $weight-body $size-m $family-body;
+    color: $color-base;
+    line-height: $line-height-body;
+
+    @include media-sm {
+        font-size: $size-m-sm;
+    }
+}
+
 h1,h2,h3,h4,h5,h6 {
     font-family: $family-heading;
     font-weight: $weight-heading;
     line-height: $line-height-heading;
     margin-bottom: $spacing-m;
+
+    &.h--title {
+        @extend u;
+    }
 
     &.h--sub {
         font-family: $family-body;
@@ -10,6 +24,10 @@ h1,h2,h3,h4,h5,h6 {
 
     &.h--has-sub {
         margin-bottom: $spacing-xxs;
+    }
+
+    @include media-sm {
+        margin-bottom: $spacing-s;
     }
 }
 
@@ -60,16 +78,21 @@ a {
 
     @include transition(all);
 
-    &:hover {
+    &:hover, &.a--clean:hover {
         border-color: $color-base;
     }
 
     &.a--clean {
-        border-bottom: none;
+        border-color: rgba($color-base, 0);
     }
 }
 
 ul {
+
+    &.list--multi-line li {
+        line-height: $line-height-body-s;
+        margin-bottom: $spacing-s;
+    }
 
     &.list--clean {
         li {
