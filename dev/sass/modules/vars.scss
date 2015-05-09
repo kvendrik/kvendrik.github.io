@@ -14,10 +14,8 @@ $size-m: 16px;
 
 
 //Colors
-$color-base: #333;
-
-$color-gray-light: rgba($color-base, .1);
-$color-gray-lightest: #f5f5f5;
+$color-base: #222;
+$color-gray-lightest: #f7f7f7;
 
 
 //Spacings
@@ -34,5 +32,5 @@ $border-width: 2px;
 
 
 //Animations
-$transition-duration: .3s;
+$transition-duration: .2s;
 $transition-timing: ease;

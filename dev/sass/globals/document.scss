@@ -1,11 +1,7 @@
 * {
     margin: 0;
     padding: 0;
-}
-
-html,body {
-    margin: 0;
-    padding: 0;
+    box-sizing: border-box;
 }
 
 body {
@@ -14,5 +10,4 @@ body {
     line-height: $line-height-body;
 
     background-color: $color-gray-lightest;
-    overflow-x: hidden;
 }

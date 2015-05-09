@@ -2,49 +2,69 @@ extend inc/template
 
 block content
 
-    section.column.column--7
+    .container
+        section.hero
+            .hero__img
+                img(src="/img/koen-shirt.jpg")
 
-        header.header
-            h1.h--has-sub Koen Vendrik
-            h6.h--sub A young entrepreneur who loves tech
+            .hero__content
+                h1.h--has-sub
+                    u Koen
+                    span.text-faded  Vendrik
+                h6.h--sub.text-faded A young tech entrepreneur
 
-            ul.ul--inline
-                li
-                    a.a--spaced(href="#") @kvendrik
-                li
-                    a.a--spaced(href="#") @_whitespell
-                li
-                    a.a--spaced(href="#") @duxil_io
+                ul.list--clean.text-faded
+                    li
+                        a.a--clean(href="#") @kvendrik
+                    li
+                        a.a--clean(href="#") @_whitespell
+                    li
+                        a.a--clean(href="#") @duxil_io
 
-    section.column.column--5
+    .container
+        section.column.block.block--big
 
-        :markdown
-            [**How you doing?**](https://www.youtube.com/watch?v=YjQ1xD6UL-4)
-            I’m Koen, a young entrepreneur who loves tech. I am a full stack web developer
-            who works to make technology more people friendly every single day.
-            
-            **Working** at and having co-founded companies like [Whitespell](http://whitespell.com) I have the pleasure to work with
-            great talented folks from companies like [Google](http://www.bbc.com/news/health-31970731),
-            [MSF](http://www.msf.org.uk/) and [Hack4Good](http://hack4good.io/) on awesome humanitarian projects
-            like [Project Buendia](https://github.com/projectbuendia).
-            
-            **Contact** me at any time for anything, I love a good talk.
+            .column.column--4
+                h5
+                    u What I (try to) do
 
-    section.column.contact-area
+            .column.column--5
+                :markdown
+                    [**How you doing?**](https://www.youtube.com/watch?v=YjQ1xD6UL-4)
+                    I’m Koen, a young entrepreneur who loves tech. I am a full stack web developer
+                    who works to make technology more people friendly every single day.
+                    
+                    **Working** at and having co-founded companies like [Whitespell](http://whitespell.com) and [Duxilio](http://duxilio.com)
+                    I have the pleasure to work with
+                    great talented folks from companies like [Google](http://www.bbc.com/news/health-31970731),
+                    [MSF](http://www.msf.org.uk/) and [Hack4Good](http://hack4good.io/) on awesome humanitarian projects
+                    like [Project Buendia](https://github.com/projectbuendia).
+                    
+                    **Contact** me at any time for anything, I love a good talk.
 
-        .column.column--2
-            h6 Contact
+        section.column.block
+            .column.column--3
+                h5
+                    u Get in touch
 
-        .column.column--3
-            ul
-                li +31 6 57 35 72 46
-                li k.vendrik@gmail.com
+            .column.column--3
+                ul
+                    li
+                        a.a--clean(href="tel:+31657357246") +31 6 57 35 72 46
+                    li
+                        a.a--clean(href="mailto:k.vendrik@gmail.com") k.vendrik@gmail.com
 
-        .column.column--3
-            ul
-                li linkedin.com/in/kvendrik
-                li github.com/kvendrik
-                li twitter.com/kvendrik
+            .column.column--3
+                ul
+                    li
+                        a.a--clean(href="http://linkedin.com/in/kvendrik") linkedin.com/in/kvendrik
+                    li
+                        a.a--clean(href="http://github.com/kvendrik") github.com/kvendrik
+
+            .column.column--3
+                ul
+                    li
+                        a.a--clean(href="http://linkedin.com/in/kvendrik") @kvendrik
 
 
 

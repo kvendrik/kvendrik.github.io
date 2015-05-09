@@ -46,26 +46,38 @@ strong, b {
     font-weight: $weight-body-bold;
 }
 
+u {
+    text-decoration: none;
+    display: inline-block;
+    line-height: 1em;
+    @include border(bottom, $color: $color-base);
+}
+
 a {
     color: $color-base;
-    @include border(bottom);
+    @include border(bottom, $color: rgba($color-base, .1));
     text-decoration: none;
 
-    @include transition(border-color);
+    @include transition(all);
 
     &:hover {
         border-color: $color-base;
     }
 
-    &.a--spaced {
-        line-height: $line-height-body;
-        display: inline-block;
+    &.a--clean {
+        border-bottom: none;
     }
 }
 
 ul {
 
-    &.ul--inline {
+    &.list--clean {
+        li {
+            display: block;
+        }
+    }
+
+    &.list--inline {
         li {
             display: inline-block;
             margin-right: $spacing-m;

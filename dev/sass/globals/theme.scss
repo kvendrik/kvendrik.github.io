@@ -1,13 +1,72 @@
 .container {
     width: 1024px;
     margin: 0 auto;
+    position: relative;
 }
 
 .content {
-    padding-top: 22em;
+//
 }
 
-.contact-area {
-    font-size: $size-s;
-    padding-top: 10em;
+.block {
+    padding-top: 5em;
+
+    &.block--big {
+    	padding-top: 10em;
+    }
+
+    &:last-child {
+		padding-bottom: 5em;
+    }
+}
+
+.text-small {
+	font-size: $size-s;
+}
+
+.text-faded {
+	opacity: .8;
+}
+
+.hero {
+	height: 400px;
+	margin-top: 10em;
+
+	background-color: $color-base;
+
+	position: relative;
+
+	&__img {
+		width: 600px;
+		overflow: hidden;
+
+		position: absolute;
+		top: 3em;
+		right: 5em;
+
+		img {
+			width: 100%;
+		}
+	}
+
+	&__content {
+		padding: 5em;
+		color: $color-gray-lightest;
+
+		position: absolute;
+		top: 0;
+		left: 0;
+		right: 0;
+		bottom: 0;
+		z-index: 1;
+	}
+
+	a, u {	
+		color: $color-gray-lightest;
+		border-color: rgba($color-gray-lightest, .2);
+	}
+
+	u {
+		border-color: $color-gray-lightest;
+	}
 }
