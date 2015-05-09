@@ -2,15 +2,18 @@ extend inc/template
 
 block content
 
-    .container.container-no-sm
+    .container.container--no-sm
         section.hero
 
             .hero__content
                 .container
-                    h1.h--has-sub
+                    h1
                         u Koen
                         span.text-faded  Vendrik
-                    h6.h--sub.text-faded.hero__content__sub-title A young tech entrepreneur
+                    h6.h--sub.hero__content__sub-title
+                        | Young tech entrepreneur
+                        br
+                        |  and Full Stack Developer
 
                     ul.list--clean.text-faded.hero__content__list
                         li
@@ -33,7 +36,7 @@ block content
             .column.column--5.column--md--7.column--sm--12
                 :markdown
                     [**How you doing?**](https://www.youtube.com/watch?v=YjQ1xD6UL-4)
-                    I’m Koen, a young entrepreneur who loves tech. I am a full stack web developer
+                    I’m Koen, a young entrepreneur who loves tech. I am a full stack software developer
                     who works to make technology more human friendly every day.
 
                     **Working** at and having co-founded companies like [Whitespell](http://whitespell.com) and [Duxilio](http://duxilio.com)

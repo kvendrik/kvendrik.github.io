@@ -12,7 +12,7 @@
     @include media-sm {
         width: $container-sm;
 
-        &.container-no-sm {
+        &.container--no-sm {
             width: auto;
         }
     }

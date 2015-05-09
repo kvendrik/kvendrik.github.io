@@ -20,10 +20,7 @@ h1,h2,h3,h4,h5,h6 {
 
     &.h--sub {
         font-family: $family-body;
-    }
-
-    &.h--has-sub {
-        margin-bottom: $spacing-xxs;
+        line-height: $line-height-heading-l;
     }
 
     @include media-sm {
@@ -33,6 +30,7 @@ h1,h2,h3,h4,h5,h6 {
 
 h1 {
     font-size: 3.2em;
+    margin-bottom: $spacing-s;
 }
 
 h2 {

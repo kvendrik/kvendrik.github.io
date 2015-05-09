@@ -4,26 +4,6 @@
 
     position: relative;
 
-    background-color: $color-base;
-    color: $color-gray-lightest;
-
-    a, u {
-        color: $color-gray-lightest;
-        border-color: rgba($color-gray-lightest, .2);
-    }
-
-    a.a--clean {
-        border-color: rgba($color-gray-lightest, 0);
-
-        &:hover {
-            border-color: rgba($color-gray-lightest, 1);
-        }
-    }
-
-    u {
-        border-color: $color-gray-lightest;
-    }
-
     &__img {
         width: 600px;
         overflow: hidden;
@@ -50,6 +30,10 @@
 }
 
 .hero {
+
+    @include media-lg {
+        
+    }
 
     @include media-md {
         &__content {
