@@ -5,20 +5,16 @@
 
     @include media-lg {
         width: $container-lg;
-
-        .container-lg {
-            width: $container-lg;
-        }
     }
     @include media-md {
         width: $container-md;
-
-        .container-md {
-            width: $container-md;
-        }
     }
     @include media-sm {
         width: $container-sm;
+
+        &.container-no-sm {
+            width: auto;
+        }
     }
 }
 
