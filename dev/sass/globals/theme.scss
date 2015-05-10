@@ -11,16 +11,19 @@
     }
     @include media-sm {
         width: $container-sm;
+    }
+    @include media-xs {
+        width: $container-xs;
 
-        &.container--no-sm {
+        &.container--no-xs {
             width: auto;
         }
     }
 }
 
-@include media-sm {
-    .container-sm {
-        width: $container-sm;
+@include media-xs {
+    .container-xs {
+        width: $container-xs;
         margin: 0 auto;
         position: relative;
     }
@@ -33,8 +36,12 @@
         padding-bottom: $spacing-xl;
     }
 
-    @include media-sm {
-        padding-top: $spacing-l;
+    @include media-sm-max {
+        padding-top: $spacing-m;
+
+        &:last-child {
+            padding-bottom: $spacing-m;
+        }
     }
 }
 

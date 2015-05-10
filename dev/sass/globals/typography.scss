@@ -3,7 +3,7 @@ body {
     color: $color-base;
     line-height: $line-height-body;
 
-    @include media-sm {
+    @include media-xs {
         font-size: $size-m-sm;
     }
 }
@@ -23,7 +23,7 @@ h1,h2,h3,h4,h5,h6 {
         line-height: $line-height-heading-l;
     }
 
-    @include media-sm {
+    @include media-sm-max {
         margin-bottom: $spacing-s;
     }
 }
@@ -70,17 +70,19 @@ u {
 
 a {
     color: $color-base;
-    @include border(bottom, $color: rgba($color-base, .1));
+    //@include border(bottom, $color: rgba($color-base, .1));
+    background-color: rgba($color-accent, .15);
     text-decoration: none;
 
     @include transition(all);
 
     &:hover, &.a--clean:hover {
-        border-color: $color-base;
+        //border-color: $color-base;
+        background-color: rgba($color-accent, .3);
     }
 
     &.a--clean {
-        border-color: rgba($color-base, 0);
+        background-color: rgba($color-accent, 0);
     }
 }
 
@@ -106,6 +108,10 @@ ul {
                 margin-right: 0;
             }
         }
+    }
+
+    @include media-xs {
+        margin-bottom: $spacing-s;
     }
 
 }

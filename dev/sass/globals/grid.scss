@@ -24,4 +24,12 @@
         }
     }
 
+    @include media-xs {
+        @for $i from 1 through 12 {
+            &.column--xs--#{$i} {
+                @include column($i);
+            }
+        }
+    }
+
 }

@@ -40,7 +40,7 @@
         }
     }
 
-    @include media-sm {
+    @include media-sm-max {
         margin-top: 0;
         overflow: visible;
 

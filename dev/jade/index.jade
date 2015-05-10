@@ -2,13 +2,13 @@ extend inc/template
 
 block content
 
-    .container.container--no-sm
+    .container.container--no-xs
         section.hero
 
             .hero__content-wrapper.column.column--5
 
                 .hero__content
-                    .container-sm
+                    .container-xs
                         h1.hero__content__title
                             u.text-accent Koen
                             span.text-faded  Vendrik
@@ -33,10 +33,10 @@ block content
 
         section.column.block
 
-            .column.column--4.column--sm--12
+            .column.column--4.column--xs--12.column--sm--12
                 h5.h--title What I (try to) do
 
-            .column.column--5.column--md--7.column--sm--12
+            .column.column--5.column--md--7.column--xs--12.column--sm--12
                 :markdown
                     [**How you doing?**](https://www.youtube.com/watch?v=YjQ1xD6UL-4)
                     I’m Koen, a young entrepreneur who loves tech. I am a full stack software developer
@@ -49,11 +49,11 @@ block content
 
                     **Contact** me at any time for anything, I love a good talk.
 
-        section.column.block.text-small
-            .column.column--4.column--sm--12
+        section.column.block
+            .column.column--4.column--xs--12.column--sm--12
                 h5.h--title Recent Highlights
 
-            .column.column--4.column--sm--12
+            .column.column--4.column--xs--12.column--sm--6
                 ul.list--multi-line
                     li
                         a.a--clean(href="#")
@@ -79,7 +79,7 @@ block content
                             |  wrote about Project Buendia
                             br
                             small March 2015
-            .column.column--4.column--sm--12
+            .column.column--4.column--xs--12.column--sm--6
                 ul.list--multi-line
                     li
                         a.a--clean(href="#")
@@ -106,18 +106,18 @@ block content
                             br
                             small March 2015
 
-        section.column.block.text-small
-            .column.column--4.column--sm--12
+        section.column.block
+            .column.column--4.column--xs--12.column--sm--12
                 h5.h--title Get in touch
 
-            .column.column--3.column--sm--12
+            .column.column--3.column--xs--12.column--sm--6
                 ul
                     li
                         a.a--clean(href="tel:+31657357246") +31 6 57 35 72 46
                     li
                         a.a--clean(href="mailto:k.vendrik@gmail.com") k.vendrik@gmail.com
 
-            .column.column--3.column--sm--12
+            .column.column--4.column--xs--12.column--sm--6
                 ul
                     li
                         a.a--clean(href="http://linkedin.com/in/kvendrik") linkedin.com/in/kvendrik

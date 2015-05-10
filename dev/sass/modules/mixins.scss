@@ -51,7 +51,17 @@
     }
 }
 @mixin media-sm {
+    @include media($container-sm, $container-md){
+        @content;
+    }
+}
+@mixin media-sm-max {
     @include media($max-width: $container-md){
+        @content;
+    }
+}
+@mixin media-xs {
+    @include media($max-width: $container-sm){
         @content;
     }
 }
