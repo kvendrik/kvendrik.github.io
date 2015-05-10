@@ -1,5 +1,10 @@
 include _mixins
 
+- var siteUrl = 'http://kvendrik.com';
+- var siteDesc = 'Tech Entrepreneur & Full Stack Developer';
+- var siteDescLong = 'Young entrepreneur who loves tech and a full stack software developer who works to make technology more human friendly every day.';
+- var siteName = 'Koen Vendrik';
+
 doctype html
 html(lang="en")
 
@@ -8,28 +13,28 @@ html(lang="en")
         meta(http-equiv="X-UA-Compatible", content="IE=edge,chrome=1")
         meta(name="viewport", content="initial-scale=1, user-scalable=no")
 
-        title Koen Vendrik - A young entrepreneur who loves tech
-        meta(name="description" content="Duxilio - Software that makes life less complicated")
+        title #{siteName} - #{siteDesc}
+        meta(name="description" content="#{siteName} - #{siteDesc}")
 
         meta(name="author" content="Koen Vendrik")
         meta(name="follow" content="index, follow")
 
-        meta(property="og:site_name", content="Koen Vendrik")
-        meta(property="og:locale", content="nl_NL")
+        meta(property="og:site_name", content="#{siteName}")
+        meta(property="og:locale", content="en_GB")
         meta(property="og:type", content="website")
-        meta(property="og:description", content="Software that makes life less complicated")
-        meta(property="og:url", content="http://www.duxilio.nl")
-        meta(property="og:title", content="Duxilio - Software that makes life less complicated")
-        meta(property="og:image", content="http://duxilio.nl/img/duxilio-og.png")
+        meta(property="og:description", content="#{siteDesc}")
+        meta(property="og:url", content="#{siteUrl}")
+        meta(property="og:title", content="#{siteName} - #{siteDesc}")
+        meta(property="og:image", content="#{siteUrl}/img/duxilio-og.png")
 
         meta(property="fb:app_id" content="1558942351039907")
 
         meta(name="twitter:card" content="summary")
-        meta(name="twitter:site" content="@duxil_io")
-        meta(name="twitter:url" content="http://www.duxilio.nl")
-        meta(name="twitter:title" content="Duxilio - Software that makes life less complicated")
-        meta(name="twitter:description" content="Software that makes life less complicated")
-        meta(name="twitter:image" content="http://duxilio.nl/img/duxilio-og.png")
+        meta(name="twitter:site" content="@kvendrik")
+        meta(name="twitter:url" content="#{siteUrl}")
+        meta(name="twitter:title" content="#{siteName} - #{siteDesc}")
+        meta(name="twitter:description" content="#{siteDesc}")
+        meta(name="twitter:image" content="#{siteUrl}/img/duxilio-og.png")
 
         link(rel="apple-touch-icon" sizes="57x57" href="/img/favicons/apple-touch-icon-57x57.png")
         link(rel="apple-touch-icon" sizes="60x60" href="/img/favicons/apple-touch-icon-60x60.png")
