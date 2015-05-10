@@ -18,12 +18,16 @@
     }
 }
 
+@include media-sm {
+    .container-sm {
+        width: $container-sm;
+        margin: 0 auto;
+        position: relative;
+    }
+}
+
 .block {
     padding-top: $spacing-xl;
-
-    &.block--big {
-    	padding-top: $spacing-xxl;
-    }
 
     &:last-child {
         padding-bottom: $spacing-xl;
@@ -31,10 +35,6 @@
 
     @include media-sm {
         padding-top: $spacing-l;
-
-        &.block--big {
-            padding-top: $spacing-xl;
-        }
     }
 }
 
@@ -44,4 +44,9 @@
 
 .text-faded {
 	opacity: .8;
+}
+
+.text-accent {
+    color: $color-accent;
+    border-color: $color-accent;
 }

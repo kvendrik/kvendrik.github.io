@@ -1,16 +1,20 @@
 .hero {
-    height: 400px;
     margin-top: $spacing-l;
+    overflow: hidden;
 
     position: relative;
 
     &__img {
-        width: 600px;
-        overflow: hidden;
+        width: 100%;
+        max-width: 600px;
 
-        position: absolute;
-        top: $spacing-l;
-        right: $spacing-xl;
+        overflow: hidden;
+        line-height: 0;
+
+        margin-top: $spacing-l;
+        margin-right: 0;
+        margin-left: 0;
+        float: right;
 
         img {
             width: 100%;
@@ -18,71 +22,58 @@
     }
 
     &__content {
-        padding: $spacing-xl;
+        margin-top: $spacing-xl;
 
-        position: absolute;
-        top: 0;
-        left: 0;
-        right: 0;
-        bottom: 0;
-        z-index: 1;
+        &__sub-title {
+            margin-bottom: $spacing-m;
+        }
     }
 }
 
 .hero {
 
-    @include media-lg {
-        
-    }
-
     @include media-md {
         &__content {
-            padding-left: $spacing-l;
-        }
-        &__img {
-            top: $spacing-m;
-            right: $spacing-m;
+            &__title {
+                font-size: 2.6em;
+            }
         }
     }
 
     @include media-sm {
-        height: auto;
         margin-top: 0;
-        line-height: 0;
+        overflow: visible;
 
-        position: relative;
-
-        color: $color-base;
-        u {
-            color: $color-base;
-            border-color: $color-base;
+        &__img-wrapper {
+            width: 100% !important;
+            margin: 0 !important;
         }
 
         &__img {
-            position: relative;
+            width: 100%;
+            max-width: none;
+            margin: 0;
+        }
+
+        &__content-wrapper {
+            width: 100% !important;
+            margin: 0 !important;
         }
 
         &__content {
-            top: auto;
-            left: 0;
-            right: 0;
-            bottom: -5.5em;
+            margin-top: $spacing-m;
 
-            padding: $spacing-l;
+            &__title {
+                margin-bottom: $spacing-xxs;
+            }
 
             &__sub-title {
-                margin-bottom: 0;
+                display: none;
             }
 
             &__list {
                 display: none;
             }
-        }
-
-        &__img {
-            width: 100%;
-            top: 0;
-            right: 0;
         }
     }
 

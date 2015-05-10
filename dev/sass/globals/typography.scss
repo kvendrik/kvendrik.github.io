@@ -12,7 +12,7 @@ h1,h2,h3,h4,h5,h6 {
     font-family: $family-heading;
     font-weight: $weight-heading;
     line-height: $line-height-heading;
-    margin-bottom: $spacing-m;
+    margin-bottom: $spacing-xxs;
 
     &.h--title {
         @extend u;
@@ -30,7 +30,6 @@ h1,h2,h3,h4,h5,h6 {
 
 h1 {
     font-size: 3.2em;
-    margin-bottom: $spacing-s;
 }
 
 h2 {
