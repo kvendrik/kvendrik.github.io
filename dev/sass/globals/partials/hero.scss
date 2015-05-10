@@ -25,6 +25,7 @@
         margin-top: $spacing-xl;
 
         &__sub-title {
+            max-width: 300px;
             margin-bottom: $spacing-m;
         }
     }
@@ -68,7 +69,7 @@
             }
 
             &__sub-title {
-                display: none;
+                margin-bottom: $spacing-s;
             }
 
             &__list {
