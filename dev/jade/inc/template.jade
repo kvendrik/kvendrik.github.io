@@ -2,7 +2,7 @@ include _mixins
 
 - var siteUrl = 'http://kvendrik.com';
 - var siteDesc = 'Tech Entrepreneur & Full Stack Developer';
-- var siteDescLong = 'Young entrepreneur who loves tech and a full stack software developer who works to make technology more human friendly every day.';
+- var siteDescLong = 'Young tech entrepreneur and full stack software developer who works on making technology more human friendly. Co-Founder of Whitespell and Duxilio.';
 - var siteName = 'Koen Vendrik';
 
 doctype html
@@ -14,7 +14,7 @@ html(lang="en")
         meta(name="viewport", content="initial-scale=1, user-scalable=no")
 
         title #{siteName} - #{siteDesc}
-        meta(name="description" content="#{siteName} - #{siteDesc}")
+        meta(name="description" content="#{siteDescLong}")
 
         meta(name="author" content="Koen Vendrik")
         meta(name="follow" content="index, follow")
@@ -22,7 +22,7 @@ html(lang="en")
         meta(property="og:site_name", content="#{siteName}")
         meta(property="og:locale", content="en_GB")
         meta(property="og:type", content="website")
-        meta(property="og:description", content="#{siteDesc}")
+        meta(property="og:description", content="#{siteDescLong}")
         meta(property="og:url", content="#{siteUrl}")
         meta(property="og:title", content="#{siteName} - #{siteDesc}")
         meta(property="og:image", content="#{siteUrl}/img/duxilio-og.png")
@@ -33,7 +33,7 @@ html(lang="en")
         meta(name="twitter:site" content="@kvendrik")
         meta(name="twitter:url" content="#{siteUrl}")
         meta(name="twitter:title" content="#{siteName} - #{siteDesc}")
-        meta(name="twitter:description" content="#{siteDesc}")
+        meta(name="twitter:description" content="#{siteDescLong}")
         meta(name="twitter:image" content="#{siteUrl}/img/duxilio-og.png")
 
         link(rel="apple-touch-icon" sizes="57x57" href="/img/favicons/apple-touch-icon-57x57.png")
