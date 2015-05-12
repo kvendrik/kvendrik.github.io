@@ -32,6 +32,10 @@
 .block {
     padding-top: $spacing-xl;
 
+    p:last-child {
+        margin-bottom: 0;
+    }
+
     &:last-child {
         padding-bottom: $spacing-xl;
     }

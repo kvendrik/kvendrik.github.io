@@ -88,6 +88,10 @@ a {
 
 ul {
 
+    li:last-child {
+        margin-bottom: 0;
+    }
+
     &.list--multi-line li {
         line-height: $line-height-body-s;
         margin-bottom: $spacing-s;
