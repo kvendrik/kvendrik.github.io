@@ -8,8 +8,11 @@
 }
 
 //Transition
-@mixin transition($property, $duration:$transition-duration, $timing:$transition-timing,  $delay:0s){
-    transition: $property $duration $timing $delay;
+@mixin transition($properties, $duration:$transition-duration, $timing:$transition-timing,  $delay:0s){
+    transition-property: $properties;
+    transition-duration: $duration;
+    transition-timing: $timing;
+    transition-delay: $delay;
 }
 
 //Animations
