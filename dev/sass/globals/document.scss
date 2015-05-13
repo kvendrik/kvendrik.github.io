@@ -4,6 +4,21 @@
     box-sizing: border-box;
 }
 
+html {
+    background-color: $color-gray-lightest;
+
+    &.wf-active body {
+        opacity: 1;
+        transform: translateY(0);
+    }
+
+    &.wf-loading body {
+        opacity: 0;
+        transform: translateY(-$spacing-m);
+    }
+}
+
 body {
     background-color: $color-gray-lightest;
+    @include transition((opacity, transform));
 }
