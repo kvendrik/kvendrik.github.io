@@ -20,5 +20,5 @@ html {
 
 body {
     background-color: $color-gray-lightest;
-    @include transition((opacity, transform));
+    @include transition((opacity, transform), $transition-duration-alt);
 }
