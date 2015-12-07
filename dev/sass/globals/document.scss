@@ -23,6 +23,13 @@ body {
     @include transition((opacity, transform), $transition-duration-alt);
 }
 
+.pull-left {
+    float: left;
+}
+.pull-right {
+    float: left;
+}
+
 .section {
     width: 100%;
     overflow: hidden;

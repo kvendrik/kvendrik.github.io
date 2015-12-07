@@ -90,9 +90,21 @@ a {
     &.a--clean {
         background-color: rgba($color-accent, 0);
     }
+
+    &.btn {
+        padding: $spacing-s $spacing-m;
+        background-color: $color-accent;
+        
+        color: white;
+        font-size: $size-s;
+
+        line-height: $line-height-body;
+        display: inline-block;
+    }
 }
 
 ul {
+    margin-bottom: $spacing-m;
 
     li:last-child {
         margin-bottom: 0;
