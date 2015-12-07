@@ -15,11 +15,13 @@ h1,h2,h3,h4,h5,h6 {
     margin-bottom: $spacing-xxs;
 
     &.h--title {
-        @extend u;
+        margin-top: $spacing-xxs;
+        margin-bottom: $spacing-s;
     }
 
     &.h--sub {
         font-family: $family-body;
+        font-weight: $weight-body;
         line-height: $line-height-heading-l;
     }
 
@@ -29,7 +31,7 @@ h1,h2,h3,h4,h5,h6 {
 }
 
 h1 {
-    font-size: 3.2em;
+    font-size: 4.12em;
 }
 
 h2 {
@@ -37,7 +39,7 @@ h2 {
 }
 
 h3 {
-    font-size: 2.2em;
+    font-size: 2em;
 }
 
 h4 {
@@ -45,16 +47,20 @@ h4 {
 }
 
 h5 {
-    font-size: 1.4em;
+    font-size: 1.5em;
 }
 
 h6 {
-    font-size: 1.2em;
+    font-size: 1.25em;
 }
 
 p {
     margin-bottom: $spacing-m;
     line-height: $line-height-body;
+
+    &.p--no-push {
+        margin: 0;
+    }
 }
 
 strong, b {
@@ -95,6 +101,7 @@ ul {
     &.list--multi-line li {
         line-height: $line-height-body-s;
         margin-bottom: $spacing-s;
+        display: block;
     }
 
     &.list--clean {

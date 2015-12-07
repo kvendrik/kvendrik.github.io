@@ -3,19 +3,16 @@ extend inc/template
 block content
 
     .container.container--no-xs
-        section.hero
+        section.section.hero
 
-            .hero__content-wrapper.column.column--5
+            .column.column--6
 
-                .hero__content
+                .section__content-wrapper.hero__content
                     .container-xs
-                        h1.hero__content__title
-                            u.text-accent Koen
-                            span.text-faded  Vendrik
-                        h6.h--sub.hero__content__sub-title.
-                            Young Tech Entrepreneur and Full Stack Developer
+                        h1.hero__content__title Koen Vendrik
+                        h5.h--sub.hero__content__sub-title Entrepreneur and Full Stack Developer
 
-                        ul.list--clean.text-faded.hero__content__list
+                        ul.list--clean.hero__content__list
                             li
                                 a.a--clean(href="http://twitter.com/kvendrik" title="Check out my Twitter") @kvendrik
                             li
@@ -23,91 +20,87 @@ block content
                             li
                                 a.a--clean(href="http://twitter.com/duxil_io" title="Check out Duxilio's Twitter") @duxil_io
 
-            .hero__img-wrapper.column.column--7
-                .hero__img
+            .column.column--6
+                .section__img.section__img--auto
                     img(src="/img/koen-portrait-600.jpg" alt="Koen Vendrik")
 
-    .container
+    .container.container--no-xs
+        section.section.section--reversed
 
-        section.column.block
+            .column.column--6
+                .section__img
+                    img(src="/img/taplicious-pitch-slush.jpg" alt="Koen Vendrik")
 
-            .column.column--4.column--xs--12.column--sm--12
-                h5.h--title What I (try to) do
+            .section__content-wrapper.column.column--6
+                .container-xs
+                    h3.h--title What I (try to) do
+                    :markdown
+                        [**How you doing?**](http://www.youtube.com/watch?v=YjQ1xD6UL-4&t=0m6s)
+                        I’m Koen, a young tech entrepreneur and full stack software developer
+                        who works on making technology more human friendly.
 
-            .column.column--5.column--md--7.column--xs--12.column--sm--12
-                :markdown
-                    [**How you doing?**](http://www.youtube.com/watch?v=YjQ1xD6UL-4&t=0m6s)
-                    I’m Koen, a young tech entrepreneur and full stack software developer
-                    who works on making technology more human friendly.
+                        **Working** at and having co-founded companies like [Whitespell](http://whitespell.com)
+                        and [Duxilio](http://duxilio.com) I have the pleasure to work with great talented folks
+                        from companies like [Google](http://developers.google.com "Google Developers Website"),
+                        [Médecins Sans Frontières](http://www.msf.org.uk/ "MSF UK Website") and [Hack4Good](http://hack4good.io/ "Hack4Good Website") on awesome projects
+                        like [Project Buendia](http://www.bbc.com/news/health-31970731).
 
-                    **Working** at and having co-founded companies like [Whitespell](http://whitespell.com)
-                    and [Duxilio](http://duxilio.com) I have the pleasure to work with great talented folks
-                    from companies like [Google](http://developers.google.com "Google Developers Website"),
-                    [Médecins Sans Frontières](http://www.msf.org.uk/ "MSF UK Website") and [Hack4Good](http://hack4good.io/ "Hack4Good Website") on awesome projects
-                    like [Project Buendia](http://www.bbc.com/news/health-31970731).
+                    p.p--no-push
+                        b Contact 
+                        | me at any time for anything, a good talk is always welcome.
 
-                    **Contact** me at any time for anything, a good talk is always welcome.
+    .container.container--no-xs
+        section.section
 
-        section.column.block
-            .column.column--4.column--xs--12.column--sm--12
-                h5.h--title Recent Highlights
+            .section__content-wrapper.column.column--6
+                .container-xs
+                    h3.h--title Recent Highlights
+                    ul.list--multi-line
+                        li
+                            a.a--clean(href="http://www.bbc.com/news/health-31970731" title="BCC News piece about Project Buendia")
+                                b Pitching Taplicious 
+                                |  at Slush 2015
+                                br
+                                small November 2015
+                        li
+                            a.a--clean(href="http://www.bbc.com/news/health-31970731" title="BCC News piece about Project Buendia")
+                                b Taplicious won the Klarna Track
+                                |  at Junction
+                                br
+                                small November 2015
+                        li
+                            a.a--clean(href="http://www.bbc.com/news/health-31970731" title="BCC News piece about Project Buendia")
+                                b BBC News
+                                |  wrote about Project Buendia
+                                br
+                                small March 2015
+                        li
+                            a.a--clean(href="http://magazine.good.is/articles/googles-ebola-proof-tablets" title="GOOD on Project Buendia")
+                                b GOOD
+                                |  wrote about Project Buendia
+                                br
+                                small March 2015
+                        li
+                            a.a--clean(href="http://www.engadget.com/2015/03/20/google-ebola-proof-tablet/" title="Engadget on Project Buendia")
+                                b Engadget
+                                |  wrote about Project Buendia
+                                br
+                                small March 2015
+                        li
+                            a.a--clean(href="http://www.cityam.com/212100/how-google-ended-creating-ebola-proof-tablet" title="City A.M. on Project Buendia")
+                                b City A.M.
+                                |  wrote about Project Buendia
+                                br
+                                small March 2015
 
-            .column.column--4.column--xs--12.column--sm--6
-                ul.list--multi-line
-                    li
-                        a.a--clean(href="http://www.bbc.com/news/health-31970731" title="BCC News piece about Project Buendia")
-                            b BBC News
-                            |  wrote about Project Buendia
-                            br
-                            small March 2015
-                    li
-                        a.a--clean(href="http://magazine.good.is/articles/googles-ebola-proof-tablets" title="GOOD on Project Buendia")
-                            b GOOD
-                            |  wrote about Project Buendia
-                            br
-                            small March 2015
-                    li
-                        a.a--clean(href="http://www.engadget.com/2015/03/20/google-ebola-proof-tablet/" title="Engadget on Project Buendia")
-                            b Engadget
-                            |  wrote about Project Buendia
-                            br
-                            small March 2015
-                    li
-                        a.a--clean(href="http://www.cityam.com/212100/how-google-ended-creating-ebola-proof-tablet" title="City A.M. on Project Buendia")
-                            b City A.M.
-                            |  wrote about Project Buendia
-                            br
-                            small March 2015
-            .column.column--4.column--xs--12.column--sm--6
-                ul.list--multi-line
-                    li
-                        a.a--clean(href="http://www.theverge.com/2015/3/20/8267259/google-tablet-ebola-chlorine" title="The Verge on Project Buendia")
-                            b The Verge
-                            |  wrote about Project Buendia
-                            br
-                            small March 2015
-                    li
-                        a.a--clean(href="http://www.telegraph.co.uk/news/worldnews/ebola/11485946/Ebola-proof-tablet-designed-by-Google-rolled-out-in-Sierra-Leone-disease-centre.html" title="The Telegraph on Project Buendia")
-                            b The Telegraph
-                            |  wrote about Project Buendia
-                            br
-                            small March 2015
-                    li
-                        a.a--clean(href="http://www.wired.com/2015/03/google-builds-new-tablet-fight-ebola/" title="Wired on Project Buendia")
-                            b Wired
-                            |  wrote about Project Buendia
-                            br
-                            small March 2015
-                    li
-                        a.a--clean(href="https://fd.nl/economie-politiek/1097718/artsen-zonder-grenzen-vroeg-me-na-te-denken-over-bestrijding-ebola" title="fd on Project Buendia")
-                            b fd
-                            |  wrote about Project Buendia
-                            br
-                            small March 2015
+            .column.column--6
+                .section__img
+                    img(src="/img/taplicious-pitch-slush.jpg" alt="Koen Vendrik")
+                    .section__img__cite Pitching Taplicious at Slush 2015
 
-        section.column.block
-            .column.column--4.column--xs--12.column--sm--12
-                h5.h--title Get in touch
+        section.section
+            .section__content-wrapper.column.column--6.column--xs--12.column--sm--12
+                h3.h--title Get in touch
 
             .column.column--3.column--xs--12.column--sm--6
                 ul
@@ -116,7 +109,7 @@ block content
                     li
                         a.a--clean(href="mailto:k.vendrik@gmail.com" title="Send me an email") k.vendrik@gmail.com
 
-            .column.column--4.column--xs--12.column--sm--6
+            .column.column--3.column--xs--12.column--sm--6
                 ul
                     li
                         a.a--clean(href="http://twitter.com/kvendrik" title="Check out my Twitter") @kvendrik

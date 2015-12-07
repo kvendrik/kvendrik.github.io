@@ -22,3 +22,50 @@ body {
     background-color: $color-gray-lightest;
     @include transition((opacity, transform), $transition-duration-alt);
 }
+
+.section {
+    width: 100%;
+    overflow: hidden;
+
+    padding-bottom: $spacing-xl;
+
+    &.section--reversed {
+        .section__content-wrapper {
+            padding-left: 2em;
+            padding-right: 6em;
+        }
+    }
+
+    &__content-wrapper {
+        padding-left: 6em;
+    }
+
+    &__img {
+        width: 600px;
+        height: 400px;
+
+        position: relative;
+
+        &.section__img--auto {
+            height: auto;
+        }
+
+        &__cite {
+            position: absolute;
+            bottom: $spacing-s;
+            left: $spacing-s;
+
+            font-size: $size-xs;
+            color: white;
+
+            line-height: 1em;
+
+            opacity: .9;
+
+            background-color: $color-base;
+            padding: $spacing-s $spacing-s;
+        }
+    }
+
+    
+}

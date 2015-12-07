@@ -3,22 +3,23 @@ $container-xs: 90%;
 $container-sm: 500px;
 $container-md: 740px;
 $container-lg: 960px;
-$container-xl: 1024px;
+$container-xl: 1200px;
 
 
 //Typography
 $family-body: 'adelle-sans', 'Open Sans', Helvetica, Arial, sans-serif;
 $family-heading: 'adelle', 'Museo', Helvetica, Arial, sans-serif;
 
-$weight-body: 400;
+$weight-body: 500;
 $weight-body-bold: 700;
-$weight-heading: 400;
+$weight-heading: 700;
 
 $line-height-body: 2em;
 $line-height-body-s: 1.5em;
 $line-height-heading: 1.2em;
 $line-height-heading-l: 1.8em;
 
+$size-xs: .8em;
 $size-s: .9em;
 $size-m: 16px;
 $size-m-sm: 14px;
@@ -26,8 +27,8 @@ $size-m-sm: 14px;
 
 //Colors
 $color-base: #222;
-$color-gray-lightest: #f7f7f7;
-$color-accent: #007B85;
+$color-gray-lightest: #FAFAF9;
+$color-accent: #8CABD8;
 
 
 //Spacings

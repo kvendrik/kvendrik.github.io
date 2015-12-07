@@ -1,32 +1,18 @@
 .hero {
-    margin-top: $spacing-l;
+    margin-top: $spacing-xl;
     overflow: hidden;
 
     position: relative;
 
-    &__img {
-        width: 100%;
-        max-width: 600px;
-
-        overflow: hidden;
-        line-height: 0;
-
-        margin-top: $spacing-l;
-        margin-right: 0;
-        margin-left: 0;
-        float: right;
-
-        img {
-            width: 100%;
-        }
-    }
-
     &__content {
-        margin-top: $spacing-xl;
+        margin-top: $spacing-m;
+
+        &__title {
+            margin-bottom: .1em;
+        }
 
         &__sub-title {
-            max-width: 300px;
-            margin-bottom: $spacing-m;
+            margin-bottom: $spacing-s;
         }
     }
 }
@@ -42,25 +28,6 @@
     }
 
     @include media-sm-max {
-        margin-top: 0;
-        overflow: visible;
-
-        &__img-wrapper {
-            width: 100% !important;
-            margin: 0 !important;
-        }
-
-        &__img {
-            width: 100%;
-            max-width: none;
-            margin: 0;
-        }
-
-        &__content-wrapper {
-            width: 100% !important;
-            margin: 0 !important;
-        }
-
         &__content {
             margin-top: $spacing-m;
 
