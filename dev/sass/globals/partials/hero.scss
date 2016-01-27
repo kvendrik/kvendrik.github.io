@@ -28,11 +28,13 @@
     }
 
     @include media-sm-max {
+        margin-top: 0;
+
         &__content {
-            margin-top: $spacing-m;
+            margin-top: 0;
 
             &__title {
-                margin-bottom: $spacing-xxs;
+                margin-bottom: 0;
             }
 
             &__sub-title {

@@ -29,6 +29,9 @@ body {
 .pull-right {
     float: left;
 }
+.clear-l {
+    margin-left: 0 !important;
+}
 
 .section {
     width: 100%;
@@ -38,13 +41,19 @@ body {
 
     &.section--reversed {
         .section__content-wrapper {
-            padding-left: 2em;
-            padding-right: 6em;
+            padding-left: 3em;
+            padding-right: 5em;
+            float: right;
+        }
+
+        .section__img {
+            float: left;
         }
     }
 
     &__content-wrapper {
         padding-left: 6em;
+        float: left;
     }
 
     &__img {
@@ -53,6 +62,9 @@ body {
 
         overflow: hidden;
         position: relative;
+
+        float: right;
+        line-height: 0;
 
         img {
             width: 100%;
@@ -79,5 +91,50 @@ body {
         }
     }
 
-    
+    @include media($max-width: $container-xl){
+        &__content-wrapper {
+            padding-left: 0;
+        }
+        &.section--reversed {
+            .section__content-wrapper {
+                padding-right: 0;
+            }
+        }
+    }
+
+    @include media-lg {
+        &__img {
+            width: 480px;
+            height: 320px;
+        }
+    }
+
+    @include media-md {
+        &__img {
+            width: 370px;
+            height: 250px;
+        }
+    }
+
+    @include media-sm-max {
+        &__img {
+            width: 100%;
+            height: auto;
+            margin-bottom: $spacing-m;
+
+            &__cite {
+                bottom: 1.5em;
+            }
+        }
+
+        &.section--reversed {
+            .section__content-wrapper {
+                padding-left: 0;
+            }
+        }
+    }
+
+    @include media-sm-max {
+        padding-bottom: $spacing-l;
+    }
 }

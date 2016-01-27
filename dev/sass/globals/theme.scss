@@ -11,6 +11,10 @@
     }
     @include media-sm {
         width: $container-sm;
+
+        &.container--no-sm {
+            width: auto;
+        }
     }
     @include media-xs {
         width: $container-xs;
@@ -24,6 +28,14 @@
 @include media-xs {
     .container-xs {
         width: $container-xs;
+        margin: 0 auto;
+        position: relative;
+    }
+}
+
+@include media-sm {
+    .container-sm {
+        width: $container-sm;
         margin: 0 auto;
         position: relative;
     }
