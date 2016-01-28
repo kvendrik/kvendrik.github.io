@@ -43,6 +43,11 @@
     }
 }
 
+@mixin media-lg-max {
+    @include media($max-width: $container-xl){
+        @content;
+    }
+}
 @mixin media-lg {
     @include media($container-lg, $container-xl){
         @content;

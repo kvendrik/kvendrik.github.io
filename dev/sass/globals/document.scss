@@ -91,7 +91,7 @@ body {
         }
     }
 
-    @include media($max-width: $container-xl){
+    @include media-lg-max {
         &__content-wrapper {
             padding-left: 0;
         }
