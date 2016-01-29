@@ -110,6 +110,11 @@ body {
     }
 
     @include media-md {
+        &.section--reversed {
+            .section__content-wrapper {
+                padding-left: 2em;
+            }
+        }
         &__img {
             width: 370px;
             height: 250px;
