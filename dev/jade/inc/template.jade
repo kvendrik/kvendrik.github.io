@@ -57,24 +57,13 @@ html(lang="en")
         meta(name="theme-color", content="#ffffff")
 
 
-        link(rel="stylesheet" href="/css/main.css")
-        //style
-            include ../../../www/css/main.css
+        link(rel="stylesheet" href="/www/css/main.css")
 
         <!--[if IE 8]>
-        script(src='/js/libs/html5shiv.min.js')
+        script(src='/www/js/libs/html5shiv.min.js')
         <![endif]-->
 
-        //- script.
-        //-     (function(d) {
-        //-         var config = {
-        //-             kitId: 'kna7pjj', //production: 'dqg3yef',
-        //-             scriptTimeout: 3000
-        //-         },
-        //-         h=d.documentElement,t=setTimeout(function(){h.className=h.className.replace(/\bwf-loading\b/g,"")+" wf-inactive";},config.scriptTimeout),tk=d.createElement("script"),f=false,s=d.getElementsByTagName("script")[0],a;h.className+=" wf-loading";tk.src='//use.typekit.net/'+config.kitId+'.js';tk.async=true;tk.onload=tk.onreadystatechange=function(){a=this.readyState;if(f||a&&a!="complete"&&a!="loaded")return;f=true;clearTimeout(t);try{Typekit.load(config)}catch(e){}};s.parentNode.insertBefore(tk,s)
-        //-     })(document);
-
-        script(src="https://use.typekit.net/dqg3yef.js")
+        <script src="https://use.typekit.net/kna7pjj.js"></script>
         script.
             try{Typekit.load({ async: true });}catch(e){}
 

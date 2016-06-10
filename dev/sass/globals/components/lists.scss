@@ -1,0 +1,21 @@
+ol,ul {
+	margin-bottom: $spacing-l;
+}
+
+.list--block li {
+	display: block;
+	margin-bottom: $spacing-xs;
+
+	&:last-child {
+		margin-bottom: 0;
+	}
+}
+
+.list--inline li {
+	display: inline-block;
+	margin-right: $spacing-s;
+
+	&:last-child {
+		margin-right: 0;
+	}
+}
