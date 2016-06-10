@@ -1,0 +1,32 @@
+.gallery {
+	width: 770px;
+	height: 580px;
+	position: relative;
+
+	&__item {
+		position: absolute;
+		width: 400px;
+
+		img {
+			width: 100%;
+		}
+
+		&.gallery__item--top-right {
+			top: 0;
+			right: 0;
+		}
+
+		&.gallery__item--middle {
+			width: 270px;
+			top: 50%;
+			left: 50%;
+			margin: -170px 0 0 -135px;
+			z-index: 1;
+		}
+
+		&.gallery__item--btm-left {
+			bottom: 0;
+			left: 0;
+		}
+	}
+}

@@ -9,3 +9,16 @@
     margin: 0 auto;
     margin-top: $spacing-xxl;
 }
+
+.section {
+
+	&.section--content {
+		max-width: 410px;
+		float: left;
+	}
+
+	&.section--gallery {
+		float: right;
+	}
+
+}
