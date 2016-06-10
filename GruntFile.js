@@ -3,7 +3,8 @@ module.exports = function (grunt){
     grunt.initConfig({
         pkg: grunt.file.readJSON('package.json'),
 
-        webRoot: 'www',
+        webRoot: './',
+        assetsRoot: 'www',
         devRoot: 'dev',
 
         connect: {
@@ -12,7 +13,7 @@ module.exports = function (grunt){
                     livereload: true,
                     hostname: '127.0.0.1',
                     port: 9000,
-                    base: '<%= webRoot %>/'
+                    base: '<%= webRoot %>'
                 }
             }
         },
@@ -59,7 +60,7 @@ module.exports = function (grunt){
             },
             dist: {
                 files: {
-                    '<%= webRoot %>/css/main.css': '<%= devRoot %>/sass/main.scss'
+                    '<%= assetsRoot %>/css/main.css': '<%= devRoot %>/sass/main.scss'
                 }
             }
         },
@@ -71,8 +72,8 @@ module.exports = function (grunt){
                 browsers: ['last 20 versions', 'ie 8', 'ie 9'],
             },
             all: {
-                src: '<%= webRoot %>/css/main.css',
-                dest: '<%= webRoot %>/css/main.css'
+                src: '<%= assetsRoot %>/css/main.css',
+                dest: '<%= assetsRoot %>/css/main.css'
             }
         },
 
@@ -104,13 +105,13 @@ module.exports = function (grunt){
             },
             js: {
                 src: ['<%= devRoot %>/js/libs/**/*.js', '<%= devRoot %>/js/src/**/*.js'],
-                dest: '<%= webRoot %>/js/app.js'
+                dest: '<%= assetsRoot %>/js/app.js'
             }
         },
         uglify: {
             js: {
                 files: {
-                    '<%= webRoot %>/js/app.min.js': ['<%= devRoot %>/js/libs/**/*.js', '<%= devRoot %>/js/src/**/*.js']
+                    '<%= assetsRoot %>/js/app.min.js': ['<%= devRoot %>/js/libs/**/*.js', '<%= devRoot %>/js/src/**/*.js']
                 }
             }
         }
