@@ -18,7 +18,20 @@
 	&.section--content {
 		max-width: 410px;
 		float: left;
-		margin-top: 125px;
+		margin-top: 155px;
+
+		position: relative;
+		z-index: 1;
+
+		@include transition(opacity, $duration: 1s);
+
+		.wf-loading & {
+	        opacity: 0;
+	    }
+
+		.wf-active & {
+	        opacity: 1;
+	    }
 	}
 
 	&.section--gallery {

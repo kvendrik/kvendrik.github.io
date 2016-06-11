@@ -1,6 +1,6 @@
 .gallery {
-	width: 800px;
-	height: 600px;
+	width: 880px;
+	height: 640px;
 	
 	position: absolute;
 	top: 0;
@@ -10,6 +10,19 @@
 		position: absolute;
 		width: 430px;
 
+		@include transition((opacity, transform), $duration: .6s);
+		transform-origin: 50% 50%;
+
+		.wf-loading & {
+	        opacity: 0;
+	        transform: scale(.9);
+	    }
+
+		.wf-active & {
+	        opacity: 1;
+	        transform: scale(1);
+	    }
+
 		img {
 			width: 100%;
 		}
@@ -17,19 +30,22 @@
 		&.gallery__item--top-right {
 			top: 0;
 			right: 0;
+			transition-delay: .9s;
 		}
 
 		&.gallery__item--middle {
 			width: 290px;
-			top: 50%;
+			top: 46%;
 			left: 50%;
 			margin: -170px 0 0 -135px;
 			z-index: 1;
+			transition-delay: .4s;
 		}
 
 		&.gallery__item--btm-left {
 			bottom: 0;
-			left: 0;
+			left: 6%;
+			transition-delay: .7s;
 		}
 	}
 }
