@@ -35,7 +35,15 @@ a {
     &.a--bold {
         font-weight: $weight-body-bold;
         text-decoration: none;
+
         color: $color-base;
+        border-bottom: solid 2px $color-base;
+
+        @include transition(border-color);
+
+        &:hover {
+            border-color: $color-accent;
+        }
     }
 
     &.a--fade {
