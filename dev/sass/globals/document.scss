@@ -4,6 +4,10 @@
     box-sizing: border-box;
 }
 
+body {
+	overflow-x: hidden;
+}
+
 .container {
     width: $container-xl;
 
@@ -11,6 +15,10 @@
     margin-top: $spacing-xxl;
 
     position: relative;
+
+    @include media-lg-max {
+		width: $container-lg;
+    }
 }
 
 .section {
@@ -36,6 +44,12 @@
 
 	&.section--gallery {
 		float: right;
+
+		@include media-lg-max {
+			.gallery {
+				left: 20%;
+			}
+    	}
 	}
 
 }
