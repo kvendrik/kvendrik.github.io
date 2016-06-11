@@ -4,13 +4,22 @@
     box-sizing: border-box;
 }
 
+html,body {
+	height: 100%;
+	overflow-x: hidden;
+}
+
 .container {
     width: $container-xl;
 
     margin: 0 auto;
-    margin-top: $spacing-xxl;
+    margin-top: $spacing-xl;
 
     position: relative;
+
+    @media all and (min-height: 1079px){
+		margin-top: $spacing-xxl;    	
+    }
 
     @include media-xl-max {
 		width: $container-lg;
@@ -29,7 +38,7 @@
 	&.section--content {
 		max-width: 410px;
 		float: left;
-		margin-top: 155px;
+		margin-top: 170px;
 
 		position: relative;
 		z-index: 1;
@@ -42,6 +51,10 @@
 
 		.wf-active & {
 	        opacity: 1;
+	    }
+
+	    @include media-lg-max {
+			margin-left: $spacing-s;
 	    }
 
 	    @include media-md-max {
