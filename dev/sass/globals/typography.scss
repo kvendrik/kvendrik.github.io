@@ -2,10 +2,6 @@ body {
     font: $weight-body $size-m $family-body;
     color: $color-base;
     line-height: $line-height-body;
-
-    @include media-xs {
-        font-size: $size-m-sm;
-    }
 }
 
 h1,h2,h3,h4,h5,h6 {
@@ -13,136 +9,41 @@ h1,h2,h3,h4,h5,h6 {
     font-weight: $weight-heading;
     line-height: $line-height-heading;
     margin-bottom: $spacing-xxs;
-
-    &.h--title {
-        //margin-top: $spacing-xxs;
-        margin-bottom: $spacing-s;
-    }
-
-    &.h--sub {
-        font-family: $family-body;
-        font-weight: $weight-body;
-        line-height: $line-height-heading-l;
-    }
-
-    @include media-sm-max {
-        margin-bottom: $spacing-s;
-    }
 }
 
 h1 {
-    font-size: 4em;
+    font-size: 3.5em;
 }
 
-h2 {
-    font-size: 2.6em;
-}
-
-h3 {
-    font-size: 2em;
-}
-
-h4 {
-    font-size: 1.8em;
-}
-
-h5 {
-    font-size: 1.5em;
-}
-
-h6 {
-    font-size: 1.25em;
+u {
+    line-height: $size-s;
+    display: inline-block;
+    text-decoration: none;
+    border-bottom: solid 5px $color-accent;
 }
 
 p {
     margin-bottom: $spacing-m;
-    line-height: $line-height-body;
-
-    &.p--no-push {
-        margin: 0;
+    
+    &.p--intro {
+        font-size: $size-l;
+        font-weight: $weight-body-medium;
     }
-}
-
-strong, b {
-    font-weight: $weight-body-bold;
-}
-
-u {
-    text-decoration: none;
-    display: inline-block;
-    line-height: 1em;
-    @include border(bottom, $color: $color-base);
 }
 
 a {
-    color: $color-base;
-    //@include border(bottom, $color: rgba($color-base, .1));
-    background-color: rgba($color-accent, .1);
-    text-decoration: none;
-
-    @include transition(all);
-
-    &:hover, &.a--clean:hover {
-        //border-color: $color-base;
-        background-color: rgba($color-accent, .2);
+    &.a--bold {
+        font-weight: $weight-body-bold;
+        text-decoration: none;
+        color: $color-base;
     }
 
-    &.a--clean {
-        background-color: rgba($color-accent, 0);
-    }
+    &.a--fade {
+        opacity: .7;
+        @include transition(opacity);
 
-    &.btn {
-        padding: $spacing-xs $spacing-m;
-        background-color: $color-accent;
-        
-        color: white;
-        font-size: $size-s;
-
-        line-height: $line-height-body;
-        display: inline-block;
-    }
-}
-
-ul {
-    margin-bottom: $spacing-m;
-
-    @include media-sm-max {
-        margin-bottom: 0;
-    }
-
-    li:last-child {
-        margin-bottom: 0;
-    }
-
-    &.list--multi-line li {
-        line-height: $line-height-body-s;
-        margin-bottom: $spacing-s;
-        display: block;
-
-        &:last-child {
-            margin-bottom: 0;
+        &:hover {
+            opacity: 1;
         }
     }
-
-    &.list--clean {
-        li {
-            display: block;
-        }
-    }
-
-    &.list--inline {
-        li {
-            display: inline-block;
-            margin-right: $spacing-m;
-
-            &:last-child {
-                margin-right: 0;
-            }
-        }
-    }
-
-    @include media-xs {
-        margin-bottom: $spacing-s;
-    }
-
 }

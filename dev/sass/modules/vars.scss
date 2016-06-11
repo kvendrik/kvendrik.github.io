@@ -1,44 +1,39 @@
 //Container widths
-$container-xs: 90%;
-$container-sm: 500px;
-$container-md: 740px;
+$container-xl: 1120px;
 $container-lg: 960px;
-$container-xl: 1200px;
-
+$container-md: 750px;
+$container-sm: 100%;
 
 //Typography
-$family-body: 'adelle-sans', 'Open Sans', Helvetica, Arial, sans-serif;
+$family-body: 'sofia-pro', 'Open Sans', Helvetica, Arial, sans-serif;
 $family-heading: 'adelle', 'Museo', Helvetica, Arial, sans-serif;
 
-$weight-body: 500;
+$weight-body: 400;
+$weight-body-medium: 500;
 $weight-body-bold: 700;
 $weight-heading: 700;
 
-$line-height-body: 2em;
-$line-height-body-s: 1.5em;
+$line-height-body: 1.8em;
 $line-height-heading: 1.2em;
-$line-height-heading-l: 1.8em;
 
-$size-xs: .8em;
 $size-s: .9em;
 $size-m: 16px;
-$size-m-sm: 14px;
+$size-l: 1.12em;
 
 
 //Colors
-$color-base: #222;
-$color-gray-lightest: #FAFAF9;
-$color-accent: #007B85;
+$color-base: #000000;
+$color-accent: #EFD352;
 
 
 //Spacings
-$spacing-xxs: .3em;
+$spacing-xxs: .15em;
 $spacing-xs: .5em;
 $spacing-s: .8em;
 $spacing-m: 1.8em;
-$spacing-l: 3em;
+$spacing-l: 2.5em;
 $spacing-xl: 5em;
-$spacing-xxl: 10em;
+$spacing-xxl: 12em;
 
 
 //Borders

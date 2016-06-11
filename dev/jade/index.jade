@@ -2,124 +2,46 @@ extend inc/template
 
 block content
 
-    .container.container--no-xs.container--no-sm
-        section.section.hero
+    .container
 
-            .section__img.section__img--auto
-                img(src="/img/koen-portrait-600.jpg" alt="Koen Vendrik")
+        section.section.section--content
+            h1
+                u Koen
+                |  Vendrik
 
-            .column.column--md--6.column--sm--12.column--xs--12
-                .container-xs.container-sm
-                    .section__content-wrapper.hero__content
-                        h1.hero__content__title Koen Vendrik
-                        h5.h--sub.hero__content__sub-title Entrepreneur and Full Stack Developer
+            p.p--intro.
+                Software Dev, Interaction Designer, Entrepreneur, Dutch, will eat your cookie
 
-                        ul.list--clean.hero__content__list
-                            li
-                                a.a--clean(href="http://twitter.com/kvendrik" title="Check out my Twitter") @kvendrik
-                            li
-                                a.a--clean(href="http://twitter.com/_whitespell" title="Check out Whitespell's Twitter") @_whitespell
-                            li
-                                a.a--clean(href="http://twitter.com/duxil_io" title="Check out Duxilio's Twitter") @duxil_io
+            ul.list--block
+                li
+                    | Currently 
+                    a.a--bold(href="http://blackdove.com" title="Blackdove") Blackdove
+                li 
+                    | Previously 
+                    a.a--bold(href="http://whitespell.com" title="Whitespell") Whitespell
 
-                        a.btn(href="mailto:k.vendrik@gmail.com" title="Send me an email") Send me an email
+            ul.list--inline
+                li
+                    a.a--fade(href="http://github.com/kvendrik" title="Visit my Github")
+                        include ../../www/img/github.svg
+                li
+                    a.a--fade(href="http://dribbble.com/kvendrik" title="Visit my Dribbble")
+                        include ../../www/img/dribbble.svg
+                li
+                    a.a--fade(href="http://codepen.io/kvendrik" title="Visit my Codepen")
+                        include ../../www/img/codepen.svg
+                li
+                    a.a--fade(href="http://linkedin.com/in/kvendrik" title="Visit my Linkedin")
+                        include ../../www/img/linkedin.svg
+                li
+                    a.a--fade(href="http://medium.com/@kvendrik" title="Visit my Medium")
+                        include ../../www/img/medium.svg
 
-    .container.container--no-xs.container--no-sm
-        section.section.section--reversed
-
-            .section__img
-                img(src="/img/koen-dutchopen-1200.jpg" alt="Koen @ Dutch Open Hackathon")
-                .section__img__cite Koen @ Dutch Open Hackathon
-
-            .column.column--md--6.column--sm--12.column--xs--12
-                .container-xs.container-sm
-                    .section__content-wrapper
-                        h3.h--title What I (try to) do
-                        :markdown
-                            [**How you doing?**](http://www.youtube.com/watch?v=YjQ1xD6UL-4&t=0m6s)
-                            I’m Koen, a young tech entrepreneur and full stack software developer
-                            who works on making technology more human friendly.
-
-                            **Working** at and having co-founded companies like [Whitespell](http://whitespell.com)
-                            and [Duxilio](http://duxilio.com) I have the pleasure to work with great talented folks
-                            from companies like [Google](http://developers.google.com "Google Developers Website"),
-                            [Médecins Sans Frontières](http://www.msf.org.uk/ "MSF UK Website") and [Hack4Good](http://hack4good.io/ "Hack4Good Website") on awesome projects
-                            like [Project Buendia](http://www.bbc.com/news/health-31970731).
-
-                        p.p--no-push
-                            b Contact 
-                            | me at any time for anything, a good talk is always welcome.
-
-    .container.container--no-xs.container--no-sm
-        section.section
-
-            .section__img
-                a(href="https://youtu.be/lUdDs34GIuI?t=15m53s" title="Taplicious Pitch on Youtube")
-                    img(src="/img/taplicious-pitch-slush.jpg" alt="Pitching Taplicious at Slush 2015")
-                    .section__img__cite Pitching Taplicious at Slush 2015
-
-            .column.column--md--6.column--sm--12.column--xs--12
-                .container-xs.container-sm
-                    .section__content-wrapper
-                        h3.h--title Recent Highlights
-                        ul.list--multi-line
-                            li
-                                a.a--clean(href="https://youtu.be/lUdDs34GIuI?t=15m53s" title="Taplicious Pitch on Youtube")
-                                    b Pitching Taplicious 
-                                    |  at Slush 2015
-                                    br
-                                    small November 2015
-                            li
-                                a.a--clean(href="http://engineering.klarna.com/article/junction-hackathon-were-back/#post-713" title="Klarna Engineering Blog - Junction Hackathon")
-                                    b Taplicious won the Klarna Track
-                                    |  at Junction
-                                    br
-                                    small November 2015
-                            li
-                                a.a--clean(href="http://www.bbc.com/news/health-31970731" title="BCC News piece about Project Buendia")
-                                    b Part of the Jury
-                                    |  at Hackathon Masters 2015
-                                    br
-                                    small September 2015
-                            li
-                                a.a--clean(href="http://www.bbc.com/news/health-31970731" title="BCC News piece about Project Buendia")
-                                    b BBC News
-                                    |  wrote about Project Buendia
-                                    br
-                                    small March 2015
-                            li
-                                a.a--clean(href="http://magazine.good.is/articles/googles-ebola-proof-tablets" title="GOOD on Project Buendia")
-                                    b GOOD
-                                    |  wrote about Project Buendia
-                                    br
-                                    small March 2015
-                            li
-                                a.a--clean(href="http://www.engadget.com/2015/03/20/google-ebola-proof-tablet/" title="Engadget on Project Buendia")
-                                    b Engadget
-                                    |  wrote about Project Buendia
-                                    br
-                                    small March 2015
-
-        section.section
-            .container-xs.container-sm
-                .section__content-wrapper.column.column--6.clear-l
-                    h3.h--title Get in touch
-
-                .column.column--3.column--xs--12.column--sm--12
-                    ul
-                        li
-                            a.a--clean(href="tel:+31657357246" title="Call me maybe?") +31 6 57 35 72 46
-                        li
-                            a.a--clean(href="mailto:k.vendrik@gmail.com" title="Send me an email") k.vendrik@gmail.com
-
-                .column.column--3.column--xs--12.column--sm--12
-                    ul
-                        li
-                            a.a--clean(href="http://twitter.com/kvendrik" title="Check out my Twitter") @kvendrik
-                        li
-                            a.a--clean(href="http://linkedin.com/in/kvendrik" title="Check out my Résumé") linkedin.com/in/kvendrik
-                        li
-                            a.a--clean(href="http://github.com/kvendrik" title="Have a look at my open-source projects") github.com/kvendrik
-
-
-
+        section.section.section--gallery
+            section.gallery
+                .gallery__item.gallery__item--top-right
+                    img(src="/www/img/koen-vendrik-dutch-open.jpg")
+                .gallery__item.gallery__item--middle
+                    img(src="/www/img/koen-vendrik-portrait.jpg")
+                .gallery__item.gallery__item--btm-left
+                    img(src="/www/img/koen-vendrik-slush.jpg")

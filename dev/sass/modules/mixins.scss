@@ -43,33 +43,18 @@
     }
 }
 
+@mixin media-xl-max {
+    @include media($max-width: $container-xl + 80px){
+        @content;
+    }
+}
 @mixin media-lg-max {
-    @include media($max-width: $container-xl){
+    @include media($max-width: $container-lg + 80px){
         @content;
     }
 }
-@mixin media-lg {
-    @include media($container-lg, $container-xl){
-        @content;
-    }
-}
-@mixin media-md {
-    @include media($container-md, $container-lg){
-        @content;
-    }
-}
-@mixin media-sm {
-    @include media($container-sm, $container-md){
-        @content;
-    }
-}
-@mixin media-sm-max {
+@mixin media-md-max {
     @include media($max-width: $container-md){
-        @content;
-    }
-}
-@mixin media-xs {
-    @include media($max-width: $container-sm){
         @content;
     }
 }
