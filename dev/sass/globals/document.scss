@@ -6,8 +6,11 @@
 
 .container {
     width: $container-xl;
+
     margin: 0 auto;
     margin-top: $spacing-xxl;
+
+    position: relative;
 }
 
 .section {
@@ -15,6 +18,7 @@
 	&.section--content {
 		max-width: 410px;
 		float: left;
+		margin-top: 125px;
 	}
 
 	&.section--gallery {

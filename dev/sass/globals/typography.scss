@@ -27,5 +27,23 @@ p {
     
     &.p--intro {
         font-size: $size-l;
+        font-weight: $weight-body-medium;
+    }
+}
+
+a {
+    &.a--bold {
+        font-weight: $weight-body-bold;
+        text-decoration: none;
+        color: $color-base;
+    }
+
+    &.a--fade {
+        opacity: .7;
+        @include transition(opacity);
+
+        &:hover {
+            opacity: 1;
+        }
     }
 }

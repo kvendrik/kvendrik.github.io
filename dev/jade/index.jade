@@ -15,22 +15,27 @@ block content
             ul.list--block
                 li
                     | Currently 
-                    b Blackdove
+                    a.a--bold(href="http://blackdove.com") Blackdove
                 li 
                     | Previously 
-                    b Whitespell
+                    a.a--bold(href="http://whitespell.com") Whitespell
 
             ul.list--inline
                 li
-                    include ../../www/img/github.svg
+                    a.a--fade(href="http://github.com/kvendrik" title="Visit my Github")
+                        include ../../www/img/github.svg
                 li
-                    include ../../www/img/dribbble.svg
+                    a.a--fade(href="http://dribbble.com/kvendrik" title="Visit my Dribbble")
+                        include ../../www/img/dribbble.svg
                 li
-                    include ../../www/img/codepen.svg
+                    a.a--fade(href="http://codepen.io/kvendrik" title="Visit my Codepen")
+                        include ../../www/img/codepen.svg
                 li
-                    include ../../www/img/linkedin.svg
+                    a.a--fade(href="http://linkedin.com/in/kvendrik" title="Visit my Linkedin")
+                        include ../../www/img/linkedin.svg
                 li
-                    include ../../www/img/medium.svg
+                    a.a--fade(href="http://medium.com/@kvendrik" title="Visit my Medium")
+                        include ../../www/img/medium.svg
 
         section.section.section--gallery
             section.gallery
