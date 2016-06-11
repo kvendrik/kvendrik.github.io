@@ -18,7 +18,7 @@ html,body {
     position: relative;
 
     @media all and (min-height: 1079px){
-		margin-top: $spacing-xxl;    	
+		margin-top: $spacing-xxl; 	
     }
 
     @include media-xl-max {
@@ -26,6 +26,7 @@ html,body {
     }
     @include media-lg-max {
 		width: $container-md;
+		margin-top: $spacing-xxl;
     }
     @include media-md-max {
 		width: $container-sm;
@@ -55,6 +56,7 @@ html,body {
 
 	    @include media-lg-max {
 			margin-left: $spacing-s;
+			margin-top: 0;
 	    }
 
 	    @include media-md-max {
@@ -74,7 +76,8 @@ html,body {
     	}
     	@include media-lg-max {
     		.gallery {
-				left: 30%;
+				left: 6%;
+				margin-top: 0;
 			}
     	}
     	@include media-md-max {
