@@ -4,10 +4,6 @@
     box-sizing: border-box;
 }
 
-body {
-	overflow-x: hidden;
-}
-
 .container {
     width: $container-xl;
 
@@ -16,8 +12,15 @@ body {
 
     position: relative;
 
-    @include media-lg-max {
+    @include media-xl-max {
 		width: $container-lg;
+    }
+    @include media-lg-max {
+		width: $container-md;
+    }
+    @include media-md-max {
+		width: $container-sm;
+		margin-top: $spacing-l;
     }
 }
 
@@ -40,14 +43,31 @@ body {
 		.wf-active & {
 	        opacity: 1;
 	    }
+
+	    @include media-md-max {
+	    	max-width: 365px;
+			margin-top: 0;
+			margin-left: 1.5em;
+    	}
 	}
 
 	&.section--gallery {
 		float: right;
 
-		@include media-lg-max {
+		@include media-xl-max {
 			.gallery {
 				left: 20%;
+			}
+    	}
+    	@include media-lg-max {
+    		.gallery {
+				left: 30%;
+			}
+    	}
+    	@include media-md-max {
+    		.gallery {
+    			top: 100px;
+				left: -30px;
 			}
     	}
 	}
