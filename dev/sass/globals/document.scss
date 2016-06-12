@@ -13,12 +13,15 @@ html,body {
     width: $container-xl;
 
     margin: 0 auto;
-    margin-top: $spacing-xl;
+    margin-top: $spacing-l;
 
     position: relative;
 
+	@media all and (min-height: 920px){
+		margin-top: $spacing-xl;
+    }
     @media all and (min-height: 1079px){
-		margin-top: $spacing-xxl; 	
+		margin-top: $spacing-xxl;
     }
 
     @include media-xl-max {
