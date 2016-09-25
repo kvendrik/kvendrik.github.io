@@ -19,3 +19,12 @@ ol,ul {
 		margin-right: 0;
 	}
 }
+
+.list__multiline-left,
+.list__multiline-right {
+	overflow: hidden;
+}
+
+.list__multiline-left {
+	float: left;
+}

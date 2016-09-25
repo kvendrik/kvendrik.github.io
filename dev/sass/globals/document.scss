@@ -66,6 +66,10 @@ html,body {
 	    	max-width: 330px;
 			margin-top: 0;
 			margin-left: 1.5em;
+
+			.list__multiline-right {
+				max-width: 120px;
+			}
     	}
 
     	h1 {
@@ -91,7 +95,7 @@ html,body {
 
 		@include media-xl-max {
 			.gallery {
-				left: 20%;
+				left: 26%;
 			}
     	}
     	@include media-lg-max {
