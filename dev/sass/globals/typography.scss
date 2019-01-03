@@ -22,13 +22,9 @@ u {
     border-bottom: solid 5px $color-accent;
 }
 
-p {
+.h--intro-paragraph {
+    font: $weight-body-medium $size-l $family-body;
     margin-bottom: $spacing-m;
-    
-    &.p--intro {
-        font-size: $size-l;
-        font-weight: $weight-body-medium;
-    }
 }
 
 a {
