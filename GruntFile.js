@@ -123,6 +123,6 @@ module.exports = function (grunt){
     grunt.registerTask('css', ['sass', 'autoprefixer']);
 
     grunt.registerTask('default', ['connect', 'watch']);
-    grunt.registerTask('build', ['jade', 'css', 'jshint', 'uglify']);
+    grunt.registerTask('build', ['jade', 'css', 'uglify']);
 
 }
