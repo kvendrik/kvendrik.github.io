@@ -4,7 +4,7 @@ ol,ul {
 
 .list--block li {
 	display: block;
-	margin-bottom: 0;
+	margin-bottom: $spacing-s;
 
 	&:last-child {
 		margin-bottom: 0;
@@ -18,13 +18,4 @@ ol,ul {
 	&:last-child {
 		margin-right: 0;
 	}
-}
-
-.list__multiline-left,
-.list__multiline-right {
-	overflow: hidden;
-}
-
-.list__multiline-left {
-	float: left;
 }
