@@ -1,0 +1,19 @@
+@function font-nitti($file-path) {
+  @return "fonts/nitti/#{$file-path}";
+}
+
+@mixin main-font-face($variant, $weight, $style) {
+  @font-face {
+    font-family: 'Nitti';
+    src: url(font-nitti('#{$variant}.woff2')) format('woff2'),
+    url(font-nitti('#{$variant}.woff')) format('woff');
+    font-weight: $weight;
+    font-style: $style;
+  }
+}
+
+@include main-font-face('NittiBasic-Light', 300, normal);
+@include main-font-face('Nitti-Normal', 400, normal);
+@include main-font-face('NittiBasic-Medium', 600, normal);
+@include main-font-face('Nitti-Bold', 700, normal);
+@include main-font-face('NittiBasic-Black', 900, normal);
