@@ -14,19 +14,6 @@
   }
 }
 
-.highlight--strike {
-  &::after {
-    transition: transition(transform, 'slow');
-    transform-origin: left center;
-    transform: scaleX(1);
-    transition-delay: 1.25s;
-
-    @include page-loading {
-      transform: scaleX(0);
-    }
-  }
-}
-
 .highlight--shopify::after {
   background: color(brand-shopify);
 }

@@ -9,8 +9,8 @@
 html {
   font: weight(body) $size-base family(body);
   color: color(body-text);
-  
-  @media all and (max-width: 764px) {
+
+  @include breakpoint-tablet-max {
     font-size: 14px;
   }
 }
@@ -19,8 +19,18 @@ html {
   max-width: 1200px;
   margin: 0 auto;
   padding: 3vw;
-  
-  @media all and (max-width: 764px) {
+
+  @include breakpoint-tablet-max {
     padding: 5vw;
+  }
+}
+
+.page-content {
+  transition: transition(all, slow);
+  transform-origin: bottom center;
+
+  @include page-loading {
+    opacity: 0;
+    transform: translateY(spacing());
   }
 }

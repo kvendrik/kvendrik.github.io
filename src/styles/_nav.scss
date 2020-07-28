@@ -1,0 +1,34 @@
+.nav__link {
+  font: weight(body) 1rem family(headings);
+  color: color-body-text-subdued('strong');
+  transition: transition(color);
+  text-decoration: none;
+  margin-left: spacing();
+
+  @extend .highlight;
+
+  &:first-child {
+    margin-left: 0;
+  }
+
+  &::after {
+    transition: transition(background);
+    background: transparent;
+  }
+
+  &:hover {
+    color: color(body-text);
+
+    &::after {
+      background: rgba(color(body-text), .1);
+    }
+  }
+}
+
+.nav__link--is-active {
+  color: color(body-text);
+
+  &::after {
+    background: rgba(color(accent), 0.5) !important;
+  }
+}

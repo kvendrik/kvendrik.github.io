@@ -11,6 +11,7 @@ $weights: (
   heading: 400,
   heading-logo: 700,
   body: 400,
+  body-bold: 700,
   body-huge: 900,
   body-text-icon: 700,
 );
@@ -49,8 +50,7 @@ $easing-base: ease;
 }
 
 $spacings: (
-  base: 1.5rem,
-  extra-tight: 0.5rem
+  base: 1.5rem
 );
 
 @function spacing($variant: 'base') {
@@ -77,6 +77,12 @@ $spacings: (
 
 @mixin page-loaded {
   .wf-active & {
+    @content;
+  }
+}
+
+@mixin breakpoint-tablet-max {
+  @media all and (max-width: 764px) {
     @content;
   }
 }

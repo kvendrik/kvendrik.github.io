@@ -15,5 +15,8 @@
     "node-sass": "^4.14.1",
     "postcss": "^7.0.32",
     "serve-dev": "^1.0.0-alpha.6"
+  },
+  "engines": {
+    "node": ">13"
   }
 }

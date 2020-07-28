@@ -1,8 +1,7 @@
 .text--huge {
   font: weight(body-huge) rem(90px) family(body);
-  margin: 5vw 0;
+  margin: 1em 0;
   line-height: 1.1em;
-  transition: transition(opacity, slow);
 
   @media all and (max-width: 1000px) {
     font-size: rem(72px);
@@ -11,17 +10,21 @@
   @media all and (max-width: 650px) {
     font-size: rem(50px);
   }
+}
 
-  @include page-loading {
-    opacity: 0;
+.text--huge p {
+  margin-bottom: 1em;
+
+  &:last-child {
+    margin-bottom: 0;
   }
 }
 
 .text--huge a {
   transition: transition(opacity);
   color: inherit;
-}
 
-.text--huge a:hover {
-  opacity: color-body-text-subdued();
+  &:hover {
+    opacity: color-body-text-subdued();
+  }
 }
