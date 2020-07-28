@@ -20,7 +20,10 @@ $weights: (
   @return map-get($weights, $variant);
 }
 
-$size-base: 16px;
+$sizes-bases: (
+  desktop: 16px,
+  mobile: 14px
+);
 
 $colors: (
   body-text: black,
@@ -32,25 +35,44 @@ $colors: (
   @return map-get($colors, $variant);
 }
 
-$color-body-text-subdue-strong: 0.6;
+$text-opacities: (
+  base: 0.8,
+  strong: 0.6
+);
 
-@function color-body-text-subdued($level: '') {
-  @return rgba(color(body-text), if($level == 'strong', $color-body-text-subdue-strong, 0.8));
+@function text-opacity($variant: 'base') {
+  @return map-get($text-opacities, $variant);
+}
+
+@function color-body-text-subdued($level: 'base') {
+  @return rgba(color(body-text), text-opacity($level));
 }
 
 $durations: (
   fast: 0.15s,
+  slower: 0.25s,
   slow: 1s
 );
 
-$easing-base: ease;
+$easings: (
+  base: ease,
+);
+
+@function duration($varaint: 'fast') {
+  @return map-get($durations, $varaint);
+}
+
+@function easing($varaint: 'base') {
+  @return map-get($easings, $varaint);
+}
 
 @function transition($property, $duration: 'fast') {
-  @return $property map-get($durations, $duration) $easing-base;
+  @return $property duration($duration) easing();
 }
 
 $spacings: (
-  base: 1.5rem
+  base: 1.5rem,
+  extra-tight: 0.75rem
 );
 
 @function spacing($variant: 'base') {
@@ -66,7 +88,7 @@ $spacings: (
 }
 
 @function rem($px) {
-  @return #{strip-unit($px) / strip-unit($size-base)}rem;
+  @return #{strip-unit($px) / strip-unit(map-get($sizes-bases, desktop))}rem;
 }
 
 @mixin page-loading {

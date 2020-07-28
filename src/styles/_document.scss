@@ -7,11 +7,12 @@
 }
 
 html {
-  font: weight(body) $size-base family(body);
+  font: weight(body) map-get($sizes-bases, desktop) family(body);
   color: color(body-text);
+  line-height: 1.5em;
 
   @include breakpoint-tablet-max {
-    font-size: 14px;
+    font-size: map-get($sizes-bases, mobile);
   }
 }
 

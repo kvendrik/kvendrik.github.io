@@ -1,18 +1,24 @@
 .text--huge {
   font: weight(body-huge) rem(90px) family(body);
   margin: 1em 0;
-  line-height: 1.1em;
 
   @media all and (max-width: 1000px) {
     font-size: rem(72px);
   }
 
-  @media all and (max-width: 650px) {
+  @media all and (max-width: 580px) {
     font-size: rem(50px);
+  }
+
+  @media all and (max-width: 374px) {
+    font-size: rem(38px);
   }
 }
 
-.text--huge p {
+.text--huge p,
+.text--huge h1 {
+  font: inherit;
+  line-height: 1.1em;
   margin-bottom: 1em;
 
   &:last-child {

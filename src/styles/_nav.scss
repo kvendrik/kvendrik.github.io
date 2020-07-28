@@ -1,26 +1,27 @@
 .nav__link {
   font: weight(body) 1rem family(headings);
+  line-height: 1em;
   color: color-body-text-subdued('strong');
   transition: transition(color);
   text-decoration: none;
-  margin-left: spacing();
+  margin-right: spacing();
 
   @extend .highlight;
 
-  &:first-child {
+  &:last-child {
     margin-left: 0;
   }
 
   &::after {
-    transition: transition(background);
-    background: transparent;
+    transition: transition(background-color);
+    background-color: transparent;
   }
 
   &:hover {
     color: color(body-text);
 
     &::after {
-      background: rgba(color(body-text), .1);
+      background-color: rgba(color(body-text), .1);
     }
   }
 }
@@ -29,6 +30,6 @@
   color: color(body-text);
 
   &::after {
-    background: rgba(color(accent), 0.5) !important;
+    background-color: rgba(color(accent), 0.5) !important;
   }
 }
