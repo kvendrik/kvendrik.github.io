@@ -1,28 +1,20 @@
 {
   "name": "kvendrik.com",
-  "version": "1.0.0",
+  "version": "2.0.0",
   "description": "Koen Vendrik Personal Website",
   "private": true,
-  "main": "GruntFile.js",
-  "dependencies": {},
-  "devDependencies": {
-    "grunt": "~0.4.4",
-    "grunt-autoprefixer": "^2.2.0",
-    "grunt-contrib-concat": "~0.4.0",
-    "grunt-contrib-connect": "~0.7.1",
-    "grunt-contrib-jade": "^0.13.0",
-    "grunt-contrib-jshint": "^0.10.0",
-    "grunt-contrib-sass": "~0.7.3",
-    "grunt-contrib-uglify": "~0.4.0",
-    "grunt-contrib-watch": "~0.6.1",
-    "load-grunt-tasks": "~0.4.0",
-    "marked": "^0.3.2"
-  },
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "serve": "grunt",
-    "build": "grunt build"
+    "server": "node scripts/dev-server.mjs",
+    "build": "node scripts/build-production.mjs"
   },
   "author": "Koen Vendrik",
-  "license": "BSD 2-Clause"
+  "license": "BSD 2-Clause",
+  "devDependencies": {
+    "autoprefixer": "^9.8.5",
+    "html-minifier": "^4.0.0",
+    "node-sass": "^4.14.1",
+    "postcss": "^7.0.32",
+    "postcss-scss": "^2.1.1",
+    "serve-dev": "^1.0.0-alpha.6"
+  }
 }

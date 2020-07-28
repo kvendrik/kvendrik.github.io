@@ -1,0 +1,17 @@
+.mastfoot {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.mastfoot__divider {
+  width: 80px;
+  height: 4px;
+  background: color(body-text);
+}
+
+.mastfoot__konami {
+  @media all and (max-width: 764px) {
+    display: none !important;
+  }
+}

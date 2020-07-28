@@ -1,0 +1,36 @@
+.masthead {
+  overflow: hidden;
+  display: flex;
+  align-items: baseline;
+}
+
+.masthead__link {
+  font: weight(body) 1rem family(headings);
+  color: color-body-text-subdued('strong');
+  transition: transition(color);
+  text-decoration: none;
+  margin-left: spacing();
+  
+  @extend .highlight;
+  
+  &::after {
+    transition: transition(background);
+    background: transparent;
+  }
+  
+  &:hover {
+    color: color(body-text);
+
+    &::after {
+      background: rgba(color(body-text), .1);
+    }
+  }
+}
+
+.masthead__link--is-active {
+  color: color(body-text);
+  
+  &::after {
+    background: rgba(color(accent), 0.5) !important;
+  }
+}

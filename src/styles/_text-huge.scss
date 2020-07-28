@@ -1,0 +1,22 @@
+.text--huge {
+  font: weight(body-huge) rem(90px) family(body);
+  margin: 5vw 0;
+  line-height: 1.1em;
+  
+  @media all and (max-width: 1000px) {
+    font-size: rem(72px);
+  }
+  
+  @media all and (max-width: 650px) {
+    font-size: rem(50px);
+  }
+}
+
+.text--huge a {
+  transition: transition(opacity);
+  color: inherit;
+}
+
+.text--huge a:hover {
+  opacity: color-body-text-subdued();
+}

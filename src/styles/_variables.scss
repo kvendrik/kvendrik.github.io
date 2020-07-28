@@ -1,0 +1,65 @@
+$families: (
+  headings: 'Roboto Slab',
+  body: 'proxima-nova'
+);
+
+@function family($variant) {
+  @return map-get($families, $variant);
+}
+
+$weights: (
+  heading: 400,
+  heading-logo: 700,
+  body: 400,
+  body-huge: 900,
+  body-text-icon: 700,
+);
+
+@function weight($variant) {
+  @return map-get($weights, $variant);
+}
+
+$size-base: 16px;
+
+$colors: (
+  body-text: black,
+  accent: #EFD352,
+  brand-shopify: #95BF47,
+);
+
+@function color($variant) {
+  @return map-get($colors, $variant);
+}
+
+$color-body-text-subdue-strong: 0.6;
+
+@function color-body-text-subdued($level: '') {
+  @return rgba(color(body-text), if($level == 'strong', $color-body-text-subdue-strong, 0.8));
+}
+
+$duration-fast: 0.15s;
+$easing-base: ease;
+
+@function transition($property) {
+  @return $property $duration-fast $easing-base;
+}
+
+$spacings: (
+  base: 1.5rem
+);
+
+@function spacing($variant: 'base') {
+  @return map-get($spacings, $variant);
+}
+
+@function strip-unit($number) {
+  @if type-of($number) == 'number' and not unitless($number) {
+    @return $number / ($number * 0 + 1);
+  }
+
+  @return $number;
+}
+
+@function rem($px) {
+  @return #{strip-unit($px) / strip-unit($size-base)}rem;
+}

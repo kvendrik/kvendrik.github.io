@@ -1,0 +1,19 @@
+.highlight {
+  position: relative;
+  display: inline;
+  
+  &::after {
+    content: '';
+    position: absolute;
+    bottom: 0.32em;
+    left: 0;
+    right: 0;
+    height: 0.25em;
+    background: color(accent);
+    z-index: -1;
+  }
+}
+
+.highlight--shopify::after {
+  background: color(brand-shopify);
+}

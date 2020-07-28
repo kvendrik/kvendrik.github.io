@@ -1,0 +1,26 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+html {
+  font: weight(body) $size-base family(body);
+  color: color(body-text);
+  
+  @media all and (max-width: 764px) {
+    font-size: 14px;
+  }
+}
+
+.container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 3vw;
+  
+  @media all and (max-width: 764px) {
+    padding: 5vw;
+  }
+}
