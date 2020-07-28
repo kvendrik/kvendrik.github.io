@@ -21,10 +21,10 @@
 }
 
 .text--huge a {
-  transition: transition(opacity);
+  transition: transition(color);
   color: inherit;
 
   &:hover {
-    opacity: color-body-text-subdued();
+    color: color-body-text-subdued();
   }
 }

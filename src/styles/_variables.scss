@@ -45,7 +45,7 @@ $durations: (
 
 $easing-base: ease;
 
-@function transition($property, $duration: 'slow') {
+@function transition($property, $duration: 'fast') {
   @return $property map-get($durations, $duration) $easing-base;
 }
 
