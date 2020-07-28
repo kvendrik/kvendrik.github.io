@@ -1,4 +1,4 @@
-import KonamiCodeViz from './konami-viz.js';
+import KonamiCodeViz from './konami-viz.mjs';
 
 const konami = new KonamiCodeViz(document.querySelector('.konami-viz'));
 konami.bindEvents();

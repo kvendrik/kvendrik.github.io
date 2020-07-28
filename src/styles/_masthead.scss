@@ -2,6 +2,13 @@
   overflow: hidden;
   display: flex;
   align-items: baseline;
+  transition: transition(all, slow);
+  transform: translateY(0);
+
+  @include page-loading {
+    transform: translateY(-#{spacing(extra-tight)});
+    opacity: 0;
+  }
 }
 
 .masthead__link {
@@ -10,14 +17,14 @@
   transition: transition(color);
   text-decoration: none;
   margin-left: spacing();
-  
+
   @extend .highlight;
-  
+
   &::after {
     transition: transition(background);
     background: transparent;
   }
-  
+
   &:hover {
     color: color(body-text);
 
@@ -29,7 +36,7 @@
 
 .masthead__link--is-active {
   color: color(body-text);
-  
+
   &::after {
     background: rgba(color(accent), 0.5) !important;
   }

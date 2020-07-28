@@ -2,13 +2,18 @@
   font: weight(body-huge) rem(90px) family(body);
   margin: 5vw 0;
   line-height: 1.1em;
-  
+  transition: transition(opacity, slow);
+
   @media all and (max-width: 1000px) {
     font-size: rem(72px);
   }
-  
+
   @media all and (max-width: 650px) {
     font-size: rem(50px);
+  }
+
+  @include page-loading {
+    opacity: 0;
   }
 }
 
