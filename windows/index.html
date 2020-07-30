@@ -1,36 +1,87 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Windows 95</title>
+  <meta charset="UTF-8"/>
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1"/>
+
+  <meta name="viewport" content="initial-scale=1"/>
+
+  <title>Koen Vendrik - Front-end Web Developer | Windows 95 Mode</title>
+
+  <meta name="description" content="Front-end Web Developer who spends his time thinking about design systems, accessibility, web performance, and the effectiveness of product teams."/>
+  <meta name="author" content="Koen Vendrik"/>
+  <meta name="follow" content="index, follow"/>
+
+  <meta property="og:site_name" content="Koen Vendrik - Front-end Web Developer"/>
+  <meta property="og:locale" content="en_US"/>
+  <meta property="og:type" content="website"/>
+  <meta property="og:description" content="Front-end Web Developer who spends his time thinking about design systems, accessibility, web performance, and the effectiveness of product teams."/>
+  <meta property="og:url" content="https://kvendrik.com"/>
+  <meta property="og:title" content="Koen Vendrik - Front-end Web Developer"/>
+  <meta property="og:image" content="/public/kvendrik-og.png"/>
+
+  <meta property="fb:app_id" content="1558942351039907"/>
+
+  <meta name="twitter:card" content="summary"/>
+  <meta name="twitter:site" content="@kvendrik"/>
+  <meta name="twitter:url" content="https://kvendrik.com"/>
+  <meta name="twitter:title" content="Koen Vendrik - Front-end Web Developer"/>
+  <meta name="twitter:description" content="Front-end Web Developer who spends his time thinking about design systems, accessibility, web performance, and the effectiveness of product teams."/>
+  <meta name="twitter:image" content="/public/kvendrik-og.jpg"/>
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/public/favicons/apple-touch-icon.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/public/favicons/favicon-32x32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/public/favicons/favicon-16x16.png">
+  <link rel="manifest" href="/public/favicons/site.webmanifest">
+  <link rel="mask-icon" href="/public/favicons/safari-pinned-tab.svg" color="#ffffff">
+  <link rel="shortcut icon" href="/public/favicons/favicon.ico">
+  <meta name="msapplication-TileColor" content="#efd352">
+  <meta name="msapplication-config" content="/public/favicons/browserconfig.xml">
+  <meta name="theme-color" content="#ffffff">
+
+  <link rel="preload" href="/windows/scripts/windows-ui/index.mjs" as="script" crossorigin />
+  <link rel="preload" href="/windows/scripts/windows-ui/windows-ui.mjs" as="script" crossorigin />
+  <link rel="preload" href="/windows/scripts/windows-ui/windows-manager.mjs" as="script" crossorigin />
+  <link rel="preload" href="/windows/fonts/windows-95.woff2" as="font" type="font/woff2" crossorigin />
 
   <link rel="stylesheet" href="/windows/main.css" />
 </head>
-<body>
-  <div class="desktop">
-    <button data-desktop-item class="desktop__item" data-notepad-content="Fruitcake marshmallow chupa chups. Tiramisu tootsie roll icing gingerbread halvah. Cake topping oat cake tiramisu liquorice. Gummies chupa chups bonbon cotton candy cake.">
-      <div>About</div>
-    </button>
-    <button data-desktop-item class="desktop__item" data-notepad-content="Jelly beans cookie candy canes jelly. Chocolate cake sweet roll jujubes lemon drops bonbon cookie. Muffin apple pie sesame snaps fruitcake chocolate gingerbread. Fruitcake tiramisu gingerbread sweet.">
-      <div>Cupcakes Recipe</div>
-    </button>
+<body aria-live="polite">
+  <div data-logo-screen class="logo-screen">
+    <div class="logo-screen__content">
+      <img src="/windows/windows-logo.svg" alt="Windows 95 Logo" class="logo-screen__logo" />
+      <div>Loading...</div>
+    </div>
   </div>
 
-  <footer class="start-bar" data-start-bar>
-  <a class="button">Start</a>
-    <div class="start-bar__time">7:15 pm</div>
-  </footer>
-
-  <template id="window-template">
-    <div class="window" data-window>
-      <div class="window__title-bar" data-title-bar>
-        <span><span data-title></span> - Notepad</span>
-        <button class="button button--icon" data-close-button>X</button>
-      </div>
-      <textarea class="window__content" disabled data-content></textarea>
+  <div data-desktop aria-hidden="true">
+    <div class="desktop">
+      <button data-desktop-item class="desktop__item" data-notepad-content="Koen Vendrik is a front-end web developer based in Ottawa, Canada.">
+        About Koen
+      </button>
+      <button data-desktop-item class="desktop__item" data-notepad-content='He spends his time thinking about <a href="https://ux.shopify.com/getting-design-system-customization-just-right-3012151ef5ea" target="_blank" rel="noopener">design systems</a>, accessibility, web performance, and the <a href="https://ux.shopify.com/getting-design-system-customization-just-right-3012151ef5ea" target="_blank" rel="noopener">effectiveness of product teams</a>.'>
+        Things Koen thinks about
+      </button>
+      <button data-desktop-item class="desktop__item" data-notepad-content='Currently, he works at <a class="highlight highlight--shopify" href="http://shopify.com/" target="_blank" rel="noopener">Shopify</a> where he crafts experiences that help create and grow businesses of all sizes.'>
+        Koen at Shopify
+      </button>
     </div>
-  </template>
+
+    <footer class="start-bar" data-start-bar>
+      <a class="button" href="/">Start</a>
+      <div class="start-bar__time" data-time></div>
+    </footer>
+
+    <template id="window-template">
+      <div class="window" data-window role="dialog" aria-modal="true">
+        <div class="window__title-bar" data-title-bar>
+          <span><span data-title></span> - Notepad</span>
+          <button class="button button--icon" data-close-button aria-label="Close window">X</button>
+        </div>
+        <div class="window__content" data-content></div>
+      </div>
+    </template>
+  </div>
 
   <script type="module" src="/windows/scripts/main.mjs"></script>
 </body>

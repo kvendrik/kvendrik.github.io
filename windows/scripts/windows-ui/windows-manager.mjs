@@ -5,6 +5,9 @@ export default class WindowsManager {
     cursorOffset: {x: 0, y: 0},
   };
 
+  getUnqiueWindowId = createUniqueIdFactory('window');
+  openWindowDetails = null;
+
   constructor(wrapper, template, options = {
     Selectors: {
       window: '[data-window]',
@@ -30,6 +33,7 @@ export default class WindowsManager {
     wrapper.addEventListener('mousedown', this.handleMousedown.bind(this));
     wrapper.addEventListener('mousemove', this.handleMousemove.bind(this));
     wrapper.addEventListener('mouseup', this.handleMouseup.bind(this));
+    wrapper.addEventListener('keydown', this.handleKeydown.bind(this));
   }
 
   handleMousedown({target, clientX, clientY}) {
@@ -70,6 +74,41 @@ export default class WindowsManager {
     this.dragState.dragging = false;
   }
 
+  handleKeydown(evt) {
+    const {openWindowDetails} = this;
+
+    if (!openWindowDetails) {
+      return;
+    }
+
+    const {key} = evt;
+
+    if (key === 'Tab') {
+      const {shiftKey} = evt;
+      const {first, last} = openWindowDetails;
+
+      if (shiftKey && document.activeElement === first) {
+        evt.preventDefault();
+        last.focus();
+      }
+
+      if (!shiftKey && document.activeElement === last) {
+        evt.preventDefault();
+        first.focus();
+      }
+    }
+
+    if (key === 'Escape') {
+      const {options: {Selectors}} = this;
+      const {target} = evt;
+      const windowNode = target.closest(Selectors.window);
+      if (!windowNode) {
+        return;
+      }
+      this.close(windowNode);
+    }
+  }
+
   spawn({title, content}) {
     const {options: {Selectors}} = this;
     const {content: windowFragment} = this.template.cloneNode(true);
@@ -79,26 +118,38 @@ export default class WindowsManager {
     const contentNode = windowNode.querySelector(Selectors.content);
 
     titleNode.innerText = title;
-    contentNode.innerText = content;
+    contentNode.innerHTML = content;
+
+    const windowId = this.getUnqiueWindowId();
+    windowNode.setAttribute('aria-labelledby', `${windowId}-title`);
+    titleNode.setAttribute('id', `${windowId}-title`);
 
     this.wrapper.appendChild(windowFragment);
     this.randomizeWindowPosition(windowNode);
+
+    const focusableElements = windowNode.querySelectorAll('button, a');
+    this.openWindowDetails = {
+      lastFocus: document.activeElement,
+      first: focusableElements[0],
+      last: focusableElements[focusableElements.length - 1]
+    };
+    setTimeout(() => this.openWindowDetails.first.focus(), 0);
   }
 
   randomizeWindowPosition(windowNode) {
     const {wrapper} = this;
+    const wrapperWidth = wrapper.offsetWidth;
+    const wrapperHeight = (wrapper.offsetHeight - this.startBarHeight);
+    const windowFitsInWrapper = wrapperWidth >= 500 && wrapperHeight >= 400;
+
+    if (!windowFitsInWrapper) {
+      // dirty fix to not randomize position
+      // when wrapper is smaller than default window size
+      return;
+    }
 
     const windowWidth = windowNode.offsetWidth;
     const windowHeight = windowNode.offsetHeight;
-
-    const wrapperWidth = wrapper.offsetWidth;
-    const wrapperHeight = (wrapper.offsetHeight - this.startBarHeight);
-
-    const windowFitsInWrapper = windowWidth <= wrapperWidth && windowHeight <= wrapperHeight;
-
-    if (!windowFitsInWrapper) {
-      return;
-    }
 
     let x = Math.random() * wrapperWidth;
     let y = Math.random() * wrapperHeight;
@@ -115,17 +166,27 @@ export default class WindowsManager {
     );
   }
 
-  close(windowChildNode) {
-    const {options: {Selectors}} = this;
-    const windowNode = windowChildNode.closest(Selectors.window);
+  close(windowNode) {
+    const {lastFocus} = this.openWindowDetails;
+    this.openWindowDetails = null;
     windowNode.parentNode.removeChild(windowNode);
+    lastFocus.focus();
   }
 
   handleClick({target}) {
     const {options: {Selectors}} = this;
-    if (target.matches(Selectors.closeButton)) {
-      this.close(target);
+
+    if (!target.matches(Selectors.closeButton)) {
+      return;
     }
+
+    const windowNode = target.closest(Selectors.window);
+
+    if (!windowNode) {
+      return;
+    }
+
+    this.close(windowNode);
   }
 
   moveWindowToTop(topWindow) {
@@ -138,4 +199,12 @@ export default class WindowsManager {
 
     topWindow.classList.add(Classes.topWindow);
   }
+}
+
+function createUniqueIdFactory(prefix) {
+  let index = 0;
+  return () => {
+    index++;
+    return `${prefix}-${index}`;
+  };
 }

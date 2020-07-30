@@ -9,6 +9,7 @@ export default class WindowsUi {
       windowContent: '[data-content]',
       windowCloseButton: '[data-close-button]',
       startBar: '[data-start-bar]',
+      time: '[data-time]',
       desktopItem: '[data-desktop-item]',
     },
     Classes: {
@@ -20,6 +21,7 @@ export default class WindowsUi {
     this.wrapper = wrapper;
     this.options = options;
     this.desktopItems = wrapper.querySelectorAll(options.Selectors.desktopItem);
+    this.timeNode = document.querySelector(options.Selectors.time);
     this.windowsManager = new WindowsManager(wrapper, wrapper.querySelector(`#${options.templateId}`, {
       Selectors: {
         window: options.Selectors.window,
@@ -33,12 +35,25 @@ export default class WindowsUi {
         topWindow: options.Selectors.topWindow,
       },
     }));
+
+    this.setTimeUpdater();
+  }
+
+  setTimeUpdater() {
+    const currentPrettyTime = new Date().toLocaleDateString([], {timeStyle: 'short'});
+    this.timeNode.innerText = currentPrettyTime;
+    setTimeout(this.setTimeUpdater.bind(this), 60 * 1000);
   }
 
   bindEvents() {
     const {wrapper, windowsManager} = this;
-    wrapper.addEventListener('dblclick', this.handleDoubleClick.bind(this));
+    wrapper.addEventListener('ontouchstart' in window ? 'click' : 'dblclick', this.handleClick.bind(this));
     wrapper.addEventListener('mousedown', this.handleMousedown.bind(this));
+
+    if (!('ontouchstart' in window)) {
+      wrapper.addEventListener('keydown', this.handleKeydown.bind(this));
+    }
+
     windowsManager.bindEvents();
   }
 
@@ -46,9 +61,17 @@ export default class WindowsUi {
     this.unselectDesktopItems();
   }
 
-  handleDoubleClick({target}) {
+  handleKeydown({key, target}) {
+    if (key !== 'Enter') {
+      return;
+    }
+    const isDesktopItem = target.matches(this.options.Selectors.desktopItem);
+    if (isDesktopItem) this.openDesktopItem(target);
+  }
+
+  handleClick({target}) {
     const item = target.closest(this.options.Selectors.desktopItem);
-    if (item) this.handleDesktopItemDoubleClick(item);
+    if (item) this.openDesktopItem(item);
   }
 
   unselectDesktopItems() {
@@ -57,7 +80,7 @@ export default class WindowsUi {
     }
   }
 
-  handleDesktopItemDoubleClick(item) {
+  openDesktopItem(item) {
     this.unselectDesktopItems();
     item.classList.add(this.options.Classes.desktopItemSelected);
 
