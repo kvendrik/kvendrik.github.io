@@ -4,6 +4,14 @@ $key-size: rem(16px);
   display: flex;
   align-items: center;
   font-weight: weight(body-text-icon);
+  visibility: visible;
+  opacity: 1;
+  transition: transition(all, slow);
+}
+
+.konami-viz--is-hidden {
+  visibility: hidden;
+  opacity: 0;
 }
 
 .konami-viz__key {
