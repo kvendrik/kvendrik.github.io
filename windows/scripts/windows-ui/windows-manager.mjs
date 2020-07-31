@@ -167,10 +167,13 @@ export default class WindowsManager {
   }
 
   close(windowNode) {
-    const {lastFocus} = this.openWindowDetails;
-    this.openWindowDetails = null;
     windowNode.parentNode.removeChild(windowNode);
-    lastFocus.focus();
+
+    if (this.openWindowDetails) {
+      const {lastFocus} = this.openWindowDetails;
+      this.openWindowDetails = null;
+      lastFocus.focus();
+    }
   }
 
   handleClick({target}) {

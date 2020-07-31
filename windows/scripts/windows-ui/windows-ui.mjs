@@ -40,7 +40,7 @@ export default class WindowsUi {
   }
 
   setTimeUpdater() {
-    const currentPrettyTime = new Date().toLocaleDateString([], {timeStyle: 'short'});
+    const currentPrettyTime = new Date().toLocaleString([], {hour: 'numeric', minute: 'numeric', hour12: true});
     this.timeNode.innerText = currentPrettyTime;
     setTimeout(this.setTimeUpdater.bind(this), 60 * 1000);
   }
