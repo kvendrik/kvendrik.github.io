@@ -1,23 +1,25 @@
 import WindowsManager from './windows-manager.mjs';
 
 export default class WindowsUi {
-  constructor(wrapper, options = {
-    Selectors: {
-      window: '[data-window]',
-      windowTitleBar: '[data-title-bar]',
-      windowTitle: '[data-title]',
-      windowContent: '[data-content]',
-      windowCloseButton: '[data-close-button]',
-      startBar: '[data-start-bar]',
-      time: '[data-time]',
-      desktopItem: '[data-desktop-item]',
-    },
-    Classes: {
-      topWindow: 'window__top-window',
-      desktopItemSelected: 'desktop__item--is-selected',
-    },
-    templateId: 'window-template',
-  }) {
+  constructor(wrapper, givenOptions) {
+    const options = givenOptions || {
+      Selectors: {
+        window: '[data-window]',
+        windowTitleBar: '[data-title-bar]',
+        windowTitle: '[data-title]',
+        windowContent: '[data-content]',
+        windowCloseButton: '[data-close-button]',
+        startBar: '[data-start-bar]',
+        time: '[data-time]',
+        desktopItem: '[data-desktop-item]',
+      },
+      Classes: {
+        topWindow: 'window__top-window',
+        desktopItemSelected: 'desktop__item--is-selected',
+      },
+      templateId: 'window-template',
+    };
+
     this.wrapper = wrapper;
     this.options = options;
     this.desktopItems = wrapper.querySelectorAll(options.Selectors.desktopItem);

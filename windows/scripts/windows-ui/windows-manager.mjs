@@ -1,26 +1,28 @@
 export default class WindowsManager {
-  dragState = {
-    dragging: false,
-    node: null,
-    cursorOffset: {x: 0, y: 0},
-  };
+  constructor(wrapper, template, givenOptions) {
+    const options = givenOptions || {
+      Selectors: {
+        window: '[data-window]',
+        closeButton: '[data-close-button]',
+        titleBar: '[data-title-bar]',
+        title: '[data-title]',
+        content: '[data-content]',
+        startBar: '[data-start-bar]',
+      },
+      Classes: {
+        topWindow: 'window--top-window',
+      },
+    };
 
-  getUnqiueWindowId = createUniqueIdFactory('window');
-  openWindowDetails = null;
+    this.dragState = {
+      dragging: false,
+      node: null,
+      cursorOffset: {x: 0, y: 0},
+    };
 
-  constructor(wrapper, template, options = {
-    Selectors: {
-      window: '[data-window]',
-      closeButton: '[data-close-button]',
-      titleBar: '[data-title-bar]',
-      title: '[data-title]',
-      content: '[data-content]',
-      startBar: '[data-start-bar]',
-    },
-    Classes: {
-      topWindow: 'window--top-window',
-    },
-  }) {
+    this.getUnqiueWindowId = createUniqueIdFactory('window');
+    this.openWindowDetails = null;
+
     this.wrapper = wrapper;
     this.template = template;
     this.options = options;
@@ -117,7 +119,7 @@ export default class WindowsManager {
     const titleNode = windowNode.querySelector(Selectors.title);
     const contentNode = windowNode.querySelector(Selectors.content);
 
-    titleNode.innerText = title;
+    titleNode.textContent = title;
     contentNode.innerHTML = content;
 
     const windowId = this.getUnqiueWindowId();

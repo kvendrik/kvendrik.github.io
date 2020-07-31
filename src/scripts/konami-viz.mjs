@@ -1,17 +1,17 @@
 export default class KonamiCodeViz {
-  konamiCode = ['arrowup', 'arrowup', 'arrowdown', 'arrowdown', 'arrowright', 'arrowright', 'arrowleft', 'arrowleft', 'b', 'a'];
-  currentSequenceIndex = 0;
-  keyElements = null;
-  handleComplete = null;
-  options = {}
+  constructor(wrapper, givenOptions) {
+    const options = givenOptions || {
+      Classes: {
+        key: 'konami-viz__key',
+        keyCompleted: 'konami-viz__key--is-completed',
+        keyPressed: 'konami-viz__key--is-pressed',
+      },
+    };
 
-  constructor(wrapper, options = {
-    Classes: {
-      key: 'konami-viz__key',
-      keyCompleted: 'konami-viz__key--is-completed',
-      keyPressed: 'konami-viz__key--is-pressed',
-    },
-  }) {
+    this.konamiCode = ['arrowup', 'arrowup', 'arrowdown', 'arrowdown', 'arrowright', 'arrowright', 'arrowleft', 'arrowleft', 'b', 'a'];
+    this.currentSequenceIndex = 0;
+    this.handleComplete = null;
+
     this.keyElements = wrapper.querySelectorAll(`.${options.Classes.key}`);
     this.options = options;
   }
