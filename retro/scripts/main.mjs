@@ -10,6 +10,7 @@ setTimeout(hideLandingScreen, 5000);
 
 function hideLandingScreen() {
   landingScreen.classList.add('landing-screen--is-hidden');
-  landingScreen.setAttribute('aria-hidden', true);
-  desktopWrapper.setAttribute('aria-hidden', false);
+  landingScreen.setAttribute('hidden', true);
+  desktopWrapper.removeAttribute('hidden');
+  document.body.removeAttribute('aria-live');
 }
