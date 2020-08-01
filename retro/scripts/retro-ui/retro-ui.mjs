@@ -1,6 +1,6 @@
 import WindowsManager from './windows-manager.mjs';
 
-export default class WindowsUi {
+export default class RetroUi {
   constructor(wrapper, givenOptions) {
     const options = givenOptions || {
       Selectors: {

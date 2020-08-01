@@ -35,8 +35,8 @@
 
 @font-face {
   font-family: 'Windows 95';
-  src: url('/windows/fonts/windows-95.woff2') format('woff2'),
-      url('/windows/fonts/windows-95.woff') format('woff');
+  src: url('/retro/fonts/windows-95.woff2') format('woff2'),
+      url('/retro/fonts/windows-95.woff') format('woff');
   font-weight: normal;
   font-style: normal;
 }
@@ -65,7 +65,7 @@ a {
   color: var(--color-text-link);
 }
 
-.logo-screen {
+.landing-screen {
   position: fixed;
   top: 0;
   bottom: 0;
@@ -79,19 +79,24 @@ a {
   text-align: center;
 }
 
-.logo-screen--is-hidden {
+.landing-screen--is-hidden {
   visibility: hidden;
 }
 
-.logo-screen__content {
-  animation: fade-in 1s ease;
+.landing-screen__content {
+  width: 90%;
+  max-width: 300px;
 }
 
-.logo-screen__logo {
-  width: 200px;
-  max-width: 90%;
-  margin: 0 auto;
+.landing-screen__title {
+  font: 500 var(--size-root) var(--family);
+  line-height: 1em;
+}
+
+.landing-screen__image {
+  width: 100%;
   margin-bottom: var(--spacing-base);
+  animation: fade-in 1s ease;
 }
 
 @keyframes fade-in {
@@ -174,7 +179,7 @@ a {
   margin: 0 auto;
   margin-bottom: var(--spacing-tight);
 
-  background-image: url('/windows/notepad-icon.png');
+  background-image: url('/retro/notepad-icon.png');
   background-repeat: no-repeat;
   background-size: 100%;
   position: relative;

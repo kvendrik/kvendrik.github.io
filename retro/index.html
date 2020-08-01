@@ -6,7 +6,7 @@
 
   <meta name="viewport" content="initial-scale=1"/>
 
-  <title>Koen Vendrik - Front-end Web Developer | Windows 95 Mode</title>
+  <title>Koen Vendrik - Front-end Web Developer | Retro Mode</title>
 
   <meta name="description" content="Front-end Web Developer who spends his time thinking about design systems, accessibility, web performance, and the effectiveness of product teams."/>
   <meta name="author" content="Koen Vendrik"/>
@@ -39,12 +39,12 @@
   <meta name="msapplication-config" content="/public/favicons/browserconfig.xml">
   <meta name="theme-color" content="#ffffff">
 
-  <link rel="preload" href="/windows/scripts/windows-ui/index.mjs" as="script" crossorigin />
-  <link rel="preload" href="/windows/scripts/windows-ui/windows-ui.mjs" as="script" crossorigin />
-  <link rel="preload" href="/windows/scripts/windows-ui/windows-manager.mjs" as="script" crossorigin />
-  <link rel="preload" href="/windows/fonts/windows-95.woff2" as="font" type="font/woff2" crossorigin />
+  <link rel="preload" href="/retro/scripts/retro-ui/index.mjs" as="script" crossorigin />
+  <link rel="preload" href="/retro/scripts/retro-ui/retro-ui.mjs" as="script" crossorigin />
+  <link rel="preload" href="/retro/scripts/retro-ui/windows-manager.mjs" as="script" crossorigin />
+  <link rel="preload" href="/retro/fonts/windows-95.woff2" as="font" type="font/woff2" crossorigin />
 
-  <link rel="stylesheet" href="/windows/main.css" />
+  <link rel="stylesheet" href="/retro/main.css" />
 
   <script defer>
     (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
@@ -57,10 +57,10 @@
   </script>
 </head>
 <body aria-live="polite">
-  <div data-logo-screen class="logo-screen">
-    <div class="logo-screen__content">
-      <img src="/windows/windows-logo.svg" alt="Windows 95 Logo" class="logo-screen__logo" />
-      <div>Loading...</div>
+  <div data-landing-screen class="landing-screen">
+    <div class="landing-screen__content">
+      <img class="landing-screen__image" src="/retro/old-computer.png" alt="Old Computer Logo" />
+      <h1 class="landing-screen__title">Retro Mode</h1>
     </div>
   </div>
 
@@ -93,6 +93,6 @@
     </template>
   </div>
 
-  <script type="module" src="/windows/scripts/main.mjs"></script>
+  <script type="module" src="/retro/scripts/main.mjs"></script>
 </body>
 </html>
