@@ -1,5 +1,5 @@
 :root {
-  --family: 'W95fa';
+  --family: 'W95fa', Helvetica, Arial, sans-serif;
 
   --size-root: 16px;
   --size-small: 0.9em;
@@ -46,6 +46,7 @@
       url('/retro/fonts/w95fa.woff') format('woff');
   font-weight: normal;
   font-style: normal;
+  font-display: swap;
 }
 
 * {
@@ -93,7 +94,7 @@ a {
 
 .landing-screen__content {
   width: 90%;
-  max-width: 300px;
+  max-width: 250px;
   animation: fade-in 1s ease;
 }
 
