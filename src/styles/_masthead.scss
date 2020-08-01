@@ -1,0 +1,14 @@
+.masthead {
+  overflow: hidden;
+  display: flex;
+  align-items: baseline;
+  transition: transition(opacity, slow);
+
+  @include page-loading {
+    opacity: 0;
+  }
+}
+
+.masthead__logo {
+  margin-right: spacing();
+}

@@ -1,0 +1,49 @@
+$key-size: rem(16px);
+
+.konami-viz {
+  display: flex;
+  align-items: center;
+  font-weight: weight(body-text-icon);
+  visibility: visible;
+  opacity: 1;
+  transition: transition(all, slow);
+}
+
+.konami-viz--is-hidden {
+  visibility: hidden;
+  opacity: 0;
+}
+
+.konami-viz__key {
+  width: $key-size;
+  height: $key-size;
+  line-height: $key-size;
+  font-size: $key-size;
+  display: block;
+  overflow: hidden;
+  text-align: center;
+  opacity: text-opacity(strong);
+  transition: transition(opacity, slower);
+  margin-right: spacing(extra-tight);
+
+  &:last-child {
+    margin-right: 0;
+  }
+}
+
+.konami-viz__key--is-completed {
+  opacity: 1 !important;
+}
+
+.konami-viz__key--is-pressed {
+  animation: konami-viz__blink duration(slow) easing();
+}
+
+@keyframes konami-viz__blink {
+  from {
+    opacity: 1;
+  }
+  to {
+    opacity: text-opacity(strong);
+  }
+}

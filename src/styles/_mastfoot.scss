@@ -1,0 +1,20 @@
+.mastfoot {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  @include breakpoint-tablet-max {
+    flex-direction: column;
+    align-items: initial;
+  }
+}
+
+.mastfoot__konami {
+  @include breakpoint-tablet-max {
+    margin-top: spacing(tight);
+  }
+}
+
+.mastfoot__konami--is-hidden {
+  display: none !important;
+}

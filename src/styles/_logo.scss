@@ -1,0 +1,4 @@
+.logo {
+  @extend .highlight;
+  font: weight(heading-logo) rem(26px) family(headings);
+}

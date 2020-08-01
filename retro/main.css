@@ -1,0 +1,286 @@
+:root {
+  --family: 'W95fa', Helvetica, Arial, sans-serif;
+
+  --size-root: 16px;
+  --size-small: 0.9em;
+
+  --color-background: #008080;
+  --color-background-contrast: white;
+  --color-element-background: #C0C0C0;
+
+  --color-border: #08080E;
+  --color-border-soft: #393939;
+  --color-border-contrast: #FCFCFC;
+  --color-border-max-contrast: white;
+
+  --color-text-base: #000;
+  --color-text-link: #000181;
+  --color-title-background: #020080;
+  --color-text-contrast: white;
+
+  --color-window-border-left-contrast: rgb(116, 110, 110);
+  --color-window-title-bar-border: #BDBDBD;
+
+  --line-height-base: 1.5em;
+
+  --spacing-loose: 2.5rem;
+  --spacing-base: 1rem;
+  --spacing-tight: 0.8rem;
+  --spacing-extra-tight: 0.4rem;
+
+  --text-container-padding-base: var(--spacing-extra-tight) var(--spacing-tight);
+
+  /* fixes font vertical misalignment */
+  --text-container-line-height-base: 1.2rem;
+
+  --z-index-loading-screen: 999;
+  --z-index-start-bar: 998;
+  --z-index-top-window: 997;
+
+  --start-bar-height: 40px;
+}
+
+@font-face {
+  font-family: 'W95fa';
+  src: url('/retro/fonts/w95fa.woff2') format('woff2'),
+      url('/retro/fonts/w95fa.woff') format('woff');
+  font-weight: normal;
+  font-style: normal;
+  font-display: swap;
+}
+
+* {
+  padding: 0;
+  margin: 0;
+  box-sizing: border-box;
+}
+
+html {
+  font: 500 var(--size-root) var(--family);
+  line-height: var(--line-height-base);
+  height: -webkit-fill-available;
+}
+
+body {
+  font-family: var(--family);
+  width: 100vw;
+  min-height: 100vh;
+  min-height: -webkit-fill-available;
+  background: var(--color-background);
+  position: relative;
+}
+
+a {
+  color: var(--color-text-link);
+}
+
+.landing-screen {
+  position: fixed;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: var(--z-index-loading-screen);
+  text-align: center;
+}
+
+.landing-screen--is-hidden {
+  visibility: hidden;
+}
+
+.landing-screen__content {
+  width: 90%;
+  max-width: 250px;
+  animation: fade-in 1s ease;
+}
+
+.landing-screen__title {
+  font: 500 var(--size-root) var(--family);
+  line-height: var(--text-container-line-height-base);
+}
+
+.landing-screen__image {
+  width: 100%;
+  margin-bottom: var(--spacing-base);
+}
+
+@keyframes fade-in {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+.start-bar {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+
+  background: var(--color-element-background);
+  padding: 0 var(--spacing-extra-tight);
+  z-index: var(--z-index-start-bar);
+
+  height: var(--start-bar-height);
+
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.start-bar__time {
+  font-size: var(--size-small);
+  line-height: var(--text-container-line-height-base);
+  padding: var(--text-container-padding-base);
+  border-top: 1px solid var(--color-border);
+  border-left: 1px solid var(--color-border);
+  border-right: 1px solid var(--color-border-contrast);
+  border-bottom: 1px solid var(--color-border-contrast);
+}
+
+.desktop {
+  padding: var(--spacing-base);
+}
+
+.desktop__item {
+  width: 80px;
+  text-align: center;
+  display: block;
+
+  line-height: var(--line-height-base);
+  font-family: var(--family);
+
+  background: transparent;
+  border: none;
+
+  color: var(--color-text-contrast);
+  font-size: var(--size-small);
+
+  cursor: pointer;
+  padding: 0;
+  margin-bottom: var(--spacing-loose);
+}
+
+.desktop__item:focus {
+  outline: none;
+}
+
+.desktop__item div {
+  border: dotted 1px transparent;
+}
+
+.desktop__item:focus div {
+  border-color: var(--color-border);
+}
+
+.desktop__item:before {
+  content: '';
+  display: block;
+
+  width: 40px;
+  height: 48px;
+
+  margin: 0 auto;
+  margin-bottom: var(--spacing-tight);
+
+  background-image: url('/retro/notepad-icon.png');
+  background-repeat: no-repeat;
+  background-size: 100%;
+}
+
+.desktop__item--is-selected div {
+  background: var(--color-text-link);
+}
+
+.window {
+  width: 500px;
+  height: 400px;
+  max-width: 100%;
+  max-height: calc(100% - var(--start-bar-height));
+
+  border-top: 2px solid var(--color-border-max-contrast);
+  border-left: 2px solid var(--color-window-border-left-contrast);
+  border-right: 2px solid var(--color-border-soft);
+  border-bottom: 2px solid var(--color-border-soft);
+  border-radius: 0;
+  background: var(--color-element-background);
+
+  position: absolute;
+  top: 0;
+  left: 0;
+
+  display: flex;
+  flex-direction: column;
+}
+
+.window--top-window {
+  z-index: var(--z-index-top-window);
+}
+
+.window__title-bar {
+  font-size: var(--size-small);
+  padding: var(--text-container-padding-base);
+
+  border: 2px solid var(--color-window-title-bar-border);
+  background: var(--color-title-background);
+  color: var(--color-text-contrast);
+
+  cursor: move;
+  display: flex;
+
+  align-items: center;
+  justify-content: space-between;
+}
+
+.window__content {
+  font-family: var(--size-small);
+  color: var(--color-text-base);
+  margin: var(--spacing-extra-tight);
+  background: var(--color-background-contrast);
+  flex-grow: 1;
+  box-shadow: inset 0 0 1px var(--color-border);
+  padding: var(--spacing-extra-tight);
+  resize: none;
+}
+
+.button {
+  font-family: var(--family);
+  font-size: var(--size-small);
+  text-decoration: none;
+
+  color: var(--color-text-base);
+  background-color: var(--color-element-background);
+  line-height: var(--text-container-line-height-base);
+
+  border-top: 2px solid var(--color-border-max-contrast);
+  border-left: 2px solid var(--color-border-max-contrast);
+  border-right: 2px solid var(--color-border-soft);
+  border-bottom: 2px solid var(--color-border-soft);
+
+  border-radius: 0.125rem;
+  padding: var(--text-container-padding-base);
+
+  cursor: pointer;
+}
+
+.button:active {
+  border-top-color: var(--color-border-soft);
+  border-left-color: var(--color-border-soft);
+  border-right-color: var(--color-border-max-contrast);
+  border-bottom-color: var(--color-border-max-contrast);
+}
+
+.button--icon {
+  width: 25px;
+  height: 25px;
+  /* dirty vertical letter spacing fix */
+  line-height: 23px;
+  padding: 0;
+}
+
