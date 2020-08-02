@@ -27,10 +27,16 @@
 }
 
 .text--huge a {
-  transition: transition(color);
+  transition: transition(opacity);
   color: inherit;
+  display: inline-flex;
 
   &:hover {
-    color: color-body-text-subdued();
+    opacity: text-opacity();
   }
+}
+
+.link__external-icon {
+  width: 1em;
+  display: inline-block;
 }
