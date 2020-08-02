@@ -29,7 +29,6 @@
 .text--huge a {
   transition: transition(opacity);
   color: inherit;
-  display: inline-flex;
 
   &:hover {
     opacity: text-opacity();
