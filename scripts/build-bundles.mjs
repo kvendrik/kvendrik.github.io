@@ -37,7 +37,10 @@ export async function buildStyles({sourceMap}) {
 }
 
 export function buildHtml() {
-  const html = minify.minify(readFileSync('src/index.html', 'utf-8'), {
+  const source = readFileSync('src/index.html', 'utf-8')
+    .replace('{cacheBustHash}', Math.random().toString(36).substring(7));
+
+  const html = minify.minify(source, {
     collapseWhitespace: true
   });
   writeFileSync('index.html', html);
