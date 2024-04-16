@@ -1,20 +1,32 @@
 .mastfoot {
   display: flex;
+  flex-direction: column;
   align-items: center;
-  justify-content: space-between;
+  overflow: hidden;
+}
 
-  @include breakpoint-tablet-max {
-    flex-direction: column;
-    align-items: initial;
+.mastfoot__logo {
+  margin-bottom: spacing(extra-tight);
+}
+
+.mastfoot__logo,
+.mastfoot__nav,
+.mastfoot__konami {
+  transition: transition(opacity, slower);
+  opacity: 1;
+
+  @include page-loading {
+    opacity: 0;
   }
+}
+
+.mastfoot__logo,
+.mastfoot__nav {
+  transition-delay: 1s;
 }
 
 .mastfoot__konami {
-  @include breakpoint-tablet-max {
-    margin-top: spacing(tight);
-  }
+  transition-delay: 2.5s !important;
+  margin-top: 5em;
 }
 
-.mastfoot__konami--is-hidden {
-  display: none !important;
-}
