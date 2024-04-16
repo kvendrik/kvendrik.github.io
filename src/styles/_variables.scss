@@ -37,7 +37,7 @@ $colors: (
 
 $text-opacities: (
   base: 0.8,
-  strong: 0.6
+  strong: 0.5
 );
 
 @function text-opacity($variant: 'base') {
@@ -50,8 +50,9 @@ $text-opacities: (
 
 $durations: (
   fast: 0.15s,
-  slower: 0.25s,
-  slow: 1s
+  base: 0.25s,
+  slower: 1s,
+  slowest: 2.5s,
 );
 
 $easings: (

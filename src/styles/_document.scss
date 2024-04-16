@@ -17,7 +17,7 @@ html {
 }
 
 body {
-  transition: transition(opacity, slow);
+  transition: transition(opacity, slower);
 }
 
 .body--is-hidden {
@@ -35,7 +35,7 @@ body {
 }
 
 .page-content {
-  transition: transition(all, slow);
+  transition: transition(all, slower);
   transform-origin: bottom center;
 
   @include page-loading {

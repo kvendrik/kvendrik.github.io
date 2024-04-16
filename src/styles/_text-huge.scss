@@ -26,17 +26,44 @@
   }
 }
 
-.text--huge a {
-  transition: transition(opacity);
-  color: inherit;
+.link {
+  text-decoration: none;
+  color: color(body-text);
+  position: relative;
+
+  span {
+    border-bottom: solid 0.14em color(body-text);
+    transition: transition(border-color);
+    line-height: 1em;
+    display: inline-block;
+    margin-right: 0.3em;
+  }
+
+  .link__external-icon {
+    transition: transition(fill);
+    position: absolute;
+    width: 0.3em;
+    top: 0.3em;
+    right: 0em;
+  }
 
   &:hover {
-    opacity: text-opacity();
+    span {
+      border-color: color(accent);
+    }
+
+    .link__external-icon {
+      fill: color(accent);
+    }
   }
 }
 
-.link__external-icon {
-  width: 0.7em;
-  display: inline-block;
-  opacity: text-opacity();
+.link--shopify:hover {
+  span {
+    border-color: color(brand-shopify);
+  }
+
+  .link__external-icon {
+    fill: color(brand-shopify);
+  }
 }

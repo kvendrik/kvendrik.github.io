@@ -12,7 +12,7 @@
   "devDependencies": {
     "autoprefixer": "^9.8.5",
     "html-minifier": "^4.0.0",
-    "node-sass": "^4.14.1",
+    "node-sass": "^9.0.0",
     "postcss": "^7.0.32",
     "serve-dev": "^1.0.0-alpha.6"
   },

@@ -2,10 +2,9 @@
   overflow: hidden;
   display: flex;
   align-items: baseline;
-  transition: transition(opacity, slow);
 
   @include page-loading {
-    opacity: 0;
+    opacity: 0 !important;
   }
 }
 

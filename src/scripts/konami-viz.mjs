@@ -34,6 +34,7 @@ export default class KonamiCodeViz {
       return;
     }
 
+    document.body.classList.add('body--konami-viz-active');
     this.keyElements[this.currentSequenceIndex].classList.add(Classes.keyCompleted);
 
     if (this.currentSequenceIndex === (this.konamiCode.length - 1) && this.handleComplete) {
@@ -47,6 +48,8 @@ export default class KonamiCodeViz {
 
   reset(highlightKey = null) {
     const {Classes} = this.options;
+
+    document.body.classList.remove('body--konami-viz-active');
 
     for (const [index, keyNode] of this.keyElements.entries()) {
       const key = this.konamiCode[index];
