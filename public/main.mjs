@@ -32,7 +32,7 @@ function initializeSectionWaypoints() {
     }
   }, {
     rootMargin: "0px",
-    threshold: 0.75,
+    threshold: 0.65,
   });
 
   document.body.classList.add('body--waypoint-sections-active');
