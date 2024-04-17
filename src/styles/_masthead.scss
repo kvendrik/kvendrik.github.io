@@ -1,0 +1,12 @@
+.masthead {
+  display: flex;
+  justify-content: center;
+
+  transition: transition(opacity, slower);
+  opacity: 1;
+  transition-delay: duration(slower);
+
+  @include page-loading {
+    opacity: 0;
+  }
+}

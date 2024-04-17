@@ -1,6 +1,5 @@
 .text--huge {
   font: weight(body-huge) rem(90px) family(body);
-  margin: 1em 0;
 
   @media all and (max-width: 1000px) {
     font-size: rem(72px);
@@ -19,11 +18,6 @@
 .text--huge h1 {
   font: inherit;
   line-height: 1.1em;
-  margin-bottom: 1em;
-
-  &:last-child {
-    margin-bottom: 0;
-  }
 }
 
 .link {
@@ -32,10 +26,6 @@
   position: relative;
 
   span {
-    border-bottom: solid 0.14em color(body-text);
-    transition: transition(border-color);
-    line-height: 1em;
-    display: inline-block;
     margin-right: 0.3em;
   }
 
@@ -47,14 +37,8 @@
     right: 0em;
   }
 
-  &:hover {
-    span {
-      border-color: color(accent);
-    }
-
-    .link__external-icon {
-      fill: color(accent);
-    }
+  &:hover .link__external-icon {
+    fill: color(accent);
   }
 }
 

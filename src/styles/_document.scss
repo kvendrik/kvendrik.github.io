@@ -6,6 +6,11 @@
   -moz-osx-font-smoothing: grayscale;
 }
 
+html,
+body {
+  min-height: 100vh;
+}
+
 html {
   font: weight(body) map-get($sizes-bases, desktop) family(body);
   color: color(body-text);
@@ -18,6 +23,8 @@ html {
 
 body {
   transition: transition(opacity, slower);
+  display: flex;
+  align-items: center;
 }
 
 .body--is-hidden {
@@ -37,6 +44,9 @@ body {
 .page-content {
   transition: transition(all, slower);
   transform-origin: bottom center;
+
+  margin-bottom: 8vw;
+  margin-top: 6vw;
 
   @include page-loading {
     opacity: 0;
