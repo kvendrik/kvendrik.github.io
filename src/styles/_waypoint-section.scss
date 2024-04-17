@@ -1,15 +1,3 @@
-.body--waypoint-sections-active {
-  .masthead,
-  .mastfoot {
-    transition: transition(opacity, slower);
-    opacity: text-opacity(strong);
-  
-    &:hover {
-      opacity: 1;
-    }
-  }
-}
-
 [data-waypoint-section="active"] {
   transition: transition(opacity, slower);
   opacity: text-opacity(strong);

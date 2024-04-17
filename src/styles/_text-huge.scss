@@ -32,11 +32,8 @@
   position: relative;
 
   span {
-    border-bottom: solid 0.14em color(body-text);
-    transition: transition(border-color);
-    line-height: 1em;
-    display: inline-block;
     margin-right: 0.3em;
+    display: inline-block;
   }
 
   .link__external-icon {
@@ -47,14 +44,8 @@
     right: 0em;
   }
 
-  &:hover {
-    span {
-      border-color: color(accent);
-    }
-
-    .link__external-icon {
-      fill: color(accent);
-    }
+  &:hover .link__external-icon {
+    fill: color(accent);
   }
 }
 

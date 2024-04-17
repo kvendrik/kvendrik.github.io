@@ -3,6 +3,9 @@
   display: flex;
   align-items: baseline;
 
+  transition: transition(opacity, slower);
+  transition-delay: duration(slower);
+
   @include page-loading {
     opacity: 0 !important;
   }
