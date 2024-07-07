@@ -102,5 +102,165 @@
   {
     "question": "What is the ABV in fortified wines?",
     "answer": "Between 15% and 22%."
+  },
+  {
+    "question": "How does a wine become what we call ‘dry’?",
+    "answer": "All sugar needs to be converted into alcohol"
+  },
+  {
+    "question": "Name 3 examples of dry wines and the regions they‘re from",
+    "answer": "Chablis from France. Côtes du Rhône from France. Chianti from Italy."
+  },
+  {
+    "question": "Name 2 grape varieties that produce dry wines",
+    "answer": "Sauvignon Blanc & Cabernet Sauvignon"
+  },
+  {
+    "question": "Name 4 ways to make a wine sweeter",
+    "answer": "Yeast is removed before all sugar is converted into alcohol. Yeast is killed early using distilled alcohol. Add grape juice. The grape is so high in sugar that the yeast can’t convert it all."
+  },
+  {
+    "question": "What does Tannin do to the taste of a wine?",
+    "answer": "Cause your mouth to feel dry"
+  },
+  {
+    "question": "Name 2 examples of wines with high tannin levels",
+    "answer": "Red Bordeaux from France. Chiani from Italy"
+  },
+  {
+    "question": "Is Pinot Grigio a light, medium, or full bodied wine?",
+    "answer": "Light-bodied"
+  },
+  {
+    "question": "Is Beaujolais a light, medium, or full bodied wine?",
+    "answer": "Light-bodied"
+  },
+  {
+    "question": "Is Sancerre a light, medium, or full bodied wine?",
+    "answer": "Medium-bodied"
+  },
+  {
+    "question": "Is Côtes du Rhône a light, medium, or full bodied wine?",
+    "answer": "Medium-bodied"
+  },
+  {
+    "question": "Is Cabernet Sauvignon a light, medium, or full bodied wine?",
+    "answer": "Full-bodied"
+  },
+  {
+    "question": "Is Sauternes a light, medium, or full bodied wine?",
+    "answer": "Full-bodied"
+  },
+  {
+    "question": "Name 3 flavors that fermentation or maturation in oak barrels may reveal",
+    "answer": "Cedar, cloves, coconut, smoke, vanilla"
+  },
+  {
+    "question": "Chardonnay is a type of wine, a region, or grape variety?",
+    "answer": "Grape variety"
+  },
+  {
+    "question": "Name 4 white grape varieties",
+    "answer": "Chardonnay, Saivignon Blanc, Pinot Grigio, Riesling"
+  },
+  {
+    "question": "Name 4 black grape varieties",
+    "answer": "Cabernet Sauvignon, Merlot, Pinor Nior, Syrah (France) / Shiraz (Australia)"
+  },
+  {
+    "question": "What acidity levels does a Chardonnay wine have?",
+    "answer": "High when grown in cool climates. Medium when grown in warm/hot climates."
+  },
+  {
+    "question": "Name acidity, body, and aromas for a Chardonnay grown in a cool climate",
+    "answer": "Acidity is high, body is light to medium, and aromas are likely green apple and lemon."
+  },
+  {
+    "question": "Name acidity, body, and aromas for a Chardonnay grown in a warm climate",
+    "answer": "Acidity is medium, body is medium to full, and aromas are likely stone fruit (peach) and tropical fruit (pineapple & banana)."
+  },
+  {
+    "question": "Name a region where they make a cool climate Chardonnay wine",
+    "answer": "Burgundy (Frame)"
+  },
+  {
+    "question": "Name climate, grape, region, acidity, body, and aromas for a white wine from Chablis",
+    "answer": "Chablis is the coolest part of Burgundy. They grow Chardonnay grapes. High acidity (due to very cool growing conditions). Light to medium body. Aromas of green apple and lemon."
+  },
+  {
+    "question": "Is Chablis wine often oaked (fermented or matured in Oak barrels)",
+    "answer": "No. Chablis is typically unoaked."
+  },
+  {
+    "question": "Name 2 places that are well known for producing Chardonnay wines outside of France.",
+    "answer": "Australia and California"
+  },
+  {
+    "question": "When Chardonnay is used for the production of Champagne it is often mixed with...",
+    "answer": "Pinot Noir"
+  },
+  {
+    "question": "Sauvignon Blanc produces dry or sweet wines?",
+    "answer": "Dry"
+  },
+  {
+    "question": "Do Sauvignon Blanc wines have low acidity?",
+    "answer": "No, they have high acidity"
+  },
+  {
+    "question": "What type of body do Sauvignon Blanc wines have?",
+    "answer": "Light to medium"
+  },
+  {
+    "question": "Are Sauvignon Blanc wines typically oaked?",
+    "answer": "No they‘re usually fermented in steel tanks"
+  },
+  {
+    "question": "Name 2 wines that are made from Sauvignon Blanc?",
+    "answer": "New Zealand Sauvignon Blanc & Sancerre from France"
+  },
+  {
+    "question": "What aromas may Sauvignon Blanc wines reveal?",
+    "answer": "Green apple, Grapefruit, Asparagus, Green bell pepper"
+  },
+  {
+    "question": "Are Pinot Grigio wines typically sweet or dry?",
+    "answer": "Dry"
+  },
+  {
+    "question": "Do Pinot Grigio wines usually have low, medium, or high acidity?",
+    "answer": "Medium or high"
+  },
+  {
+    "question": "Pinot Grigio wines are typically produced in what country?",
+    "answer": "Italy"
+  },
+  {
+    "question": "What kind of body and flavors can your expect from a Pinot Grigio?",
+    "answer": "A light body with simple flavors of pear and lemon"
+  },
+  {
+    "question": "Are Pinot Grigio typically oaked?",
+    "answer": "No, they're typically fermented in steel barrels"
+  },
+  {
+    "question": "What kind of acidity and sweetness levels can you expect from a Riesling?",
+    "answer": "High acidity and about any level of sweetness (dry, medium, or high)"
+  },
+  {
+    "question": "Is Rieling from Germany typically dry or sweet?",
+    "answer": "Riesling from Germany can have any level of sweetness (dry, medium, or high)"
+  },
+  {
+    "question": "What countries produce dry Riesling wines?",
+    "answer": "Mostly France (Alsace) and Australia. Germany produces them too as they produce Rieslings with any level of sweetness."
+  },
+  {
+    "question": "What acidity, aromas, and body can you expect from a Riesling?",
+    "answer": "High acidity. Anything from green fruits (apple), to citrus fruits (lime), to stone fruits (peach, apricot). Light or medium bodied."
+  },
+  {
+    "question": "Are Rieslings typically oaked?",
+    "answer": "No, they're not."
   }
 ]
