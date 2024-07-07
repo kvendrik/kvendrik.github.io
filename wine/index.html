@@ -55,7 +55,10 @@ const contentNode = document.querySelector('[data-content]');
 let lastQuestionIndex = null;
 let showingQuestionIndex = null;
 
-document.addEventListener('click', () => {
+document.addEventListener('click', nextStep);
+document.addEventListener('keyup', nextStep);
+
+function nextStep() {
   if (showingQuestionIndex === null) {
     let randomQuestionIndex = randomNumberInRange(0, QUESTIONS.length - 1);
     
@@ -75,7 +78,7 @@ document.addEventListener('click', () => {
   contentNode.innerText = answer;
   lastQuestionIndex = showingQuestionIndex;
   showingQuestionIndex = null;
-});
+}
 
 function randomNumberInRange(min, max) {
   return Math.round(Math.random() * (max - min) + min);
