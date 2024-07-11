@@ -145,7 +145,7 @@
   },
   {
     "question": "Is Cabernet Sauvignon a light, medium, or full bodied wine?",
-    "answer": "Full-bodied"
+    "answer": "Medium or full-bodied"
   },
   {
     "question": "Is Sauternes a light, medium, or full bodied wine?",
@@ -262,5 +262,173 @@
   {
     "question": "Are Rieslings typically oaked?",
     "answer": "No, they're not."
+  },
+  {
+    "question": "What flavors does Cabernet Sauvignon feature?",
+    "answer": "Green bell pepper, cedar & vanilla (if oaked), blackcurrant, mint"
+  },
+  {
+    "question": "What acidity and tannin levels does Cabernet Sauvignon have?",
+    "answer": "High acidity and high tannins"
+  },
+  {
+    "question": "What grape variety is Cabernet Sauvignon often blended with? Where does this happen? And what does it add?",
+    "answer": "Merlot. Happens often in Bordeaux. Adds body and softness. Also often blended with Shiraz which adds aromas of spice."
+  },
+  {
+    "question": "Apart from Bordeaux. Where else is Cabernet Sauvignon widely grown?",
+    "answer": "California, Australia, Chile, and South Africa"
+  },
+  {
+    "question": "What kind of body does Merlot have?",
+    "answer": "Medium to full"
+  },
+  {
+    "question": "What flavors does Merlot have?",
+    "answer": "Red plum, blackberry, and vanilla (if oaked)"
+  },
+  {
+    "question": "What acidity and tannin levels does Merlot have?",
+    "answer": "Medium acidity and medium tannins"
+  },
+  {
+    "question": "What places is Merlot widely grown?",
+    "answer": "Chile and California"
+  },
+  {
+    "question": "When you mix Cabernet Sauvignon to a Merlot wine, what does it add?",
+    "answer": "Adds tannins and acidity"
+  },
+  {
+    "question": "What kind of body does a Pinot Noir wine have?",
+    "answer": "Light to medium"
+  },
+  {
+    "question": "What flavors does a Pinot Noir wine have?",
+    "answer": "Strawberry, cherry, and vanilla (if oaked)"
+  },
+  {
+    "question": "What acidity and tannin levels does a Pinot Noir have?",
+    "answer": "High acidity, low or medium tannin levels"
+  },
+  {
+    "question": "What two places use Pinot Noir a lot?",
+    "answer": "Bordeaux (France), and New Zealand"
+  },
+  {
+    "question": "Is Pinot Noir usually blended with other grape varieties?",
+    "answer": "No"
+  },
+  {
+    "question": "When using Pinot Noir to make champagne, what grape is it blended with?",
+    "answer": "Chardonnay"
+  },
+  {
+    "question": "In France they call this grape the ’Syrah’ grape. What other place is this grape commonly used and what do they call it?",
+    "answer": "Australia, they call it ’Shiraz’"
+  },
+  {
+    "question": "What body does a Syrah/Shiraz wine have?",
+    "answer": "Medium to full"
+  },
+  {
+    "question": "What acidity and tannin levels does a Syrah/Shiraz wine have?",
+    "answer": "Medium acidity, medium to high tannin levels"
+  },
+  {
+    "question": "What flavors does a Syrah/Shiraz wine have?",
+    "answer": "Blackberry, black pepper, vanilla & coconut (if oaked)"
+  },
+  {
+    "question": "Name two places that produce Syrah/Shiraz wines and what flavors they reveal",
+    "answer": "Côtes du Rhône in France reveals flavors of blackberries and black pepper. And Australia where it has flavors of jammy blackberries and liquorice"
+  },
+  {
+    "question": "Describe a White Zinfandel wine",
+    "answer": "Rosé wine from California. Unoaked. Low alcohol. Medium levels of sweetness. Flavors of red fruits (strawberry & raspberry)"
+  },
+  {
+    "question": "Describe a Beaujolais wine",
+    "answer": "Not Pinot Noir but has simular chacteristics. Red, dry, light bodied, from France, low tannins, flavors of red fruits (raspberry & red cherry)"
+  },
+  {
+    "question": "Describe a Côte du Rhône wine",
+    "answer": "Syrah/Shiraz. From France. Red, dry, medium-bodied, flavors of red fruit (strawberry, red plum) and white pepper. Can be oaked or unoaked."
+  },
+  {
+    "question": "Describe a Chianti wine",
+    "answer": "From Italy. Red, dry, medium-bodied. High acidity and high tannins. Red fruit flavors (red cherry, red plum), dried herb notes, cloves from oak"
+  },
+  {
+    "question": "Describe a Rioja wine",
+    "answer": "From Spain. Red, dry, medium to full bodied. Flavors of red fruit (strawberry) and vanilla from oak."
+  },
+  {
+    "question": "Describe a Châteauneuf-du-pape wine",
+    "answer": "From France. Dry, full-bodied, high-alcohol, flavors of strawberry and clove from oak"
+  },
+  {
+    "question": "Describe a Sauternes wine",
+    "answer": "Sweet white wine from Bordeaux. Full-bodied with flavors of stone fruits (apricot), vanilla (from oak), and honey. Balancing high acidity."
+  },
+  {
+    "question": "Is Sherry fortified?",
+    "answer": "Yes"
+  },
+  {
+    "question": "Where is Sherry from?",
+    "answer": "Spain"
+  },
+  {
+    "question": "Is a Sherry dry, medium, or sweet?",
+    "answer": "Can be dry, medium, or sweet"
+  },
+  {
+    "question": "What is the service temperature for sweet wine?",
+    "answer": "6-8˚C (Well chilled)"
+  },
+  {
+    "question": "What is the service temperature for sparkling wine?",
+    "answer": "6-10˚C (Well chilled)"
+  },
+  {
+    "question": "What is the service temperature for light and medium-bodied white and rosé?",
+    "answer": "7-10˚C (Chilled)"
+  },
+  {
+    "question": "What is the service temperature for a full-bodied white?",
+    "answer": "10-13˚C (Lightly chilled)"
+  },
+  {
+    "question": "What is the service temperature for a medium and full bodied red?",
+    "answer": "15-18˚C (Room temperature)"
+  },
+  {
+    "question": "What is the service temperature for a light bodied red?",
+    "answer": "13˚C (Lightly chilled)"
+  },
+  {
+    "question": "When food is sweet or umami, the wine seems...",
+    "answer": "More drying and bitter, more acidic. Less sweet and fruity."
+  },
+  {
+    "question": "When food is salty, the wine seems...",
+    "answer": "Less drying and bitter, less acidic. More fruity and more body."
+  },
+  {
+    "question": "When food is acidic, the wine seems...",
+    "answer": "Less drying and bitter, less acidic. More sweet and fruity."
+  },
+  {
+    "question": "When food is highly flavored, the wine seems...",
+    "answer": "Overwhelmed by food flavors"
+  },
+  {
+    "question": "When food is fatty or oily, the wine seems...",
+    "answer": "Less acidic"
+  },
+  {
+    "question": "When food is hot (chilli), the wine seems...",
+    "answer": "Increase heat from the chilli. Alcohol in the wine seems more noticable."
   }
 ]
