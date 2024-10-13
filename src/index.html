@@ -59,13 +59,13 @@
 <body aria-live="polite">
   <div data-desktop>
     <div class="desktop">
-      <button data-desktop-item class="desktop__item" data-notepad-content="Koen Vendrik is a front-end web developer based in Amsterdam, The Netherlands.">
+      <button data-desktop-item class="desktop__item" data-program="notepad" data-title="About Koen" data-content="Koen Vendrik is a front-end web developer based in Amsterdam, The Netherlands.">
         <div>About Koen</div>
       </button>
-      <button data-desktop-item class="desktop__item" data-notepad-content='He spends his time thinking about <a href="https://ux.shopify.com/getting-design-system-customization-just-right-3012151ef5ea" target="_blank" rel="noopener" aria-describedby="external-link-message">design systems</a>, accessibility, web performance, and the effectiveness of product teams.'>
+      <button data-desktop-item class="desktop__item" data-program="notepad" data-title="Things Koen thinks about" data-content='He spends his time thinking about <a href="https://ux.shopify.com/getting-design-system-customization-just-right-3012151ef5ea" target="_blank" rel="noopener" aria-describedby="external-link-message">design systems</a>, accessibility, web performance, and the effectiveness of product teams.'>
         <div>Things Koen thinks about</div>
       </button>
-      <button data-desktop-item class="desktop__item" data-notepad-content='Currently, he works at <a href="http://shopify.com/" target="_blank" rel="noopener" aria-describedby="external-link-message">Shopify</a> where he crafts experiences that help create and grow businesses of all sizes.'>
+      <button data-desktop-item class="desktop__item" data-program="notepad" data-title="Koen at Shopify" data-content='Currently, he works at <button class="button button--link" data-program="browser" data-title="Shopify" data-url="http://shopify.com/">Shopify</button> where he crafts experiences that help create and grow businesses of all sizes.'>
         <div>Koen at Shopify</div>
       </button>
     </div>
@@ -82,6 +82,19 @@
           <button class="button button--icon" data-close-button aria-label="Close window">X</button>
         </div>
         <div class="window__content" data-content></div>
+      </div>
+    </template>
+
+    <template id="notepad-template">
+      <div class="notepad" data-content></div>
+    </template>
+
+    <template id="browser-template">
+      <div class="browser">
+        <div class="browser__url-bar">
+          <div class="browser__url" data-url></div>
+        </div>
+        <iframe></iframe>
       </div>
     </template>
   </div>

@@ -11,6 +11,7 @@ export default class WindowsManager {
       },
       Classes: {
         topWindow: 'window--top-window',
+        variantLarge: 'window--large',
       },
     };
 
@@ -111,8 +112,8 @@ export default class WindowsManager {
     }
   }
 
-  spawn({title, content}) {
-    const {options: {Selectors}} = this;
+  spawn({title, content: innerContentNode, variant = 'base'}) {
+    const {options: {Selectors, Classes}} = this;
     const {content: windowFragment} = this.template.cloneNode(true);
 
     const windowNode = windowFragment.querySelector(Selectors.window);
@@ -120,22 +121,33 @@ export default class WindowsManager {
     const contentNode = windowNode.querySelector(Selectors.content);
 
     titleNode.textContent = title;
-    contentNode.innerHTML = content;
+    contentNode.appendChild(innerContentNode);
 
     const windowId = this.getUnqiueWindowId();
+
     windowNode.setAttribute('aria-labelledby', `${windowId}-title`);
     titleNode.setAttribute('id', `${windowId}-title`);
+
+    if (variant === 'large') {
+      windowNode.classList.add(Classes.variantLarge);
+    }
 
     this.wrapper.appendChild(windowFragment);
     this.randomizeWindowPosition(windowNode);
 
     const focusableElements = windowNode.querySelectorAll('button, a');
+
     this.openWindowDetails = {
       lastFocus: document.activeElement,
       first: focusableElements[0],
       last: focusableElements[focusableElements.length - 1]
     };
+
     setTimeout(() => this.openWindowDetails.first.focus(), 0);
+
+    return {
+      moveToTop: () => this.moveWindowToTop(windowNode),
+    };
   }
 
   randomizeWindowPosition(windowNode) {

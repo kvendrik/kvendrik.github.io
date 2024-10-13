@@ -1,4 +1,5 @@
 import WindowsManager from './windows-manager.mjs';
+import {ProgramsManager} from './programs/index.mjs';
 
 export default class RetroUi {
   constructor(wrapper, givenOptions) {
@@ -37,6 +38,8 @@ export default class RetroUi {
         topWindow: options.Selectors.topWindow,
       },
     }));
+
+    this.programsManager = new ProgramsManager(this.windowsManager);
   }
 
   setTimeUpdater() {
@@ -86,10 +89,6 @@ export default class RetroUi {
   openDesktopItem(item) {
     this.unselectDesktopItems();
     item.classList.add(this.options.Classes.desktopItemSelected);
-
-    const title = item.innerText;
-    const content = item.dataset.notepadContent;
-
-    this.windowsManager.spawn({title, content});
+    this.programsManager.open(item.dataset);
   }
 }

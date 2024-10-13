@@ -34,3 +34,12 @@
   line-height: 23px;
   padding: 0;
 }
+
+.button--link {
+  font-size: 1em;
+  padding: 0;
+  border: none;
+  background: transparent;
+  color: var(--color-text-link);
+  text-decoration: underline;
+}

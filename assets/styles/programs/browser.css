@@ -1,0 +1,17 @@
+.browser {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+
+.browser__url-bar {
+  padding-bottom: 0.5rem;
+  background: var(--color-element-background);
+}
+
+.browser__url {
+  padding: 0.2rem 0.2rem;
+  border: solid 2px var(--color-border-soft);
+  border-bottom-color: var(--color-border-max-contrast);
+  background: white;
+}
