@@ -1,0 +1,36 @@
+.button {
+  font-family: var(--family);
+  font-size: var(--size-small);
+  text-decoration: none;
+
+  background-color: yellow;
+
+  color: var(--color-text-base);
+  background-color: var(--color-element-background);
+  line-height: var(--text-container-line-height-base);
+
+  border-top: 2px solid var(--color-border-max-contrast);
+  border-left: 2px solid var(--color-border-max-contrast);
+  border-right: 2px solid var(--color-border-soft);
+  border-bottom: 2px solid var(--color-border-soft);
+
+  border-radius: 0.125rem;
+  padding: var(--text-container-padding-base);
+
+  cursor: pointer;
+}
+
+.button:active {
+  border-top-color: var(--color-border-soft);
+  border-left-color: var(--color-border-soft);
+  border-right-color: var(--color-border-max-contrast);
+  border-bottom-color: var(--color-border-max-contrast);
+}
+
+.button--icon {
+  width: 25px;
+  height: 25px;
+  /* dirty vertical letter spacing fix */
+  line-height: 23px;
+  padding: 0;
+}

@@ -1,0 +1,41 @@
+:root {
+  --family: 'W95fa', Helvetica, Arial, sans-serif;
+
+  --size-root: 16px;
+  --size-small: 0.9em;
+
+  --color-background: #008080;
+  --color-background-contrast: white;
+  --color-element-background: #C0C0C0;
+
+  --color-border: #08080E;
+  --color-border-soft: #393939;
+  --color-border-contrast: #FCFCFC;
+  --color-border-max-contrast: white;
+
+  --color-text-base: #000;
+  --color-text-link: #000181;
+  --color-title-background: #020080;
+  --color-text-contrast: white;
+
+  --color-window-border-left-contrast: rgb(116, 110, 110);
+  --color-window-title-bar-border: #BDBDBD;
+
+  --line-height-base: 1.5em;
+
+  --spacing-loose: 2.5rem;
+  --spacing-base: 1rem;
+  --spacing-tight: 0.8rem;
+  --spacing-extra-tight: 0.4rem;
+
+  --text-container-padding-base: var(--spacing-extra-tight) var(--spacing-tight);
+
+  /* fixes font vertical misalignment */
+  --text-container-line-height-base: 1.2rem;
+
+  --z-index-loading-screen: 999;
+  --z-index-start-bar: 998;
+  --z-index-top-window: 997;
+
+  --start-bar-height: 40px;
+}

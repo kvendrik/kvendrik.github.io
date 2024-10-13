@@ -1,0 +1,26 @@
+.start-bar {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+
+  background: var(--color-element-background);
+  padding: 0 var(--spacing-extra-tight);
+  z-index: var(--z-index-start-bar);
+
+  height: var(--start-bar-height);
+
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.start-bar__time {
+  font-size: var(--size-small);
+  line-height: var(--text-container-line-height-base);
+  padding: var(--text-container-padding-base);
+  border-top: 1px solid var(--color-border);
+  border-left: 1px solid var(--color-border);
+  border-right: 1px solid var(--color-border-contrast);
+  border-bottom: 1px solid var(--color-border-contrast);
+}

@@ -1,19 +1,16 @@
 {
   "name": "kvendrik.com",
-  "version": "2.0.0",
+  "version": "3.0.0",
   "description": "Koen Vendrik Personal Website",
   "private": true,
   "scripts": {
     "server": "node scripts/dev-server.mjs",
-    "build": "node scripts/build-production.mjs"
+    "build": "node scripts/build.mjs"
   },
   "author": "Koen Vendrik",
   "license": "BSD 2-Clause",
   "devDependencies": {
-    "autoprefixer": "^9.8.5",
     "html-minifier": "^4.0.0",
-    "node-sass": "^9.0.0",
-    "postcss": "^7.0.32",
     "serve-dev": "^1.0.0-alpha.6"
   },
   "engines": {

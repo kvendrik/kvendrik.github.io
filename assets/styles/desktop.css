@@ -1,0 +1,53 @@
+.desktop {
+  padding: var(--spacing-base);
+}
+
+.desktop__item {
+  width: 80px;
+  text-align: center;
+  display: block;
+
+  line-height: var(--line-height-base);
+  font-family: var(--family);
+
+  background: transparent;
+  border: none;
+
+  color: var(--color-text-contrast);
+  font-size: var(--size-small);
+
+  cursor: pointer;
+  padding: 0;
+  margin-bottom: var(--spacing-loose);
+}
+
+.desktop__item:focus {
+  outline: none;
+}
+
+.desktop__item div {
+  border: dotted 1px transparent;
+}
+
+.desktop__item:focus div {
+  border-color: var(--color-border);
+}
+
+.desktop__item:before {
+  content: '';
+  display: block;
+
+  width: 40px;
+  height: 48px;
+
+  margin: 0 auto;
+  margin-bottom: var(--spacing-tight);
+
+  background-image: url('/assets/images/notepad-icon.png');
+  background-repeat: no-repeat;
+  background-size: 100%;
+}
+
+.desktop__item--is-selected div {
+  background: rgba(0, 1, 129, 0.2);
+}

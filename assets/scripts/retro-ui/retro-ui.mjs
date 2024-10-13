@@ -37,8 +37,6 @@ export default class RetroUi {
         topWindow: options.Selectors.topWindow,
       },
     }));
-
-    this.setTimeUpdater();
   }
 
   setTimeUpdater() {
@@ -47,8 +45,11 @@ export default class RetroUi {
     setTimeout(this.setTimeUpdater.bind(this), 60 * 1000);
   }
 
-  bindEvents() {
+  boot() {
     const {wrapper, windowsManager} = this;
+
+    this.setTimeUpdater();
+
     wrapper.addEventListener('ontouchstart' in window ? 'click' : 'dblclick', this.handleClick.bind(this));
     wrapper.addEventListener('mousedown', this.handleMousedown.bind(this));
 
