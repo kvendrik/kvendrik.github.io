@@ -19,7 +19,9 @@ export class Notepad {
       }
     });
 
-    const window = windowsManager.spawn({title, content: fragment});
+    const window = windowsManager.create({content: fragment});
+    window.setTitle(title);
+    window.show();
     window.moveToTop();
   }
 }

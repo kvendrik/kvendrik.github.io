@@ -14,7 +14,7 @@ export class ProgramsManager {
         break;
       case 'browser':
         const browserWindow = new Browser(this);
-        browserWindow.spawn({title: options.title, url: options.url});
+        browserWindow.spawn(options.url);
         break;
       default:
         throw new Error(`Unrecognized program ‘${program}‘`);

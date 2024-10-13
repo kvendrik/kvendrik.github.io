@@ -65,7 +65,7 @@
       <button data-desktop-item class="desktop__item" data-program="notepad" data-title="Things Koen thinks about" data-content='He spends his time thinking about <a href="https://ux.shopify.com/getting-design-system-customization-just-right-3012151ef5ea" target="_blank" rel="noopener" aria-describedby="external-link-message">design systems</a>, accessibility, web performance, and the effectiveness of product teams.'>
         <div>Things Koen thinks about</div>
       </button>
-      <button data-desktop-item class="desktop__item" data-program="notepad" data-title="Koen at Shopify" data-content='Currently, he works at <button class="button button--link" data-program="browser" data-title="Shopify" data-url="http://shopify.com/">Shopify</button> where he crafts experiences that help create and grow businesses of all sizes.'>
+      <button data-desktop-item class="desktop__item" data-program="notepad" data-title="Koen at Shopify" data-content='Currently, he works at <button class="button button--link" data-program="browser" data-url="https://shopify.com/">Shopify</button> where he crafts experiences that help create and grow businesses of all sizes.'>
         <div>Koen at Shopify</div>
       </button>
     </div>
@@ -92,9 +92,16 @@
     <template id="browser-template">
       <div class="browser">
         <div class="browser__url-bar">
-          <div class="browser__url" data-url></div>
+          <input class="browser__url-input" data-url-input>
         </div>
         <iframe></iframe>
+      </div>
+    </template>
+
+    <template id="alert-template">
+      <div class="alert">
+        <div data-content></div>
+        <button class="button" data-confirm>OK</button>
       </div>
     </template>
   </div>

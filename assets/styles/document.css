@@ -37,3 +37,13 @@ iframe {
   height: 100%;
   border: none;
 }
+
+input {
+  width: 100%;
+  font-family: var(--family);
+  font-size: 1em;
+
+  &:focus {
+    outline: none;
+  }
+}

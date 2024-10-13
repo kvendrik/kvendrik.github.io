@@ -24,6 +24,11 @@
   height: 550px;
 }
 
+.window--alert {
+  width: 225px;
+  height: 150px;
+}
+
 .window--top-window {
   z-index: var(--z-index-top-window);
 }
@@ -47,8 +52,6 @@
   font-family: var(--size-small);
   color: var(--color-text-base);
   margin: var(--spacing-extra-tight);
-  background: var(--color-background-contrast);
   flex-grow: 1;
-  box-shadow: inset 0 0 1px var(--color-border);
   resize: none;
 }

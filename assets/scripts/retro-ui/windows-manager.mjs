@@ -12,6 +12,7 @@ export default class WindowsManager {
       Classes: {
         topWindow: 'window--top-window',
         variantLarge: 'window--large',
+        variantAlert: 'window--alert',
       },
     };
 
@@ -112,7 +113,11 @@ export default class WindowsManager {
     }
   }
 
-  spawn({title, content: innerContentNode, variant = 'base'}) {
+  create({
+    content: innerContentNode,
+    variant = 'base',
+    alwaysOnTop = false,
+  }) {
     const {options: {Selectors, Classes}} = this;
     const {content: windowFragment} = this.template.cloneNode(true);
 
@@ -120,7 +125,6 @@ export default class WindowsManager {
     const titleNode = windowNode.querySelector(Selectors.title);
     const contentNode = windowNode.querySelector(Selectors.content);
 
-    titleNode.textContent = title;
     contentNode.appendChild(innerContentNode);
 
     const windowId = this.getUnqiueWindowId();
@@ -128,42 +132,54 @@ export default class WindowsManager {
     windowNode.setAttribute('aria-labelledby', `${windowId}-title`);
     titleNode.setAttribute('id', `${windowId}-title`);
 
-    if (variant === 'large') {
-      windowNode.classList.add(Classes.variantLarge);
+    if (alwaysOnTop) {
+      windowNode.setAttribute('data-always-on-top', '');
     }
 
-    this.wrapper.appendChild(windowFragment);
-    this.randomizeWindowPosition(windowNode);
-
-    const focusableElements = windowNode.querySelectorAll('button, a');
-
-    this.openWindowDetails = {
-      lastFocus: document.activeElement,
-      first: focusableElements[0],
-      last: focusableElements[focusableElements.length - 1]
-    };
-
-    setTimeout(() => this.openWindowDetails.first.focus(), 0);
+    if (variant === 'large') {
+      windowNode.classList.add(Classes.variantLarge);
+    } else if (variant === 'alert') {
+      windowNode.classList.add(Classes.variantAlert);
+    }
 
     return {
+      show: ({parentWindow} = {}) => {
+        this.wrapper.appendChild(windowFragment);
+        this.randomizeWindowPosition(windowNode, parentWindow?.contentNode ?? this.wrapper);
+
+        const focusableElements = windowNode.querySelectorAll('button, a');
+
+        this.openWindowDetails = {
+          lastFocus: document.activeElement,
+          first: focusableElements[0],
+          last: focusableElements[focusableElements.length - 1]
+        };
+
+        setTimeout(() => this.openWindowDetails.first.focus(), 0);
+      },
+      content: contentNode,
+      setTitle(title) {
+        titleNode.textContent = title;
+      },
       moveToTop: () => this.moveWindowToTop(windowNode),
+      close: () => this.close(windowNode),
     };
   }
 
-  randomizeWindowPosition(windowNode) {
-    const {wrapper} = this;
+  randomizeWindowPosition(windowNode, wrapper) {
     const wrapperWidth = wrapper.offsetWidth;
     const wrapperHeight = (wrapper.offsetHeight - this.startBarHeight);
-    const windowFitsInWrapper = wrapperWidth >= 500 && wrapperHeight >= 400;
+
+    const windowWidth = windowNode.offsetWidth;
+    const windowHeight = windowNode.offsetHeight;
+
+    const windowFitsInWrapper = wrapperWidth >= windowWidth && wrapperHeight >= windowHeight;
 
     if (!windowFitsInWrapper) {
       // dirty fix to not randomize position
       // when wrapper is smaller than default window size
       return;
     }
-
-    const windowWidth = windowNode.offsetWidth;
-    const windowHeight = windowNode.offsetHeight;
 
     let x = Math.random() * wrapperWidth;
     let y = Math.random() * wrapperHeight;
@@ -211,6 +227,9 @@ export default class WindowsManager {
     const windowNodes = this.wrapper.querySelectorAll(Selectors.window);
 
     for (const windowNode of windowNodes) {
+      if (windowNode.hasAttribute('data-always-on-top')) {
+        return;
+      }
       windowNode.classList.remove(Classes.topWindow);
     }
 
