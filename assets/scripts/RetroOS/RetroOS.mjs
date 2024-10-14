@@ -1,7 +1,7 @@
-import WindowsManager from './windows-manager.mjs';
+import WindowsManager from './WindowsManager.mjs';
 import {ProgramsManager} from './programs/index.mjs';
 
-export default class RetroUi {
+export default class RetroOS {
   constructor(wrapper, givenOptions) {
     const options = givenOptions || {
       Selectors: {
@@ -49,7 +49,7 @@ export default class RetroUi {
   }
 
   boot() {
-    const {wrapper, windowsManager} = this;
+    const {wrapper, windowsManager, programsManager} = this;
 
     this.setTimeUpdater();
 
@@ -61,6 +61,7 @@ export default class RetroUi {
     }
 
     windowsManager.bindEvents();
+    programsManager.bindEvents();
   }
 
   handleMousedown() {

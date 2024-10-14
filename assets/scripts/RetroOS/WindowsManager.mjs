@@ -31,6 +31,10 @@ export default class WindowsManager {
     this.startBarHeight = wrapper.querySelector(options.Selectors.startBar).offsetHeight;
   }
 
+  nodeIsWithinWindow(node) {
+    return Boolean(node.closest(this.options.Selectors.window));
+  }
+
   bindEvents() {
     const {wrapper} = this;
     wrapper.addEventListener('click', this.handleClick.bind(this));
@@ -116,7 +120,6 @@ export default class WindowsManager {
   create({
     content: innerContentNode,
     variant = 'base',
-    alwaysOnTop = false,
   }) {
     const {options: {Selectors, Classes}} = this;
     const {content: windowFragment} = this.template.cloneNode(true);
@@ -131,10 +134,6 @@ export default class WindowsManager {
 
     windowNode.setAttribute('aria-labelledby', `${windowId}-title`);
     titleNode.setAttribute('id', `${windowId}-title`);
-
-    if (alwaysOnTop) {
-      windowNode.setAttribute('data-always-on-top', '');
-    }
 
     if (variant === 'large') {
       windowNode.classList.add(Classes.variantLarge);
@@ -227,9 +226,6 @@ export default class WindowsManager {
     const windowNodes = this.wrapper.querySelectorAll(Selectors.window);
 
     for (const windowNode of windowNodes) {
-      if (windowNode.hasAttribute('data-always-on-top')) {
-        return;
-      }
       windowNode.classList.remove(Classes.topWindow);
     }
 

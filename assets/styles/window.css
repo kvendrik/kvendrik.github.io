@@ -27,6 +27,7 @@
 .window--alert {
   width: 225px;
   height: 150px;
+  z-index: var(--z-index-alert);
 }
 
 .window--top-window {

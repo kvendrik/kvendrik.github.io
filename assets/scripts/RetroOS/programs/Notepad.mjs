@@ -13,11 +13,6 @@ export class Notepad {
     const contentNode = fragment.querySelector('[data-content]');
 
     contentNode.innerHTML = content;
-    contentNode.addEventListener('click', ({target}) => {
-      if (target.dataset.program != null) {
-        programsManager.open(target.dataset);
-      }
-    });
 
     const window = windowsManager.create({content: fragment});
     window.setTitle(title);

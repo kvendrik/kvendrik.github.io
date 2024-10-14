@@ -1,3 +1,3 @@
-import RetroUi from './retro-ui/index.mjs';
+import RetroOS from './RetroOS/index.mjs';
 
-new RetroUi(document.body).boot();
+new RetroOS(document.body).boot();

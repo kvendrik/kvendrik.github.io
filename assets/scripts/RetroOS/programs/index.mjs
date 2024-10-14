@@ -6,6 +6,18 @@ export class ProgramsManager {
     this.windowsManager = windowsManager;
   }
 
+  bindEvents() {
+    document.addEventListener('click', ({target}) => {
+      if (
+        target.dataset.program == null ||
+        !this.windowsManager.nodeIsWithinWindow(target)
+      ) {
+        return;
+      }
+      this.open(target.dataset);
+    });
+  }
+
   open({program, ...options}) {
     switch (program) {
       case 'notepad':

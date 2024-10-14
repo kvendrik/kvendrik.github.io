@@ -15,8 +15,6 @@ export class Alert {
     const window = windowsManager.create({
       content: fragment,
       variant: 'alert',
-      position: 'center',
-      alwaysOnTop: true,
     });
 
     window.content.querySelector('[data-confirm]').addEventListener(
