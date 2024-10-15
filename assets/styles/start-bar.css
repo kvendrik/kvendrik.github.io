@@ -24,3 +24,7 @@
   border-right: 1px solid var(--color-border-contrast);
   border-bottom: 1px solid var(--color-border-contrast);
 }
+
+.start-bar ::selection {
+  background: transparent;
+}

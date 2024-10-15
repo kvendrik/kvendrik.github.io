@@ -1,7 +1,7 @@
 import WindowsManager from './WindowsManager.mjs';
 import {ProgramsManager} from './programs/index.mjs';
 
-export default class RetroOS {
+export class RetroOS {
   constructor(wrapper, givenOptions) {
     const options = givenOptions || {
       Selectors: {
@@ -23,8 +23,13 @@ export default class RetroOS {
 
     this.wrapper = wrapper;
     this.options = options;
-    this.desktopItems = wrapper.querySelectorAll(options.Selectors.desktopItem);
+
     this.timeNode = document.querySelector(options.Selectors.time);
+
+    this.desktopItems = {
+      nodes: wrapper.querySelectorAll(options.Selectors.desktopItem),
+    };
+
     this.windowsManager = new WindowsManager(wrapper, wrapper.querySelector(`#${options.templateId}`, {
       Selectors: {
         window: options.Selectors.window,
@@ -82,7 +87,7 @@ export default class RetroOS {
   }
 
   unselectDesktopItems() {
-    for (const item of this.desktopItems) {
+    for (const item of this.desktopItems.nodes) {
       item.classList.remove(this.options.Classes.desktopItemSelected);
     }
   }

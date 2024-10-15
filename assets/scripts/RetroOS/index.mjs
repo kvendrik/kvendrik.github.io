@@ -1,1 +1,1 @@
-export {default} from './RetroOS.mjs';
+export {RetroOS} from './RetroOS.mjs';

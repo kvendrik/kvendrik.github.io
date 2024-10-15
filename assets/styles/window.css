@@ -11,10 +11,6 @@
   border-radius: 0;
   background: var(--color-element-background);
 
-  position: absolute;
-  top: 0;
-  left: 0;
-
   display: flex;
   flex-direction: column;
 }
@@ -30,10 +26,6 @@
   z-index: var(--z-index-alert);
 }
 
-.window--top-window {
-  z-index: var(--z-index-top-window);
-}
-
 .window__title-bar {
   font-size: var(--size-small);
   padding: var(--text-container-padding-base);
@@ -47,6 +39,10 @@
 
   align-items: center;
   justify-content: space-between;
+}
+
+.window__title-bar ::selection {
+  background: transparent;
 }
 
 .window__content {

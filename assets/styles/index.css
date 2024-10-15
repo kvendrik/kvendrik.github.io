@@ -3,5 +3,6 @@
 @import './start-bar.css';
 @import './desktop.css';
 @import './window.css';
+@import './draggable-object.css';
 @import './button.css';
 @import './programs/index.css';

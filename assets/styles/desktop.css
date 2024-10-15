@@ -25,6 +25,10 @@
   outline: none;
 }
 
+.desktop__item div::selection {
+  background: transparent;
+}
+
 .desktop__item div {
   border: dotted 1px transparent;
 }

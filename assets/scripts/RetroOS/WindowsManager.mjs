@@ -1,3 +1,5 @@
+import {DraggableObjects} from "./DraggableObjects.mjs";
+
 export default class WindowsManager {
   constructor(wrapper, template, givenOptions) {
     const options = givenOptions || {
@@ -16,12 +18,6 @@ export default class WindowsManager {
       },
     };
 
-    this.dragState = {
-      dragging: false,
-      node: null,
-      cursorOffset: {x: 0, y: 0},
-    };
-
     this.getUnqiueWindowId = createUniqueIdFactory('window');
     this.openWindowDetails = null;
 
@@ -29,6 +25,11 @@ export default class WindowsManager {
     this.template = template;
     this.options = options;
     this.startBarHeight = wrapper.querySelector(options.Selectors.startBar).offsetHeight;
+
+    this.draggableObjects = new DraggableObjects(
+      options.Selectors.window,
+      wrapper,
+    );
   }
 
   nodeIsWithinWindow(node) {
@@ -38,48 +39,8 @@ export default class WindowsManager {
   bindEvents() {
     const {wrapper} = this;
     wrapper.addEventListener('click', this.handleClick.bind(this));
-    wrapper.addEventListener('mousedown', this.handleMousedown.bind(this));
-    wrapper.addEventListener('mousemove', this.handleMousemove.bind(this));
-    wrapper.addEventListener('mouseup', this.handleMouseup.bind(this));
     wrapper.addEventListener('keydown', this.handleKeydown.bind(this));
-  }
-
-  handleMousedown({target, clientX, clientY}) {
-    const {options: {Selectors}} = this;
-    const closestWindow = target.closest(Selectors.window);
-
-    if (closestWindow) {
-      this.moveWindowToTop(closestWindow);
-    }
-
-    if (!target.closest(Selectors.titleBar) || target.matches(Selectors.closeButton)) {
-      return;
-    }
-
-    const {left, top} = target.getBoundingClientRect();
-
-    this.dragState = {
-      dragging: true,
-      node: closestWindow,
-      cursorOffset: {x: clientX - left, y: clientY - top}
-    };
-  }
-
-  handleMousemove({clientX, clientY}) {
-    const {dragging, node, cursorOffset} = this.dragState;
-    if (!dragging) return;
-
-    const x = clientX - cursorOffset.x;
-    const y = clientY - cursorOffset.y;
-
-    node.setAttribute(
-      'style',
-      `transform: translate(${x}px, ${y}px)`,
-    );
-  }
-
-  handleMouseup() {
-    this.dragState.dragging = false;
+    this.draggableObjects.bindEvents();
   }
 
   handleKeydown(evt) {
@@ -160,7 +121,7 @@ export default class WindowsManager {
       setTitle(title) {
         titleNode.textContent = title;
       },
-      moveToTop: () => this.moveWindowToTop(windowNode),
+      moveToTop: () => this.draggableObjects.moveObjectToTop(windowNode),
       close: () => this.close(windowNode),
     };
   }
@@ -219,17 +180,6 @@ export default class WindowsManager {
     }
 
     this.close(windowNode);
-  }
-
-  moveWindowToTop(topWindow) {
-    const {options: {Selectors, Classes}} = this;
-    const windowNodes = this.wrapper.querySelectorAll(Selectors.window);
-
-    for (const windowNode of windowNodes) {
-      windowNode.classList.remove(Classes.topWindow);
-    }
-
-    topWindow.classList.add(Classes.topWindow);
   }
 }
 

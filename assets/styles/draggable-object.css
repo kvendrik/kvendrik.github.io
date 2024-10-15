@@ -1,0 +1,9 @@
+.draggable-object {
+  position: absolute;
+  top: 0;
+  left: 0;
+}
+
+.draggable-object--top-object {
+  z-index: var(--z-index-top-object);
+}
