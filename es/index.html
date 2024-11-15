@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="robots" content="noindex, nofollow" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Spanish Flashcards</title>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,100..1000;1,9..40,100..1000&amp;display=swap">
+  <style>
+    html {
+      height: 100%;
+      font-size: 28px;
+      font-family: "DM Sans", sans-serif;
+      font-optical-sizing: auto;
+      font-style: normal;
+      background: #121212;
+      color: rgba(255,255,255,0.9);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      line-height: 1.5em;
+    }
+
+    body {
+      padding: 1rem;
+      width: 100%;
+      max-width: 600px;
+      text-align: center;
+    }
+
+    h2 {
+      margin: 0;
+      font-size: 0.5rem;
+      text-transform: uppercase;
+      font-weight: 600;
+      opacity: .8;
+    }
+
+    p {
+      margin: 0;
+    }
+  </style>
+</head>
+<body>
+
+<h2 data-content-type>Ready?</h2>
+<p data-content>Click to continue</p>
+
+<script type="module">
+const QUESTIONS = await fetch('/es/words.json').then((response) => response.json());
+
+const contentTypeNode = document.querySelector('[data-content-type]');
+const contentNode = document.querySelector('[data-content]');
+
+let lastQuestionIndex = null;
+let showingQuestionIndex = null;
+
+document.addEventListener('click', nextStep);
+document.addEventListener('keyup', nextStep);
+
+function nextStep() {
+  if (showingQuestionIndex === null) {
+    let randomQuestionIndex = randomNumberInRange(0, QUESTIONS.length - 1);
+    
+    while (randomQuestionIndex === lastQuestionIndex) {
+      randomQuestionIndex = randomNumberInRange(0, QUESTIONS.length - 1);
+    }
+    
+    const [question] = QUESTIONS[randomQuestionIndex];
+    contentTypeNode.innerText = 'Question';
+    contentNode.innerText = question;
+    showingQuestionIndex = randomQuestionIndex;
+    return;
+  }
+  
+  const [, answer] = QUESTIONS[showingQuestionIndex];
+  contentTypeNode.innerText = 'Answer';
+  contentNode.innerText = answer;
+  lastQuestionIndex = showingQuestionIndex;
+  showingQuestionIndex = null;
+}
+
+function randomNumberInRange(min, max) {
+  return Math.round(Math.random() * (max - min) + min);
+}
+</script>
+</body>
+</html>

@@ -1,5 +1,5 @@
 import {execSync} from 'child_process';
-import sass from 'node-sass';
+//import sass from 'node-sass';
 import autoprefixer from 'autoprefixer';
 import postcss from 'postcss';
 import {readFileSync, writeFileSync} from 'fs';
@@ -14,26 +14,28 @@ export function buildScripts() {
 }
 
 export async function buildStyles({sourceMap}) {
-  const cssOutputPath = 'public/main.css';
-  const mapOutputPath = 'public/main.css.map';
+  // NOTE: COULDN’T GET NODE_SASS TO WORK PROPERLY SO REMOVED IT FOR NOW
 
-  if (!sourceMap) {
-    execShell(`rm -rf ${mapOutputPath}`);
-  }
+  // const cssOutputPath = 'public/main.css';
+  // const mapOutputPath = 'public/main.css.map';
 
-  const {css, map} = sass.renderSync({
-    file: 'src/styles/main.scss',
-    outputStyle: 'compressed',
-    outFile: cssOutputPath,
-    sourceMap,
-  });
+  // if (!sourceMap) {
+  //   execShell(`rm -rf ${mapOutputPath}`);
+  // }
 
-  const {css: finalCss} = await postcss([autoprefixer]).process(css, {from: 'src/styles/main.scss'});
-  writeFileSync(cssOutputPath, sourceMap ? `${finalCss}\n\n/*# sourceMappingURL=/public/main.css.map */` : finalCss);
+  // const {css, map} = sass.renderSync({
+  //   file: 'src/styles/main.scss',
+  //   outputStyle: 'compressed',
+  //   outFile: cssOutputPath,
+  //   sourceMap,
+  // });
 
-  if (sourceMap) {
-    writeFileSync(mapOutputPath, map);
-  }
+  // const {css: finalCss} = await postcss([autoprefixer]).process(css, {from: 'src/styles/main.scss'});
+  // writeFileSync(cssOutputPath, sourceMap ? `${finalCss}\n\n/*# sourceMappingURL=/public/main.css.map */` : finalCss);
+
+  // if (sourceMap) {
+  //   writeFileSync(mapOutputPath, map);
+  // }
 }
 
 export function buildHtml() {
