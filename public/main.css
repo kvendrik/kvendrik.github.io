@@ -217,6 +217,10 @@ a {
 
   display: flex;
   flex-direction: column;
+
+  @media (max-width: 600px) {
+    transform: none !important;
+  }
 }
 
 .window--top-window {
