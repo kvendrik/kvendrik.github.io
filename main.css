@@ -239,6 +239,8 @@ a {
 }
 
 .window__content {
+  height: 100%;
+  overflow-y: auto;
   font-family: var(--size-small);
   color: var(--color-text-base);
   margin: var(--spacing-extra-tight);
@@ -252,6 +254,11 @@ a {
 .window__content {
   p {
     margin-bottom: var(--spacing-tight);
+  }
+
+  img {
+    max-width: 200px;
+    display: block;
   }
 }
 
