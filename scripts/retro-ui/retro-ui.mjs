@@ -87,6 +87,11 @@ export default class RetroUi {
     this.unselectDesktopItems();
     item.classList.add(this.options.Classes.desktopItemSelected);
 
+    if (item.dataset.link) {
+      window.open(item.dataset.link);
+      return;
+    }
+
     const title = item.innerText;
     const id = item.dataset.id;
     const content = item.dataset.notepadContent;

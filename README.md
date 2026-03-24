@@ -1,3 +1,3 @@
 ```
-npx live-server --port=8000
+bunx live-server --port=8000
 ```
