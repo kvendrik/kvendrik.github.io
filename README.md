@@ -1,3 +1,4 @@
 ```
-bunx live-server --port=8000
+bun install
+bun dev
 ```

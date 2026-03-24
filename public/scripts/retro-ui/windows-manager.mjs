@@ -28,6 +28,43 @@ export default class WindowsManager {
     this.template = template;
     this.options = options;
     this.startBarHeight = wrapper.querySelector(options.Selectors.startBar).offsetHeight;
+
+    this.syncOpenWindowsFromDom();
+  }
+
+  syncOpenWindowsFromDom() {
+    const {wrapper, options: {Selectors, Classes}} = this;
+    const windowNodes = wrapper.querySelectorAll(Selectors.window);
+    if (!windowNodes.length) {
+      return;
+    }
+
+    for (const windowNode of windowNodes) {
+      const {id} = windowNode.dataset;
+
+      if (id) {
+        this.openWindows.set(id, windowNode);
+      }
+
+      this.randomizeWindowPosition(windowNode);
+    }
+
+    const nodes = [...windowNodes];
+    const topWindow =
+      nodes.find((n) => n.classList.contains(Classes.topWindow)) ??
+      nodes[nodes.length - 1];
+
+    const focusableElements = topWindow.querySelectorAll('button, a');
+
+    if (!focusableElements.length) {
+      return;
+    }
+
+    this.openWindowDetails = {
+      lastFocus: document.activeElement,
+      first: focusableElements[0],
+      last: focusableElements[focusableElements.length - 1],
+    };
   }
 
   bindEvents() {

@@ -39,7 +39,7 @@ export default class RetroUi {
     }));
 
     this.setTimeUpdater();
-    this.openDesktopItem(this.desktopItems[0]);
+    //this.openDesktopItem(this.desktopItems[0]);
   }
 
   setTimeUpdater() {
@@ -83,7 +83,7 @@ export default class RetroUi {
     }
   }
 
-  openDesktopItem(item) {
+  async openDesktopItem(item) {
     this.unselectDesktopItems();
     item.classList.add(this.options.Classes.desktopItemSelected);
 
@@ -94,7 +94,11 @@ export default class RetroUi {
 
     const title = item.innerText;
     const id = item.dataset.id;
-    const content = item.dataset.notepadContent;
+    let content = item.dataset.notepadContent ?? null;
+
+    if (item.dataset.notepadContentPath) {
+      content = await fetch(item.dataset.notepadContentPath).then(response => response.text());
+    }
 
     this.windowsManager.spawn({id, title, content});
   }

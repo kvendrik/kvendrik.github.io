@@ -1,0 +1,14 @@
+{
+  "name": "kvendrik.github.io",
+  "scripts": {
+    "dev": "live-server public --port=8000 --ignore=node_modules",
+    "build": "bun scripts/build.ts"
+  },
+  "devDependencies": {
+    "@types/node": "^22.10.0",
+    "chokidar-cli": "^3.0.0",
+    "concurrently": "^9.1.2",
+    "live-server": "^1.2.2",
+    "typescript": "^5.7.0"
+  }
+}

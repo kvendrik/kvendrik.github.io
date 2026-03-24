@@ -42,8 +42,8 @@
 
 @font-face {
   font-family: 'W95fa';
-  src: url('fonts/w95fa.woff2') format('woff2'),
-      url('fonts/w95fa.woff') format('woff');
+  src: url('/fonts/w95fa.woff2') format('woff2'),
+      url('/fonts/w95fa.woff') format('woff');
   font-weight: normal;
   font-style: normal;
   font-display: swap;
@@ -189,7 +189,7 @@ a {
   margin: 0 auto;
   margin-bottom: var(--spacing-tight);
 
-  background-image: url('notepad-icon.png');
+  background-image: url('/notepad-icon.png');
   background-repeat: no-repeat;
   background-size: 100%;
 }
