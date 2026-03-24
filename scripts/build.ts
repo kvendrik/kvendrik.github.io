@@ -8,6 +8,9 @@ const buttons: string[] = [];
 const pages: {title: string, content: string}[] = [];
 
 for (const entry of files) {
+  if (!entry.endsWith('.md')) {
+    continue;
+  }
   const filePath = path.relative(process.cwd(), path.join('entries', entry));
   buttons.push(`<button data-desktop-item class="desktop__item" data-id="${entry}" data-notepad-content-path="${filePath}"><div>${entry}</div></button>`);
   pages.push({title: entry, content: fs.readFileSync(path.join('public', 'entries', entry), 'utf8')});
@@ -26,5 +29,5 @@ for (const {title, content} of pages) {
       <div class="window__content" data-content>${content}</div>
     </div>
   `);
-  fs.writeFileSync(`public/${title}.html`, entryHtml.replace(/\n\s{2,}/g, ''));
+  fs.writeFileSync(`public/${title}.html`, entryHtml);
 }

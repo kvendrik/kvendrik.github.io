@@ -1,3 +1,5 @@
+import {render as renderMarkdown} from './markdown.mjs';
+
 export default class WindowsManager {
   constructor(wrapper, template, givenOptions) {
     const options = givenOptions || {
@@ -162,7 +164,11 @@ export default class WindowsManager {
     const contentNode = windowNode.querySelector(Selectors.content);
 
     titleNode.textContent = title;
-    contentNode.innerHTML = content;
+    const html =
+      typeof content === 'string' && id.endsWith('.md')
+        ? renderMarkdown(content)
+        : content;
+    contentNode.innerHTML = html;
 
     const windowId = this.getUnqiueWindowId();
     windowNode.setAttribute('aria-labelledby', `${windowId}-title`);
@@ -187,11 +193,25 @@ export default class WindowsManager {
     const {wrapper} = this;
     const wrapperWidth = wrapper.offsetWidth;
     const wrapperHeight = (wrapper.offsetHeight - this.startBarHeight) / 1.4;
-    const windowFitsInWrapper = wrapperWidth >= 500 && wrapperHeight >= 400;
 
-    if (!windowFitsInWrapper) {
+    const windowFitsInWidth = wrapperWidth >= windowNode.offsetWidth;
+    const windowFitsInHeight = wrapperHeight >= windowNode.offsetHeight;
+
+    if (!windowFitsInHeight) {
+      if (!windowFitsInWidth) {
+        return;
+      }
       // dirty fix to not randomize position
       // when wrapper is smaller than default window size
+      const windowWidth = windowNode.offsetWidth;
+      const maxX = wrapperWidth - windowWidth;
+      const centerX = maxX / 2;
+      const randomOffsetX = (Math.random() - 0.5) * maxX * 0.2;
+      const x = Math.min(Math.max(centerX + randomOffsetX, 0), maxX);
+      windowNode.setAttribute(
+        'style',
+        `transform: translateX(${x}px)`,
+      );
       return;
     }
 
