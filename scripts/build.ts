@@ -2,7 +2,7 @@ import fs from 'node:fs';
 import path from 'node:path';
 
 const indexSrc = fs.readFileSync('src/index.html', 'utf8');
-const files = fs.readdirSync('public/entries');
+const files = fs.readdirSync('docs/entries');
 
 const buttons: string[] = [];
 const pages: {title: string, content: string}[] = [];
@@ -10,11 +10,11 @@ const pages: {title: string, content: string}[] = [];
 for (const entry of files) {
   const filePath = path.relative(process.cwd(), path.join('entries', entry));
   buttons.push(`<button data-desktop-item class="desktop__item" data-id="${entry}" data-notepad-content-path="${filePath}"><div>${entry}</div></button>`);
-  pages.push({title: entry, content: fs.readFileSync(path.join('public', 'entries', entry), 'utf8')});
+  pages.push({title: entry, content: fs.readFileSync(path.join('docs', 'entries', entry), 'utf8')});
 }
 
 const blank = indexSrc.replace('{articles}', buttons.join('\n')).replace(/\n\s{2,}/g, '');
-fs.writeFileSync('public/index.html', blank.replace('{window}', ''));
+fs.writeFileSync('docs/index.html', blank.replace('{window}', ''));
 
 for (const {title, content} of pages) {
   const entryHtml = blank.replace('{window}', `
@@ -26,5 +26,5 @@ for (const {title, content} of pages) {
       <div class="window__content" data-content>${content}</div>
     </div>
   `);
-  fs.writeFileSync(`public/${title}.html`, entryHtml.replace(/\n\s{2,}/g, ''));
+  fs.writeFileSync(`docs/${title}.html`, entryHtml.replace(/\n\s{2,}/g, ''));
 }

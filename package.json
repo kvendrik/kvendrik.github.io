@@ -1,7 +1,7 @@
 {
   "name": "kvendrik.github.io",
   "scripts": {
-    "dev": "live-server public --port=8000 --ignore=node_modules",
+    "dev": "live-server docs --port=8000 --ignore=node_modules",
     "build": "bun scripts/build.ts"
   },
   "devDependencies": {
