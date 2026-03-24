@@ -49,7 +49,7 @@ export default class WindowsManager {
       }
 
       this.randomizeWindowPosition(windowNode);
-      windowNode.querySelector(Selectors.content).innerHTML = renderMarkdown(windowNode.dataset.content);
+      windowNode.querySelector(Selectors.content).innerHTML = renderMarkdown(windowNode.querySelector(Selectors.content).innerHTML);
     }
 
     const nodes = [...windowNodes];

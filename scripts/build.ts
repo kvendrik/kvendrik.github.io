@@ -21,12 +21,12 @@ fs.writeFileSync('public/index.html', blank.replace('{window}', ''));
 
 for (const {title, content} of pages) {
   const entryHtml = blank.replace('{window}', `
-    <div class="window" data-window role="dialog" aria-modal="true" data-id="${title}" data-content="${content}">
+    <div class="window" data-window role="dialog" aria-modal="true" data-id="${title}">
       <div class="window__title-bar" data-title-bar>
         <span data-title>${title}</span>
         <button class="button button--icon" data-close-button aria-label="Close window">X</button>
       </div>
-      <div class="window__content" data-content></div>
+      <div class="window__content" data-content>${content}</div>
     </div>
   `);
   fs.writeFileSync(`public/${title}.html`, entryHtml);
