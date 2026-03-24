@@ -1,0 +1,9 @@
+<!DOCTYPE html>
+<script>
+  const redirects = {
+    '/gh': 'https://github.com/kvendrik',
+    '/li': 'https://linkedin.com/in/kvendrik',
+  };
+  const dest = redirects[window.location.pathname];
+  if (dest) window.location.replace(dest);
+</script>
