@@ -10,7 +10,7 @@ const pages: {title: string, content: string}[] = [];
 for (const entry of files) {
   const filePath = path.relative(process.cwd(), path.join('entries', entry));
   buttons.push(`<button data-desktop-item class="desktop__item" data-id="${entry}" data-notepad-content-path="${filePath}"><div>${entry}</div></button>`);
-  pages.push({title: entry, content: fs.readFileSync(path.join('docs', 'entries', entry), 'utf8')});
+  pages.push({title: entry, content: fs.readFileSync(path.join('public', 'entries', entry), 'utf8')});
 }
 
 const blank = indexSrc.replace('{articles}', buttons.join('\n')).replace(/\n\s{2,}/g, '');
