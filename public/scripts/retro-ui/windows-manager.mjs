@@ -49,6 +49,7 @@ export default class WindowsManager {
       }
 
       this.randomizeWindowPosition(windowNode);
+      windowNode.querySelector(Selectors.content).innerHTML = renderMarkdown(windowNode.dataset.content);
     }
 
     const nodes = [...windowNodes];
@@ -164,11 +165,7 @@ export default class WindowsManager {
     const contentNode = windowNode.querySelector(Selectors.content);
 
     titleNode.textContent = title;
-    const html =
-      typeof content === 'string' && id.endsWith('.md')
-        ? renderMarkdown(content)
-        : content;
-    contentNode.innerHTML = html;
+    contentNode.innerHTML = renderMarkdown(content);
 
     const windowId = this.getUnqiueWindowId();
     windowNode.setAttribute('aria-labelledby', `${windowId}-title`);
