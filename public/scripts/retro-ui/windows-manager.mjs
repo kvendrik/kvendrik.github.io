@@ -192,8 +192,8 @@ export default class WindowsManager {
     let wrapperWidth = wrapper.offsetWidth;
     let wrapperHeight = (wrapper.offsetHeight - this.startBarHeight);
 
-    const windowFitsInWidth = wrapperWidth >= windowNode.offsetWidth;
-    const windowFitsInHeight = wrapperHeight >= windowNode.offsetHeight;
+    const windowFitsInWidth = wrapperWidth > windowNode.offsetWidth;
+    const windowFitsInHeight = wrapperHeight > windowNode.offsetHeight;
 
     wrapperWidth = wrapperWidth / 1.5;
     wrapperHeight = wrapperHeight / 1.5;
