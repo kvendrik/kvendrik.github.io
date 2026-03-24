@@ -2,7 +2,7 @@ import fs from 'node:fs';
 import path from 'node:path';
 
 const indexSrc = fs.readFileSync('src/index.html', 'utf8');
-const files = fs.readdirSync('docs/entries');
+const files = fs.readdirSync('public/entries');
 
 const buttons: string[] = [];
 const pages: {title: string, content: string}[] = [];
@@ -14,7 +14,7 @@ for (const entry of files) {
 }
 
 const blank = indexSrc.replace('{articles}', buttons.join('\n')).replace(/\n\s{2,}/g, '');
-fs.writeFileSync('docs/index.html', blank.replace('{window}', ''));
+fs.writeFileSync('public/index.html', blank.replace('{window}', ''));
 
 for (const {title, content} of pages) {
   const entryHtml = blank.replace('{window}', `
@@ -26,5 +26,5 @@ for (const {title, content} of pages) {
       <div class="window__content" data-content>${content}</div>
     </div>
   `);
-  fs.writeFileSync(`docs/${title}.html`, entryHtml.replace(/\n\s{2,}/g, ''));
+  fs.writeFileSync(`public/${title}.html`, entryHtml.replace(/\n\s{2,}/g, ''));
 }
