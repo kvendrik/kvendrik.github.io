@@ -202,7 +202,7 @@ a {
   width: 600px;
   min-height: 400px;
   max-width: 100%;
-  max-height: calc(100% - var(--start-bar-height) - var(--spacing-base));
+  max-height: calc(100% - var(--start-bar-height));
 
   border-top: 2px solid var(--color-border-max-contrast);
   border-left: 2px solid var(--color-window-border-left-contrast);
