@@ -188,7 +188,7 @@ export default class WindowsManager {
 
   randomizeWindowPosition(windowNode) {
     const {wrapper} = this;
-    const wrapperWidth = wrapper.offsetWidth;
+    const wrapperWidth = wrapper.offsetWidth / 1.5;
     const wrapperHeight = (wrapper.offsetHeight - this.startBarHeight) / 1.4;
 
     const windowFitsInWidth = wrapperWidth >= windowNode.offsetWidth;
