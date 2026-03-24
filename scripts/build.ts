@@ -16,7 +16,7 @@ for (const entry of files) {
   pages.push({title: entry, content: fs.readFileSync(path.join('public', 'entries', entry), 'utf8')});
 }
 
-const blank = indexSrc.replace('{articles}', buttons.join('\n')).replace(/\n\s{2,}/g, '');
+const blank = indexSrc.replace('{articles}', buttons.join('\n')).replace(/\n\s{2,}/g, '').replaceAll('{unix}', new Date().getTime().toString());
 fs.writeFileSync('public/index.html', blank.replace('{window}', ''));
 
 for (const {title, content} of pages) {
