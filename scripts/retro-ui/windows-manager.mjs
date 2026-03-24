@@ -148,8 +148,8 @@ export default class WindowsManager {
 
   randomizeWindowPosition(windowNode) {
     const {wrapper} = this;
-    const wrapperWidth = wrapper.offsetWidth / 1.3;
-    const wrapperHeight = (wrapper.offsetHeight - this.startBarHeight) / 1.3;
+    const wrapperWidth = wrapper.offsetWidth;
+    const wrapperHeight = (wrapper.offsetHeight - this.startBarHeight) / 1.2;
     const windowFitsInWrapper = wrapperWidth >= 500 && wrapperHeight >= 400;
 
     if (!windowFitsInWrapper) {
@@ -161,14 +161,16 @@ export default class WindowsManager {
     const windowWidth = windowNode.offsetWidth;
     const windowHeight = windowNode.offsetHeight;
 
-    let x = Math.random() * wrapperWidth;
-    let y = Math.random() * wrapperHeight;
+    const maxX = wrapperWidth - windowWidth;
+    const maxY = wrapperHeight - windowHeight;
+    const centerX = maxX / 2;
+    const centerY = maxY / 2;
 
-    // ensure window isn't out of bounds
-    while (x > (wrapperWidth - windowWidth) || y > (wrapperHeight - windowHeight)) {
-      x = Math.random() * wrapperWidth;
-      y = Math.random() * wrapperHeight;
-    }
+    // add small randomness around center (about 10% of available space)
+    const randomOffsetX = (Math.random() - 0.5) * maxX * 0.2;
+    const randomOffsetY = (Math.random() - 0.5) * maxY * 0.2;
+    const x = Math.min(Math.max(centerX + randomOffsetX, 0), maxX);
+    const y = Math.min(Math.max(centerY + randomOffsetY, 0), maxY);
 
     windowNode.setAttribute(
       'style',
