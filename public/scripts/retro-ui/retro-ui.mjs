@@ -39,10 +39,6 @@ export default class RetroUi {
     }));
 
     this.setTimeUpdater();
-
-    if (this.windowsManager.openWindows.size === 0) {
-      this.openDesktopItem(this.desktopItems[0]);
-    }
   }
 
   setTimeUpdater() {

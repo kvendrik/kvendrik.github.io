@@ -50,6 +50,7 @@ export default class WindowsManager {
 
       this.randomizeWindowPosition(windowNode);
       windowNode.querySelector(Selectors.content).innerHTML = renderMarkdown(windowNode.querySelector(Selectors.content).innerHTML);
+      windowNode.removeAttribute('hidden');
     }
 
     const nodes = [...windowNodes];
@@ -196,7 +197,7 @@ export default class WindowsManager {
     const windowFitsInHeight = wrapperHeight > windowNode.offsetHeight;
 
     wrapperWidth = wrapperWidth / 1.5;
-    wrapperHeight = wrapperHeight / 1.5;
+    wrapperHeight = wrapperHeight / 1.3;
 
     if (!windowFitsInHeight) {
       if (!windowFitsInWidth) {

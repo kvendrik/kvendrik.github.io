@@ -223,6 +223,10 @@ a {
   }
 }
 
+[hidden] {
+  visibility: hidden;
+}
+
 .window--top-window {
   z-index: var(--z-index-top-window);
 }
