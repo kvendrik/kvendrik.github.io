@@ -50,7 +50,7 @@ export default class WindowsManager {
 
       this.randomizeWindowPosition(windowNode);
       windowNode.querySelector(Selectors.content).innerHTML = renderMarkdown(windowNode.querySelector(Selectors.content).innerHTML);
-      windowNode.classList.remove('window--hidden');
+      windowNode.removeAttribute('hidden');
     }
 
     const nodes = [...windowNodes];

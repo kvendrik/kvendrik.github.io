@@ -45,7 +45,7 @@ function removeAllHtmlInDir(dir: string) {
 
 function createWindow(title: string, content: string) {
   return `
-    <div class="window window--hidden" data-window role="dialog" aria-modal="true" data-id="${title}">
+    <div class="window" data-window role="dialog" aria-modal="true" data-id="${title}">
       <div class="window__title-bar" data-title-bar>
         <span data-title>${title}</span>
         <button class="button button--icon" data-close-button aria-label="Close window">X</button>
