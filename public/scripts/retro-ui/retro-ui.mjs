@@ -99,6 +99,6 @@ export default class RetroUi {
       content = await fetch(item.dataset.notepadContentPath).then(response => response.text());
     }
 
-    this.windowsManager.spawn({id, title, content});
+    this.windowsManager.spawn({id, title, content, size: item.dataset.size ?? 'normal', kind: item.dataset.kind ?? 'normal'});
   }
 }

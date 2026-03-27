@@ -43,13 +43,15 @@ export default class WindowsManager {
 
     for (const windowNode of windowNodes) {
       const {id} = windowNode.dataset;
+      const contentNode = windowNode.querySelector(Selectors.content);
+      const root = contentNode.querySelector('article') ?? contentNode;
 
       if (id) {
         this.openWindows.set(id, windowNode);
       }
 
       this.randomizeWindowPosition(windowNode);
-      windowNode.querySelector(Selectors.content).innerHTML = renderMarkdown(windowNode.querySelector(Selectors.content).innerHTML);
+      root.innerHTML = this.renderWindowContent(windowNode, root.textContent ?? '');
       windowNode.removeAttribute('hidden');
     }
 
@@ -107,11 +109,7 @@ export default class WindowsManager {
 
     const x = clientX - cursorOffset.x;
     const y = clientY - cursorOffset.y;
-
-    node.setAttribute(
-      'style',
-      `transform: translate(${x}px, ${y}px)`,
-    );
+    this.setWindowPosition(node, x, y);
   }
 
   handleMouseup() {
@@ -153,8 +151,9 @@ export default class WindowsManager {
     }
   }
 
-  spawn({id, title, content}) {
+  spawn({id, title, content, size = 'normal', kind = 'normal'}) {
     if (this.openWindows.has(id)) {
+      this.moveWindowToTop(this.openWindows.get(id));
       return;
     }
 
@@ -166,7 +165,8 @@ export default class WindowsManager {
     const contentNode = windowNode.querySelector(Selectors.content);
 
     titleNode.textContent = title;
-    contentNode.innerHTML = renderMarkdown(content);
+    windowNode.dataset.kind = kind;
+    contentNode.innerHTML = this.renderWindowContent(windowNode, content);
 
     const windowId = this.getUnqiueWindowId();
     windowNode.setAttribute('aria-labelledby', `${windowId}-title`);
@@ -174,6 +174,11 @@ export default class WindowsManager {
     titleNode.setAttribute('id', `${windowId}-title`);
 
     this.wrapper.appendChild(windowFragment);
+
+    if (size === 'large') {
+      windowNode.classList.add('window--large');
+    }
+
     this.randomizeWindowPosition(windowNode);
 
     this.openWindows.set(id, windowNode);
@@ -190,51 +195,37 @@ export default class WindowsManager {
   randomizeWindowPosition(windowNode) {
     const {wrapper} = this;
 
-    let wrapperWidth = wrapper.offsetWidth;
-    let wrapperHeight = (wrapper.offsetHeight - this.startBarHeight);
-
-    const windowFitsInWidth = wrapperWidth > windowNode.offsetWidth;
-    const windowFitsInHeight = wrapperHeight > windowNode.offsetHeight;
-
-    wrapperWidth = wrapperWidth / 1.5;
-    wrapperHeight = wrapperHeight / 1.3;
-
-    if (!windowFitsInHeight) {
-      if (!windowFitsInWidth) {
-        return;
-      }
-      // dirty fix to not randomize position
-      // when wrapper is smaller than default window size
-      const windowWidth = windowNode.offsetWidth;
-      const maxX = wrapperWidth - windowWidth;
-      const centerX = maxX / 2;
-      const randomOffsetX = (Math.random() - 0.5) * maxX * 0.2;
-      const x = Math.min(Math.max(centerX + randomOffsetX, 0), maxX);
-      windowNode.setAttribute(
-        'style',
-        `transform: translateX(${x}px)`,
-      );
-      return;
-    }
-
+    const wrapperWidth = wrapper.offsetWidth;
+    const wrapperHeight = wrapper.offsetHeight - this.startBarHeight;
     const windowWidth = windowNode.offsetWidth;
     const windowHeight = windowNode.offsetHeight;
 
-    const maxX = wrapperWidth - windowWidth;
-    const maxY = wrapperHeight - windowHeight;
-    const centerX = maxX / 2;
-    const centerY = maxY / 2;
+    const maxX = Math.max(wrapperWidth - windowWidth, 0);
+    const maxY = Math.max(wrapperHeight - windowHeight, 0);
+    const centerX = maxX * 0.3;
+    const centerY = maxY * 0.2;
 
-    // add small randomness around center (about 10% of available space)
-    const randomOffsetX = (Math.random() - 0.5) * maxX * 0.2;
-    const randomOffsetY = (Math.random() - 0.5) * maxY * 0.2;
+    // Keep new windows near the center with a small random offset.
+    const randomOffsetX = (Math.random() - 0.5) * Math.min(maxX * 0.3, 120);
+    const randomOffsetY = (Math.random() - 0.5) * Math.min(maxY * 0.3, 80);
     const x = Math.min(Math.max(centerX + randomOffsetX, 0), maxX);
     const y = Math.min(Math.max(centerY + randomOffsetY, 0), maxY);
+    this.setWindowPosition(windowNode, x, y);
+  }
 
-    windowNode.setAttribute(
-      'style',
-      `transform: translate(${x}px, ${y}px)`,
-    );
+  setWindowPosition(windowNode, x = 0, y = 0) {
+    windowNode.style.setProperty('--window-x', `${x}px`);
+    windowNode.style.setProperty('--window-y', `${y}px`);
+  }
+
+  renderWindowContent(windowNode, content) {
+    const renderedContent = renderMarkdown(content);
+
+    if (windowNode.dataset.kind === 'article') {
+      return `<article>${renderedContent}</article>`;
+    }
+
+    return renderedContent;
   }
 
   close(windowNode) {

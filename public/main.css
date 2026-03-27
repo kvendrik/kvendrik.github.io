@@ -74,49 +74,6 @@ a {
   color: var(--color-text-link);
 }
 
-.landing-screen {
-  position: fixed;
-  top: 0;
-  bottom: 0;
-  left: 0;
-  right: 0;
-  background: white;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  z-index: var(--z-index-loading-screen);
-  text-align: center;
-}
-
-.landing-screen--is-hidden {
-  visibility: hidden;
-}
-
-.landing-screen__content {
-  width: 90%;
-  max-width: 250px;
-  animation: fade-in 1s ease;
-}
-
-.landing-screen__title {
-  font: 500 var(--size-root) var(--family);
-  line-height: var(--text-container-line-height-base);
-}
-
-.landing-screen__image {
-  width: 100%;
-  margin-bottom: var(--spacing-base);
-}
-
-@keyframes fade-in {
-  from {
-    opacity: 0;
-  }
-  to {
-    opacity: 1;
-  }
-}
-
 .start-bar {
   position: absolute;
   bottom: 0;
@@ -199,10 +156,13 @@ a {
 }
 
 .window {
+  --window-x: 0px;
+  --window-y: 0px;
+
   width: 600px;
   min-height: 400px;
-  max-width: 100%;
-  max-height: calc(100% - var(--start-bar-height));
+  max-width: calc(100% - 12px);
+  max-height: calc(100% - var(--start-bar-height) - var(--window-y));
 
   border-top: 2px solid var(--color-border-max-contrast);
   border-left: 2px solid var(--color-window-border-left-contrast);
@@ -213,18 +173,54 @@ a {
 
   position: absolute;
   top: 0;
-  left: 0;
+  left: 12px;
+  transform: translate(var(--window-x), var(--window-y));
 
   display: flex;
   flex-direction: column;
 
   @media (max-width: 600px) {
+    height: 100%;
     transform: none !important;
   }
 }
 
 [hidden] {
   visibility: hidden;
+}
+
+article {
+  max-width: 800px;
+  margin: 0 auto;
+
+  font-family: "IBM Plex Mono", monospace;
+  font-weight: 400;
+  font-style: normal;
+
+  padding-top: var(--spacing-loose);
+
+  h1, h2, h3, h4, h5, h6 {
+    margin-bottom: 2rem;
+  }
+
+  li {
+    list-style-type: none;
+  }
+
+  p {
+    margin-bottom: 1.5rem !important;
+  }
+}
+
+.window--large {
+  width: 1024px;
+  height: 700px;
+
+  @media (max-width: 1024px) {
+    width: 100%;
+    height: 100%;
+    transform: none !important;
+  }
 }
 
 .window--top-window {

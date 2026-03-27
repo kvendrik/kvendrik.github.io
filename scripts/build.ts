@@ -14,7 +14,7 @@ for (const entry of files) {
     continue;
   }
   const filePath = path.relative(process.cwd(), path.join('entries', entry));
-  buttons.push(`<button data-desktop-item class="desktop__item" data-id="${entry}" data-notepad-content-path="${filePath}"><div>${entry}</div></button>`);
+  buttons.push(`<button data-desktop-item class="desktop__item" data-id="${entry}" data-notepad-content-path="${filePath}" data-size="large" data-kind="article"><div>${entry}</div></button>`);
   pages.push({title: entry, content: fs.readFileSync(path.join('public', 'entries', entry), 'utf8')});
 }
 
@@ -27,7 +27,7 @@ const blank = indexSrc
 fs.writeFileSync('public/index.html', blank.replace('{window}', createWindow('koen.txt', fs.readFileSync('public/bio.md', 'utf8'))));
 
 for (const {title, content} of pages) {
-  const entryHtml = blank.replace('{window}', createWindow(title, content));
+  const entryHtml = blank.replace('{window}', createWindow(title, content, 'article'));
   fs.writeFileSync(`public/${title}.html`, entryHtml);
 }
 
@@ -43,14 +43,14 @@ function removeAllHtmlInDir(dir: string) {
   }
 }
 
-function createWindow(title: string, content: string) {
+function createWindow(title: string, content: string, kind: 'normal' | 'article' = 'normal') {
   return `
-    <div class="window" data-window role="dialog" aria-modal="true" data-id="${title}" hidden>
+    <div class="window ${kind === 'article' ? 'window--large' : ''}" data-window role="dialog" aria-modal="true" data-id="${title}" hidden>
       <div class="window__title-bar" data-title-bar>
         <span data-title>${title}</span>
         <button class="button button--icon" data-close-button aria-label="Close window">X</button>
       </div>
-      <div class="window__content" data-content>${content}</div>
+      <div class="window__content" data-content>${kind === 'article' ? `<article>${content}</article>` : content}</div>
     </div>
   `;
 }
