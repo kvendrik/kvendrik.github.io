@@ -162,7 +162,7 @@ a {
   width: 600px;
   min-height: 400px;
   max-width: calc(100% - 12px);
-  max-height: calc(100% - var(--start-bar-height) - var(--window-y));
+  max-height: calc(100% - var(--start-bar-height) - var(--window-y) - var(--spacing-base));
 
   border-top: 2px solid var(--color-border-max-contrast);
   border-left: 2px solid var(--color-window-border-left-contrast);
