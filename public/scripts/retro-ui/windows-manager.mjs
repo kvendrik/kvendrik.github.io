@@ -54,7 +54,7 @@ export default class WindowsManager {
       }
 
       this.randomizeWindowPosition(windowNode);
-      root.innerHTML = this.renderWindowContent(windowNode, root.textContent ?? '');
+      root.innerHTML = this.renderWindowContent(windowNode, root.innerHTML ?? '');
       windowNode.removeAttribute('hidden');
     }
 
