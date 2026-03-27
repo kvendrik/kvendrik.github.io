@@ -1,4 +1,4 @@
-import {render as renderMarkdown} from './markdown.mjs';
+import { render as renderMarkdown } from './markdown.mjs';
 
 export default class WindowsManager {
   constructor(wrapper, template, givenOptions) {
@@ -19,7 +19,7 @@ export default class WindowsManager {
     this.dragState = {
       dragging: false,
       node: null,
-      cursorOffset: {x: 0, y: 0},
+      cursorOffset: { x: 0, y: 0 },
     };
 
     this.getUnqiueWindowId = createUniqueIdFactory('window');
@@ -35,14 +35,17 @@ export default class WindowsManager {
   }
 
   syncOpenWindowsFromDom() {
-    const {wrapper, options: {Selectors, Classes}} = this;
+    const {
+      wrapper,
+      options: { Selectors, Classes },
+    } = this;
     const windowNodes = wrapper.querySelectorAll(Selectors.window);
     if (!windowNodes.length) {
       return;
     }
 
     for (const windowNode of windowNodes) {
-      const {id} = windowNode.dataset;
+      const { id } = windowNode.dataset;
       const contentNode = windowNode.querySelector(Selectors.content);
       const root = contentNode.querySelector('article') ?? contentNode;
 
@@ -57,8 +60,7 @@ export default class WindowsManager {
 
     const nodes = [...windowNodes];
     const topWindow =
-      nodes.find((n) => n.classList.contains(Classes.topWindow)) ??
-      nodes[nodes.length - 1];
+      nodes.find((n) => n.classList.contains(Classes.topWindow)) ?? nodes[nodes.length - 1];
 
     const focusableElements = topWindow.querySelectorAll('button, a');
 
@@ -74,7 +76,7 @@ export default class WindowsManager {
   }
 
   bindEvents() {
-    const {wrapper} = this;
+    const { wrapper } = this;
     wrapper.addEventListener('click', this.handleClick.bind(this));
     wrapper.addEventListener('mousedown', this.handleMousedown.bind(this));
     wrapper.addEventListener('mousemove', this.handleMousemove.bind(this));
@@ -82,8 +84,10 @@ export default class WindowsManager {
     wrapper.addEventListener('keydown', this.handleKeydown.bind(this));
   }
 
-  handleMousedown({target, clientX, clientY}) {
-    const {options: {Selectors}} = this;
+  handleMousedown({ target, clientX, clientY }) {
+    const {
+      options: { Selectors },
+    } = this;
     const closestWindow = target.closest(Selectors.window);
 
     if (closestWindow) {
@@ -94,20 +98,20 @@ export default class WindowsManager {
       return;
     }
 
-    const {left, top} = target.getBoundingClientRect();
+    const { left, top } = target.getBoundingClientRect();
 
     this.dragState = {
       dragging: true,
       node: closestWindow,
-      cursorOffset: {x: clientX - left, y: clientY - top}
+      cursorOffset: { x: clientX - left, y: clientY - top },
     };
   }
 
-  handleMousemove({clientX, clientY}) {
-    const {dragging, node, cursorOffset} = this.dragState;
+  handleMousemove({ clientX, clientY }) {
+    const { dragging, node, cursorOffset } = this.dragState;
     if (!dragging) return;
 
-    const x = clientX - cursorOffset.x;
+    const x = clientX - cursorOffset.x - 12;
     const y = clientY - cursorOffset.y;
     this.setWindowPosition(node, x, y);
   }
@@ -117,17 +121,17 @@ export default class WindowsManager {
   }
 
   handleKeydown(evt) {
-    const {openWindowDetails} = this;
+    const { openWindowDetails } = this;
 
     if (!openWindowDetails) {
       return;
     }
 
-    const {key} = evt;
+    const { key } = evt;
 
     if (key === 'Tab') {
-      const {shiftKey} = evt;
-      const {first, last} = openWindowDetails;
+      const { shiftKey } = evt;
+      const { first, last } = openWindowDetails;
 
       if (shiftKey && document.activeElement === first) {
         evt.preventDefault();
@@ -141,8 +145,10 @@ export default class WindowsManager {
     }
 
     if (key === 'Escape') {
-      const {options: {Selectors}} = this;
-      const {target} = evt;
+      const {
+        options: { Selectors },
+      } = this;
+      const { target } = evt;
       const windowNode = target.closest(Selectors.window);
       if (!windowNode) {
         return;
@@ -151,14 +157,16 @@ export default class WindowsManager {
     }
   }
 
-  spawn({id, title, content, size = 'normal', kind = 'normal'}) {
+  spawn({ id, title, content, size = 'normal', kind = 'normal' }) {
     if (this.openWindows.has(id)) {
       this.moveWindowToTop(this.openWindows.get(id));
       return;
     }
 
-    const {options: {Selectors}} = this;
-    const {content: windowFragment} = this.template.cloneNode(true);
+    const {
+      options: { Selectors },
+    } = this;
+    const { content: windowFragment } = this.template.cloneNode(true);
 
     const windowNode = windowFragment.querySelector(Selectors.window);
     const titleNode = windowNode.querySelector(Selectors.title);
@@ -173,6 +181,16 @@ export default class WindowsManager {
     windowNode.setAttribute('data-id', id);
     titleNode.setAttribute('id', `${windowId}-title`);
 
+    if (kind === 'dialog') {
+      windowNode.classList.add('window--dialog');
+
+      const btn = document.createElement('button');
+      btn.classList.add('button');
+      btn.addEventListener('click', () => this.close(windowNode));
+      btn.textContent = 'OK';
+      contentNode.appendChild(btn);
+    }
+
     this.wrapper.appendChild(windowFragment);
 
     if (size === 'large') {
@@ -180,20 +198,24 @@ export default class WindowsManager {
     }
 
     this.randomizeWindowPosition(windowNode);
-
     this.openWindows.set(id, windowNode);
 
     const focusableElements = windowNode.querySelectorAll('button, a');
+
     this.openWindowDetails = {
       lastFocus: document.activeElement,
       first: focusableElements[0],
-      last: focusableElements[focusableElements.length - 1]
+      last: focusableElements[focusableElements.length - 1],
     };
-    setTimeout(() => this.openWindowDetails.first.focus(), 0);
+
+    setTimeout(() => {
+      this.openWindowDetails.first.focus();
+      this.moveWindowToTop(windowNode);
+    }, 0);
   }
 
   randomizeWindowPosition(windowNode) {
-    const {wrapper} = this;
+    const { wrapper } = this;
 
     const wrapperWidth = wrapper.offsetWidth;
     const wrapperHeight = wrapper.offsetHeight - this.startBarHeight;
@@ -233,14 +255,16 @@ export default class WindowsManager {
     this.openWindows.delete(windowNode.dataset.id);
 
     if (this.openWindowDetails) {
-      const {lastFocus} = this.openWindowDetails;
+      const { lastFocus } = this.openWindowDetails;
       this.openWindowDetails = null;
       lastFocus.focus();
     }
   }
 
-  handleClick({target}) {
-    const {options: {Selectors}} = this;
+  handleClick({ target }) {
+    const {
+      options: { Selectors },
+    } = this;
 
     if (!target.matches(Selectors.closeButton)) {
       return;
@@ -256,10 +280,16 @@ export default class WindowsManager {
   }
 
   moveWindowToTop(topWindow) {
-    const {options: {Selectors, Classes}} = this;
+    const {
+      options: { Selectors, Classes },
+    } = this;
+
     const windowNodes = this.wrapper.querySelectorAll(Selectors.window);
 
     for (const windowNode of windowNodes) {
+      if (windowNode.dataset.kind === 'dialog') {
+        continue;
+      }
       windowNode.classList.remove(Classes.topWindow);
     }
 

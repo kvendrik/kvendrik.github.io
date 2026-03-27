@@ -6,11 +6,11 @@
 
   --color-background: #008080;
   --color-background-contrast: white;
-  --color-element-background: #C0C0C0;
+  --color-element-background: #c0c0c0;
 
-  --color-border: #08080E;
+  --color-border: #08080e;
   --color-border-soft: #393939;
-  --color-border-contrast: #FCFCFC;
+  --color-border-contrast: #fcfcfc;
   --color-border-max-contrast: white;
 
   --color-text-base: #000;
@@ -19,7 +19,7 @@
   --color-text-contrast: white;
 
   --color-window-border-left-contrast: rgb(116, 110, 110);
-  --color-window-title-bar-border: #BDBDBD;
+  --color-window-title-bar-border: #bdbdbd;
 
   --line-height-base: 1.5em;
 
@@ -42,8 +42,9 @@
 
 @font-face {
   font-family: 'W95fa';
-  src: url('/fonts/w95fa.woff2') format('woff2'),
-      url('/fonts/w95fa.woff') format('woff');
+  src:
+    url('/fonts/w95fa.woff2') format('woff2'),
+    url('/fonts/w95fa.woff') format('woff');
   font-weight: normal;
   font-style: normal;
   font-display: swap;
@@ -178,7 +179,9 @@ a {
 
   display: flex;
   flex-direction: column;
+}
 
+.window:not(.window--dialog) {
   @media (max-width: 600px) {
     height: 100%;
     transform: none !important;
@@ -193,13 +196,18 @@ article {
   max-width: 800px;
   margin: 0 auto;
 
-  font-family: "IBM Plex Mono", monospace;
+  font-family: 'IBM Plex Mono', monospace;
   font-weight: 400;
   font-style: normal;
 
   padding-top: var(--spacing-loose);
 
-  h1, h2, h3, h4, h5, h6 {
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6 {
     margin-bottom: 2rem;
   }
 
@@ -267,6 +275,33 @@ article {
   }
 }
 
+.window:not(.window--dialog) .window__content button {
+  font-family: var(--family);
+  font-size: var(--size-root);
+  text-decoration: none;
+  color: var(--color-text-link);
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  text-decoration: underline;
+}
+
+.window--dialog {
+  width: 300px;
+  min-height: 100px;
+  min-height: auto;
+  text-align: center;
+
+  .window__content {
+    background: none;
+    box-shadow: none;
+  }
+
+  .window__content button {
+    min-width: 100px;
+  }
+}
+
 .button {
   font-family: var(--family);
   font-size: var(--size-small);
@@ -306,4 +341,3 @@ article {
   color: var(--color-text-link);
   font-weight: bold;
 }
-

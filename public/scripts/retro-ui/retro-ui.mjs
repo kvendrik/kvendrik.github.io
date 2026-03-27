@@ -24,32 +24,43 @@ export default class RetroUi {
     this.options = options;
     this.desktopItems = wrapper.querySelectorAll(options.Selectors.desktopItem);
     this.timeNode = document.querySelector(options.Selectors.time);
-    this.windowsManager = new WindowsManager(wrapper, wrapper.querySelector(`#${options.templateId}`, {
-      Selectors: {
-        window: options.Selectors.window,
-        closeButton: options.Selectors.windowCloseButton,
-        titleBar: options.Selectors.windowTitleBar,
-        title: options.Selectors.windowTitle,
-        content: options.Selectors.windowContent,
-        startBar: options.Selectors.startBar,
-      },
-      Classes: {
-        topWindow: options.Selectors.topWindow,
-      },
-    }));
+    this.windowsManager = new WindowsManager(
+      wrapper,
+      wrapper.querySelector(`#${options.templateId}`, {
+        Selectors: {
+          window: options.Selectors.window,
+          closeButton: options.Selectors.windowCloseButton,
+          titleBar: options.Selectors.windowTitleBar,
+          title: options.Selectors.windowTitle,
+          content: options.Selectors.windowContent,
+          startBar: options.Selectors.startBar,
+        },
+        Classes: {
+          topWindow: options.Selectors.topWindow,
+        },
+      }),
+    );
 
     this.setTimeUpdater();
   }
 
   setTimeUpdater() {
-    const currentPrettyTime = new Date().toLocaleString([], {hour: 'numeric', minute: 'numeric', hour12: true});
+    const currentPrettyTime = new Date().toLocaleString([], {
+      hour: 'numeric',
+      minute: 'numeric',
+      hour12: true,
+    });
     this.timeNode.innerText = currentPrettyTime;
     setTimeout(this.setTimeUpdater.bind(this), 60 * 1000);
   }
 
   bindEvents() {
-    const {wrapper, windowsManager} = this;
-    wrapper.addEventListener('ontouchstart' in window ? 'click' : 'dblclick', this.handleClick.bind(this));
+    const { wrapper, windowsManager } = this;
+    wrapper.addEventListener(
+      'ontouchstart' in window ? 'click' : 'dblclick',
+      this.handleDblClick.bind(this),
+    );
+    wrapper.addEventListener('click', this.handleClick.bind(this));
     wrapper.addEventListener('mousedown', this.handleMousedown.bind(this));
 
     if (!('ontouchstart' in window)) {
@@ -63,7 +74,7 @@ export default class RetroUi {
     this.unselectDesktopItems();
   }
 
-  handleKeydown({key, target}) {
+  handleKeydown({ key, target }) {
     if (key !== 'Enter') {
       return;
     }
@@ -71,7 +82,12 @@ export default class RetroUi {
     if (isDesktopItem) this.openDesktopItem(target);
   }
 
-  handleClick({target}) {
+  handleClick({ target }) {
+    const dialogButton = target.closest('button[data-dialog]');
+    if (dialogButton) this.openDialog(dialogButton.dataset.dialog);
+  }
+
+  handleDblClick({ target }) {
     const item = target.closest(this.options.Selectors.desktopItem);
     if (item) this.openDesktopItem(item);
   }
@@ -80,6 +96,16 @@ export default class RetroUi {
     for (const item of this.desktopItems) {
       item.classList.remove(this.options.Classes.desktopItemSelected);
     }
+  }
+
+  openDialog(dialog) {
+    this.windowsManager.spawn({
+      id: `dialog-${dialog}`,
+      title: 'Alert',
+      content: dialog,
+      size: 'small',
+      kind: 'dialog',
+    });
   }
 
   async openDesktopItem(item) {
@@ -96,9 +122,15 @@ export default class RetroUi {
     let content = item.dataset.notepadContent ?? null;
 
     if (item.dataset.notepadContentPath) {
-      content = await fetch(item.dataset.notepadContentPath).then(response => response.text());
+      content = await fetch(item.dataset.notepadContentPath).then((response) => response.text());
     }
 
-    this.windowsManager.spawn({id, title, content, size: item.dataset.size ?? 'normal', kind: item.dataset.kind ?? 'normal'});
+    this.windowsManager.spawn({
+      id,
+      title,
+      content,
+      size: item.dataset.size ?? 'normal',
+      kind: item.dataset.kind ?? 'normal',
+    });
   }
 }

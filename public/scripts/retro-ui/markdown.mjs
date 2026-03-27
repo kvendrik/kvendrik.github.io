@@ -55,10 +55,14 @@ function renderInline(text) {
     /!\[([^\]]*)\]\(([^)]+)\)/g,
     '<img alt="$1" src="$2" />',
   );
-  finalText = finalText.replace(
-    /\[([^\]]*)\]\(([^)]+)\)/g,
-    '<a href="$2">$1</a>',
-  );
+  finalText = finalText.replace(/\[([^\]]*)\]\(([^)]+)\)/g, (_match, label, target) => {
+    const dialogMatch = target.match(/^dialog:"([\s\S]+)"$/);
+    if (dialogMatch) {
+      return `<button data-dialog="${escapeAttribute(dialogMatch[1])}">${label}</button>`;
+    }
+
+    return `<a href="${target}">${label}</a>`;
+  });
   finalText = finalText.replace(/~~([\s\S]+?)~~/g, '<s>$1</s>');
   finalText = finalText.replace(/\*\*([\s\S]+?)\*\*/g, '<strong>$1</strong>');
   finalText = finalText.replace(/__([\s\S]+?)__/g, '<strong>$1</strong>');
@@ -72,4 +76,8 @@ function escapeHtml(text) {
     .replace(/&/g, '&amp;')
     .replace(/</g, '&lt;')
     .replace(/>/g, '&gt;');
+}
+
+function escapeAttribute(text) {
+  return escapeHtml(text).replace(/"/g, '&quot;');
 }
