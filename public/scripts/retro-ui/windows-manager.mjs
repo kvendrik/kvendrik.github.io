@@ -10,6 +10,7 @@ export default class WindowsManager {
         title: '[data-title]',
         content: '[data-content]',
         startBar: '[data-start-bar]',
+        windowControls: '[data-window-controls]',
       },
       Classes: {
         topWindow: 'window--top-window',
@@ -30,8 +31,80 @@ export default class WindowsManager {
     this.template = template;
     this.options = options;
     this.startBarHeight = wrapper.querySelector(options.Selectors.startBar).offsetHeight;
+    this.windowControls = wrapper.querySelector(options.Selectors.windowControls);
 
     this.syncOpenWindowsFromDom();
+    this.syncWindowControls();
+  }
+
+  getTitle(windowNode) {
+    return windowNode.dataset.title ?? null;
+  }
+
+  syncWindowControls() {
+    this.windowControls.innerHTML = '';
+    let newTopWindow = null;
+
+    for (const windowNode of this.openWindows.values()) {
+      const { id } = windowNode.dataset;
+      const title = this.getTitle(windowNode);
+      const controlButton = document.createElement('button');
+      controlButton.classList.add('button');
+      controlButton.setAttribute('data-for-window', id);
+      controlButton.textContent = title;
+
+      const isTopWindow = windowNode.classList.contains(this.options.Classes.topWindow);
+
+      if (isTopWindow) {
+        controlButton.setAttribute('aria-pressed', 'true');
+        newTopWindow = windowNode;
+      }
+
+      controlButton.addEventListener('click', () => {
+        const id = controlButton.dataset.forWindow;
+        const windowNode = this.openWindows.get(id);
+
+        if (this.isTopWindow(windowNode)) {
+          const isHiding = !windowNode.hasAttribute('hidden');
+          windowNode.setAttribute('hidden', 'true');
+          windowNode.classList.remove(this.options.Classes.topWindow);
+          controlButton.removeAttribute('aria-pressed');
+
+          if (isHiding) {
+            const nonHiddenWindows = [...this.openWindows.values()].filter(
+              (w) => !w.hasAttribute('hidden') && w.dataset.id !== windowNode.dataset.id,
+            );
+            if (nonHiddenWindows[0]) {
+              this.moveWindowToTop(nonHiddenWindows[0]);
+            }
+          }
+          return;
+        }
+
+        if (windowNode) {
+          controlButton.setAttribute('aria-pressed', 'true');
+          windowNode.removeAttribute('hidden');
+          this.moveWindowToTop(windowNode);
+        }
+      });
+
+      this.windowControls.appendChild(controlButton);
+    }
+
+    if (newTopWindow) {
+      const title = this.getTitle(newTopWindow);
+      if (title.includes('.md')) {
+        window.history.pushState(
+          {},
+          '',
+          `/${title}${window.location.host.includes('127.0.0.1') ? '.html' : ''}`,
+        );
+      } else {
+        window.history.pushState({}, '', `/`);
+      }
+    } else {
+      window.history.pushState({}, '', '/');
+    }
   }
 
   syncOpenWindowsFromDom() {
@@ -54,8 +127,9 @@ export default class WindowsManager {
       }
 
       this.randomizeWindowPosition(windowNode);
-      root.innerHTML = this.renderWindowContent(windowNode, root.innerHTML ?? '');
+      root.innerHTML = this.renderWindowContent(windowNode, root.textContent ?? '');
       windowNode.removeAttribute('hidden');
+      this.moveWindowToTop(windowNode);
     }
 
     const nodes = [...windowNodes];
@@ -179,6 +253,7 @@ export default class WindowsManager {
     const windowId = this.getUnqiueWindowId();
     windowNode.setAttribute('aria-labelledby', `${windowId}-title`);
     windowNode.setAttribute('data-id', id);
+    windowNode.setAttribute('data-title', title);
     titleNode.setAttribute('id', `${windowId}-title`);
 
     if (kind === 'dialog') {
@@ -211,11 +286,16 @@ export default class WindowsManager {
     setTimeout(() => {
       this.openWindowDetails.first.focus();
       this.moveWindowToTop(windowNode);
+      this.syncWindowControls();
     }, 0);
   }
 
   randomizeWindowPosition(windowNode) {
     const { wrapper } = this;
+
+    if (windowNode.classList.contains('window--large')) {
+      return;
+    }
 
     const wrapperWidth = wrapper.offsetWidth;
     const wrapperHeight = wrapper.offsetHeight - this.startBarHeight;
@@ -259,6 +339,17 @@ export default class WindowsManager {
       this.openWindowDetails = null;
       lastFocus.focus();
     }
+
+    if (this.isTopWindow(windowNode)) {
+      const nonHiddenWindows = [...this.openWindows.values()].filter(
+        (w) => !w.hasAttribute('hidden'),
+      );
+      if (nonHiddenWindows[0]) {
+        this.moveWindowToTop(nonHiddenWindows[0]);
+      }
+    }
+
+    this.syncWindowControls();
   }
 
   handleClick({ target }) {
@@ -279,6 +370,10 @@ export default class WindowsManager {
     this.close(windowNode);
   }
 
+  isTopWindow(windowNode) {
+    return windowNode.classList.contains(this.options.Classes.topWindow);
+  }
+
   moveWindowToTop(topWindow) {
     const {
       options: { Selectors, Classes },
@@ -293,7 +388,9 @@ export default class WindowsManager {
       windowNode.classList.remove(Classes.topWindow);
     }
 
+    topWindow.removeAttribute('hidden');
     topWindow.classList.add(Classes.topWindow);
+    this.syncWindowControls();
   }
 }
 

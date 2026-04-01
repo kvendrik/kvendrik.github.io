@@ -26,7 +26,7 @@ function renderBlock(block) {
       .map((line) => line.replace(/^>\s?/, ''))
       .map((line) => renderInline(line))
       .join('<br />');
-    return `<blockquote>${quoteContent}</blockquote>`;
+    return `<blockquote>> ${quoteContent}</blockquote>`;
   }
 
   if (/^(\d+\.\s+.+(\n|$))+$/m.test(block)) {
@@ -65,7 +65,7 @@ function renderInline(text) {
 function renderInlineMarkdown(text) {
   let finalText = text.replace(/!\[([^\]]*)\]\(([^)]+)\)/g, '<img alt="$1" src="$2" />');
   finalText = finalText.replace(/\[([^\]]*)\]\(([^)]+)\)/g, (_match, label, target) => {
-    return `<a href="${target}">${label}</a>`;
+    return `<a target="_blank" href="${target}">${label}</a>`;
   });
   finalText = finalText.replace(/~~([\s\S]+?)~~/g, '<s>$1</s>');
   finalText = finalText.replace(/\*\*([\s\S]+?)\*\*/g, '<strong>$1</strong>');

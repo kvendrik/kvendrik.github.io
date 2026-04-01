@@ -4,30 +4,40 @@ import path from 'node:path';
 removeAllHtmlInDir('public');
 
 const indexSrc = fs.readFileSync('src/index.html', 'utf8');
-const files = fs.readdirSync('public/entries');
+const files = fs.readdirSync('public/writing');
 
 const buttons: string[] = [];
-const pages: {title: string, content: string}[] = [];
+const pages: { title: string; content: string }[] = [];
 
 for (const entry of files) {
   if (!entry.endsWith('.md')) {
     continue;
   }
-  const filePath = path.relative(process.cwd(), path.join('entries', entry));
-  buttons.push(`<button data-desktop-item class="desktop__item" data-id="${entry}" data-notepad-content-path="${filePath}" data-size="large" data-kind="article"><div>${entry}</div></button>`);
-  pages.push({title: entry, content: fs.readFileSync(path.join('public', 'entries', entry), 'utf8')});
+  const filePath = path.relative(process.cwd(), path.join('writing', entry));
+  buttons.push(
+    `<button data-desktop-item class="desktop__item" data-id="${entry}" data-title="${entry}" data-notepad-content-path="${filePath}" data-size="large" data-kind="article"><div>${entry}</div></button>`,
+  );
+  pages.push({
+    title: entry,
+    content: fs.readFileSync(path.join('public/writing', entry), 'utf8'),
+  });
 }
 
 const blank = indexSrc
-  .replace('{bio}', '<button data-desktop-item class="desktop__item" data-id="koen.txt" data-notepad-content-path="/bio.md"><div>koen.txt</div></button>')
+  .replace(
+    '{bio}',
+    '<button data-desktop-item class="desktop__item" data-id="koen.txt"  data-title="koen.txt" data-notepad-content-path="/bio.md"><div>koen.txt</div></button>',
+  )
   .replace('{articles}', buttons.join('\n'))
   .replace(/\n\s{2,}/g, '')
   .replaceAll('{unix}', new Date().getTime().toString());
 
-fs.writeFileSync('public/index.html', blank.replace('{window}', createWindow('koen.txt', fs.readFileSync('public/bio.md', 'utf8'))));
+const bioWindow = createWindow('koen.txt', fs.readFileSync('bio.md', 'utf8'));
 
-for (const {title, content} of pages) {
-  const entryHtml = blank.replace('{window}', createWindow(title, content, 'article'));
+fs.writeFileSync('public/index.html', blank.replace('{window}', bioWindow));
+
+for (const { title, content } of pages) {
+  const entryHtml = blank.replace('{window}', bioWindow + createWindow(title, content, 'article'));
   fs.writeFileSync(`public/${title}.html`, entryHtml);
 }
 
@@ -45,7 +55,7 @@ function removeAllHtmlInDir(dir: string) {
 
 function createWindow(title: string, content: string, kind: 'normal' | 'article' = 'normal') {
   return `
-    <div class="window ${kind === 'article' ? 'window--large' : ''}" data-window role="dialog" aria-modal="true" data-id="${title}" hidden>
+    <div class="window ${kind === 'article' ? 'window--large' : ''}" data-window role="dialog" aria-modal="true" data-id="${title}" data-title="${title}" hidden>
       <div class="window__title-bar" data-title-bar>
         <span data-title>${title}</span>
         <button class="button button--icon" data-close-button aria-label="Close window">X</button>
