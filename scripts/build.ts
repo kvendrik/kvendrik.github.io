@@ -32,7 +32,7 @@ const blank = indexSrc
   .replace(/\n\s{2,}/g, '')
   .replaceAll('{unix}', new Date().getTime().toString());
 
-const bioWindow = createWindow('koen.txt', fs.readFileSync('bio.md', 'utf8'));
+const bioWindow = createWindow('koen.txt', fs.readFileSync('public/bio.md', 'utf8'));
 
 fs.writeFileSync('public/index.html', blank.replace('{window}', bioWindow));
 
