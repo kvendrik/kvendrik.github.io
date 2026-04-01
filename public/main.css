@@ -36,6 +36,7 @@
   --z-index-loading-screen: 999;
   --z-index-start-bar: 998;
   --z-index-top-window: 997;
+  --z-index-dialog: 999;
 
   --start-bar-height: 40px;
 }
@@ -337,6 +338,7 @@ a {
   min-height: 100px;
   min-height: auto;
   text-align: center;
+  z-index: var(--z-index-dialog);
 
   .window__content {
     background: none;

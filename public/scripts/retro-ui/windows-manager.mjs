@@ -46,6 +46,8 @@ export default class WindowsManager {
     let newTopWindow = null;
 
     for (const windowNode of this.openWindows.values()) {
+      if (windowNode.dataset.kind === 'dialog') continue;
+
       const { id } = windowNode.dataset;
       const title = this.getTitle(windowNode);
       const controlButton = document.createElement('button');
@@ -378,6 +380,10 @@ export default class WindowsManager {
     const {
       options: { Selectors, Classes },
     } = this;
+
+    if (topWindow.dataset.kind === 'dialog') {
+      return;
+    }
 
     const windowNodes = this.wrapper.querySelectorAll(Selectors.window);
 
