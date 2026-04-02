@@ -1,5 +1,12 @@
 import fs from 'node:fs';
 import path from 'node:path';
+import matter from 'gray-matter';
+
+const HEAD_DEFAULTS = {
+  title: 'Koen Vendrik - Product Engineer',
+  description: 'Product Engineer who spends his time thinking about AI.',
+  image: 'https://kvendrik.com/kvendrik-og.png',
+};
 
 removeAllHtmlInDir('public');
 
@@ -23,7 +30,7 @@ for (const entry of files) {
   });
 }
 
-const blank = indexSrc
+let blank = indexSrc
   .replace(
     '{bio}',
     '<button data-desktop-item class="desktop__item" data-id="koen.txt"  data-title="koen.txt" data-notepad-content-path="/bio.md"><div>koen.txt</div></button>',
@@ -33,12 +40,33 @@ const blank = indexSrc
   .replaceAll('{unix}', new Date().getTime().toString());
 
 const bioWindow = createWindow('koen.txt', fs.readFileSync('public/bio.md', 'utf8'));
+writeHome();
 
-fs.writeFileSync('public/index.html', blank.replace('{window}', bioWindow));
+for (const { title: filename, content } of pages) {
+  const parsed = matter(content);
+  const { title, description, image } = parsed.data;
+  let blogEntry = blank;
+  for (const [key, value] of Object.entries(getHead({ title, description, image }))) {
+    blogEntry = blogEntry.replaceAll(`{{${key}}}`, value);
+  }
+  blogEntry = blogEntry.replace(
+    '{window}',
+    bioWindow + createWindow(filename, parsed.content.trim(), 'article'),
+  );
+  fs.writeFileSync(`public/${filename}.html`, blogEntry);
+}
 
-for (const { title, content } of pages) {
-  const entryHtml = blank.replace('{window}', bioWindow + createWindow(title, content, 'article'));
-  fs.writeFileSync(`public/${title}.html`, entryHtml);
+function getHead(opts: { title?: string; description?: string; image?: string } = {}) {
+  const title = opts.title ? `${HEAD_DEFAULTS.title} | ${opts.title}` : HEAD_DEFAULTS.title;
+  const description = opts.description ? opts.description : HEAD_DEFAULTS.description;
+  const image = opts.image ? `https://kvendrik.com${opts.image}` : HEAD_DEFAULTS.image;
+
+  return {
+    ...HEAD_DEFAULTS,
+    title,
+    description,
+    image,
+  };
 }
 
 function removeAllHtmlInDir(dir: string) {
@@ -51,6 +79,15 @@ function removeAllHtmlInDir(dir: string) {
       fs.unlinkSync(full);
     }
   }
+}
+
+function writeHome() {
+  let home = blank;
+  for (const [key, value] of Object.entries(getHead())) {
+    home = home.replaceAll(`{{${key}}}`, value);
+  }
+  home = home.replace('{window}', bioWindow);
+  fs.writeFileSync('public/index.html', home);
 }
 
 function createWindow(title: string, content: string, kind: 'normal' | 'article' = 'normal') {

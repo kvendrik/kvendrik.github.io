@@ -8,6 +8,7 @@
     "@types/node": "^22.10.0",
     "chokidar-cli": "^3.0.0",
     "concurrently": "^9.1.2",
+    "gray-matter": "^4.0.3",
     "live-server": "^1.2.2",
     "typescript": "^5.7.0"
   }

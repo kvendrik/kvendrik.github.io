@@ -1,3 +1,9 @@
+---
+title: Outpost
+description: A blog post
+image: /cat-mini-laptop.webp
+---
+
 # Outpost
 
 Give your AI assistant a remote shell

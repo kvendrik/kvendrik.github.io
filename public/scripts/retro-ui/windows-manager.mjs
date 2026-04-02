@@ -313,7 +313,12 @@ export default class WindowsManager {
     const randomOffsetX = (Math.random() - 0.5) * Math.min(maxX * 0.3, 120);
     const randomOffsetY = (Math.random() - 0.5) * Math.min(maxY * 0.3, 80);
     const x = Math.min(Math.max(centerX + randomOffsetX, 0), maxX);
-    const y = Math.min(Math.max(centerY + randomOffsetY, 0), maxY);
+    let y = Math.min(Math.max(centerY + randomOffsetY, 0), maxY);
+
+    if (y + windowHeight > wrapperHeight - this.startBarHeight - 60) {
+      y = 0;
+    }
+
     this.setWindowPosition(windowNode, x, y);
   }
 
