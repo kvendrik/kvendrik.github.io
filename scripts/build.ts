@@ -49,10 +49,7 @@ for (const { title: filename, content } of pages) {
   for (const [key, value] of Object.entries(getHead({ title, description, image }))) {
     blogEntry = blogEntry.replaceAll(`{{${key}}}`, value);
   }
-  blogEntry = blogEntry.replace(
-    '{window}',
-    bioWindow + createWindow(filename, parsed.content.trim(), 'article'),
-  );
+  blogEntry = blogEntry.replace('{window}', bioWindow + createWindow(filename, content, 'article'));
   fs.writeFileSync(`public/${filename}.html`, blogEntry);
 }
 

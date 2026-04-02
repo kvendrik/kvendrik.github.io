@@ -328,7 +328,7 @@ export default class WindowsManager {
   }
 
   renderWindowContent(windowNode, content) {
-    const renderedContent = renderMarkdown(content);
+    let renderedContent = renderMarkdown(content.replace(/^---[\s\S]*?---\n/, '').trim());
 
     if (windowNode.dataset.kind === 'article') {
       return `<article>${renderedContent}</article>`;
