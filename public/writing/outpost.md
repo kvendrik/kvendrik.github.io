@@ -27,13 +27,19 @@ railway login
 railway up
 ```
 
-> Add your Railway app URL as an MCP in Claude and you'll be prompted for a passphrase found in the startup logs.
+```ts
+import { log } from './logger.ts';
+
+log.info('Hello!');
+```
 
 ## How it works
 
 - **OAuth protected.** Only clients that complete the OAuth flow can call the exec tool.
 - **Short-lived tokens.** Access tokens expire every hour and refresh automatically.
 - **Passphrase-gated.** The consent screen requires a passphrase before issuing tokens.
+
+| Add your Railway app URL as an MCP in Claude and you'll be prompted for a passphrase found in the startup logs.
 
 ## Security considerations
 

@@ -254,8 +254,17 @@ a {
     margin-top: 1rem;
   }
 
+  ol,
+  ul {
+    margin-left: 15px;
+  }
+
+  code {
+    padding: 0;
+  }
+
   li {
-    list-style-type: none;
+    list-style-type: disc;
   }
 
   p {
@@ -263,7 +272,8 @@ a {
   }
 
   blockquote {
-    opacity: 0.5;
+    opacity: 0.6;
+    padding: 0 15px;
   }
 
   blockquote,
