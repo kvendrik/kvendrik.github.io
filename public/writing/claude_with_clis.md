@@ -13,6 +13,10 @@ _Friday, April 3rd 2026 • 3 minute read_
 
 ---
 
+| _TL;DR: [Backoffice](https://github.com/kvendrik/backoffice) gives your AI assistant—Claude.ai, ChatGPT, or whatever you use—its own Linux machine so it can run the same CLIs you do. No more MCPs needed._
+
+---
+
 I use the Claude app all the time. I've tried using Telegram, WhatsApp, and Slack to talk to my agents, but using Claude in its native iOS app has always been a more pleasant experience.
 
 A major downside however has been not being able to connect Claude to all the services I use. Their library of MCPs is pretty limited, and I'd prefer to not use a 3rd party MCP provider. I could use [Cowork](https://www.anthropic.com/product/claude-cowork) but I'd prefer to not have to keep my laptop open when I'm away. It would be much more ideal if Claude was able to directly use the CLIs I use locally to access the services it doesn't have an existing MCP integration for.
