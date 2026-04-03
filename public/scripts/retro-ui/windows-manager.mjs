@@ -295,10 +295,6 @@ export default class WindowsManager {
   randomizeWindowPosition(windowNode) {
     const { wrapper } = this;
 
-    if (windowNode.classList.contains('window--large')) {
-      return;
-    }
-
     const wrapperWidth = wrapper.offsetWidth;
     const wrapperHeight = wrapper.offsetHeight - this.startBarHeight;
     const windowWidth = windowNode.offsetWidth;
@@ -313,9 +309,13 @@ export default class WindowsManager {
     const randomOffsetX = (Math.random() - 0.5) * Math.min(maxX * 0.3, 120);
     const randomOffsetY = (Math.random() - 0.5) * Math.min(maxY * 0.3, 80);
     const x = Math.min(Math.max(centerX + randomOffsetX, 0), maxX);
-    let y = Math.min(Math.max(centerY + randomOffsetY, 0), maxY);
+    let y = Math.min(Math.max(centerY + randomOffsetY, 0), maxY) - this.startBarHeight;
 
-    if (y + windowHeight > wrapperHeight - this.startBarHeight - 60) {
+    if (y < 0) {
+      y = 0;
+    }
+
+    if (y + windowHeight > wrapperHeight - this.startBarHeight) {
       y = 0;
     }
 

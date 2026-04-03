@@ -14,19 +14,27 @@ const indexSrc = fs.readFileSync('src/index.html', 'utf8');
 const files = fs.readdirSync('public/writing');
 
 const buttons: string[] = [];
-const pages: { title: string; content: string }[] = [];
+const pages: { title: string; content: string; matter: Record<string, string> }[] = [];
 
 for (const entry of files) {
   if (!entry.endsWith('.md')) {
     continue;
   }
-  const filePath = path.relative(process.cwd(), path.join('writing', entry));
-  buttons.push(
-    `<button data-desktop-item class="desktop__item" data-id="${entry}" data-title="${entry}" data-notepad-content-path="${filePath}" data-size="large" data-kind="article"><div>${entry}</div></button>`,
-  );
+
+  const content = fs.readFileSync(path.join('public/writing', entry), 'utf8');
+  const data = matter(content).data;
+
+  if (data.show_on_desktop === 'yes') {
+    const filePath = path.relative(process.cwd(), path.join('writing', entry));
+    buttons.push(
+      `<button data-desktop-item class="desktop__item" data-id="${entry}" data-title="${entry}" data-notepad-content-path="${filePath}" data-size="large" data-kind="article"><div>${entry}</div></button>`,
+    );
+  }
+
   pages.push({
     title: entry,
-    content: fs.readFileSync(path.join('public/writing', entry), 'utf8'),
+    content,
+    matter: data,
   });
 }
 
@@ -42,9 +50,8 @@ let blank = indexSrc
 const bioWindow = createWindow('koen.txt', fs.readFileSync('public/bio.md', 'utf8'));
 writeHome();
 
-for (const { title: filename, content } of pages) {
-  const parsed = matter(content);
-  const { title, description, image } = parsed.data;
+for (const { title: filename, content, matter } of pages) {
+  const { title, description, image } = matter;
   let blogEntry = blank;
   for (const [key, value] of Object.entries(getHead({ title, description, image }))) {
     blogEntry = blogEntry.replaceAll(`{{${key}}}`, value);

@@ -1,7 +1,5 @@
 import WindowsManager from './windows-manager.mjs';
 
-const IS_BETA = window.location.search.includes('beta');
-
 export default class RetroUi {
   constructor(wrapper, givenOptions) {
     const options = givenOptions || {
@@ -44,12 +42,6 @@ export default class RetroUi {
     );
 
     this.setTimeUpdater();
-
-    if (!IS_BETA) {
-      [...this.desktopItems].forEach((item) => {
-        if (item.innerText.includes('.md')) item.parentNode.removeChild(item);
-      });
-    }
   }
 
   setTimeUpdater() {
