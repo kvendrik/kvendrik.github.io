@@ -2,7 +2,7 @@
 title: Claude.ai but with CLIs instead of MCPs
 description: How I gave Claude.ai its own Linux machine so it can use any CLI I need. No more MCPs needed.
 image: /writing/cat-mini-laptop.webp
-show_on_desktop: yes
+show_on_desktop: no
 ---
 
 # Claude.ai but with CLIs instead of MCPs
