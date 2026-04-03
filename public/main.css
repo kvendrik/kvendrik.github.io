@@ -160,6 +160,9 @@ a {
 
 .desktop__item div {
   border: dotted 1px transparent;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 .desktop__item:focus div {
@@ -261,14 +264,38 @@ a {
 
   code {
     padding: 0;
+    background: #f1f1f1;
+
+    &:before {
+      content: '`';
+    }
+
+    &:after {
+      content: '`';
+    }
+  }
+
+  pre code {
+    &:before {
+      content: '';
+    }
+
+    &:after {
+      content: '';
+    }
   }
 
   li {
     list-style-type: disc;
   }
 
-  p {
+  p,
+  hr {
     margin-bottom: 1.5rem !important;
+  }
+
+  hr {
+    width: 80px;
   }
 
   blockquote {

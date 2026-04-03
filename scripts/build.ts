@@ -79,7 +79,7 @@ function removeAllHtmlInDir(dir: string) {
   }
   for (const name of fs.readdirSync(dir, { withFileTypes: true })) {
     const full = path.join(dir, name.name);
-    if (name.isFile() && name.name.endsWith('.html')) {
+    if (name.isFile() && name.name.endsWith('.html') && fs.existsSync(full)) {
       fs.unlinkSync(full);
     }
   }
