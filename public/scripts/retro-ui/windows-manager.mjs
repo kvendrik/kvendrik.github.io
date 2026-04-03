@@ -128,8 +128,8 @@ export default class WindowsManager {
         this.openWindows.set(id, windowNode);
       }
 
-      this.randomizeWindowPosition(windowNode);
       root.innerHTML = this.renderWindowContent(windowNode, root.innerHTML ?? '');
+      this.randomizeWindowPosition(windowNode);
       windowNode.removeAttribute('hidden');
       this.moveWindowToTop(windowNode);
     }
@@ -315,7 +315,7 @@ export default class WindowsManager {
       y = 0;
     }
 
-    if (y + windowHeight > wrapperHeight - this.startBarHeight) {
+    if (y + windowHeight > wrapperHeight) {
       y = 0;
     }
 
