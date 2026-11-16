@@ -35,7 +35,8 @@
 
       .bio {
         position: relative;
-        z-index: 1;
+        /* always above the XP desktop, so the text never drops behind it while it fades */
+        z-index: 6;
         max-width: 32em;
         margin: 0;
         font-size: clamp(18px, 2.2vw, 22px);
@@ -97,126 +98,265 @@
         opacity: 0.4;
       }
 
-      /* Hovering the coding line turns the page into an XP-style desktop with the text
-         in a Notepad window. Drawn in CSS (no Microsoft artwork), and it ignores the mouse so
-         the hover underneath keeps working. */
+      /* Hovering the coding line turns the page into an XP-style desktop with the text in a
+         Notepad window. Everything is HTML and CSS (no images or Microsoft artwork). The desktop
+         ignores the mouse and sits under the text, so the hover underneath keeps working. */
       .coding {
         cursor: default;
+        /* a slightly taller hover area, so small mouse slips don't toggle the desktop */
+        padding-block: 0.3em;
       }
 
       .xp {
         position: fixed;
         inset: 0;
         z-index: 5;
+        overflow: hidden;
         pointer-events: none;
         opacity: 0;
-        transition: opacity 180ms ease;
+        /* hide after a short pause, so brushing past the edge doesn't flicker */
+        transition: opacity 180ms ease 150ms;
         font-family: Tahoma, 'Segoe UI', Verdana, sans-serif;
+        -webkit-font-smoothing: antialiased;
         background:
-          radial-gradient(120% 60% at 30% 100%, #6bbf3a 0 38%, transparent 38.5%),
-          radial-gradient(140% 70% at 85% 105%, #4f9e2c 0 36%, transparent 36.5%),
-          radial-gradient(40% 18% at 22% 22%, rgb(255 255 255 / 0.85), transparent 70%),
-          radial-gradient(30% 12% at 70% 14%, rgb(255 255 255 / 0.7), transparent 70%),
-          linear-gradient(#2c6fdc, #6aa7f0 55%, #a9d1f7);
+          radial-gradient(38% 16% at 24% 20%, rgb(255 255 255 / 0.9), rgb(255 255 255 / 0) 70%),
+          radial-gradient(22% 9% at 35% 26%, rgb(255 255 255 / 0.6), rgb(255 255 255 / 0) 70%),
+          radial-gradient(30% 11% at 74% 13%, rgb(255 255 255 / 0.75), rgb(255 255 255 / 0) 70%),
+          radial-gradient(18% 7% at 86% 22%, rgb(255 255 255 / 0.5), rgb(255 255 255 / 0) 70%),
+          linear-gradient(#1f5fd1 0%, #3a7ee3 30%, #74aef0 62%, #b4d8f8 78%);
       }
 
       body:has(.coding:hover, .coding:focus-visible) .xp {
         opacity: 1;
+        transition-delay: 0s;
+      }
+
+      /* rolling hills */
+      .xp::before,
+      .xp::after {
+        content: '';
+        position: absolute;
+        border-radius: 50%;
+      }
+
+      .xp::before {
+        left: 30%;
+        right: -40%;
+        bottom: -62vh;
+        height: 100vh;
+        background: radial-gradient(60% 50% at 40% 20%, #5aa832, #3c8a1e 70%, #2f7417);
+      }
+
+      .xp::after {
+        left: -30%;
+        right: 25%;
+        bottom: -70vh;
+        height: 105vh;
+        background:
+          radial-gradient(45% 30% at 45% 12%, rgb(255 255 255 / 0.18), rgb(255 255 255 / 0) 70%),
+          radial-gradient(70% 55% at 50% 30%, #7dcb43, #55a52c 65%, #3f8c1f);
+        box-shadow: 0 -6px 30px rgb(0 40 0 / 0.25);
       }
 
       .xp-window {
         position: absolute;
-        border: 3px solid #0842d8;
-        border-top: 0;
+        z-index: 1;
+        padding: 0 3px 3px;
         border-radius: 8px 8px 0 0;
-        background: #ece9d8;
-        box-shadow: 4px 6px 18px rgb(0 0 0 / 0.35);
-      }
-
-      /* the real text sits on top of the desktop, inside the Notepad window, without moving */
-      body:has(.coding:hover, .coding:focus-visible) .bio {
-        z-index: 6;
+        background: #0a46e0;
+        box-shadow:
+          inset 0 0 0 1px #0019cf,
+          6px 8px 24px rgb(0 0 40 / 0.35);
       }
 
       .xp-title {
         display: flex;
         align-items: center;
         gap: 6px;
-        height: 30px;
-        padding: 0 4px 0 8px;
+        height: 29px;
+        margin: 0 -3px;
+        padding: 0 5px 0 8px;
         border-radius: 7px 7px 0 0;
-        background: linear-gradient(#0a5ff0, #3d95ff 8%, #0a5ff0 45%, #0040d0 95%);
+        background: linear-gradient(
+          #0997ff 0%,
+          #0053ee 9%,
+          #0050ee 18%,
+          #0066ff 44%,
+          #0066ff 92%,
+          #005bff 95%,
+          #003dd7 100%
+        );
+        box-shadow: inset 0 1px #6fb2ff, inset 1px 0 #3a8cff, inset -1px 0 #1047d8;
         color: #fff;
         font-size: 13px;
         font-weight: 700;
-        text-shadow: 1px 1px #0a1f6e;
+        letter-spacing: 0.2px;
+        text-shadow: 1px 1px #0f1089;
       }
 
       .xp-title-text {
         flex: 1;
       }
 
+      /* a small notepad: white page with blue lines */
+      .xp-icon {
+        width: 12px;
+        height: 15px;
+        flex: none;
+        border: 1px solid #7a8fb0;
+        border-top: 3px solid #4a7bd6;
+        background:
+          repeating-linear-gradient(#fff 0 2px, #b8c8e6 2px 3px) padding-box;
+        box-shadow: 1px 1px 0 rgb(0 0 0 / 0.25);
+      }
+
       .xp-btn {
-        display: grid;
-        place-items: center;
+        position: relative;
         width: 21px;
         height: 21px;
+        flex: none;
         border: 1px solid #fff;
         border-radius: 3px;
-        background: linear-gradient(#3c8bff, #1c5fe0);
-        font-size: 12px;
-        line-height: 1;
+        background: radial-gradient(90% 90% at 35% 25%, #6aa1ff, #2a6ff5 55%, #1550e0);
+        box-shadow: inset -1px -1px 2px rgb(0 0 80 / 0.35);
+      }
+
+      .xp-btn::before,
+      .xp-btn::after {
+        content: '';
+        position: absolute;
+        background: #fff;
+      }
+
+      .xp-btn.min::before {
+        left: 5px;
+        bottom: 4px;
+        width: 7px;
+        height: 3px;
+      }
+
+      .xp-btn.max::before {
+        inset: 4px;
+        background: none;
+        border: 1px solid #fff;
+        border-top-width: 3px;
+      }
+
+      .xp-btn.max::after {
+        display: none;
       }
 
       .xp-btn.close {
-        background: linear-gradient(#e8785a, #c9431f);
+        background: radial-gradient(90% 90% at 35% 25%, #f0a58b, #e3592f 55%, #c6401a);
+      }
+
+      .xp-btn.close::before,
+      .xp-btn.close::after {
+        left: 3px;
+        top: 8px;
+        width: 13px;
+        height: 2.5px;
+        border-radius: 1px;
+        rotate: 45deg;
+      }
+
+      .xp-btn.close::after {
+        rotate: -45deg;
       }
 
       .xp-menu {
         display: flex;
-        gap: 14px;
-        padding: 3px 8px;
-        font-size: 12px;
+        gap: 2px;
+        padding: 1px 2px;
+        background: #ece9d8;
+        border-bottom: 1px solid #fff;
+        box-shadow: inset 0 -1px #c5c2b2;
+        font-size: 11px;
         color: #000;
       }
 
+      .xp-menu span {
+        padding: 3px 6px;
+      }
+
       .xp-text {
-        margin: 0 2px 2px;
+        position: relative;
         border: 1px solid #7f9db9;
         background: #fff;
       }
 
+      /* a decorative XP scrollbar */
+      .xp-text::after {
+        content: '';
+        position: absolute;
+        top: 0;
+        right: 0;
+        bottom: 0;
+        width: 16px;
+        background:
+          linear-gradient(#c1d3fb, #a9c1f5) center 18px / 14px 40px no-repeat,
+          linear-gradient(#c1d3fb, #a9c1f5) center top / 14px 16px no-repeat,
+          linear-gradient(#c1d3fb, #a9c1f5) center bottom / 14px 16px no-repeat,
+          linear-gradient(90deg, #f3f1ec, #fdfdfa);
+        border-left: 1px solid #e3e0d6;
+      }
+
       .xp-taskbar {
         position: absolute;
+        z-index: 1;
         inset: auto 0 0;
         display: flex;
         align-items: center;
-        height: 32px;
-        background: linear-gradient(#3168d5, #4993e6 10%, #2157d7 50%, #1941a5);
+        gap: 6px;
+        height: 30px;
+        background: linear-gradient(
+          #3168d5 0%,
+          #4993e6 6%,
+          #2157d7 15%,
+          #2663e0 60%,
+          #1d54d0 92%,
+          #1941a5 100%
+        );
+        box-shadow: inset 0 1px #6ea3ec;
       }
 
       .xp-start {
         display: flex;
         align-items: center;
         height: 100%;
-        padding: 0 22px 0 14px;
-        border-radius: 0 12px 12px 0;
-        background: linear-gradient(#3a9a3a, #5fc35f 12%, #3c9c3c 55%, #2c7d2c);
+        padding: 0 26px 2px 16px;
+        border-radius: 0 14px 14px 0;
+        background: linear-gradient(#3c9a3c 0%, #66c766 10%, #3fae3f 40%, #31932f 85%, #2b7f2b 100%);
+        box-shadow:
+          inset -2px 0 3px rgb(0 0 0 / 0.25),
+          inset 0 1px rgb(255 255 255 / 0.35);
         color: #fff;
-        font-size: 17px;
+        font-family: 'Trebuchet MS', Tahoma, sans-serif;
+        font-size: 18px;
         font-style: italic;
         font-weight: 700;
-        text-shadow: 1px 1px 1px rgb(0 0 0 / 0.5);
+        text-shadow: 1px 1px 2px rgb(0 0 0 / 0.55);
       }
 
       .xp-task {
-        margin-left: 6px;
-        padding: 5px 12px;
+        display: flex;
+        align-items: center;
+        gap: 6px;
+        width: 160px;
+        height: 22px;
+        padding: 0 8px;
         border-radius: 3px;
         background: #1e52b7;
-        box-shadow: inset 1px 1px 2px rgb(0 0 0 / 0.4);
+        box-shadow:
+          inset 1px 1px 2px rgb(0 0 0 / 0.45),
+          inset -1px -1px 0 rgb(255 255 255 / 0.12);
         color: #fff;
-        font-size: 12px;
+        font-size: 11px;
+      }
+
+      .xp-task .xp-icon {
+        width: 10px;
+        height: 12px;
       }
 
       .xp-tray {
@@ -224,11 +364,12 @@
         display: flex;
         align-items: center;
         height: 100%;
-        padding: 0 14px;
+        padding: 0 16px;
         border-left: 1px solid #1042af;
-        background: linear-gradient(#0f8cf0, #13a3f3 10%, #0f84e8 60%, #0b6bd1);
+        background: linear-gradient(#0c59b9 0%, #139ee9 6%, #18b9ff 12%, #1597eb 50%, #1178d8 90%, #0b5fc4 100%);
+        box-shadow: inset 1px 0 #5bc7ff;
         color: #fff;
-        font-size: 12px;
+        font-size: 11px;
       }
 
       /* "What about you?": a place for visitors to leave a message */
@@ -444,17 +585,19 @@
     <div class="xp" aria-hidden="true">
       <div class="xp-window">
         <div class="xp-title">
+          <span class="xp-icon"></span>
           <span class="xp-title-text">koen.txt - Notepad</span>
-          <span class="xp-btn">_</span><span class="xp-btn">□</span><span class="xp-btn close">✕</span>
+          <span class="xp-btn min"></span><span class="xp-btn max"></span><span class="xp-btn close"></span>
         </div>
         <div class="xp-menu"><span>File</span><span>Edit</span><span>Format</span><span>View</span><span>Help</span></div>
         <div class="xp-text"></div>
       </div>
       <div class="xp-taskbar">
         <span class="xp-start">start</span>
-        <span class="xp-task">koen.txt - Notepad</span>
+        <span class="xp-task"><span class="xp-icon"></span>koen.txt - Notepad</span>
         <span class="xp-tray"></span>
       </div>
+    </div>
     </div>
 
     <div class="compose" hidden>
@@ -839,7 +982,7 @@
         const fit = () => {
           const r = bio.getBoundingClientRect();
           const chrome = win.querySelector('.xp-title').offsetHeight + win.querySelector('.xp-menu').offsetHeight;
-          const inset = 3 + 2 + 1 + PAD; // window border + margin + text area border + padding
+          const inset = 3 + 1 + PAD; // window frame + text area border + padding
           win.style.left = `${r.left - inset}px`;
           win.style.top = `${r.top - PAD - 1 - chrome}px`;
           win.style.width = `${r.width + inset * 2}px`;
