@@ -58,7 +58,7 @@
       }
 
       /* once a new paragraph arrives, the ones before it step back:
-         80% for the one just before, 60% for everything older */
+         the one just before stays at full strength, everything older drops to 60% */
       .js .bio p.read .s {
         opacity: var(--dim, 1);
         transition-duration: 1200ms;
@@ -803,7 +803,7 @@
                 }
                 paragraphs.slice(0, i).forEach((prev, j) => {
                   prev.classList.add('read');
-                  prev.style.setProperty('--dim', i - j === 1 ? '0.8' : '0.6');
+                  prev.style.setProperty('--dim', i - j === 1 ? '1' : '0.6');
                 });
               }, at),
             );
