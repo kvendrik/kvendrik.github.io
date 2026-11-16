@@ -28,7 +28,13 @@
         background: #fff;
       }
 
+      :root {
+        --ease-out: cubic-bezier(0.23, 1, 0.32, 1);
+      }
+
       .bio {
+        position: relative;
+        z-index: 1;
         max-width: 32em;
         margin: 0;
         font-size: clamp(18px, 2.2vw, 22px);
@@ -36,15 +42,70 @@
         text-align: left;
         text-wrap: pretty;
       }
+
+      .bio a {
+        color: inherit;
+        text-decoration: underline;
+        text-decoration-thickness: 1px;
+        text-underline-offset: 0.2em;
+      }
+
+      /* Amsterdam photos: hidden until the Amsterdam link is hovered or focused */
+      .photos {
+        position: fixed;
+        inset: 0;
+        pointer-events: none;
+      }
+
+      .photos img {
+        position: absolute;
+        object-fit: cover;
+        border-radius: 4px;
+        opacity: 0;
+        transform: scale(0.95);
+        /* exit: quick, all at once */
+        transition:
+          opacity 200ms var(--ease-out),
+          transform 200ms var(--ease-out);
+      }
+
+      body:has(.amsterdam:focus-visible) .photos img {
+        opacity: 1;
+        transform: scale(1);
+        /* enter: staggered by --i */
+        transition-duration: 400ms;
+        transition-delay: calc(var(--i) * 50ms);
+      }
+
+      @media (hover: hover) and (pointer: fine) {
+        body:has(.amsterdam:hover) .photos img {
+          opacity: 1;
+          transform: scale(1);
+          transition-duration: 400ms;
+          transition-delay: calc(var(--i) * 50ms);
+        }
+      }
+
+      @media (prefers-reduced-motion: reduce) {
+        .photos img {
+          transform: none !important;
+          transition-property: opacity;
+        }
+      }
     </style>
   </head>
   <body>
     <p class="bio">
-      I'm Koen, an Amsterdam-based Staff Engineer at Shopify, where I've spent the last decade
+      I'm Koen, an
+      <a class="amsterdam" href="https://maps.google.com/?q=Amsterdam">Amsterdam</a>-based Staff Engineer at Shopify, where I've spent the last decade
       helping people turn their passion into their job. These days I'm mostly thinking about AI
       agents: how to build them, and how to make them secure and reliable enough to actually
       trust. It feels a lot like when I first started coding at 15. If that excites you too, say
       hi.
     </p>
+
+    <!-- Photos go here, one <img> per slot, e.g.:
+         <img src="photos/amsterdam-1.jpg" alt="" style="--i: 0; top: 6%; left: 4%; width: 18vw; aspect-ratio: 4/5" /> -->
+    <div class="photos" aria-hidden="true"></div>
   </body>
 </html>
