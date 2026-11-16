@@ -4,6 +4,7 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>Koen Vendrik</title>
+    <script>document.documentElement.classList.add('js');</script>
     <link rel="preload" href="fonts/AlloVariable.woff2" as="font" type="font/woff2" crossorigin />
     <style>
       /* Allo by Josh Puckett, SIL Open Font License 1.1 (see fonts/Allo-OFL.txt) */
@@ -41,6 +42,45 @@
         line-height: 1.55;
         text-align: left;
         text-wrap: pretty;
+      }
+
+      /* paragraphs are revealed one at a time by the script at the bottom */
+      .js .bio p {
+        opacity: 0;
+      }
+
+      .js .bio p.in {
+        animation: rise 1600ms var(--ease-out) both;
+      }
+
+      .js .bio p.in:first-child {
+        animation: fade 1400ms var(--ease-out) both;
+      }
+
+      @keyframes rise {
+        from {
+          opacity: 0;
+          translate: 0 28px;
+        }
+        to {
+          opacity: 1;
+          translate: 0 0;
+        }
+      }
+
+      @keyframes fade {
+        from {
+          opacity: 0;
+        }
+        to {
+          opacity: 1;
+        }
+      }
+
+      @media (prefers-reduced-motion: reduce) {
+        .js .bio p.in {
+          animation-name: fade;
+        }
       }
 
       .bio p {
@@ -284,19 +324,31 @@
     <main class="bio">
       <p>
         <span class="s">Hey, I'm <span class="u">Koen</span>! </span><span class="s" id="weather">Greetings from
-          <a class="amsterdam" href="https://maps.google.com/?q=Amsterdam">Amsterdam</a>. </span><span class="s" id="activity" hidden></span><span class="s">Pull up a chair. </span><span class="s">Hope your <span id="time-of-day">day</span> is going well.</span>
+          <a class="amsterdam" href="https://maps.google.com/?q=Amsterdam">Amsterdam</a>. </span><span class="s" id="activity" hidden></span>
+      </p>
+      <p>
+        <span class="s">Pull up a chair. </span><span class="s">Hope your <span id="time-of-day">day</span> is going well.</span>
       </p>
       <p>
         <span class="s"><em>Oh</em>, how rude. </span><span class="s">I haven't even introduced myself.</span>
       </p>
       <p>
-        <span class="s">Picture a kid in the nineties, listening to a modem scream its way onto the internet, half convinced computers would one day talk back. </span><span class="s">That was me. </span><span class="s">At fifteen I started writing code to find out.</span>
+        <span class="s">Picture a kid in the nineties, listening to a modem scream its way onto the internet, half convinced computers would one day talk back.</span>
       </p>
       <p>
-        <span class="s">They do talk back now, and I help build them. </span><span class="s">After ten years at <a href="https://www.shopify.com">Shopify</a>, helping people turn their passion into their job, I spend my days on AI systems that feel like a friendly coworker: the kind you'd trust with work you're proud of.</span>
+        <span class="s">That was me. </span><span class="s">At fifteen I started writing code to find out.</span>
       </p>
       <p>
-        <span class="s">It's a strange, wonderful time. </span><span class="s">We can build nearly anything. </span><span class="s">I hope we still take our time with the things that matter. </span><span class="s">AI shouldn't mean the end of craftsmanship.</span>
+        <span class="s">They do talk back now, and I help build them.</span>
+      </p>
+      <p>
+        <span class="s">After ten years at <a href="https://www.shopify.com">Shopify</a>, helping people turn their passion into their job, I spend my days on AI systems that feel like a friendly coworker: the kind you'd trust with work you're proud of.</span>
+      </p>
+      <p>
+        <span class="s">It's a strange, wonderful time. </span><span class="s">We can build nearly anything.</span>
+      </p>
+      <p>
+        <span class="s">I hope we still take our time with the things that matter. </span><span class="s">AI shouldn't mean the end of craftsmanship.</span>
       </p>
       <p>
         <span class="s">Anyway, enough about me. </span><span class="s"><button class="you" type="button">What about you?</button></span>
@@ -353,12 +405,14 @@
         return span;
       };
 
-      fetch(
+      const weatherReady = fetch(
         'https://api.open-meteo.com/v1/forecast?latitude=52.37&longitude=4.89' +
           '&current=temperature_2m,weather_code,is_day&timezone=Europe%2FAmsterdam',
       )
         .then((res) => (res.ok ? res.json() : Promise.reject(res.status)))
         .then(({ current }) => {
+          // too late: the opening line is already showing, so don't change it mid-read
+          if (document.querySelector('.bio p').classList.contains('in')) return;
           const temp = Math.round(current.temperature_2m);
           const isDay = current.is_day === 1;
           const weather = describe(current.weather_code, isDay);
@@ -673,6 +727,38 @@
           setTimeout(closeCompose, 2400);
         }
       });
+    </script>
+    <script>
+      // Reveal the story one paragraph at a time, giving each roughly enough time to be read.
+      // Waits for the weather first (at most 1.5s) so the opening line doesn't change mid-read.
+      // Clicking, pressing a key or scrolling shows everything at once.
+      (() => {
+        const paragraphs = [...document.querySelectorAll('.bio p')];
+        const timers = [];
+        let started = false;
+
+        const showAll = () => {
+          timers.forEach(clearTimeout);
+          paragraphs.forEach((p) => p.classList.add('in'));
+          ['pointerdown', 'keydown', 'wheel', 'touchmove'].forEach((t) => removeEventListener(t, showAll));
+        };
+        ['pointerdown', 'keydown', 'wheel', 'touchmove'].forEach((t) =>
+          addEventListener(t, showAll, { passive: true }),
+        );
+
+        const start = () => {
+          if (started) return;
+          started = true;
+          let at = 0;
+          paragraphs.forEach((p, i) => {
+            timers.push(setTimeout(() => p.classList.add('in'), at));
+            const words = p.textContent.trim().split(/\s+/).length;
+            at += Math.min(4200, Math.max(1300, words * 230)) + (i === 0 ? 400 : 0);
+          });
+        };
+
+        Promise.race([weatherReady, new Promise((r) => setTimeout(r, 1500))]).then(start);
+      })();
     </script>
   </body>
 </html>
