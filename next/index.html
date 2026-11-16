@@ -69,6 +69,79 @@
         opacity: 0.4;
       }
 
+      /* "What about you?": a place for visitors to leave a message */
+      .bio {
+        transition: opacity 250ms var(--ease-out);
+      }
+
+      body.composing .bio {
+        opacity: 0;
+        pointer-events: none;
+      }
+
+      body.composing .photos {
+        visibility: hidden;
+      }
+
+      .compose {
+        position: fixed;
+        inset: 0;
+        z-index: 2;
+        display: grid;
+        place-content: center;
+        justify-items: center;
+        gap: 20px;
+        padding: 24px;
+      }
+
+      .compose[hidden] {
+        display: none;
+      }
+
+      .compose-prompt,
+      .flyer {
+        margin: 0;
+        font-size: clamp(18px, 2.2vw, 22px);
+        line-height: 1.55;
+      }
+
+      .flyer {
+        position: fixed;
+        z-index: 3;
+        white-space: nowrap;
+        pointer-events: none;
+        text-decoration: underline 1px;
+        text-underline-offset: 0.2em;
+        text-decoration-color: currentColor;
+        transition: text-decoration-color 300ms var(--ease-out);
+      }
+
+      .flyer.landing {
+        text-decoration-color: transparent;
+      }
+
+      .compose-input {
+        width: min(640px, 90vw);
+        padding: 0;
+        border: 0;
+        outline: 0;
+        resize: none;
+        overflow: hidden;
+        background: transparent;
+        font: inherit;
+        font-size: clamp(22px, 3vw, 30px);
+        line-height: 1.4;
+        color: inherit;
+        caret-color: currentColor;
+        text-align: center;
+      }
+
+      .compose-hint {
+        margin: 0;
+        font-size: 14px;
+        opacity: 0.5;
+      }
+
       /* Amsterdam photos: hidden until the Amsterdam link is hovered or focused.
          The script below places them in the free space around the text. */
       .photos {
@@ -161,6 +234,12 @@
         <span class="s">Anyway, enough about me. </span><span class="s"><a class="you" href="https://linkedin.com/in/kvendrik">What about you?</a></span>
       </p>
     </main>
+
+    <div class="compose" hidden>
+      <p class="compose-prompt">What about you?</p>
+      <textarea class="compose-input" rows="1" aria-label="Your message to Koen"></textarea>
+      <p class="compose-hint">Press Enter to send · Esc to go back</p>
+    </div>
 
     <!-- Amsterdam photos from Unsplash, see photos/CREDITS.txt -->
     <div class="photos" aria-hidden="true">
@@ -382,6 +461,138 @@
           frame = moving ? requestAnimationFrame(tick) : null;
         }
       }
+    </script>
+    <script>
+      // "What about you?": the question glides to the middle of the page and becomes a
+      // prompt with a blinking cursor below it, where the visitor can type a message.
+      const you = document.querySelector('.you');
+      const compose = document.querySelector('.compose');
+      const prompt = compose.querySelector('.compose-prompt');
+      const input = compose.querySelector('.compose-input');
+      const hint = compose.querySelector('.compose-hint');
+      const reduceMotion = () => matchMedia('(prefers-reduced-motion: reduce)').matches;
+      const MOVE = 'cubic-bezier(0.77, 0, 0.175, 1)'; // on-screen movement
+      const OUT = 'cubic-bezier(0.23, 1, 0.32, 1)'; // entering and leaving
+
+      let step = null; // 'message' | 'contact' | 'sent'
+      let note = {};
+
+      // TODO: deliver messages somewhere (Formspree, a small worker…). Not wired up yet.
+      async function deliver(message) {
+        console.info('Message for Koen (not sent anywhere yet):', message);
+      }
+
+      const fadeIn = (el, delay = 0) =>
+        el.animate({ opacity: [0, el === hint ? 0.5 : 1] }, { duration: 300, delay, easing: OUT, fill: 'both' });
+
+      function swapPrompt(text) {
+        prompt
+          .animate({ opacity: [1, 0] }, { duration: 150, easing: OUT, fill: 'forwards' })
+          .finished.then(() => {
+            prompt.textContent = text;
+            prompt.animate({ opacity: [0, 1] }, { duration: 250, easing: OUT, fill: 'forwards' });
+          });
+      }
+
+      function fitInput() {
+        input.style.height = 'auto';
+        input.style.height = `${input.scrollHeight}px`;
+      }
+
+      function openCompose() {
+        step = 'message';
+        note = {};
+        prompt.textContent = 'What about you?';
+        hint.textContent = 'Press Enter to send · Esc to go back';
+        input.value = '';
+        input.hidden = false;
+        hint.hidden = false;
+        compose.hidden = false;
+        fitInput();
+        for (const el of [prompt, input, hint]) el.getAnimations().forEach((a) => a.cancel());
+        prompt.style.opacity = 0;
+        input.style.opacity = 0;
+        hint.style.opacity = 0;
+
+        // fly the link text from where it is to where the prompt sits
+        const from = you.getBoundingClientRect();
+        const to = prompt.getBoundingClientRect();
+        const flyer = document.createElement('span');
+        flyer.className = 'flyer';
+        flyer.textContent = you.textContent;
+        flyer.style.left = `${from.left}px`;
+        flyer.style.top = `${from.top - (to.height - from.height) / 2}px`;
+        document.body.append(flyer);
+        you.style.visibility = 'hidden';
+        document.body.classList.add('composing');
+        requestAnimationFrame(() => flyer.classList.add('landing'));
+
+        const dx = to.left + (to.width - from.width) / 2 - from.left;
+        const dy = to.top - (from.top - (to.height - from.height) / 2);
+        flyer
+          .animate(
+            { transform: ['translate(0, 0)', `translate(${dx}px, ${dy}px)`] },
+            { duration: reduceMotion() ? 0 : 650, easing: MOVE, fill: 'forwards' },
+          )
+          .finished.then(() => {
+            prompt.style.opacity = 1;
+            flyer.remove();
+            input.style.opacity = '';
+            hint.style.opacity = '';
+            fadeIn(input);
+            fadeIn(hint, 500);
+            input.focus();
+          });
+      }
+
+      function closeCompose() {
+        step = null;
+        compose
+          .animate({ opacity: [1, 0] }, { duration: 200, easing: OUT })
+          .finished.then(() => {
+            compose.hidden = true;
+            you.style.visibility = '';
+          });
+        document.body.classList.remove('composing');
+      }
+
+      you.addEventListener('click', (e) => {
+        e.preventDefault();
+        openCompose();
+      });
+
+      input.addEventListener('input', fitInput);
+
+      input.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape') {
+          closeCompose();
+          return;
+        }
+        if (e.key !== 'Enter' || e.shiftKey) return;
+        e.preventDefault();
+
+        if (step === 'message') {
+          if (!input.value.trim()) return;
+          note.message = input.value.trim();
+          step = 'contact';
+          swapPrompt('And where can I reach you?');
+          hint.textContent = 'An email or handle · or press Enter to stay anonymous';
+          input.value = '';
+          fitInput();
+        } else if (step === 'contact') {
+          note.contact = input.value.trim();
+          step = 'sent';
+          deliver(note);
+          input.hidden = true;
+          hint.hidden = true;
+          swapPrompt(note.contact ? "Thank you! I'll get back to you soon." : 'Thank you for the note!');
+          setTimeout(closeCompose, 2400);
+        }
+      });
+
+      addEventListener('keydown', (e) => {
+        if (e.key === 'Escape' && step) closeCompose();
+      });
     </script>
   </body>
 </html>
