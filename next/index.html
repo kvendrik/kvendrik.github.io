@@ -43,24 +43,6 @@
         text-wrap: pretty;
       }
 
-      /* photos that slide behind the text get blurred there, with soft edges */
-      .bio::before {
-        content: '';
-        position: absolute;
-        inset: -32px;
-        z-index: -1;
-        background: rgb(255 255 255 / 0.25);
-        backdrop-filter: blur(14px);
-        -webkit-backdrop-filter: blur(14px);
-        --fade: 32px;
-        mask-image:
-          linear-gradient(to right, transparent, #000 var(--fade), #000 calc(100% - var(--fade)), transparent),
-          linear-gradient(to bottom, transparent, #000 var(--fade), #000 calc(100% - var(--fade)), transparent);
-        mask-composite: intersect;
-        -webkit-mask-composite: source-in;
-        pointer-events: none;
-      }
-
       .bio p {
         margin: 0 0 1em;
       }
@@ -78,26 +60,31 @@
         text-underline-offset: 0.2em;
       }
 
-      /* hovering a sentence keeps it at full strength and dims the rest */
-      @media (hover: hover) and (pointer: fine) {
-        .s {
-          transition: opacity 150ms ease;
-        }
-
-        .bio:has(.s:hover) .s:not(:hover) {
-          opacity: 0.6;
-        }
+      /* hovering "What about you?" fades everything else back */
+      .s {
+        transition: opacity 200ms ease;
       }
 
-      /* Amsterdam photos: hidden until the Amsterdam link is hovered or focused */
+      .bio:has(.you:hover, .you:focus-visible) .s:not(:has(.you)) {
+        opacity: 0.4;
+      }
+
+      /* Amsterdam photos: hidden until the Amsterdam link is hovered or focused.
+         The script below places them in the free space around the text. */
       .photos {
         position: fixed;
         inset: 0;
         pointer-events: none;
       }
 
+      .photos:not(.placed) {
+        display: none;
+      }
+
       .photos img {
         position: absolute;
+        top: 0;
+        left: 0;
         object-fit: cover;
         border-radius: 4px;
         opacity: 0;
@@ -125,13 +112,6 @@
         }
       }
 
-      /* too narrow to fit photos around the text without covering it */
-      @media (max-width: 1200px), (max-height: 700px) {
-        .photos {
-          display: none;
-        }
-      }
-
       @media (prefers-reduced-motion: reduce) {
         .photos img {
           transform: none !important;
@@ -156,19 +136,19 @@
         <span class="s">I love that we can build almost anything now. </span><span class="s">But I think there's still a lot of value in slow creation. </span><span class="s">AI shouldn't mean the end of craftsmanship.</span>
       </p>
       <p>
-        <span class="s">Anyway, enough about me. </span><span class="s"><a href="https://linkedin.com/in/kvendrik">What about you?</a></span>
+        <span class="s">Anyway, enough about me. </span><span class="s"><a class="you" href="https://linkedin.com/in/kvendrik">What about you?</a></span>
       </p>
     </main>
 
     <!-- Amsterdam photos from Unsplash, see photos/CREDITS.txt -->
     <div class="photos" aria-hidden="true">
-      <img src="photos/amsterdam-1.webp" alt="" style="--i: 0; top: 3%; left: 1%; width: clamp(200px, min(20vw, 36vh), 500px); aspect-ratio: 6/5" />
-      <img src="photos/amsterdam-5.webp" alt="" style="--i: 1; top: 2%; left: 34%; width: clamp(200px, 14vw, 500px); aspect-ratio: 3/2" />
-      <img src="photos/amsterdam-2.webp" alt="" style="--i: 2; top: 4%; right: 2.5%; width: clamp(200px, 15vw, 500px); aspect-ratio: 4/5" />
-      <img src="photos/amsterdam-8.webp" alt="" style="--i: 3; top: 38%; right: 16%; width: clamp(200px, 14vw, 500px); aspect-ratio: 2/3" />
-      <img src="photos/amsterdam-4.webp" alt="" style="--i: 4; bottom: 3%; right: 2%; width: clamp(200px, 15vw, 500px); aspect-ratio: 4/3" />
-      <img src="photos/amsterdam-7.webp" alt="" style="--i: 5; bottom: 2%; left: 40%; width: clamp(200px, min(22vw, 30vh), 500px); aspect-ratio: 3/2" />
-      <img src="photos/amsterdam-3.webp" alt="" style="--i: 6; bottom: 4%; left: 16%; width: clamp(200px, 14vw, 500px); aspect-ratio: 4/5" />
+      <img src="photos/amsterdam-1.webp" alt="" style="--i: 0" data-aspect="6/5" data-region="left" data-span="0 0.5" data-size="1.0" data-at="0.2 0.15" />
+      <img src="photos/amsterdam-5.webp" alt="" style="--i: 1" data-aspect="3/2" data-region="top" data-span="0 0.5" data-size="0.7" data-at="0.25 0.35" />
+      <img src="photos/amsterdam-2.webp" alt="" style="--i: 2" data-aspect="4/5" data-region="right" data-span="0 0.34" data-size="0.8" data-at="0.65 0.1" />
+      <img src="photos/amsterdam-8.webp" alt="" style="--i: 3" data-aspect="2/3" data-region="right" data-span="0.34 0.68" data-size="0.9" data-at="0.15 0.5" />
+      <img src="photos/amsterdam-4.webp" alt="" style="--i: 4" data-aspect="4/3" data-region="right" data-span="0.68 1" data-size="0.75" data-at="0.85 0.9" />
+      <img src="photos/amsterdam-7.webp" alt="" style="--i: 5" data-aspect="3/2" data-region="bottom" data-span="0.4 1" data-size="0.75" data-at="0.6 0.7" />
+      <img src="photos/amsterdam-3.webp" alt="" style="--i: 6" data-aspect="4/5" data-region="left" data-span="0.5 1" data-size="0.8" data-at="0.75 0.7" />
     </div>
     <script>
       // Time of day: the visitor's own clock
@@ -239,6 +219,65 @@
       const amsterdam = document.querySelector('.amsterdam');
       const photos = [...document.querySelectorAll('.photos img')];
 
+      // Layout: measure where the text is, split the free space around it into
+      // regions (left and right columns, bands above and below), and fit each photo
+      // into its share of a region. Photos shrink to fit and are skipped if too small.
+      const bio = document.querySelector('.bio');
+      const container = document.querySelector('.photos');
+      const GAP = 48; // keeps photos clear of the text, even while they drift with the mouse
+      const EDGE = 16;
+      const MIN_WIDTH = 120;
+      const MAX_WIDTH = 500;
+
+      function layout() {
+        const W = innerWidth;
+        const H = innerHeight;
+        const t = bio.getBoundingClientRect();
+        const regions = {
+          left: { x: 0, y: 0, w: t.left - GAP, h: H, split: 'y' },
+          right: { x: t.right + GAP, y: 0, w: W - t.right - GAP, h: H, split: 'y' },
+          top: { x: t.left, y: 0, w: t.width, h: t.top - GAP, split: 'x' },
+          bottom: { x: t.left, y: t.bottom + GAP, w: t.width, h: H - t.bottom - GAP, split: 'x' },
+        };
+
+        for (const photo of photos) {
+          const r = regions[photo.dataset.region];
+          const [from, to] = photo.dataset.span.split(' ').map(Number);
+          const [fx, fy] = photo.dataset.at.split(' ').map(Number);
+          const [aw, ah] = photo.dataset.aspect.split('/').map(Number);
+          const aspect = aw / ah;
+
+          // this photo's cell within its region
+          const cell =
+            r.split === 'y'
+              ? { x: r.x, y: r.y + r.h * from, w: r.w, h: r.h * (to - from) }
+              : { x: r.x + r.w * from, y: r.y, w: r.w * (to - from), h: r.h };
+          const availW = cell.w - EDGE * 2;
+          const availH = cell.h - EDGE * 2;
+          // TODO: smaller screens. For now a photo that doesn't fit keeps a minimum size
+          // and may overlap the text.
+          const width = Math.max(
+            MIN_WIDTH,
+            Math.min(MAX_WIDTH, availW * Number(photo.dataset.size), availW, availH * aspect),
+          );
+          const height = width / aspect;
+          const clampTo = (v, max) => Math.max(EDGE, Math.min(v, max - EDGE));
+          photo.style.width = `${width}px`;
+          photo.style.height = `${height}px`;
+          photo.style.left = `${clampTo(cell.x + EDGE + fx * (availW - width), W - width)}px`;
+          photo.style.top = `${clampTo(cell.y + EDGE + fy * (availH - height), H - height)}px`;
+        }
+
+        // parallax depth: bigger photos feel closer, so they move more
+        const widest = Math.max(...photos.map((p) => p.offsetWidth), 1);
+        for (const p of photos) p.dataset.depth = ((p.offsetWidth / widest) ** 1.5).toFixed(3);
+        container.classList.add('placed');
+      }
+
+      // re-run when the window changes or the text reflows (e.g. once the weather loads)
+      new ResizeObserver(layout).observe(bio);
+      addEventListener('resize', layout);
+
       // Fade-in order: shuffled every time, never starting with the same photo twice in a row.
       // Shuffled ahead of the hover: a delay set during the hover itself would be too late.
       let lastFirst = null;
@@ -267,13 +306,7 @@
 
       if (canParallax) {
         const MAX_SHIFT = 36; // px, for the largest photo
-        const layers = photos.map((photo) => ({ photo, depth: 0, x: 0, y: 0 }));
-        const setDepths = () => {
-          const widest = Math.max(...photos.map((p) => p.offsetWidth));
-          for (const l of layers) l.depth = (l.photo.offsetWidth / widest) ** 1.5;
-        };
-        setDepths();
-        addEventListener('resize', setDepths);
+        const layers = photos.map((photo) => ({ photo, x: 0, y: 0 }));
 
         let targetX = 0;
         let targetY = 0;
@@ -300,8 +333,9 @@
           const ease = 1 - Math.exp(-dt / 140);
           let moving = false;
           for (const l of layers) {
-            const tx = -targetX * MAX_SHIFT * l.depth;
-            const ty = -targetY * MAX_SHIFT * l.depth;
+            const depth = Number(l.photo.dataset.depth || 0);
+            const tx = -targetX * MAX_SHIFT * depth;
+            const ty = -targetY * MAX_SHIFT * depth;
             l.x += (tx - l.x) * ease;
             l.y += (ty - l.y) * ease;
             if (Math.abs(tx - l.x) > 0.05 || Math.abs(ty - l.y) > 0.05) moving = true;
