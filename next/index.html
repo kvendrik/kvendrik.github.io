@@ -66,9 +66,10 @@
 
       /* a small, quiet way out of the slow reveal */
       .skip {
-        position: absolute;
-        left: 0;
-        top: 0;
+        position: fixed;
+        right: 24px;
+        bottom: 24px;
+        z-index: 1;
         padding: 0;
         border: 0;
         background: none;
@@ -79,9 +80,7 @@
         cursor: pointer;
         text-decoration: underline 1px;
         text-underline-offset: 0.2em;
-        transition:
-          opacity 600ms ease,
-          translate 900ms var(--ease-out);
+        transition: opacity 600ms ease;
       }
 
       .skip.shown {
@@ -777,11 +776,6 @@
         skip.hidden = false;
         skip.addEventListener('click', () => showAll());
 
-        // keep the skip link just below the newest paragraph
-        const placeSkip = (p) => {
-          skip.style.translate = `0 ${p.offsetTop + p.offsetHeight + 10}px`;
-        };
-
         const showAll = () => {
           skip.classList.remove('shown');
           setTimeout(() => (skip.hidden = true), 600);
@@ -805,7 +799,6 @@
                 if (i === paragraphs.length - 1) {
                   skip.classList.remove('shown');
                 } else {
-                  placeSkip(p);
                   skip.classList.add('shown');
                 }
                 paragraphs.slice(0, i).forEach((prev, j) => {
