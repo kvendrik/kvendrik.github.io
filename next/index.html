@@ -74,7 +74,7 @@
         transform: scale(1);
         /* enter: staggered by --i */
         transition-duration: 400ms;
-        transition-delay: calc(var(--i) * 50ms);
+        transition-delay: var(--delay, calc(var(--i) * 50ms));
       }
 
       @media (hover: hover) and (pointer: fine) {
@@ -82,12 +82,12 @@
           opacity: 1;
           transform: scale(1);
           transition-duration: 400ms;
-          transition-delay: calc(var(--i) * 50ms);
+          transition-delay: var(--delay, calc(var(--i) * 50ms));
         }
       }
 
       /* too narrow to fit photos around the text without covering it */
-      @media (max-width: 720px) {
+      @media (max-width: 960px) {
         .photos {
           display: none;
         }
@@ -113,14 +113,33 @@
 
     <!-- Amsterdam photos from Unsplash, see photos/CREDITS.txt -->
     <div class="photos" aria-hidden="true">
-      <img src="photos/amsterdam-1.webp" alt="" style="--i: 0; top: 7%; left: 5%; width: 21vw; aspect-ratio: 6/5" />
-      <img src="photos/amsterdam-5.webp" alt="" style="--i: 1; top: 3%; left: 38%; width: 7vw; aspect-ratio: 3/2" />
-      <img src="photos/amsterdam-2.webp" alt="" style="--i: 2; top: 13%; left: 56%; width: 9vw; aspect-ratio: 4/5" />
-      <img src="photos/amsterdam-8.webp" alt="" style="--i: 3; top: 6%; right: 6%; width: 13vw; aspect-ratio: 2/3" />
-      <img src="photos/amsterdam-4.webp" alt="" style="--i: 4; top: 50%; right: 2.5%; width: 11vw; aspect-ratio: 4/3" />
-      <img src="photos/amsterdam-7.webp" alt="" style="--i: 5; bottom: 3%; left: 50%; width: 22vw; aspect-ratio: 3/2" />
-      <img src="photos/amsterdam-3.webp" alt="" style="--i: 6; bottom: 12%; left: 17%; width: 8vw; aspect-ratio: 4/5" />
-      <img src="photos/amsterdam-6.webp" alt="" style="--i: 7; top: 41%; left: 3%; width: 6vw; aspect-ratio: 2/3" />
+      <img src="photos/amsterdam-1.webp" alt="" style="--i: 0; top: 4%; left: 5%; width: clamp(100px, 26vw, 400px); aspect-ratio: 6/5" />
+      <img src="photos/amsterdam-5.webp" alt="" style="--i: 1; top: 3%; left: 38%; width: clamp(100px, 7vw, 400px); aspect-ratio: 3/2" />
+      <img src="photos/amsterdam-2.webp" alt="" style="--i: 2; top: 13%; left: 56%; width: clamp(100px, 10vw, 400px); aspect-ratio: 4/5" />
+      <img src="photos/amsterdam-8.webp" alt="" style="--i: 3; top: 6%; right: 6%; width: clamp(100px, 14vw, 400px); aspect-ratio: 2/3" />
+      <img src="photos/amsterdam-4.webp" alt="" style="--i: 4; top: 50%; right: 2.5%; width: clamp(100px, 11vw, 400px); aspect-ratio: 4/3" />
+      <img src="photos/amsterdam-7.webp" alt="" style="--i: 5; bottom: 3%; left: 50%; width: clamp(100px, 27vw, 400px); aspect-ratio: 3/2" />
+      <img src="photos/amsterdam-3.webp" alt="" style="--i: 6; bottom: 12%; left: 17%; width: clamp(100px, 9vw, 400px); aspect-ratio: 4/5" />
+      <img src="photos/amsterdam-6.webp" alt="" style="--i: 7; top: 41%; left: 3%; width: clamp(100px, 7vw, 400px); aspect-ratio: 2/3" />
     </div>
+    <script>
+      // Each time the photos appear, shuffle their order and space them out by uneven gaps
+      const amsterdam = document.querySelector('.amsterdam');
+      const photos = [...document.querySelectorAll('.photos img')];
+
+      function shuffleDelays() {
+        const order = photos.slice().sort(() => Math.random() - 0.5);
+        let delay = 0;
+        for (const photo of order) {
+          photo.style.setProperty('--delay', `${Math.round(delay)}ms`);
+          delay += 20 + Math.random() * 90;
+        }
+      }
+
+      // shuffle ahead of time: a delay set during the hover itself would be too late
+      shuffleDelays();
+      amsterdam.addEventListener('pointerleave', shuffleDelays);
+      amsterdam.addEventListener('blur', shuffleDelays);
+    </script>
   </body>
 </html>
