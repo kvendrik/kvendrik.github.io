@@ -86,6 +86,13 @@
         }
       }
 
+      /* too narrow to fit photos around the text without covering it */
+      @media (max-width: 720px) {
+        .photos {
+          display: none;
+        }
+      }
+
       @media (prefers-reduced-motion: reduce) {
         .photos img {
           transform: none !important;
@@ -104,8 +111,16 @@
       hi.
     </p>
 
-    <!-- Photos go here, one <img> per slot, e.g.:
-         <img src="photos/amsterdam-1.jpg" alt="" style="--i: 0; top: 6%; left: 4%; width: 18vw; aspect-ratio: 4/5" /> -->
-    <div class="photos" aria-hidden="true"></div>
+    <!-- Amsterdam photos from Unsplash, see photos/CREDITS.txt -->
+    <div class="photos" aria-hidden="true">
+      <img src="photos/amsterdam-1.webp" alt="" style="--i: 0; top: 5%; left: 4%; width: 17vw; aspect-ratio: 6/5" />
+      <img src="photos/amsterdam-5.webp" alt="" style="--i: 1; top: 3%; left: 38%; width: 14vw; aspect-ratio: 3/2" />
+      <img src="photos/amsterdam-2.webp" alt="" style="--i: 2; top: 8%; right: 6%; width: 13vw; aspect-ratio: 4/5" />
+      <img src="photos/amsterdam-8.webp" alt="" style="--i: 3; top: 42%; right: 3%; width: 10vw; aspect-ratio: 2/3" />
+      <img src="photos/amsterdam-4.webp" alt="" style="--i: 4; bottom: 10%; right: 4%; width: 19vw; aspect-ratio: 4/3" />
+      <img src="photos/amsterdam-7.webp" alt="" style="--i: 5; bottom: 3%; left: 42%; width: 15vw; aspect-ratio: 3/2" />
+      <img src="photos/amsterdam-3.webp" alt="" style="--i: 6; bottom: 6%; left: 9%; width: 12vw; aspect-ratio: 4/5" />
+      <img src="photos/amsterdam-6.webp" alt="" style="--i: 7; top: 40%; left: 2%; width: 9vw; aspect-ratio: 2/3" />
+    </div>
   </body>
 </html>
