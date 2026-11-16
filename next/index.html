@@ -753,7 +753,7 @@
           paragraphs.forEach((p, i) => {
             timers.push(setTimeout(() => p.classList.add('in'), at));
             const words = p.textContent.trim().split(/\s+/).length;
-            at += Math.min(4200, Math.max(1300, words * 230)) + (i === 0 ? 400 : 0);
+            at += Math.min(6000, Math.max(2200, words * 320)) + (i === 0 ? 600 : 0);
           });
         };
 
