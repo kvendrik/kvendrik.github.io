@@ -44,52 +44,13 @@
         text-wrap: pretty;
       }
 
-      /* room above and below the story, so any paragraph can be scrolled to the middle */
+      /* the text fades in once, after the weather is in (see the script at the bottom) */
       .js .bio {
-        padding-block: 50vh;
-      }
-
-      /* paragraphs are revealed one at a time by the script at the bottom */
-      .js .bio p {
         opacity: 0;
       }
 
-      .js .bio p.in {
+      .js .bio.ready {
         animation: fade 1400ms var(--ease-out) both;
-      }
-
-      /* once a new paragraph arrives, the ones before it step back:
-         the one just before stays at full strength, everything older drops to 60% */
-      .js .bio p.read .s {
-        opacity: var(--dim, 1);
-        transition-duration: 1200ms;
-      }
-
-      /* a small, quiet way out of the slow reveal */
-      .skip {
-        position: fixed;
-        right: 24px;
-        bottom: 24px;
-        z-index: 1;
-        padding: 0;
-        border: 0;
-        background: none;
-        font: inherit;
-        font-size: 13px;
-        color: inherit;
-        opacity: 0;
-        cursor: pointer;
-        text-decoration: underline 1px;
-        text-underline-offset: 0.2em;
-        transition: opacity 600ms ease;
-      }
-
-      .skip.shown {
-        opacity: 0.4;
-      }
-
-      .skip.shown:hover {
-        opacity: 0.7;
       }
 
       @keyframes fade {
@@ -380,7 +341,6 @@
       <p>
         <span class="s"><em>Anyway!</em> </span><span class="s">Enough about me. </span><span class="s"><button class="you" type="button">What about you?</button></span>
       </p>
-      <button class="skip" type="button" hidden>skip</button>
     </main>
 
     <div class="compose" hidden>
@@ -450,7 +410,7 @@
         .then((res) => (res.ok ? res.json() : Promise.reject(res.status)))
         .then(({ current }) => {
           // too late: the opening line is already showing, so don't change it mid-read
-          if (document.querySelector('.bio p').classList.contains('in')) return;
+          if (document.querySelector('.bio').classList.contains('ready')) return;
           const temp = Math.round(current.temperature_2m);
           const isDay = current.is_day === 1;
           const weather = describe(current.weather_code, isDay);
@@ -484,18 +444,7 @@
       function layout() {
         const W = innerWidth;
         const H = innerHeight;
-        // the text that's actually showing (the story box has extra room above and below)
-        const box = bio.getBoundingClientRect();
-        const shownText = [...bio.querySelectorAll('p')].filter((p) => p.classList.contains('in') || !document.documentElement.classList.contains('js'));
-        const first = (shownText[0] || bio).getBoundingClientRect();
-        const last = (shownText.at(-1) || bio).getBoundingClientRect();
-        const t = {
-          left: box.left,
-          right: box.right,
-          width: box.width,
-          top: Math.max(0, first.top),
-          bottom: Math.min(innerHeight, last.bottom),
-        };
+        const t = bio.getBoundingClientRect();
         const regions = {
           left: { x: 0, y: 0, w: t.left - GAP, h: H, split: 'y' },
           right: { x: t.right + GAP, y: 0, w: W - t.right - GAP, h: H, split: 'y' },
@@ -773,89 +722,11 @@
       });
     </script>
     <script>
-      // Reveal the story one paragraph at a time, giving each roughly enough time to be read.
-      // Waits for the weather first (at most 1.5s) so the opening line doesn't change mid-read.
-      // Clicking, pressing a key or scrolling shows everything at once.
-      (() => {
-        const paragraphs = [...document.querySelectorAll('.bio p')];
-        const timers = [];
-        let started = false;
-
-        const bio = document.querySelector('.bio');
-        history.scrollRestoration = 'manual';
-
-        // glide the page so a paragraph sits in the middle of the screen
-        const SCROLL_MS = 1400;
-        let scrollFrame = null;
-        const centerOn = (p, { instant = false } = {}) => {
-          cancelAnimationFrame(scrollFrame);
-          const bioTop = bio.getBoundingClientRect().top + scrollY;
-          const target = Math.max(0, bioTop + p.offsetTop + p.offsetHeight / 2 - innerHeight / 2);
-          if (instant || matchMedia('(prefers-reduced-motion: reduce)').matches) {
-            scrollTo(0, target);
-            return;
-          }
-          const from = scrollY;
-          const duration = SCROLL_MS;
-          const begin = performance.now();
-          const easeInOut = (x) => (x < 0.5 ? 4 * x * x * x : 1 - (-2 * x + 2) ** 3 / 2);
-          const step = (now) => {
-            const progress = Math.min(1, (now - begin) / duration);
-            scrollTo(0, from + (target - from) * easeInOut(progress));
-            if (progress < 1) scrollFrame = requestAnimationFrame(step);
-          };
-          scrollFrame = requestAnimationFrame(step);
-        };
-        centerOn(paragraphs[0], { instant: true });
-
-        const skip = document.querySelector('.skip');
-        skip.hidden = false;
-        skip.addEventListener('click', () => showAll());
-
-        const showAll = () => {
-          skip.classList.remove('shown');
-          setTimeout(() => (skip.hidden = true), 600);
-          timers.forEach(clearTimeout);
-          cancelAnimationFrame(scrollFrame);
-          paragraphs.forEach((p) => p.classList.add('in'));
-          paragraphs.forEach((p) => p.classList.remove('read'));
-          ['pointerdown', 'keydown', 'wheel', 'touchmove'].forEach((t) => removeEventListener(t, showAll));
-        };
-        ['pointerdown', 'keydown', 'wheel', 'touchmove'].forEach((t) =>
-          addEventListener(t, showAll, { passive: true }),
-        );
-
-        const start = () => {
-          if (started) return;
-          started = true;
-          let at = 0;
-          paragraphs.forEach((p, i) => {
-            timers.push(
-              setTimeout(() => {
-                // the text so far glides up to make room; the new paragraph then fades in
-                // right where it lands, in the middle of the screen
-                if (i > 0) centerOn(p);
-                timers.push(setTimeout(() => p.classList.add('in'), i > 0 ? SCROLL_MS - 200 : 0));
-                if (i === paragraphs.length - 1) {
-                  skip.classList.remove('shown');
-                  // the whole story is there: bring it all back to full strength
-                  timers.push(setTimeout(() => paragraphs.forEach((p) => p.classList.remove('read')), 1600));
-                } else {
-                  skip.classList.add('shown');
-                }
-                paragraphs.slice(0, i).forEach((prev, j) => {
-                  prev.classList.add('read');
-                  prev.style.setProperty('--dim', i - j === 1 ? '1' : '0.6');
-                });
-              }, at),
-            );
-            const words = p.textContent.trim().split(/\s+/).length;
-            at += Math.min(6000, Math.max(2200, words * 320)) + (i === 0 ? 600 : 0);
-          });
-        };
-
-        Promise.race([weatherReady, new Promise((r) => setTimeout(r, 1500))]).then(start);
-      })();
+      // Fade the text in once the weather is in (at most 1.5s), so the opening line doesn't
+      // change while someone's reading it.
+      Promise.race([weatherReady, new Promise((r) => setTimeout(r, 1500))]).then(() =>
+        document.querySelector('.bio').classList.add('ready'),
+      );
     </script>
   </body>
 </html>
