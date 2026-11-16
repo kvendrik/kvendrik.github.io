@@ -77,44 +77,66 @@
         pointer-events: none;
       }
 
-      .photos:not(.placed) {
+      .photos:not(.placed),
+      .photo[hidden] {
         display: none;
       }
 
-      .photos img {
+      .photo {
         position: absolute;
         top: 0;
         left: 0;
-        object-fit: cover;
         border-radius: 4px;
+        overflow: hidden;
         opacity: 0;
-        transform: scale(0.95);
+        scale: 0.95;
         /* exit: quick, all at once */
         transition:
           opacity 200ms var(--ease-out),
-          transform 200ms var(--ease-out);
+          scale 200ms var(--ease-out);
       }
 
-      body:has(.amsterdam:focus-visible) .photos img {
+      .photo img {
+        display: block;
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+      }
+
+      /* a faint glint of light that slides across the photo as it tilts */
+      .photo::after {
+        content: '';
+        position: absolute;
+        inset: 0;
+        background: radial-gradient(
+          circle at var(--glint-x, 50%) var(--glint-y, 50%),
+          rgb(255 255 255 / 0.35),
+          transparent 60%
+        );
+        mix-blend-mode: soft-light;
+        pointer-events: none;
+      }
+
+      body:has(.amsterdam:focus-visible) .photo {
         opacity: 1;
-        transform: scale(1);
-        /* enter: staggered by --i */
+        scale: 1;
+        /* enter: staggered, order shuffled by the script */
         transition-duration: 400ms;
         transition-delay: var(--delay, calc(var(--i) * 50ms));
       }
 
       @media (hover: hover) and (pointer: fine) {
-        body:has(.amsterdam:hover) .photos img {
+        body:has(.amsterdam:hover) .photo {
           opacity: 1;
-          transform: scale(1);
+          scale: 1;
           transition-duration: 400ms;
           transition-delay: var(--delay, calc(var(--i) * 50ms));
         }
       }
 
       @media (prefers-reduced-motion: reduce) {
-        .photos img {
-          transform: none !important;
+        .photo {
+          scale: none !important;
           transition-property: opacity;
         }
       }
@@ -124,13 +146,13 @@
     <main class="bio">
       <p>
         <span class="s">Hey, I'm <span class="u">Koen</span>! </span><span class="s" id="weather">Greetings from
-          <a class="amsterdam" href="https://maps.google.com/?q=Amsterdam">Amsterdam</a>. </span><span class="s" id="activity" hidden></span><span class="s">Hope you're having a great <span class="u" id="time-of-day">day</span>, and thanks for stopping by!</span>
+          <a class="amsterdam" href="https://maps.google.com/?q=Amsterdam">Amsterdam</a>. </span><span class="s" id="activity" hidden></span><span class="s">Hope you're having a great <span id="time-of-day">day</span>, and thanks for stopping by!</span>
       </p>
       <p>
         <span class="s"><em>Oh</em>, how rude of me. </span><span class="s">Let me introduce myself properly.</span>
       </p>
       <p>
-        <span class="s">I'm a software engineer, though really more of a design engineer. </span><span class="s">For the last decade I've been helping people turn their passion into their job at Shopify. </span><span class="s">These days I spend my time building AI systems that feel like a friendly coworker: the kind you actually trust to do great work.</span>
+        <span class="s">I'm a software engineer, though really more of a design engineer. </span><span class="s">For the last decade I've been helping people turn their passion into their job at <a href="https://www.shopify.com">Shopify</a>. </span><span class="s">These days I spend my time building AI systems that feel like a friendly coworker: the kind you actually trust to do great work.</span>
       </p>
       <p>
         <span class="s">I love that we can build almost anything now. </span><span class="s">But I think there's still a lot of value in slow creation. </span><span class="s">AI shouldn't mean the end of craftsmanship.</span>
@@ -142,13 +164,13 @@
 
     <!-- Amsterdam photos from Unsplash, see photos/CREDITS.txt -->
     <div class="photos" aria-hidden="true">
-      <img src="photos/amsterdam-1.webp" alt="" style="--i: 0" data-aspect="6/5" data-region="left" data-span="0 0.5" data-size="1.0" data-at="0.2 0.15" />
-      <img src="photos/amsterdam-5.webp" alt="" style="--i: 1" data-aspect="3/2" data-region="top" data-span="0 0.5" data-size="0.7" data-at="0.25 0.35" />
-      <img src="photos/amsterdam-2.webp" alt="" style="--i: 2" data-aspect="4/5" data-region="right" data-span="0 0.34" data-size="0.8" data-at="0.65 0.1" />
-      <img src="photos/amsterdam-8.webp" alt="" style="--i: 3" data-aspect="2/3" data-region="right" data-span="0.34 0.68" data-size="0.9" data-at="0.15 0.5" />
-      <img src="photos/amsterdam-4.webp" alt="" style="--i: 4" data-aspect="4/3" data-region="right" data-span="0.68 1" data-size="0.75" data-at="0.85 0.9" />
-      <img src="photos/amsterdam-7.webp" alt="" style="--i: 5" data-aspect="3/2" data-region="bottom" data-span="0.4 1" data-size="0.75" data-at="0.6 0.7" />
-      <img src="photos/amsterdam-3.webp" alt="" style="--i: 6" data-aspect="4/5" data-region="left" data-span="0.5 1" data-size="0.8" data-at="0.75 0.7" />
+      <div class="photo" style="--i: 0" data-aspect="6/5" data-region="left" data-span="0 0.5" data-size="1.0" data-at="0.2 0.15"><img src="photos/amsterdam-1.webp" alt="" /></div>
+      <div class="photo" style="--i: 1" data-aspect="3/2" data-region="top" data-span="0 0.5" data-size="0.7" data-at="0.25 0.35"><img src="photos/amsterdam-5.webp" alt="" /></div>
+      <div class="photo" style="--i: 2" data-aspect="4/5" data-region="right" data-span="0 0.34" data-size="0.8" data-at="0.65 0.1"><img src="photos/amsterdam-2.webp" alt="" /></div>
+      <div class="photo" style="--i: 3" data-aspect="2/3" data-region="right" data-span="0.34 0.68" data-size="0.9" data-at="0.15 0.5"><img src="photos/amsterdam-8.webp" alt="" /></div>
+      <div class="photo" style="--i: 4" data-aspect="4/3" data-region="right" data-span="0.68 1" data-size="0.75" data-at="0.85 0.9"><img src="photos/amsterdam-4.webp" alt="" /></div>
+      <div class="photo" style="--i: 5" data-aspect="3/2" data-region="bottom" data-span="0.4 1" data-size="0.75" data-at="0.6 0.7"><img src="photos/amsterdam-7.webp" alt="" /></div>
+      <div class="photo" style="--i: 6" data-aspect="4/5" data-region="left" data-span="0.5 1" data-size="0.8" data-at="0.75 0.7"><img src="photos/amsterdam-3.webp" alt="" /></div>
     </div>
     <script>
       // Time of day: the visitor's own clock
@@ -217,7 +239,7 @@
     </script>
     <script>
       const amsterdam = document.querySelector('.amsterdam');
-      const photos = [...document.querySelectorAll('.photos img')];
+      const photos = [...document.querySelectorAll('.photo')];
 
       // Layout: measure where the text is, split the free space around it into
       // regions (left and right columns, bands above and below), and fit each photo
@@ -226,7 +248,7 @@
       const container = document.querySelector('.photos');
       const GAP = 48; // keeps photos clear of the text, even while they drift with the mouse
       const EDGE = 16;
-      const MIN_WIDTH = 120;
+      const MIN_WIDTH = 64;
       const MAX_WIDTH = 500;
 
       function layout() {
@@ -254,23 +276,26 @@
               : { x: r.x + r.w * from, y: r.y, w: r.w * (to - from), h: r.h };
           const availW = cell.w - EDGE * 2;
           const availH = cell.h - EDGE * 2;
-          // TODO: smaller screens. For now a photo that doesn't fit keeps a minimum size
-          // and may overlap the text.
-          const width = Math.max(
-            MIN_WIDTH,
-            Math.min(MAX_WIDTH, availW * Number(photo.dataset.size), availW, availH * aspect),
-          );
+          const width = Math.min(MAX_WIDTH, availW * Number(photo.dataset.size), availW, availH * aspect);
+
+          // never cover the text: a photo that can't fit beside it is left out
+          // (TODO: a proper layout for small screens)
+          if (width < MIN_WIDTH) {
+            photo.hidden = true;
+            continue;
+          }
           const height = width / aspect;
-          const clampTo = (v, max) => Math.max(EDGE, Math.min(v, max - EDGE));
+          photo.hidden = false;
           photo.style.width = `${width}px`;
           photo.style.height = `${height}px`;
-          photo.style.left = `${clampTo(cell.x + EDGE + fx * (availW - width), W - width)}px`;
-          photo.style.top = `${clampTo(cell.y + EDGE + fy * (availH - height), H - height)}px`;
+          photo.style.left = `${cell.x + EDGE + fx * (availW - width)}px`;
+          photo.style.top = `${cell.y + EDGE + fy * (availH - height)}px`;
         }
 
         // parallax depth: bigger photos feel closer, so they move more
-        const widest = Math.max(...photos.map((p) => p.offsetWidth), 1);
-        for (const p of photos) p.dataset.depth = ((p.offsetWidth / widest) ** 1.5).toFixed(3);
+        const shown = photos.filter((p) => !p.hidden);
+        const widest = Math.max(...shown.map((p) => p.offsetWidth), 1);
+        for (const p of shown) p.dataset.depth = ((p.offsetWidth / widest) ** 1.5).toFixed(3);
         container.classList.add('placed');
       }
 
@@ -298,15 +323,20 @@
       amsterdam.addEventListener('pointerleave', shuffleDelays);
       amsterdam.addEventListener('blur', shuffleDelays);
 
-      // Parallax: photos drift against the mouse, bigger (closer) photos move more,
-      // and each one trails behind the pointer a little so it feels alive.
+      // Parallax: as the mouse moves over "Amsterdam", each photo drifts a few pixels
+      // and tilts a few degrees in 3D, each in its own direction, with a glint of light
+      // sliding across it. Every photo trails the pointer a little so it feels alive.
       const canParallax =
         matchMedia('(hover: hover) and (pointer: fine)').matches &&
         !matchMedia('(prefers-reduced-motion: reduce)').matches;
 
       if (canParallax) {
-        const MAX_SHIFT = 36; // px, for the largest photo
-        const layers = photos.map((photo) => ({ photo, x: 0, y: 0 }));
+        const MAX_SHIFT = 6; // px
+        const MAX_TILT = 4; // degrees
+        const layers = photos.map((photo) => {
+          const angle = Math.random() * Math.PI * 2; // this photo's own direction
+          return { photo, cos: Math.cos(angle), sin: Math.sin(angle), x: 0, y: 0 };
+        });
 
         let targetX = 0;
         let targetY = 0;
@@ -330,16 +360,24 @@
           const dt = Math.min(now - last, 64);
           last = now;
           // frame-rate independent easing towards the target
-          const ease = 1 - Math.exp(-dt / 140);
+          const ease = 1 - Math.exp(-dt / 160);
           let moving = false;
           for (const l of layers) {
-            const depth = Number(l.photo.dataset.depth || 0);
-            const tx = -targetX * MAX_SHIFT * depth;
-            const ty = -targetY * MAX_SHIFT * depth;
+            // the mouse direction, turned to this photo's own angle
+            const tx = targetX * l.cos - targetY * l.sin;
+            const ty = targetX * l.sin + targetY * l.cos;
             l.x += (tx - l.x) * ease;
             l.y += (ty - l.y) * ease;
-            if (Math.abs(tx - l.x) > 0.05 || Math.abs(ty - l.y) > 0.05) moving = true;
-            l.photo.style.translate = `${l.x.toFixed(2)}px ${l.y.toFixed(2)}px`;
+            if (Math.abs(tx - l.x) > 0.001 || Math.abs(ty - l.y) > 0.001) moving = true;
+
+            const depth = 0.5 + 0.5 * Number(l.photo.dataset.depth || 0);
+            const sx = (l.x * MAX_SHIFT * depth).toFixed(2);
+            const sy = (l.y * MAX_SHIFT * depth).toFixed(2);
+            l.photo.style.translate = `${sx}px ${sy}px`;
+            l.photo.style.transform =
+              `perspective(800px) rotateY(${(l.x * MAX_TILT).toFixed(2)}deg) rotateX(${(-l.y * MAX_TILT).toFixed(2)}deg)`;
+            l.photo.style.setProperty('--glint-x', `${(50 + l.x * 45).toFixed(1)}%`);
+            l.photo.style.setProperty('--glint-y', `${(50 + l.y * 45).toFixed(1)}%`);
           }
           frame = moving ? requestAnimationFrame(tick) : null;
         }
