@@ -57,6 +57,41 @@
         animation: fade 1400ms var(--ease-out) both;
       }
 
+      /* once a new paragraph arrives, the ones before it step back:
+         80% for the one just before, then 60%, 40%, down to 20% */
+      .js .bio p.read .s {
+        opacity: var(--dim, 1);
+        transition-duration: 1200ms;
+      }
+
+      /* a small, quiet way out of the slow reveal */
+      .skip {
+        position: absolute;
+        left: 0;
+        top: 0;
+        padding: 0;
+        border: 0;
+        background: none;
+        font: inherit;
+        font-size: 13px;
+        color: inherit;
+        opacity: 0;
+        cursor: pointer;
+        text-decoration: underline 1px;
+        text-underline-offset: 0.2em;
+        transition:
+          opacity 600ms ease,
+          translate 900ms var(--ease-out);
+      }
+
+      .skip.shown {
+        opacity: 0.4;
+      }
+
+      .skip.shown:hover {
+        opacity: 0.7;
+      }
+
       @keyframes rise {
         from {
           opacity: 0;
@@ -353,6 +388,7 @@
       <p>
         <span class="s">Anyway, enough about me. </span><span class="s"><button class="you" type="button">What about you?</button></span>
       </p>
+      <button class="skip" type="button" hidden>skip</button>
     </main>
 
     <div class="compose" hidden>
@@ -737,9 +773,21 @@
         const timers = [];
         let started = false;
 
+        const skip = document.querySelector('.skip');
+        skip.hidden = false;
+        skip.addEventListener('click', () => showAll());
+
+        // keep the skip link just below the newest paragraph
+        const placeSkip = (p) => {
+          skip.style.translate = `0 ${p.offsetTop + p.offsetHeight + 10}px`;
+        };
+
         const showAll = () => {
+          skip.classList.remove('shown');
+          setTimeout(() => (skip.hidden = true), 600);
           timers.forEach(clearTimeout);
           paragraphs.forEach((p) => p.classList.add('in'));
+          paragraphs.forEach((p) => p.classList.remove('read'));
           ['pointerdown', 'keydown', 'wheel', 'touchmove'].forEach((t) => removeEventListener(t, showAll));
         };
         ['pointerdown', 'keydown', 'wheel', 'touchmove'].forEach((t) =>
@@ -751,7 +799,21 @@
           started = true;
           let at = 0;
           paragraphs.forEach((p, i) => {
-            timers.push(setTimeout(() => p.classList.add('in'), at));
+            timers.push(
+              setTimeout(() => {
+                p.classList.add('in');
+                if (i === paragraphs.length - 1) {
+                  skip.classList.remove('shown');
+                } else {
+                  placeSkip(p);
+                  skip.classList.add('shown');
+                }
+                paragraphs.slice(0, i).forEach((prev, j) => {
+                  prev.classList.add('read');
+                  prev.style.setProperty('--dim', Math.max(0.2, 1 - 0.2 * (i - j)).toFixed(1));
+                });
+              }, at),
+            );
             const words = p.textContent.trim().split(/\s+/).length;
             at += Math.min(6000, Math.max(2200, words * 320)) + (i === 0 ? 600 : 0);
           });
