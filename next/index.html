@@ -358,7 +358,7 @@
     <main class="bio">
       <p>
         <span class="s">Hey, I'm <span class="u">Koen</span>! </span><span class="s" id="weather">Greetings from
-          <a class="amsterdam" href="https://maps.google.com/?q=Amsterdam">Amsterdam</a>. </span><span class="s" id="activity" hidden></span>
+          <a class="amsterdam" href="https://maps.google.com/?q=Amsterdam">Amsterdam</a>! </span><span class="s" id="activity" hidden></span>
       </p>
       <p>
         <span class="s">Pull up a chair. </span><span class="s">Hope your <span id="time-of-day">day</span> is going well.</span>
@@ -367,25 +367,34 @@
         <span class="s"><em>Oh</em>, how rude. </span><span class="s">I haven't even introduced myself.</span>
       </p>
       <p>
-        <span class="s">Picture a kid in the nineties, listening to a modem scream its way onto the internet, half convinced computers would one day talk back.</span>
+        <span class="s">Remember Knight Rider? </span><span class="s">David Hasselhoff, a leather jacket, and a car called KITT that could talk. </span><span class="s">I sure do.</span>
       </p>
       <p>
-        <span class="s">That was me. </span><span class="s">At fifteen I started writing code to find out.</span>
+        <span class="s">Most kids wanted to be Michael Knight. </span><span class="s">Me? </span><span class="s">I wanted to know who built the car.</span>
       </p>
       <p>
-        <span class="s">They do talk back now, and I help build them.</span>
+        <span class="s">A car that could think, crack jokes, and get you out of tricky situations. </span><span class="s">Somebody had to have made that, right?</span>
       </p>
       <p>
-        <span class="s">After ten years at <a href="https://www.shopify.com">Shopify</a>, helping people turn their passion into their job, I spend my days on AI systems that feel like a friendly coworker: the kind you'd trust with work you're proud of.</span>
+        <span class="s">So at fifteen I figured that somebody might as well be me, and I started learning to code.</span>
       </p>
       <p>
-        <span class="s">It's a strange, wonderful time. </span><span class="s">We can build nearly anything.</span>
+        <span class="s">It was slow. </span><span class="s">Nothing talked back. </span><span class="s">Mostly I got errors. </span><span class="s">But every time something worked, I got hooked a little more.</span>
       </p>
       <p>
-        <span class="s">I hope we still take our time with the things that matter. </span><span class="s">AI shouldn't mean the end of craftsmanship.</span>
+        <span class="s">I've been building ever since, the last ten years at <a href="https://www.shopify.com">Shopify</a>, helping people turn their passion into their job.</span>
       </p>
       <p>
-        <span class="s">Anyway, enough about me. </span><span class="s"><button class="you" type="button">What about you?</button></span>
+        <span class="s">And now? </span><span class="s">I'm one of the somebodies. </span><span class="s">I build AI systems that listen, think things through, and work next to you like a good coworker.</span>
+      </p>
+      <p>
+        <span class="s">I can't believe we live in that reality now. </span><span class="s">Isn't that insane?</span>
+      </p>
+      <p>
+        <span class="s">We can build almost anything these days, which is pretty neat. </span><span class="s">I just hope we still take the time to do it well. </span><span class="s">AI shouldn't mean the end of craftsmanship.</span>
+      </p>
+      <p>
+        <span class="s"><em>Anyway!</em> </span><span class="s">Enough about me. </span><span class="s"><button class="you" type="button">What about you?</button></span>
       </p>
       <button class="skip" type="button" hidden>skip</button>
     </main>
@@ -412,7 +421,7 @@
         hour < 5 ? 'night' : hour < 12 ? 'morning' : hour < 18 ? 'afternoon' : 'evening';
 
       // Weather in Amsterdam right now, from Open-Meteo (free, no key, called from the browser).
-      // If it fails, the page keeps "Greetings from Amsterdam." and skips the weather line.
+      // If it fails, the page keeps "Greetings from Amsterdam!" and skips the weather line.
       const describe = (code, isDay) => {
         if (code <= 1) return isDay ? 'sunny' : 'clear';
         if (code <= 3) return 'cloudy';
@@ -431,6 +440,16 @@
         if (!isDay) return 'It’s dark out, but the canals look lovely with all the lights on.';
         if (weather === 'sunny') return temp >= 15 ? 'Great day to sit outside with a coffee.' : "Cold, but the sun's out, so I'll take it.";
         return 'Classic Amsterdam.';
+      };
+
+      // one word for the greeting: "Greetings from wet Amsterdam!"
+      const greetingWord = (weather, temp) => {
+        if (weather === 'drizzly' || weather === 'rainy' || weather === 'stormy') return 'wet';
+        if (weather === 'snowy') return 'snowy';
+        if (weather === 'sunny' && temp >= 12) return 'sunny';
+        if (temp >= 18) return 'warm';
+        if (temp <= 12) return 'cold';
+        return weather === 'foggy' ? 'foggy' : 'grey';
       };
 
       const underlined = (text) => {
@@ -456,15 +475,7 @@
           const link = document.querySelector('.amsterdam');
           document
             .getElementById('weather')
-            .replaceChildren(
-              "It's ",
-              underlined(`${temp}°C`),
-              ' and ',
-              underlined(weather),
-              ' here in ',
-              link,
-              '. ',
-            );
+            .replaceChildren('Greetings from ', underlined(greetingWord(weather, temp)), ' ', link, '! ');
 
           const activity = document.getElementById('activity');
           activity.replaceChildren(underlined(activityFor(weather, temp, isDay)), ' ');
@@ -798,6 +809,8 @@
                 p.classList.add('in');
                 if (i === paragraphs.length - 1) {
                   skip.classList.remove('shown');
+                  // the whole story is there: bring it all back to full strength
+                  timers.push(setTimeout(() => paragraphs.forEach((p) => p.classList.remove('read')), 1600));
                 } else {
                   skip.classList.add('shown');
                 }
