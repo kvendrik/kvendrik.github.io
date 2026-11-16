@@ -44,6 +44,11 @@
         text-wrap: pretty;
       }
 
+      /* room above and below the story, so any paragraph can be scrolled to the middle */
+      .js .bio {
+        padding-block: 50vh;
+      }
+
       /* paragraphs are revealed one at a time by the script at the bottom */
       .js .bio p {
         opacity: 0;
@@ -500,7 +505,18 @@
       function layout() {
         const W = innerWidth;
         const H = innerHeight;
-        const t = bio.getBoundingClientRect();
+        // the text that's actually showing (the story box has extra room above and below)
+        const box = bio.getBoundingClientRect();
+        const shownText = [...bio.querySelectorAll('p')].filter((p) => p.classList.contains('in') || !document.documentElement.classList.contains('js'));
+        const first = (shownText[0] || bio).getBoundingClientRect();
+        const last = (shownText.at(-1) || bio).getBoundingClientRect();
+        const t = {
+          left: box.left,
+          right: box.right,
+          width: box.width,
+          top: Math.max(0, first.top),
+          bottom: Math.min(innerHeight, last.bottom),
+        };
         const regions = {
           left: { x: 0, y: 0, w: t.left - GAP, h: H, split: 'y' },
           right: { x: t.right + GAP, y: 0, w: W - t.right - GAP, h: H, split: 'y' },
@@ -547,6 +563,9 @@
 
       // re-run when the window changes or the text reflows (e.g. once the weather loads)
       new ResizeObserver(layout).observe(bio);
+      // the story scrolls as it's revealed, so measure again right before the photos show
+      amsterdam.addEventListener('pointerenter', layout);
+      amsterdam.addEventListener('focus', layout);
       addEventListener('resize', layout);
 
       // Fade-in order: shuffled every time, never starting with the same photo twice in a row.
@@ -783,6 +802,32 @@
         const timers = [];
         let started = false;
 
+        const bio = document.querySelector('.bio');
+        history.scrollRestoration = 'manual';
+
+        // glide the page so a paragraph sits in the middle of the screen
+        let scrollFrame = null;
+        const centerOn = (p, { instant = false } = {}) => {
+          cancelAnimationFrame(scrollFrame);
+          const bioTop = bio.getBoundingClientRect().top + scrollY;
+          const target = Math.max(0, bioTop + p.offsetTop + p.offsetHeight / 2 - innerHeight / 2);
+          if (instant || matchMedia('(prefers-reduced-motion: reduce)').matches) {
+            scrollTo(0, target);
+            return;
+          }
+          const from = scrollY;
+          const duration = 1600;
+          const begin = performance.now();
+          const easeInOut = (x) => (x < 0.5 ? 4 * x * x * x : 1 - (-2 * x + 2) ** 3 / 2);
+          const step = (now) => {
+            const progress = Math.min(1, (now - begin) / duration);
+            scrollTo(0, from + (target - from) * easeInOut(progress));
+            if (progress < 1) scrollFrame = requestAnimationFrame(step);
+          };
+          scrollFrame = requestAnimationFrame(step);
+        };
+        centerOn(paragraphs[0], { instant: true });
+
         const skip = document.querySelector('.skip');
         skip.hidden = false;
         skip.addEventListener('click', () => showAll());
@@ -791,6 +836,7 @@
           skip.classList.remove('shown');
           setTimeout(() => (skip.hidden = true), 600);
           timers.forEach(clearTimeout);
+          cancelAnimationFrame(scrollFrame);
           paragraphs.forEach((p) => p.classList.add('in'));
           paragraphs.forEach((p) => p.classList.remove('read'));
           ['pointerdown', 'keydown', 'wheel', 'touchmove'].forEach((t) => removeEventListener(t, showAll));
@@ -807,6 +853,7 @@
             timers.push(
               setTimeout(() => {
                 p.classList.add('in');
+                if (i > 0) centerOn(p);
                 if (i === paragraphs.length - 1) {
                   skip.classList.remove('shown');
                   // the whole story is there: bring it all back to full strength
