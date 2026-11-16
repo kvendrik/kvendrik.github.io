@@ -87,7 +87,7 @@
       }
 
       /* too narrow to fit photos around the text without covering it */
-      @media (max-width: 960px) {
+      @media (max-width: 1200px), (max-height: 700px) {
         .photos {
           display: none;
         }
@@ -113,33 +113,89 @@
 
     <!-- Amsterdam photos from Unsplash, see photos/CREDITS.txt -->
     <div class="photos" aria-hidden="true">
-      <img src="photos/amsterdam-1.webp" alt="" style="--i: 0; top: 4%; left: 5%; width: clamp(100px, 26vw, 400px); aspect-ratio: 6/5" />
-      <img src="photos/amsterdam-5.webp" alt="" style="--i: 1; top: 3%; left: 38%; width: clamp(100px, 7vw, 400px); aspect-ratio: 3/2" />
-      <img src="photos/amsterdam-2.webp" alt="" style="--i: 2; top: 13%; left: 56%; width: clamp(100px, 10vw, 400px); aspect-ratio: 4/5" />
-      <img src="photos/amsterdam-8.webp" alt="" style="--i: 3; top: 6%; right: 6%; width: clamp(100px, 14vw, 400px); aspect-ratio: 2/3" />
-      <img src="photos/amsterdam-4.webp" alt="" style="--i: 4; top: 50%; right: 2.5%; width: clamp(100px, 11vw, 400px); aspect-ratio: 4/3" />
-      <img src="photos/amsterdam-7.webp" alt="" style="--i: 5; bottom: 3%; left: 50%; width: clamp(100px, 27vw, 400px); aspect-ratio: 3/2" />
-      <img src="photos/amsterdam-3.webp" alt="" style="--i: 6; bottom: 12%; left: 17%; width: clamp(100px, 9vw, 400px); aspect-ratio: 4/5" />
-      <img src="photos/amsterdam-6.webp" alt="" style="--i: 7; top: 41%; left: 3%; width: clamp(100px, 7vw, 400px); aspect-ratio: 2/3" />
+      <img src="photos/amsterdam-1.webp" alt="" style="--i: 0; top: 2%; left: 2%; width: clamp(200px, min(27vw, 40vh), 500px); aspect-ratio: 6/5" />
+      <img src="photos/amsterdam-5.webp" alt="" style="--i: 1; top: 4%; left: 37%; width: clamp(200px, 14vw, 500px); aspect-ratio: 3/2" />
+      <img src="photos/amsterdam-2.webp" alt="" style="--i: 2; top: 3%; left: 57%; width: clamp(200px, 15vw, 500px); aspect-ratio: 4/5" />
+      <img src="photos/amsterdam-8.webp" alt="" style="--i: 3; top: 2%; right: 2%; width: clamp(200px, 20vw, 500px); aspect-ratio: 2/3" />
+      <img src="photos/amsterdam-4.webp" alt="" style="--i: 4; top: 62%; right: 3%; width: clamp(200px, 14vw, 500px); aspect-ratio: 4/3" />
+      <img src="photos/amsterdam-7.webp" alt="" style="--i: 5; bottom: 1%; left: 47%; width: clamp(200px, min(33vw, 56vh), 500px); aspect-ratio: 3/2" />
+      <img src="photos/amsterdam-3.webp" alt="" style="--i: 6; bottom: 3%; left: 17%; width: clamp(200px, 15vw, 500px); aspect-ratio: 4/5" />
     </div>
     <script>
-      // Each time the photos appear, shuffle their order and space them out by uneven gaps
       const amsterdam = document.querySelector('.amsterdam');
       const photos = [...document.querySelectorAll('.photos img')];
 
+      // Fade-in order: shuffled every time, never starting with the same photo twice in a row.
+      // Shuffled ahead of the hover: a delay set during the hover itself would be too late.
+      let lastFirst = null;
       function shuffleDelays() {
-        const order = photos.slice().sort(() => Math.random() - 0.5);
+        let order;
+        do {
+          order = photos.slice().sort(() => Math.random() - 0.5);
+        } while (order[0] === lastFirst);
+        lastFirst = order[0];
+
         let delay = 0;
         for (const photo of order) {
           photo.style.setProperty('--delay', `${Math.round(delay)}ms`);
           delay += 20 + Math.random() * 90;
         }
       }
-
-      // shuffle ahead of time: a delay set during the hover itself would be too late
       shuffleDelays();
       amsterdam.addEventListener('pointerleave', shuffleDelays);
       amsterdam.addEventListener('blur', shuffleDelays);
+
+      // Parallax: photos drift against the mouse, bigger (closer) photos move more,
+      // and each one trails behind the pointer a little so it feels alive.
+      const canParallax =
+        matchMedia('(hover: hover) and (pointer: fine)').matches &&
+        !matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+      if (canParallax) {
+        const MAX_SHIFT = 36; // px, for the largest photo
+        const layers = photos.map((photo) => ({ photo, depth: 0, x: 0, y: 0 }));
+        const setDepths = () => {
+          const widest = Math.max(...photos.map((p) => p.offsetWidth));
+          for (const l of layers) l.depth = (l.photo.offsetWidth / widest) ** 1.5;
+        };
+        setDepths();
+        addEventListener('resize', setDepths);
+
+        let targetX = 0;
+        let targetY = 0;
+        let frame = null;
+        let last = 0;
+
+        addEventListener('pointermove', (e) => {
+          // -1..1 across the Amsterdam link: the photos only show while it's hovered,
+          // so moving over the word itself sweeps them through their full range
+          const r = amsterdam.getBoundingClientRect();
+          const clamp = (v) => Math.max(-1, Math.min(1, v));
+          targetX = clamp((e.clientX - (r.left + r.width / 2)) / (r.width / 2 + 16));
+          targetY = clamp((e.clientY - (r.top + r.height / 2)) / (r.height / 2 + 24));
+          if (!frame) {
+            last = performance.now();
+            frame = requestAnimationFrame(tick);
+          }
+        });
+
+        function tick(now) {
+          const dt = Math.min(now - last, 64);
+          last = now;
+          // frame-rate independent easing towards the target
+          const ease = 1 - Math.exp(-dt / 140);
+          let moving = false;
+          for (const l of layers) {
+            const tx = -targetX * MAX_SHIFT * l.depth;
+            const ty = -targetY * MAX_SHIFT * l.depth;
+            l.x += (tx - l.x) * ease;
+            l.y += (ty - l.y) * ease;
+            if (Math.abs(tx - l.x) > 0.05 || Math.abs(ty - l.y) > 0.05) moving = true;
+            l.photo.style.translate = `${l.x.toFixed(2)}px ${l.y.toFixed(2)}px`;
+          }
+          frame = moving ? requestAnimationFrame(tick) : null;
+        }
+      }
     </script>
   </body>
 </html>
