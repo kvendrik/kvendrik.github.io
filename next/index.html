@@ -97,6 +97,167 @@
         opacity: 0.4;
       }
 
+      /* Hovering the coding line turns the page into an XP-style desktop with the text
+         in a Notepad window. Drawn in CSS (no Microsoft artwork), and it ignores the mouse so
+         the hover underneath keeps working. */
+      .coding {
+        cursor: default;
+      }
+
+      .xp {
+        position: fixed;
+        inset: 0;
+        z-index: 5;
+        pointer-events: none;
+        opacity: 0;
+        transition: opacity 180ms ease;
+        font-family: Tahoma, 'Segoe UI', Verdana, sans-serif;
+        background:
+          radial-gradient(120% 60% at 30% 100%, #6bbf3a 0 38%, transparent 38.5%),
+          radial-gradient(140% 70% at 85% 105%, #4f9e2c 0 36%, transparent 36.5%),
+          radial-gradient(40% 18% at 22% 22%, rgb(255 255 255 / 0.85), transparent 70%),
+          radial-gradient(30% 12% at 70% 14%, rgb(255 255 255 / 0.7), transparent 70%),
+          linear-gradient(#2c6fdc, #6aa7f0 55%, #a9d1f7);
+      }
+
+      body:has(.coding:hover, .coding:focus-visible) .xp {
+        opacity: 1;
+      }
+
+      .xp-window {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        width: min(620px, calc(100vw - 32px));
+        translate: -50% -55%;
+        scale: 0.97;
+        transition: scale 220ms var(--ease-out);
+        border: 3px solid #0842d8;
+        border-top: 0;
+        border-radius: 8px 8px 0 0;
+        background: #ece9d8;
+        box-shadow: 4px 6px 18px rgb(0 0 0 / 0.35);
+      }
+
+      body:has(.coding:hover, .coding:focus-visible) .xp-window {
+        scale: 1;
+      }
+
+      .xp-title {
+        display: flex;
+        align-items: center;
+        gap: 6px;
+        height: 30px;
+        padding: 0 4px 0 8px;
+        border-radius: 7px 7px 0 0;
+        background: linear-gradient(#0a5ff0, #3d95ff 8%, #0a5ff0 45%, #0040d0 95%);
+        color: #fff;
+        font-size: 13px;
+        font-weight: 700;
+        text-shadow: 1px 1px #0a1f6e;
+      }
+
+      .xp-title-text {
+        flex: 1;
+      }
+
+      .xp-btn {
+        display: grid;
+        place-items: center;
+        width: 21px;
+        height: 21px;
+        border: 1px solid #fff;
+        border-radius: 3px;
+        background: linear-gradient(#3c8bff, #1c5fe0);
+        font-size: 12px;
+        line-height: 1;
+      }
+
+      .xp-btn.close {
+        background: linear-gradient(#e8785a, #c9431f);
+      }
+
+      .xp-menu {
+        display: flex;
+        gap: 14px;
+        padding: 3px 8px;
+        font-size: 12px;
+        color: #000;
+      }
+
+      .xp-text {
+        min-height: 180px;
+        margin: 0 2px 2px;
+        padding: 6px 8px;
+        border: 1px solid #7f9db9;
+        background: #fff;
+        color: #000;
+        font: 14px/1.5 'Lucida Console', Monaco, monospace;
+        white-space: pre-wrap;
+      }
+
+      .xp-text::after {
+        content: '';
+        display: inline-block;
+        width: 1px;
+        height: 1.1em;
+        margin-left: 1px;
+        vertical-align: -0.2em;
+        background: #000;
+        animation: blink 1.06s step-end infinite;
+      }
+
+      .xp-taskbar {
+        position: absolute;
+        inset: auto 0 0;
+        display: flex;
+        align-items: center;
+        height: 32px;
+        background: linear-gradient(#3168d5, #4993e6 10%, #2157d7 50%, #1941a5);
+      }
+
+      .xp-start {
+        display: flex;
+        align-items: center;
+        height: 100%;
+        padding: 0 22px 0 14px;
+        border-radius: 0 12px 12px 0;
+        background: linear-gradient(#3a9a3a, #5fc35f 12%, #3c9c3c 55%, #2c7d2c);
+        color: #fff;
+        font-size: 17px;
+        font-style: italic;
+        font-weight: 700;
+        text-shadow: 1px 1px 1px rgb(0 0 0 / 0.5);
+      }
+
+      .xp-task {
+        margin-left: 6px;
+        padding: 5px 12px;
+        border-radius: 3px;
+        background: #1e52b7;
+        box-shadow: inset 1px 1px 2px rgb(0 0 0 / 0.4);
+        color: #fff;
+        font-size: 12px;
+      }
+
+      .xp-tray {
+        margin-left: auto;
+        display: flex;
+        align-items: center;
+        height: 100%;
+        padding: 0 14px;
+        border-left: 1px solid #1042af;
+        background: linear-gradient(#0f8cf0, #13a3f3 10%, #0f84e8 60%, #0b6bd1);
+        color: #fff;
+        font-size: 12px;
+      }
+
+      @media (prefers-reduced-motion: reduce) {
+        .xp-window {
+          scale: 1;
+        }
+      }
+
       /* "What about you?": a place for visitors to leave a message */
       :root {
         --blue: #2f7bf5;
@@ -302,46 +463,26 @@
   <body>
     <main class="bio">
       <p>
-        <span class="s">Hey, I'm <span class="u">Koen</span>! </span><span class="s" id="weather">Greetings from
-          <a class="amsterdam" href="https://maps.google.com/?q=Amsterdam">Amsterdam</a>! </span><span class="s" id="activity" hidden></span>
-      </p>
-      <p>
-        <span class="s">Pull up a chair. </span><span class="s">Hope your <span id="time-of-day">day</span> is going well.</span>
-      </p>
-      <p>
-        <span class="s"><em>Oh</em>, how rude. </span><span class="s">I haven't even introduced myself.</span>
-      </p>
-      <p>
-        <span class="s">Remember Knight Rider? </span><span class="s">David Hasselhoff, a leather jacket, and a car called KITT that could talk. </span><span class="s">I sure do.</span>
-      </p>
-      <p>
-        <span class="s">Most kids wanted to be Michael Knight. </span><span class="s">Me? </span><span class="s">I wanted to know who built the car.</span>
-      </p>
-      <p>
-        <span class="s">A car that could think, crack jokes, and get you out of tricky situations. </span><span class="s">Somebody had to have made that, right?</span>
-      </p>
-      <p>
-        <span class="s">So at fifteen I figured that somebody might as well be me, and I started learning to code.</span>
-      </p>
-      <p>
-        <span class="s">It was slow. </span><span class="s">Nothing talked back. </span><span class="s">Mostly I got errors. </span><span class="s">But every time something worked, I got hooked a little more.</span>
-      </p>
-      <p>
-        <span class="s">I've been building ever since, the last ten years at <a href="https://www.shopify.com">Shopify</a>, helping people turn their passion into their job.</span>
-      </p>
-      <p>
-        <span class="s">And now? </span><span class="s">I'm one of the somebodies. </span><span class="s">I build AI systems that listen, think things through, and work next to you like a good coworker.</span>
-      </p>
-      <p>
-        <span class="s">I can't believe we live in that reality now. </span><span class="s">Isn't that insane?</span>
-      </p>
-      <p>
-        <span class="s">We can build almost anything these days, which is pretty neat. </span><span class="s">I just hope we still take the time to do it well. </span><span class="s">AI shouldn't mean the end of craftsmanship.</span>
-      </p>
-      <p>
-        <span class="s"><em>Anyway!</em> </span><span class="s">Enough about me. </span><span class="s"><button class="you" type="button">What about you?</button></span>
+        <span class="s">Hey, good <span id="time-of-day">day</span>—I'm Koen! </span><span class="s" id="weather">Greetings from
+          <a class="amsterdam" href="https://maps.google.com/?q=Amsterdam">Amsterdam</a>! </span><span class="s">I'm a Staff Engineer at <a href="https://www.shopify.com">Shopify</a>, where I help people turn their passion into their job. </span><span class="s"><span class="u coding" tabindex="0">I've been coding for as long as I can remember.</span></span>
       </p>
     </main>
+
+    <div class="xp" aria-hidden="true">
+      <div class="xp-window">
+        <div class="xp-title">
+          <span class="xp-title-text">koen.txt - Notepad</span>
+          <span class="xp-btn">_</span><span class="xp-btn">□</span><span class="xp-btn close">✕</span>
+        </div>
+        <div class="xp-menu"><span>File</span><span>Edit</span><span>Format</span><span>View</span><span>Help</span></div>
+        <div class="xp-text"></div>
+      </div>
+      <div class="xp-taskbar">
+        <span class="xp-start">start</span>
+        <span class="xp-task">koen.txt - Notepad</span>
+        <span class="xp-tray"></span>
+      </div>
+    </div>
 
     <div class="compose" hidden>
       <textarea class="compose-input" aria-label="Your message to Koen"></textarea>
@@ -360,7 +501,7 @@
       // Time of day: the visitor's own clock
       const hour = new Date().getHours();
       document.getElementById('time-of-day').textContent =
-        hour < 5 ? 'night' : hour < 12 ? 'morning' : hour < 18 ? 'afternoon' : 'evening';
+        hour >= 5 && hour < 12 ? 'morning' : hour >= 12 && hour < 18 ? 'afternoon' : 'evening';
 
       // Weather in Amsterdam right now, from Open-Meteo (free, no key, called from the browser).
       // If it fails, the page keeps "Greetings from Amsterdam!" and skips the weather line.
@@ -372,16 +513,6 @@
         if (code <= 67 || (code >= 80 && code <= 82)) return 'rainy';
         if (code <= 86) return 'snowy';
         return 'stormy';
-      };
-
-      const activityFor = (weather, temp, isDay) => {
-        if (weather === 'drizzly' || weather === 'rainy') return 'Perfect weather for some coding indoors.';
-        if (weather === 'snowy') return 'The canals look magical right now.';
-        if (weather === 'stormy') return 'Staying well away from my bike today.';
-        if (weather === 'foggy') return "Can't even see the other side of the canal.";
-        if (!isDay) return 'It’s dark out, but the canals look lovely with all the lights on.';
-        if (weather === 'sunny') return temp >= 15 ? 'Great day to sit outside with a coffee.' : "Cold, but the sun's out, so I'll take it.";
-        return 'Classic Amsterdam.';
       };
 
       // one word for the greeting: "Greetings from wet Amsterdam!"
@@ -419,9 +550,6 @@
             .getElementById('weather')
             .replaceChildren('Greetings from ', underlined(greetingWord(weather, temp)), ' ', link, '! ');
 
-          const activity = document.getElementById('activity');
-          activity.replaceChildren(underlined(activityFor(weather, temp, isDay)), ' ');
-          activity.hidden = false;
         })
         .catch(() => {});
     </script>
@@ -692,7 +820,7 @@
         document.body.classList.remove('composing');
       }
 
-      you.addEventListener('click', openCompose);
+      you?.addEventListener('click', openCompose);
 
       input.addEventListener('keydown', (e) => {
         if (e.key === 'Escape') return closeCompose();
@@ -725,6 +853,24 @@
       Promise.race([weatherReady, new Promise((r) => setTimeout(r, 1500))]).then(() =>
         document.querySelector('.bio').classList.add('ready'),
       );
+    </script>
+    <script>
+      // Fill the Notepad window with the text as it reads right now, and set the taskbar clock.
+      (() => {
+        const coding = document.querySelector('.coding');
+        const fill = () => {
+          document.querySelector('.xp-text').textContent = document
+            .querySelector('.bio')
+            .innerText.replace(/\s+/g, ' ')
+            .trim();
+          document.querySelector('.xp-tray').textContent = new Date().toLocaleTimeString([], {
+            hour: 'numeric',
+            minute: '2-digit',
+          });
+        };
+        coding.addEventListener('pointerenter', fill);
+        coding.addEventListener('focus', fill);
+      })();
     </script>
   </body>
 </html>
