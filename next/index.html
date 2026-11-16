@@ -547,7 +547,7 @@
           minWords: 3,
         },
         contact: {
-          placeholder: 'And where can I reach you?<small><kbd>Enter</kbd> to stay anonymous</small>',
+          placeholder: 'And where can I reach you?<small><kbd>Esc</kbd> to go back</small>',
           minWords: 1,
         },
       };
@@ -657,6 +657,7 @@
           note = { message: value };
           goTo('contact');
         } else if (step === 'contact') {
+          if (!value) return; // a way to reply is required
           note.contact = value;
           deliver(note);
           step = 'sent';
@@ -664,7 +665,7 @@
           caret.hidden = true;
           render();
           placeholder.hidden = true;
-          typed.textContent = value ? "Thank you! I'll get back to you soon." : 'Thank you for the note!';
+          typed.textContent = "Thank you! I'll get back to you soon.";
           typed.animate({ opacity: [0, 1] }, { duration: 300, easing: OUT });
           setTimeout(closeCompose, 2400);
         }
