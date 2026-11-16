@@ -114,6 +114,9 @@
         overflow: hidden;
         pointer-events: none;
         opacity: 0;
+        /* keep the desktop on its own layer at all times, so the text above it isn't
+           re-rendered (and doesn't flicker) when the fade starts or stops */
+        will-change: opacity;
         /* hide after a short pause, so brushing past the edge doesn't flicker */
         transition: opacity 180ms ease 150ms;
         font-family: Tahoma, 'Segoe UI', Verdana, sans-serif;
