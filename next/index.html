@@ -43,11 +43,50 @@
         text-wrap: pretty;
       }
 
-      .bio a {
+      /* photos that slide behind the text get blurred there, with soft edges */
+      .bio::before {
+        content: '';
+        position: absolute;
+        inset: -32px;
+        z-index: -1;
+        background: rgb(255 255 255 / 0.25);
+        backdrop-filter: blur(14px);
+        -webkit-backdrop-filter: blur(14px);
+        --fade: 32px;
+        mask-image:
+          linear-gradient(to right, transparent, #000 var(--fade), #000 calc(100% - var(--fade)), transparent),
+          linear-gradient(to bottom, transparent, #000 var(--fade), #000 calc(100% - var(--fade)), transparent);
+        mask-composite: intersect;
+        -webkit-mask-composite: source-in;
+        pointer-events: none;
+      }
+
+      .bio p {
+        margin: 0 0 1em;
+      }
+
+      .bio p:last-child {
+        margin-bottom: 0;
+      }
+
+      /* links and anything that changes with live data share one thin underline */
+      .bio a,
+      .u {
         color: inherit;
         text-decoration: underline;
         text-decoration-thickness: 1px;
         text-underline-offset: 0.2em;
+      }
+
+      /* hovering a sentence keeps it at full strength and dims the rest */
+      @media (hover: hover) and (pointer: fine) {
+        .s {
+          transition: opacity 150ms ease;
+        }
+
+        .bio:has(.s:hover) .s:not(:hover) {
+          opacity: 0.6;
+        }
       }
 
       /* Amsterdam photos: hidden until the Amsterdam link is hovered or focused */
@@ -102,25 +141,100 @@
     </style>
   </head>
   <body>
-    <p class="bio">
-      I'm Koen, an
-      <a class="amsterdam" href="https://maps.google.com/?q=Amsterdam">Amsterdam</a>-based Staff Engineer at Shopify, where I've spent the last decade
-      helping people turn their passion into their job. These days I'm mostly thinking about AI
-      agents: how to build them, and how to make them secure and reliable enough to actually
-      trust. It feels a lot like when I first started coding at 15. If that excites you too, say
-      hi.
-    </p>
+    <main class="bio">
+      <p>
+        <span class="s">Hey, I'm <span class="u">Koen</span>! </span><span class="s" id="weather">Greetings from
+          <a class="amsterdam" href="https://maps.google.com/?q=Amsterdam">Amsterdam</a>. </span><span class="s" id="activity" hidden></span><span class="s">Hope you're having a great <span class="u" id="time-of-day">day</span>, and thanks for stopping by!</span>
+      </p>
+      <p>
+        <span class="s"><em>Oh</em>, how rude of me. </span><span class="s">Let me introduce myself properly.</span>
+      </p>
+      <p>
+        <span class="s">I'm a software engineer, though really more of a design engineer. </span><span class="s">For the last decade I've been helping people turn their passion into their job at Shopify. </span><span class="s">These days I spend my time building AI systems that feel like a friendly coworker: the kind you actually trust to do great work.</span>
+      </p>
+      <p>
+        <span class="s">I love that we can build almost anything now. </span><span class="s">But I think there's still a lot of value in slow creation. </span><span class="s">AI shouldn't mean the end of craftsmanship.</span>
+      </p>
+      <p>
+        <span class="s">Anyway, enough about me. </span><span class="s"><a href="https://linkedin.com/in/kvendrik">What about you?</a></span>
+      </p>
+    </main>
 
     <!-- Amsterdam photos from Unsplash, see photos/CREDITS.txt -->
     <div class="photos" aria-hidden="true">
-      <img src="photos/amsterdam-1.webp" alt="" style="--i: 0; top: 2%; left: 2%; width: clamp(200px, min(27vw, 40vh), 500px); aspect-ratio: 6/5" />
-      <img src="photos/amsterdam-5.webp" alt="" style="--i: 1; top: 4%; left: 37%; width: clamp(200px, 14vw, 500px); aspect-ratio: 3/2" />
-      <img src="photos/amsterdam-2.webp" alt="" style="--i: 2; top: 3%; left: 57%; width: clamp(200px, 15vw, 500px); aspect-ratio: 4/5" />
-      <img src="photos/amsterdam-8.webp" alt="" style="--i: 3; top: 2%; right: 2%; width: clamp(200px, 20vw, 500px); aspect-ratio: 2/3" />
-      <img src="photos/amsterdam-4.webp" alt="" style="--i: 4; top: 62%; right: 3%; width: clamp(200px, 14vw, 500px); aspect-ratio: 4/3" />
-      <img src="photos/amsterdam-7.webp" alt="" style="--i: 5; bottom: 1%; left: 47%; width: clamp(200px, min(33vw, 56vh), 500px); aspect-ratio: 3/2" />
-      <img src="photos/amsterdam-3.webp" alt="" style="--i: 6; bottom: 3%; left: 17%; width: clamp(200px, 15vw, 500px); aspect-ratio: 4/5" />
+      <img src="photos/amsterdam-1.webp" alt="" style="--i: 0; top: 3%; left: 1%; width: clamp(200px, min(20vw, 36vh), 500px); aspect-ratio: 6/5" />
+      <img src="photos/amsterdam-5.webp" alt="" style="--i: 1; top: 2%; left: 34%; width: clamp(200px, 14vw, 500px); aspect-ratio: 3/2" />
+      <img src="photos/amsterdam-2.webp" alt="" style="--i: 2; top: 4%; right: 2.5%; width: clamp(200px, 15vw, 500px); aspect-ratio: 4/5" />
+      <img src="photos/amsterdam-8.webp" alt="" style="--i: 3; top: 38%; right: 16%; width: clamp(200px, 14vw, 500px); aspect-ratio: 2/3" />
+      <img src="photos/amsterdam-4.webp" alt="" style="--i: 4; bottom: 3%; right: 2%; width: clamp(200px, 15vw, 500px); aspect-ratio: 4/3" />
+      <img src="photos/amsterdam-7.webp" alt="" style="--i: 5; bottom: 2%; left: 40%; width: clamp(200px, min(22vw, 30vh), 500px); aspect-ratio: 3/2" />
+      <img src="photos/amsterdam-3.webp" alt="" style="--i: 6; bottom: 4%; left: 16%; width: clamp(200px, 14vw, 500px); aspect-ratio: 4/5" />
     </div>
+    <script>
+      // Time of day: the visitor's own clock
+      const hour = new Date().getHours();
+      document.getElementById('time-of-day').textContent =
+        hour < 5 ? 'night' : hour < 12 ? 'morning' : hour < 18 ? 'afternoon' : 'evening';
+
+      // Weather in Amsterdam right now, from Open-Meteo (free, no key, called from the browser).
+      // If it fails, the page keeps "Greetings from Amsterdam." and skips the weather line.
+      const describe = (code, isDay) => {
+        if (code <= 1) return isDay ? 'sunny' : 'clear';
+        if (code <= 3) return 'cloudy';
+        if (code <= 48) return 'foggy';
+        if (code <= 57) return 'drizzly';
+        if (code <= 67 || (code >= 80 && code <= 82)) return 'rainy';
+        if (code <= 86) return 'snowy';
+        return 'stormy';
+      };
+
+      const activityFor = (weather, temp, isDay) => {
+        if (weather === 'drizzly' || weather === 'rainy') return 'Perfect weather for some coding indoors.';
+        if (weather === 'snowy') return 'The canals look magical right now.';
+        if (weather === 'stormy') return 'Staying well away from my bike today.';
+        if (weather === 'foggy') return "Can't even see the other side of the canal.";
+        if (!isDay) return 'It’s dark out, but the canals look lovely with all the lights on.';
+        if (weather === 'sunny') return temp >= 15 ? 'Great day to sit outside with a coffee.' : "Cold, but the sun's out, so I'll take it.";
+        return 'Classic Amsterdam.';
+      };
+
+      const underlined = (text) => {
+        const span = document.createElement('span');
+        span.className = 'u';
+        span.textContent = text;
+        return span;
+      };
+
+      fetch(
+        'https://api.open-meteo.com/v1/forecast?latitude=52.37&longitude=4.89' +
+          '&current=temperature_2m,weather_code,is_day&timezone=Europe%2FAmsterdam',
+      )
+        .then((res) => (res.ok ? res.json() : Promise.reject(res.status)))
+        .then(({ current }) => {
+          const temp = Math.round(current.temperature_2m);
+          const isDay = current.is_day === 1;
+          const weather = describe(current.weather_code, isDay);
+
+          // keep the same Amsterdam link element so the photo hover keeps working
+          const link = document.querySelector('.amsterdam');
+          document
+            .getElementById('weather')
+            .replaceChildren(
+              "It's ",
+              underlined(`${temp}°C`),
+              ' and ',
+              underlined(weather),
+              ' here in ',
+              link,
+              '. ',
+            );
+
+          const activity = document.getElementById('activity');
+          activity.replaceChildren(underlined(activityFor(weather, temp, isDay)), ' ');
+          activity.hidden = false;
+        })
+        .catch(() => {});
+    </script>
     <script>
       const amsterdam = document.querySelector('.amsterdam');
       const photos = [...document.querySelectorAll('.photos img')];
