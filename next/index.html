@@ -126,12 +126,6 @@
 
       .xp-window {
         position: absolute;
-        top: 50%;
-        left: 50%;
-        width: min(620px, calc(100vw - 32px));
-        translate: -50% -55%;
-        scale: 0.97;
-        transition: scale 220ms var(--ease-out);
         border: 3px solid #0842d8;
         border-top: 0;
         border-radius: 8px 8px 0 0;
@@ -139,8 +133,9 @@
         box-shadow: 4px 6px 18px rgb(0 0 0 / 0.35);
       }
 
-      body:has(.coding:hover, .coding:focus-visible) .xp-window {
-        scale: 1;
+      /* the real text sits on top of the desktop, inside the Notepad window, without moving */
+      body:has(.coding:hover, .coding:focus-visible) .bio {
+        z-index: 6;
       }
 
       .xp-title {
@@ -186,25 +181,9 @@
       }
 
       .xp-text {
-        min-height: 180px;
         margin: 0 2px 2px;
-        padding: 6px 8px;
         border: 1px solid #7f9db9;
         background: #fff;
-        color: #000;
-        font: 14px/1.5 'Lucida Console', Monaco, monospace;
-        white-space: pre-wrap;
-      }
-
-      .xp-text::after {
-        content: '';
-        display: inline-block;
-        width: 1px;
-        height: 1.1em;
-        margin-left: 1px;
-        vertical-align: -0.2em;
-        background: #000;
-        animation: blink 1.06s step-end infinite;
       }
 
       .xp-taskbar {
@@ -250,12 +229,6 @@
         background: linear-gradient(#0f8cf0, #13a3f3 10%, #0f84e8 60%, #0b6bd1);
         color: #fff;
         font-size: 12px;
-      }
-
-      @media (prefers-reduced-motion: reduce) {
-        .xp-window {
-          scale: 1;
-        }
       }
 
       /* "What about you?": a place for visitors to leave a message */
@@ -855,21 +828,30 @@
       );
     </script>
     <script>
-      // Fill the Notepad window with the text as it reads right now, and set the taskbar clock.
+      // Fit the Notepad window around the text where it already is, and set the taskbar clock.
       (() => {
         const coding = document.querySelector('.coding');
-        const fill = () => {
-          document.querySelector('.xp-text').textContent = document
-            .querySelector('.bio')
-            .innerText.replace(/\s+/g, ' ')
-            .trim();
+        const bio = document.querySelector('.bio');
+        const win = document.querySelector('.xp-window');
+        const textArea = win.querySelector('.xp-text');
+        const PAD = 14; // white space around the text inside the window
+
+        const fit = () => {
+          const r = bio.getBoundingClientRect();
+          const chrome = win.querySelector('.xp-title').offsetHeight + win.querySelector('.xp-menu').offsetHeight;
+          const inset = 3 + 2 + 1 + PAD; // window border + margin + text area border + padding
+          win.style.left = `${r.left - inset}px`;
+          win.style.top = `${r.top - PAD - 1 - chrome}px`;
+          win.style.width = `${r.width + inset * 2}px`;
+          textArea.style.height = `${r.height + PAD * 2 + 40}px`;
           document.querySelector('.xp-tray').textContent = new Date().toLocaleTimeString([], {
             hour: 'numeric',
             minute: '2-digit',
           });
         };
-        coding.addEventListener('pointerenter', fill);
-        coding.addEventListener('focus', fill);
+        coding.addEventListener('pointerenter', fit);
+        coding.addEventListener('focus', fit);
+        addEventListener('resize', fit);
       })();
     </script>
   </body>
