@@ -557,8 +557,11 @@
         <div class="tagline layer">Building experiences at Shopify</div>
       </header>
       <p class="layer">
-        <span class="s">Hey, good <span id="time-of-day">day</span>—I'm Koen! </span><span class="s" id="weather">Greetings from
-          <a class="amsterdam" href="https://maps.google.com/?q=Amsterdam">Amsterdam</a>! </span><span class="s">(Not Amsterdam, New York.) </span><span class="s">I'm a Staff Engineer at <a href="https://www.shopify.com">Shopify</a>, and lately I build AI agents, which is pretty wild for a 90s kid who grew up wanting KITT from Knight Rider. </span><span class="s">I've been coding since I was 15. </span><span class="s">If that sounds fun to you too, shoot me a message.</span>
+        Good <span id="time-of-day">day</span>! <span id="weather">And greetings from
+          <a class="amsterdam" href="https://maps.google.com/?q=Amsterdam">Amsterdam</a>.</span> My name is Koen, and I'm a Staff
+        Engineer at <a href="https://www.shopify.com">Shopify</a>. For the past decade I've been working on helping people turn
+        their passion into their work. Lately I've been spending most of my time building AI agents, which is pretty wild for a
+        90s kid who grew up wanting KITT from Knight Rider.
       </p>
     </main>
 
@@ -588,7 +591,7 @@
         hour >= 5 && hour < 12 ? 'morning' : hour >= 12 && hour < 18 ? 'afternoon' : 'evening';
 
       // Weather in Amsterdam right now, from Open-Meteo (free, no key, called from the browser).
-      // If it fails, the page keeps "Greetings from Amsterdam!" and skips the weather line.
+      // If it fails, the page keeps "And greetings from Amsterdam." without a weather word.
       const describe = (code, isDay) => {
         if (code <= 1) return isDay ? 'sunny' : 'clear';
         if (code <= 3) return 'cloudy';
@@ -599,21 +602,14 @@
         return 'stormy';
       };
 
-      // one word for the greeting: "Greetings from wet Amsterdam!"
+      // one word for the greeting: "And greetings from rainy Amsterdam."
       const greetingWord = (weather, temp) => {
-        if (weather === 'drizzly' || weather === 'rainy' || weather === 'stormy') return 'wet';
+        if (weather === 'drizzly' || weather === 'rainy' || weather === 'stormy') return 'rainy';
         if (weather === 'snowy') return 'snowy';
         if (weather === 'sunny' && temp >= 12) return 'sunny';
         if (temp >= 18) return 'warm';
         if (temp <= 12) return 'cold';
         return weather === 'foggy' ? 'foggy' : 'grey';
-      };
-
-      const underlined = (text) => {
-        const span = document.createElement('span');
-        span.className = 'u';
-        span.textContent = text;
-        return span;
       };
 
       const weatherReady = fetch(
@@ -632,7 +628,7 @@
           const link = document.querySelector('.amsterdam');
           document
             .getElementById('weather')
-            .replaceChildren('Greetings from ', underlined(greetingWord(weather, temp)), ' ', link, '! ');
+            .replaceChildren(`And greetings from ${greetingWord(weather, temp)} `, link, '.');
 
         })
         .catch(() => {});
