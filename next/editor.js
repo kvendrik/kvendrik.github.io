@@ -217,6 +217,7 @@
   const setWriting = (on) => {
     writing = on;
     root.classList.toggle('writing-mode', on);
+    root.classList.toggle('edit-mode', on); // the Figma-style controls work while writing too
     title.contentEditable = on ? (supportsPlain ? 'plaintext-only' : 'true') : 'false';
     if (meta) meta.contentEditable = title.contentEditable;
     body.contentEditable = on ? 'true' : 'false';
@@ -225,8 +226,6 @@
       // an empty body starts with one empty paragraph, so the first words land in a <p>
       if (!body.querySelector('p, h2, blockquote')) body.innerHTML = '<p><br></p>';
       markEmpty();
-      // drop any Figma-style selection so the two modes don't overlap
-      dispatchEvent(new KeyboardEvent('keydown', { key: 'Escape' }));
       setStatus(hasDraft ? 'restored' : 'saved');
       refreshSend?.();
       if (!title.textContent.trim()) title.focus();
@@ -244,7 +243,7 @@
   toggle.addEventListener('click', () => setWriting(true));
   // there is no Done button: Esc quietly steps out of writing mode (the draft stays)
   addEventListener('keydown', (e) => {
-    if (e.key === 'Escape' && e.isTrusted && writing && bar.dataset.view !== 'link' && !bar.classList.contains('is-open')) setWriting(false);
+    if (e.key === 'Escape' && e.isTrusted && !e.defaultPrevented && writing && bar.dataset.view !== 'link' && !bar.classList.contains('is-open')) setWriting(false);
   });
 
   // ---- Send to Claude: inside the claude.ai preview, the edited article is stored in the
@@ -293,13 +292,15 @@
         meta: meta?.textContent.trim() ?? '',
         body: clean(body.innerHTML),
         words: n,
+        // design changes made with the controls (padding, margin, font size and weight)
+        styles: window.pageEdits?.list() ?? [],
         sentAt: Date.now(),
       });
       if (sendBtn.dataset.mode === 'send') {
         try {
           await comments.sendToClaude({
             anchor: await comments.anchorFor(title),
-            text: `Please publish my edit to "${name}" (${n} words). It's stored as edits/${ref.id} in this page's database.`,
+            text: `Please publish my edit to "${name}" (${n} words${window.pageEdits?.count ? `, ${window.pageEdits.count} design ${window.pageEdits.count === 1 ? 'change' : 'changes'}` : ''}). It's stored as edits/${ref.id} in this page's database.`,
           });
           setStatus('sent');
         } catch (err) {

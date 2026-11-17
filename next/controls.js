@@ -1,8 +1,48 @@
-// Figma-style controls, shared by the home page and the article pages. Every element with the
-// class "layer" can be clicked to select it (a blue box with handles); the DialKit panel
-// (dialkit.dev) in the bottom right then tunes its padding, font size and weight. Double-click
-// edits its text. Click anywhere else or press Esc to deselect.
+// Figma-style controls, shared by the home page and the article pages. They belong to edit mode
+// (the page's Edit button sets the "edit-mode" class): every element with the class "layer"
+// can then be clicked to select it (a blue box with handles), the DialKit panel (dialkit.dev)
+// in the bottom right tunes its padding, margin, font size and weight, and double-click edits
+// its text. Esc or a click elsewhere deselects. Every change is remembered (window.pageEdits)
+// so it can be sent to Claude with the rest of the edit.
 (() => {
+  const root = document.documentElement;
+  const editMode = () => root.classList.contains('edit-mode');
+  const writingMode = () => root.classList.contains('writing-mode');
+
+  // ---- what changed: element -> kinds of change. Read at send time, so values are current.
+  const changed = new Map();
+  const listeners = new Set();
+  const record = (el, kind) => {
+    if (!el) return;
+    const kinds = changed.get(el) || new Set();
+    kinds.add(kind);
+    changed.set(el, kinds);
+    listeners.forEach((fn) => fn(changed.size));
+  };
+  const cssPath = (el) => {
+    const parts = [];
+    for (let node = el; node && node !== document.body; node = node.parentElement) {
+      let i = 1;
+      for (let sib = node.previousElementSibling; sib; sib = sib.previousElementSibling) if (sib.tagName === node.tagName) i++;
+      parts.unshift(`${node.tagName.toLowerCase()}:nth-of-type(${i})`);
+    }
+    return 'body > ' + parts.join(' > ');
+  };
+  window.pageEdits = {
+    get count() {
+      return changed.size;
+    },
+    onChange: (fn) => listeners.add(fn),
+    list: () =>
+      [...changed].map(([el, kinds]) => ({
+        path: cssPath(el),
+        tag: el.tagName.toLowerCase(),
+        text: el.textContent.trim().replace(/\s+/g, ' ').slice(0, 80),
+        style: el.getAttribute('style') || '',
+        ...(kinds.has('text') ? { html: el.innerHTML.trim() } : {}),
+      })),
+  };
+
   // the blue selection box with its corner handles and size label
   document.body.insertAdjacentHTML(
     'beforeend',
@@ -23,6 +63,8 @@
 
   const stopEditing = () => {
     if (!editing) return;
+    if (editing.innerHTML !== editing.dataset.before) record(editing, 'text');
+    delete editing.dataset.before;
     editing.contentEditable = 'false';
     editing = null;
     getSelection().removeAllRanges();
@@ -103,6 +145,7 @@
     if (values['Font size'] !== last['Font size']) st.fontSize = `${values['Font size']}px`;
     if (values['Font weight'] !== last['Font weight']) st.fontWeight = values['Font weight'];
     last = values;
+    record(selected, 'style');
   });
 
   // The icon next to Padding or Margin folds its four side sliders open and closed.
@@ -173,12 +216,17 @@
   };
   mount();
 
-  // while an article is being written (editor.js), the controls stay out of the way
-  const writingMode = () => document.documentElement.classList.contains('writing-mode');
+  // leaving edit mode drops the selection (and any text editing)
+  new MutationObserver(() => !editMode() && select(null)).observe(root, { attributes: true, attributeFilter: ['class'] });
 
   document.addEventListener('click', (e) => {
-    if (writingMode()) return;
-    if (e.target.closest('[class*="dialkit"]')) return;
+    if (!editMode()) return;
+    if (e.target.closest('[class*="dialkit"], .edit-bar, .write-status, .format-bar')) return;
+    // while an article is being written, a click both places the caret and selects its layer
+    if (writingMode()) {
+      if (e.target.closest('a')?.getAttribute('href') === '#') e.preventDefault();
+      return select(e.target.closest('.layer'));
+    }
     if (editing?.contains(e.target)) {
       e.preventDefault(); // while editing, links are just text
       return;
@@ -191,21 +239,28 @@
 
   // Double-click enters text editing, keeping the word the browser just selected.
   document.addEventListener('dblclick', (e) => {
-    if (writingMode()) return;
+    if (!editMode() || writingMode()) return;
     const layer = e.target.closest('.layer');
     const link = e.target.closest('a');
     if (!layer || layer === editing || (link && link.getAttribute('href') !== '#')) return;
     select(layer);
     editing = layer;
+    layer.dataset.before = layer.innerHTML;
     layer.contentEditable = 'true';
     layer.spellcheck = false;
     layer.focus({ preventScroll: true });
   });
 
   // Esc leaves editing first, then clears the selection.
+  // (a handled Esc is marked, so the page's own Esc-to-leave-edit-mode waits for the next one)
   addEventListener('keydown', (e) => {
     if (e.key !== 'Escape') return;
-    if (editing) stopEditing();
-    else select(null);
+    if (editing) {
+      stopEditing();
+      e.preventDefault();
+    } else if (selected) {
+      select(null);
+      e.preventDefault();
+    }
   });
 })();
