@@ -452,3 +452,167 @@ html .dialkit-root .sides-toggle.is-open {
     bottom: calc(76px + env(safe-area-inset-bottom)) !important;
   }
 }
+
+/* --------------------------------------------------------------------------------------
+   Native sliders, like a macOS inspector: the label on top, the current value in a small
+   field on the right, and a thin track with an accent fill and a round white knob below.
+   -------------------------------------------------------------------------------------- */
+html .dialkit-root {
+  --dial-row-height: 44px;
+  --dial-row-gap: 2px;
+}
+
+html .dialkit-root .dialkit-slider {
+  /* inset so the knob never clips at either end; DialKit measures drags from this box */
+  left: 9px !important;
+  width: calc(100% - 18px) !important;
+  overflow: visible;
+  border-radius: 0;
+  background: none !important;
+}
+
+/* the track */
+html .dialkit-root .dialkit-slider::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 30px;
+  height: 4px;
+  border-radius: 2px;
+  background: rgb(0 0 0 / 0.09);
+}
+
+/* the fill, in the accent colour, with the knob at its end */
+html .dialkit-root .dialkit-slider-fill,
+html .dialkit-root .dialkit-slider-active .dialkit-slider-fill,
+html .dialkit-root .dialkit-slider:focus-visible .dialkit-slider-fill {
+  top: 30px;
+  bottom: auto;
+  height: 4px;
+  border-radius: 2px;
+  background: var(--native-accent) !important;
+  overflow: visible;
+}
+
+html .dialkit-root .dialkit-slider-fill::after {
+  content: '';
+  position: absolute;
+  right: -9px;
+  top: -7px;
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  background: #fff;
+  box-shadow:
+    0 0 0 0.5px rgb(0 0 0 / 0.14),
+    0 1px 3px rgb(0 0 0 / 0.22),
+    0 2px 6px rgb(0 0 0 / 0.06);
+  transition: scale 120ms ease-out;
+}
+
+html .dialkit-root .dialkit-slider-active .dialkit-slider-fill::after {
+  scale: 1.08;
+}
+
+html .dialkit-root .dialkit-slider-handle,
+html .dialkit-root .dialkit-slider-hashmarks {
+  display: none !important;
+}
+
+/* label on top */
+html .dialkit-root .dialkit-slider-label {
+  top: 4px !important;
+  left: 0 !important;
+  transform: none !important;
+  clip-path: none;
+  color: var(--native-label) !important;
+  font: 500 12px/18px -apple-system, BlinkMacSystemFont, system-ui, sans-serif !important;
+}
+
+/* the current value, in a small field */
+html .dialkit-root .dialkit-slider-value,
+html .dialkit-root .dialkit-slider-input {
+  top: 3px !important;
+  right: 0 !important;
+  bottom: auto !important;
+  transform: none !important;
+  min-width: 34px;
+  height: 20px;
+  box-sizing: border-box;
+  padding: 0 6px;
+  border-radius: 5px;
+  background: rgb(0 0 0 / 0.05);
+  color: #1d1d1f !important;
+  font: 500 12px/20px -apple-system, BlinkMacSystemFont, system-ui, sans-serif !important;
+  font-variant-numeric: tabular-nums;
+  text-align: right;
+}
+
+html .dialkit-root .dialkit-slider-input:focus {
+  outline: 2px solid rgb(10 132 255 / 0.5);
+  outline-offset: 0;
+  background: #fff;
+}
+
+/* the per-side button sits on the label line, beside the value */
+html .dialkit-root .dialkit-slider-wrapper.pad-row {
+  margin-right: 0;
+}
+
+html .dialkit-root .dialkit-slider-wrapper.pad-row .dialkit-slider-value,
+html .dialkit-root .dialkit-slider-wrapper.pad-row .dialkit-slider-input {
+  right: 30px !important;
+}
+
+html .dialkit-root .sides-toggle {
+  top: 3px;
+  right: 9px;
+  width: 24px;
+  height: 20px;
+  border-radius: 5px;
+}
+
+/* "select parent": a small arrow before the layer's name */
+.controls-parent {
+  display: none;
+  position: absolute;
+  top: 3px;
+  left: 6px;
+  z-index: 1;
+  width: 24px;
+  height: 24px;
+  place-items: center;
+  padding: 0;
+  border: 0;
+  border-radius: 6px;
+  background: none;
+  color: var(--native-secondary, #8a867f);
+  cursor: pointer;
+  transition: background-color 150ms ease, color 150ms ease;
+}
+
+.has-parent > .controls-parent {
+  display: grid;
+}
+
+html .dialkit-root .has-parent > .controls-head {
+  padding-left: 38px;
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .controls-parent:hover {
+    background: var(--native-fill, rgb(0 0 0 / 0.05));
+    color: #1d1d1f;
+  }
+}
+
+.controls-parent:active {
+  scale: 0.94;
+}
+
+/* closer to the corner */
+html .dialkit-root .dialkit-panel[data-position='bottom-right'] {
+  right: 12px;
+  bottom: 12px;
+}

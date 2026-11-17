@@ -124,7 +124,8 @@ untouched.
     switch on only when the page sits in a frame (`window.top !== window`) and
     `claude.use('db')` resolves, which sets `controls-on` on `<html>`. The pill has the same
     check. On the real site neither ever appears.
-  - **Sounds** (`sounds.js`, Web Audio, no files, quiet), like beautifului.dev:
+  - **Sounds** (`sounds.js`, Web Audio, no files, quiet), using beautifului.dev's own recipes
+    (press, tick, release, pulse):
     - a soft tap when selecting, and a lower one when deselecting
     - fine ticks while a slider moves (throttled to about 35 a second, pitched by position)
     - pops when panels open and close

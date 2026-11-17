@@ -16,6 +16,12 @@
   const nameOf = (el) => {
     if (!el) return '';
     const by = [
+      ['.hero', 'Intro card'],
+      ['.bio', 'Intro'],
+      ['.intro', 'Name'],
+      ['.writing-inner', 'Writing list'],
+      ['.article > .column', 'Article column'],
+      ['.article header', 'Article header'],
       ['.wave', 'Wave'],
       ['.tagline', 'Tagline'],
       ['.articles .title', 'Article title'],
@@ -89,9 +95,17 @@
     getSelection().removeAllRanges();
   };
 
+  // the layer around the selected one, for "select parent" (Shift+Enter, or the arrow button)
+  const parentOf = (el) => el?.parentElement?.closest('.layer') || null;
+
   const select = (el) => {
     const label = document.querySelector('.controls-name');
     if (label && el) label.textContent = nameOf(el);
+    const inner = document.querySelector('.dialkit-folder-inner');
+    const parent = parentOf(el);
+    inner?.classList.toggle('has-parent', !!parent);
+    const up = document.querySelector('.controls-parent');
+    if (up) up.title = parent ? `Select parent: ${nameOf(parent)}  (Shift+Enter)` : '';
     if (el === selected) return;
     window.uiSound?.(el ? 'select' : 'deselect');
     stopEditing();
@@ -227,7 +241,18 @@
     head.className = 'controls-head';
     head.innerHTML =
       '<span class="controls-name">Controls</span><svg width="14" height="14" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3.5 8.5 7 5l3.5 3.5"/></svg>';
-    inner.append(head, body);
+    // select the layer around this one, like Figma's "Select parent"
+    const up = document.createElement('button');
+    up.type = 'button';
+    up.className = 'controls-parent';
+    up.setAttribute('aria-label', 'Select parent layer');
+    up.innerHTML =
+      '<svg width="14" height="14" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 3.5 2.5 6 5 8.5"/><path d="M2.5 6H8a3.5 3.5 0 0 1 3.5 3.5v1"/></svg>';
+    up.addEventListener('click', () => {
+      const parent = parentOf(selected);
+      if (parent) select(parent);
+    });
+    inner.append(up, head, body);
     let open = false;
     try {
       open = localStorage.getItem('controls-open') === '1';
@@ -279,6 +304,14 @@
 
   // Esc leaves editing first, then clears the selection.
   addEventListener('keydown', (e) => {
+    if (e.key === 'Enter' && e.shiftKey && selected && !editing) {
+      const parent = parentOf(selected);
+      if (parent) {
+        e.preventDefault();
+        select(parent);
+      }
+      return;
+    }
     if (e.key !== 'Escape') return;
     if (editing) {
       stopEditing();
