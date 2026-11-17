@@ -9,7 +9,8 @@
   const root = document.documentElement;
   const controlsOn = () => root.classList.contains('controls-on');
   // switched on where Send to Claude can work: the preview's database is available
-  window.claude?.use?.('db').then((db) => db && root.classList.add('controls-on')).catch(() => {});
+  // (inside a Claude artifact only: the runtime is there and the page sits in the viewer's frame)
+  if (window.top !== window) window.claude?.use?.('db').then((db) => db && root.classList.add('controls-on')).catch(() => {});
 
   // what the inspector calls the selected element, like a layer name in Figma
   const nameOf = (el) => {
@@ -92,6 +93,7 @@
     const label = document.querySelector('.controls-name');
     if (label && el) label.textContent = nameOf(el);
     if (el === selected) return;
+    window.uiSound?.(el ? 'select' : 'deselect');
     stopEditing();
     cancelAnimationFrame(frame);
     selected = el;
@@ -145,6 +147,7 @@
   // An "all sides" slider sets all four sides; a side slider sets just that side.
   dial.subscribe((values) => {
     if (syncing || !selected) return (last = values);
+    const prev = last;
     const st = selected.style;
     for (const g of GROUPS) {
       if (values[g.name] !== last[g.name]) {
@@ -166,6 +169,9 @@
     if (values['Font weight'] !== last['Font weight']) st.fontWeight = values['Font weight'];
     last = values;
     record(selected, 'style');
+    // a tick for the slider that moved, pitched by where it is now
+    const moved = Object.keys(values).find((k) => values[k] !== prev[k]);
+    if (moved) window.uiSound?.('tick', values[moved] / (config[moved]?.[2] || 100));
   });
 
   // The icon next to Padding or Margin folds its four side sliders open and closed.
@@ -195,7 +201,11 @@
         toggle.setAttribute('aria-expanded', String(open));
         sides.forEach((r) => r.classList.toggle('open', open));
       };
-      toggle.addEventListener('click', () => setOpen(!toggle.classList.contains('is-open')));
+      toggle.addEventListener('click', () => {
+        const opening = !toggle.classList.contains('is-open');
+        window.uiSound?.(opening ? 'open' : 'close');
+        setOpen(opening);
+      });
       // on selecting a layer: mark the main slider "mixed" and open the sides when they differ
       g.show = (isMixed) => {
         labelEl.textContent = isMixed ? `${g.name} · mixed` : g.name;
@@ -231,7 +241,10 @@
         localStorage.setItem('controls-open', open ? '1' : '0');
       } catch {}
     };
-    head.addEventListener('click', () => setPanel(!open));
+    head.addEventListener('click', () => {
+      window.uiSound?.(open ? 'close' : 'open');
+      setPanel(!open);
+    });
     setPanel(open);
   };
   mount();
@@ -261,6 +274,7 @@
     layer.contentEditable = 'true';
     layer.spellcheck = false;
     layer.focus({ preventScroll: true });
+    window.uiSound?.('edit');
   });
 
   // Esc leaves editing first, then clears the selection.

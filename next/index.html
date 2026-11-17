@@ -95,7 +95,7 @@
       .articles .title::after {
         content: '';
         position: absolute;
-        /* under the last line only (see sizePen in transitions.js) */
+        /* under the last line only (see sizePen in pen.js) */
         left: calc(var(--pen-left, 0px) - 0.1em);
         width: calc(var(--pen-width, 100%) + 0.25em);
         bottom: -0.3em;
@@ -181,13 +181,24 @@
       }
 
       /* links and anything that changes with live data share one thin underline */
-      .bio a,
       .u,
       .you {
         color: inherit;
         text-decoration: underline;
         text-decoration-thickness: 1px;
         text-underline-offset: 0.2em;
+      }
+
+      /* the home page's links (Amsterdam, Shopify) get a hand-drawn stroke instead of a ruled
+         line: a variation of the pen underline, in ink, on every line the link wraps onto */
+      .bio a {
+        color: inherit;
+        text-decoration: none;
+        padding-bottom: 0.14em;
+        background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 300 12' preserveAspectRatio='none'%3E%3Cpath fill='%23353535' fill-opacity='0.7' d='M3 6.8C46 8.2 104 8.6 166 8 214 7.6 258 6.2 296.4 3.6c.9-.6 2.1.5 1.4 1.3-11.6 3.6-48 6.4-95.8 7-66 .8-132 .2-198.4-.6-1.4 0-1.6-1.6-.4-1.5Z'/%3E%3C/svg%3E")
+          left bottom / 100% 0.34em no-repeat;
+        -webkit-box-decoration-break: clone;
+        box-decoration-break: clone;
       }
 
       .you {
@@ -229,10 +240,6 @@
         body.composing .bio {
           translate: none;
         }
-      }
-
-      body.composing .photos {
-        visibility: hidden;
       }
 
       .compose {
@@ -336,114 +343,6 @@
         line-height: 16px;
       }
 
-      /* Amsterdam photos: hidden until the Amsterdam link is hovered or focused.
-         The script below places them in the free space around the text. */
-      .photos {
-        position: fixed;
-        inset: 0;
-        pointer-events: none;
-      }
-
-      .photos:not(.placed),
-      .photo[hidden] {
-        display: none;
-      }
-
-      .photo {
-        position: absolute;
-        top: 0;
-        left: 0;
-        border-radius: 4px;
-        overflow: hidden;
-        opacity: 0;
-        scale: 0.95;
-        /* exit: quick, all at once */
-        transition:
-          opacity 200ms var(--ease-out),
-          scale 200ms var(--ease-out);
-      }
-
-      .photo img {
-        display: block;
-        width: 100%;
-        height: 100%;
-        object-fit: cover;
-      }
-
-      /* a faint glint of light that slides across the photo as it tilts */
-      .photo::after {
-        content: '';
-        position: absolute;
-        inset: 0;
-        background: radial-gradient(
-          circle at var(--glint-x, 50%) var(--glint-y, 50%),
-          rgb(255 255 255 / 0.35),
-          transparent 60%
-        );
-        mix-blend-mode: soft-light;
-        pointer-events: none;
-      }
-
-      body:has(.amsterdam:focus-visible) .photo {
-        opacity: 1;
-        scale: 1;
-        /* enter: staggered, order shuffled by the script */
-        transition-duration: 400ms;
-        transition-delay: var(--delay, calc(var(--i) * 50ms));
-      }
-
-      @media (hover: hover) and (pointer: fine) {
-        body:has(.amsterdam:hover) .photo {
-          opacity: 1;
-          scale: 1;
-          transition-duration: 400ms;
-          transition-delay: var(--delay, calc(var(--i) * 50ms));
-        }
-      }
-
-      @media (prefers-reduced-motion: reduce) {
-        .photo {
-          scale: none !important;
-          transition-property: opacity;
-        }
-      }
-
-      /* On touch screens there's no hover: tapping Amsterdam opens the photos as a loose pile of
-         prints over a soft cream veil (laid out by the script), and a tap anywhere closes it. */
-      .photos-open .photos {
-        background: rgb(245 242 234 / 0.9);
-        -webkit-backdrop-filter: blur(10px);
-        backdrop-filter: blur(10px);
-        pointer-events: auto;
-        z-index: 30;
-        transition: background-color 250ms ease;
-      }
-
-      .photos-open .photo {
-        opacity: 1;
-        scale: 1;
-        transition-duration: 450ms;
-        transition-delay: var(--delay, calc(var(--i) * 50ms));
-        box-shadow: 0 6px 20px rgb(0 0 0 / 0.12);
-      }
-
-      .photos-hint {
-        position: absolute;
-        left: 0;
-        right: 0;
-        bottom: max(20px, env(safe-area-inset-bottom));
-        text-align: center;
-        color: #8a867f;
-        font-size: 15px;
-        opacity: 0;
-        transition: opacity 300ms ease;
-      }
-
-      .photos-open .photos-hint {
-        opacity: 1;
-        transition-delay: 500ms;
-      }
-
       /* Phones: the intro uses the full width and shares one 24px edge with the Writing list,
          with spacing scaled to a small screen */
       @media (max-width: 600px) {
@@ -489,9 +388,7 @@
     <link rel="stylesheet" href="vendor/dialkit/styles.css" />
     <link rel="stylesheet" href="controls.css" />
     <link rel="stylesheet" href="send.css" />
-    <link rel="stylesheet" href="transitions.css" />
-    <!-- in the head so its page-transition listeners are ready before the first paint -->
-    <script src="transitions.js"></script>
+    <link rel="stylesheet" href="pen.css" />
   </head>
   <body>
     <div class="hero">
@@ -531,20 +428,6 @@
       <div class="field" aria-hidden="true"><span class="typed"></span><span class="caret"></span><span class="placeholder"></span><span class="send-hint">Press <kbd>Enter</kbd> to send</span></div>
     </div>
 
-    <!-- Amsterdam photos from Unsplash, see photos/CREDITS.txt -->
-    <div class="photos" aria-hidden="true">
-      <div class="photos-hint">Amsterdam · tap to close</div>
-      <div class="photo" style="--i: 0" data-aspect="4/3" data-region="left" data-span="0 0.34" data-size="1.0" data-at="0.3 0.3"><img src="photos/canal-bike.webp" alt="" /></div>
-      <div class="photo" style="--i: 1" data-aspect="3/2" data-region="top" data-span="0 0.5" data-size="0.9" data-at="0.2 0.5"><img src="photos/tree-canal.webp" alt="" /></div>
-      <div class="photo" style="--i: 2" data-aspect="2/3" data-region="right" data-span="0 0.4" data-size="0.8" data-at="0.6 0.2"><img src="photos/stoop.webp" alt="" /></div>
-      <div class="photo" style="--i: 3" data-aspect="3/2" data-region="bottom" data-span="0 0.45" data-size="0.9" data-at="0.3 0.6"><img src="photos/flower-bridge.webp" alt="" /></div>
-      <div class="photo" style="--i: 4" data-aspect="2/3" data-region="left" data-span="0.34 0.67" data-size="0.7" data-at="0.7 0.5"><img src="photos/canal-sitting.webp" alt="" /></div>
-      <div class="photo" style="--i: 5" data-aspect="5184/2815" data-region="top" data-span="0.5 1" data-size="0.9" data-at="0.7 0.3"><img src="photos/canal-stroll.webp" alt="" /></div>
-      <div class="photo" style="--i: 6" data-aspect="4/3" data-region="right" data-span="0.4 0.7" data-size="0.8" data-at="0.3 0.5"><img src="photos/flower-canal.webp" alt="" /></div>
-      <div class="photo" style="--i: 7" data-aspect="2/1" data-region="bottom" data-span="0.45 1" data-size="0.9" data-at="0.6 0.5"><img src="photos/boat-friends.webp" alt="" /></div>
-      <div class="photo" style="--i: 8" data-aspect="3/2" data-region="left" data-span="0.67 1" data-size="0.9" data-at="0.2 0.6"><img src="photos/sunny-canal.webp" alt="" /></div>
-      <div class="photo" style="--i: 9" data-aspect="4/3" data-region="right" data-span="0.7 1" data-size="0.85" data-at="0.8 0.8"><img src="photos/bike-street.webp" alt="" /></div>
-    </div>
     <script>
       // Time of day: the visitor's own clock
       const hour = new Date().getHours();
@@ -564,13 +447,17 @@
       };
 
       // one word for the greeting: "And greetings from rainy Amsterdam."
+      // one word for how Amsterdam feels right now: "And greetings from chilly Amsterdam."
       const greetingWord = (weather, temp) => {
-        if (weather === 'drizzly' || weather === 'rainy' || weather === 'stormy') return 'rainy';
+        if (weather === 'stormy') return 'stormy';
+        if (weather === 'drizzly' || weather === 'rainy') return 'rainy';
         if (weather === 'snowy') return 'snowy';
-        if (weather === 'sunny' && temp >= 12) return 'sunny';
+        if (weather === 'foggy') return 'foggy';
+        if (temp >= 25) return 'hot';
+        if (weather === 'sunny') return temp <= 8 ? 'crisp' : 'sunny';
         if (temp >= 18) return 'warm';
-        if (temp <= 12) return 'cold';
-        return weather === 'foggy' ? 'foggy' : 'grey';
+        if (temp <= 8) return 'chilly';
+        return weather === 'clear' ? 'quiet' : 'grey';
       };
 
       const weatherReady = fetch(
@@ -585,7 +472,7 @@
           const isDay = current.is_day === 1;
           const weather = describe(current.weather_code, isDay);
 
-          // keep the same Amsterdam link element so the photo hover keeps working
+          // keep the same Amsterdam link element
           const link = document.querySelector('.amsterdam');
           document
             .getElementById('weather')
@@ -593,216 +480,6 @@
 
         })
         .catch(() => {});
-    </script>
-    <script>
-      const amsterdam = document.querySelector('.amsterdam');
-      const photos = [...document.querySelectorAll('.photo')];
-      // touch screens (no hover) get the photos as a pile on tap instead (see layoutPile)
-      const touch = matchMedia('(hover: none), (pointer: coarse)');
-
-      // Layout: measure where the text is, split the free space around it into
-      // regions (left and right columns, bands above and below), and fit each photo
-      // into its share of a region. Photos shrink to fit and are skipped if too small.
-      const bio = document.querySelector('.bio');
-      const container = document.querySelector('.photos');
-      const GAP = 48; // keeps photos clear of the text, even while they drift with the mouse
-      const EDGE = 16;
-      const MIN_WIDTH = 64;
-      const MAX_WIDTH = 500;
-
-      function layout() {
-        if (touch.matches) return; // touch screens use the pile
-        const W = innerWidth;
-        const H = innerHeight;
-        const t = bio.getBoundingClientRect();
-        const regions = {
-          left: { x: 0, y: 0, w: t.left - GAP, h: H, split: 'y' },
-          right: { x: t.right + GAP, y: 0, w: W - t.right - GAP, h: H, split: 'y' },
-          top: { x: t.left, y: 0, w: t.width, h: t.top - GAP, split: 'x' },
-          bottom: { x: t.left, y: t.bottom + GAP, w: t.width, h: H - t.bottom - GAP, split: 'x' },
-        };
-
-        for (const photo of photos) {
-          const r = regions[photo.dataset.region];
-          const [from, to] = photo.dataset.span.split(' ').map(Number);
-          const [fx, fy] = photo.dataset.at.split(' ').map(Number);
-          const [aw, ah] = photo.dataset.aspect.split('/').map(Number);
-          const aspect = aw / ah;
-
-          // this photo's cell within its region
-          const cell =
-            r.split === 'y'
-              ? { x: r.x, y: r.y + r.h * from, w: r.w, h: r.h * (to - from) }
-              : { x: r.x + r.w * from, y: r.y, w: r.w * (to - from), h: r.h };
-          const availW = cell.w - EDGE * 2;
-          const availH = cell.h - EDGE * 2;
-          const width = Math.min(MAX_WIDTH, availW * Number(photo.dataset.size), availW, availH * aspect);
-
-          // never cover the text: a photo that can't fit beside it is left out
-          // (TODO: a proper layout for small screens)
-          if (width < MIN_WIDTH) {
-            photo.hidden = true;
-            continue;
-          }
-          const height = width / aspect;
-          photo.hidden = false;
-          photo.style.width = `${width}px`;
-          photo.style.height = `${height}px`;
-          photo.style.left = `${cell.x + EDGE + fx * (availW - width)}px`;
-          photo.style.top = `${cell.y + EDGE + fy * (availH - height)}px`;
-        }
-
-        // parallax depth: bigger photos feel closer, so they move more
-        const shown = photos.filter((p) => !p.hidden);
-        const widest = Math.max(...shown.map((p) => p.offsetWidth), 1);
-        for (const p of shown) p.dataset.depth = ((p.offsetWidth / widest) ** 1.5).toFixed(3);
-        container.classList.add('placed');
-      }
-
-      // On touch screens: a pile of prints filling the screen. Two columns, each photo placed in
-      // the shorter one, the whole pile scaled to fit, every print tilted a little.
-      function layoutPile() {
-        const W = innerWidth;
-        const H = innerHeight;
-        const PAD = 20;
-        const G = 12;
-        const top = PAD + 24;
-        const bottom = 64; // room for "tap to close"
-        const room = H - top - bottom;
-        // masonry: each photo goes into the shortest column
-        const place = (n, cw) => {
-          const cols = Array(n).fill(0);
-          const spots = photos.map((p) => {
-            const [aw, ah] = p.dataset.aspect.split('/').map(Number);
-            const h = cw / (aw / ah);
-            const c = cols.indexOf(Math.min(...cols));
-            const y = cols[c];
-            cols[c] += h + G;
-            return { p, c, y, h };
-          });
-          return { spots, height: Math.max(...cols) - G, cw, n };
-        };
-        // two or three columns, whichever shows the photos bigger once the pile fits the screen
-        const fit = (n) => {
-          let cw = (W - PAD * 2 - G * (n - 1)) / n;
-          let pile = place(n, cw);
-          if (pile.height > room) pile = place(n, cw * (room / pile.height));
-          return pile;
-        };
-        const [two, three] = [fit(2), fit(3)];
-        const pile = two.cw * 2 >= three.cw * 3 * 0.9 ? two : three;
-        const pileW = pile.cw * pile.n + G * (pile.n - 1);
-        const left = (W - pileW) / 2;
-        const offsetY = top + Math.max(0, (room - pile.height) / 2);
-        for (const { p, c, y, h } of pile.spots) {
-          p.hidden = false;
-          p.style.width = `${pile.cw}px`;
-          p.style.height = `${h}px`;
-          p.style.left = `${left + c * (pile.cw + G)}px`;
-          p.style.top = `${offsetY + y}px`;
-          p.style.rotate = `${(Math.random() * 4 - 2).toFixed(2)}deg`;
-          p.style.translate = '';
-        }
-        container.classList.add('placed');
-      }
-
-      const closePile = () => document.documentElement.classList.remove('photos-open');
-      amsterdam.addEventListener('click', (e) => {
-        if (!touch.matches || e.altKey) return;
-        e.preventDefault(); // show the photos instead of leaving for a map
-        shuffleDelays();
-        layoutPile();
-        requestAnimationFrame(() => document.documentElement.classList.add('photos-open'));
-      });
-      container.addEventListener('click', closePile);
-      addEventListener('keydown', (e) => e.key === 'Escape' && closePile());
-
-      // re-run when the window changes or the text reflows (e.g. once the weather loads)
-      new ResizeObserver(layout).observe(bio);
-      // the story scrolls as it's revealed, so measure again right before the photos show
-      amsterdam.addEventListener('pointerenter', layout);
-      amsterdam.addEventListener('focus', layout);
-      addEventListener('resize', layout);
-
-      // Fade-in order: shuffled every time, never starting with the same photo twice in a row.
-      // Shuffled ahead of the hover: a delay set during the hover itself would be too late.
-      let lastFirst = null;
-      function shuffleDelays() {
-        let order;
-        do {
-          order = photos.slice().sort(() => Math.random() - 0.5);
-        } while (order[0] === lastFirst);
-        lastFirst = order[0];
-
-        let delay = 0;
-        for (const photo of order) {
-          photo.style.setProperty('--delay', `${Math.round(delay)}ms`);
-          delay += 20 + Math.random() * 90;
-        }
-      }
-      shuffleDelays();
-      amsterdam.addEventListener('pointerleave', shuffleDelays);
-      amsterdam.addEventListener('blur', shuffleDelays);
-
-      // Parallax: as the mouse moves over "Amsterdam", each photo drifts a few pixels
-      // and tilts a few degrees in 3D, each in its own direction, with a glint of light
-      // sliding across it. Every photo trails the pointer a little so it feels alive.
-      const canParallax =
-        matchMedia('(hover: hover) and (pointer: fine)').matches &&
-        !matchMedia('(prefers-reduced-motion: reduce)').matches;
-
-      if (canParallax) {
-        const MAX_SHIFT = 6; // px
-        const MAX_TILT = 4; // degrees
-        const layers = photos.map((photo) => {
-          const angle = Math.random() * Math.PI * 2; // this photo's own direction
-          return { photo, cos: Math.cos(angle), sin: Math.sin(angle), x: 0, y: 0 };
-        });
-
-        let targetX = 0;
-        let targetY = 0;
-        let frame = null;
-        let last = 0;
-
-        addEventListener('pointermove', (e) => {
-          // -1..1 across the Amsterdam link: the photos only show while it's hovered,
-          // so moving over the word itself sweeps them through their full range
-          const r = amsterdam.getBoundingClientRect();
-          const clamp = (v) => Math.max(-1, Math.min(1, v));
-          targetX = clamp((e.clientX - (r.left + r.width / 2)) / (r.width / 2 + 16));
-          targetY = clamp((e.clientY - (r.top + r.height / 2)) / (r.height / 2 + 24));
-          if (!frame) {
-            last = performance.now();
-            frame = requestAnimationFrame(tick);
-          }
-        });
-
-        function tick(now) {
-          const dt = Math.min(now - last, 64);
-          last = now;
-          // frame-rate independent easing towards the target
-          const ease = 1 - Math.exp(-dt / 160);
-          let moving = false;
-          for (const l of layers) {
-            // the mouse direction, turned to this photo's own angle
-            const tx = targetX * l.cos - targetY * l.sin;
-            const ty = targetX * l.sin + targetY * l.cos;
-            l.x += (tx - l.x) * ease;
-            l.y += (ty - l.y) * ease;
-            if (Math.abs(tx - l.x) > 0.001 || Math.abs(ty - l.y) > 0.001) moving = true;
-
-            const depth = 0.5 + 0.5 * Number(l.photo.dataset.depth || 0);
-            const sx = (l.x * MAX_SHIFT * depth).toFixed(2);
-            const sy = (l.y * MAX_SHIFT * depth).toFixed(2);
-            l.photo.style.translate = `${sx}px ${sy}px`;
-            l.photo.style.transform =
-              `perspective(800px) rotateY(${(l.x * MAX_TILT).toFixed(2)}deg) rotateX(${(-l.y * MAX_TILT).toFixed(2)}deg)`;
-            l.photo.style.setProperty('--glint-x', `${(50 + l.x * 45).toFixed(1)}%`);
-            l.photo.style.setProperty('--glint-y', `${(50 + l.y * 45).toFixed(1)}%`);
-          }
-          frame = moving ? requestAnimationFrame(tick) : null;
-        }
-      }
     </script>
     <script>
       // "What about you?": the rest of the page fades away and a blue cursor flies from the
@@ -957,8 +634,10 @@
       );
     </script>
     <script src="vendor/dialkit/browser.global.js"></script>
+    <script src="sounds.js"></script>
     <script src="controls.js"></script>
     <script src="send.js"></script>
+    <script src="pen.js"></script>
     <script>
       // The further you scroll down, the further back the cream intro goes (down to 85%) and the
       // closer the Writing content comes (from 85% up to full size). Driven by scroll position, eased per frame so it feels smooth.

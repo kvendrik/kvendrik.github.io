@@ -48,7 +48,8 @@
     render();
   });
 
-  window.claude?.use &&
+  const inArtifact = !!window.claude?.use && window.top !== window;
+  inArtifact &&
     Promise.all([claude.use('db').catch(() => null), claude.use('comments').catch(() => null)]).then(([d, c]) => {
       db = d;
       comments = c;
@@ -80,6 +81,7 @@
     } catch {
       state = 'failed';
     }
+    window.uiSound?.(state === 'failed' ? 'error' : 'sent');
     render();
   });
 })();
