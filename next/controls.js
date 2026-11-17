@@ -173,7 +173,11 @@
   };
   mount();
 
+  // while an article is being written (editor.js), the controls stay out of the way
+  const writingMode = () => document.documentElement.classList.contains('writing-mode');
+
   document.addEventListener('click', (e) => {
+    if (writingMode()) return;
     if (e.target.closest('[class*="dialkit"]')) return;
     if (editing?.contains(e.target)) {
       e.preventDefault(); // while editing, links are just text
@@ -187,6 +191,7 @@
 
   // Double-click enters text editing, keeping the word the browser just selected.
   document.addEventListener('dblclick', (e) => {
+    if (writingMode()) return;
     const layer = e.target.closest('.layer');
     const link = e.target.closest('a');
     if (!layer || layer === editing || (link && link.getAttribute('href') !== '#')) return;
