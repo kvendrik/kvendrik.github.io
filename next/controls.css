@@ -134,33 +134,26 @@
 /* The slider only shows while something is selected. It rises up from the bottom with a
    touch of blur and settles; it leaves faster than it arrives. */
 .dialkit-panel {
+  /* like a sheet: it rises from below the screen edge on an iOS sheet curve, and sinks back */
+  --sheet-ease: cubic-bezier(0.32, 0.72, 0, 1);
   opacity: 0;
-  translate: 0 16px;
-  scale: 0.96;
-  filter: blur(4px);
-  transform-origin: bottom center;
+  translate: 0 calc(100% + 32px);
   visibility: hidden;
   pointer-events: none;
   transition:
-    opacity 160ms ease-out,
-    translate 160ms ease-out,
-    scale 160ms ease-out,
-    filter 160ms ease-out,
-    visibility 0s 160ms;
+    translate 280ms var(--sheet-ease),
+    opacity 200ms 80ms ease-out,
+    visibility 0s 280ms;
 }
 
 .has-selection .dialkit-panel {
   opacity: 1;
   translate: 0 0;
-  scale: 1;
-  filter: blur(0);
   visibility: visible;
   pointer-events: auto;
   transition:
-    opacity 300ms var(--ease-out),
-    translate 300ms var(--ease-out),
-    scale 300ms var(--ease-out),
-    filter 300ms var(--ease-out);
+    translate 460ms var(--sheet-ease),
+    opacity 120ms ease-out;
 }
 
 @media (prefers-reduced-motion: reduce) {
