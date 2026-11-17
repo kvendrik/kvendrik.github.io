@@ -239,6 +239,8 @@
     <link rel="stylesheet" href="../controls.css" />
     <link rel="stylesheet" href="../editor.css" />
       <link rel="stylesheet" href="../transitions.css" />
+    <!-- in the head so its page-transition listeners are ready before the first paint -->
+    <script src="../transitions.js"></script>
   </head>
   <body data-new-article>
     <!-- A blank article: opens straight into writing mode (see editor.js). -->
@@ -321,6 +323,5 @@
     <script src="../vendor/dialkit/browser.global.js"></script>
     <script src="../controls.js"></script>
     <script src="../editor.js"></script>
-    <script src="../transitions.js"></script>
   </body>
 </html>

@@ -1,9 +1,8 @@
----
-name: koen-site
-description: Everything learned building Koen Vendrik's new personal site concept in next/ (cream intro, live Amsterdam weather and photos, black Writing list, article pages with an iA Writer-style editor, Figma-style controls, Send to Claude, page transitions). Use whenever working on anything in next/, previewing it, or applying an edit Koen sent from the preview.
----
+# CLAUDE.md
 
-# Koen's site: how to work on it
+Notes for working on this repo, kept up to date as we go: add what you learn.
+
+# Koen's new site (`next/`): how to work on it
 
 ## The idea
 
@@ -93,8 +92,12 @@ untouched.
   - The title glides to the article heading while the article rises in with a little blur.
   - Hovering preloads the article (speculation rules prerender, else prefetch).
   - Back to home: the article slides right, scaling and fading, and home comes in from the
-    left (view transition type `back`). This was built last and not yet checked frame by
-    frame.
+    left (view transition type `back`). The article is mostly gone before home arrives, so
+    the two never smear over each other.
+  - A new page must become opaque fast: a slow fade of cream over black reads as a muddy grey
+    wash.
+  - `transitions.js` loads in `<head>` so its `pagereveal` listener exists before the first
+    paint. At the end of `<body>` it was too late, and the back transition was aborted.
 - **Edit mode:**
   - Only shown where Send to Claude works: in the claude.ai preview, for its editors. On the
     real site there is no Edit button.
@@ -143,8 +146,12 @@ wakes the session.
   `comments` and `user`) to test Edit and Send to Claude locally.
 - Test the photo layout for overlaps at 1280×720 up to 2560×1440. Test transitions with
   screenshot strips.
-- Don't take screenshots *during* a view transition when checking for errors: they can abort
-  it ("invalid state").
+- **Watch motion slowed down:** use a CDP session
+  (`Animation.setPlaybackRate {playbackRate: 0.25}`) and grab frames with
+  `Page.captureScreenshot` into a contact sheet. That's how muddy crossfades and overlaps
+  show up.
+- **Checking transitions for errors:** do runs *without* screenshots (repeat about 6 times),
+  since screenshots during a transition can abort it.
 - Mock the weather with `page.route('**/api.open-meteo.com/**')`, because the sandbox network
   to Open-Meteo is flaky.
 

@@ -451,8 +451,10 @@
     </style>
     <link rel="stylesheet" href="vendor/dialkit/styles.css" />
     <link rel="stylesheet" href="controls.css" />
-      <link rel="stylesheet" href="editor.css" />
+    <link rel="stylesheet" href="editor.css" />
     <link rel="stylesheet" href="transitions.css" />
+    <!-- in the head so its page-transition listeners are ready before the first paint -->
+    <script src="transitions.js"></script>
   </head>
   <body>
     <div class="hero">
@@ -896,6 +898,5 @@
         update();
       })();
     </script>
-    <script src="transitions.js"></script>
   </body>
 </html>

@@ -82,12 +82,13 @@
 
   // Going back from an article to the home page is a sideways move: the article slides off
   // to the right (shrinking a little as it fades) and the home page comes in from the left.
-  const isArticle = !!document.querySelector('.article');
+  // (loaded in <head>, so it's listening before the first paint: look the page up lazily)
+  const isArticle = () => !!document.querySelector('.article');
   const isArticleUrl = (url) => !!url && new URL(url, location.href).pathname.includes('/writing/');
 
   // on the article, as it's left for a page that isn't another article
   addEventListener('pageswap', (e) => {
-    if (!isArticle || !e.viewTransition) return;
+    if (!isArticle() || !e.viewTransition) return;
     const to = e.activation?.entry?.url;
     if (!to || isArticleUrl(to)) return;
     e.viewTransition.types.add('back');
@@ -99,7 +100,7 @@
   // on the home page, as it's reached from an article
   addEventListener('pagereveal', (e) => {
     const from = window.navigation?.activation?.from?.url;
-    if (isArticle || !e.viewTransition || !isArticleUrl(from)) return;
+    if (isArticle() || !e.viewTransition || !isArticleUrl(from)) return;
     clear();
     e.viewTransition.types.add('back');
   });
