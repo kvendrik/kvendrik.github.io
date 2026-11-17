@@ -40,7 +40,7 @@ untouched.
 | `next/controls.js` / `controls.css` | Figma-style controls: select a `.layer`, tune padding, margin, font size and weight in a DialKit panel, double-click to edit text. Tracks every change in `window.pageEdits`. |
 | `next/editor.js` / `editor.css` | Article editor (iA Writer style) and the floating pill with Send to Claude. |
 | `next/page-edit.js` | Edit mode for non-article pages (the home page): Edit button, pill with change count, Send to Claude. |
-| `next/transitions.css` / `transitions.js` | Cross-document view transitions between home and articles, plus hover preloading. |
+| `next/transitions.css` / `transitions.js` | Page transitions between home and articles (each page animates itself), plus preloading. |
 | `next/vendor/dialkit/` | DialKit (MIT, Josh Puckett), plain-JS build: `browser.global.js` and `styles.css`. |
 | `next/fonts/` | Allo variable font (OFL), weights 100–900, roundness axis `ROND`. |
 | `next/photos/` | Ten Unsplash photos (webp, w=900), credits in `CREDITS.txt`. |
@@ -102,21 +102,29 @@ untouched.
   - Articles do the same, but only once the black "More writing" section enters the view,
     and not at all while writing.
   - Articles always open at the top and are at least one screen tall.
-- **Transitions** (view transitions, Chrome, Edge and Safari 18.2+):
-  - Clicking a title fades everything else, a fixed stand-in keeps the title in place, and
-    navigation starts immediately (no waiting).
-  - The title glides to the article heading while the article rises in with a little blur.
-  - Hovering preloads the article (speculation rules prerender, else prefetch).
-  - Back to home: the article slides right, scaling and fading, and home comes in from the
-    left (view transition type `back`). The article is mostly gone before home arrives, so
-    the two never smear over each other.
-  - Leaving for an article, the black warms to cream and the title turns from cream to ink
-    in a 180ms beat before the page changes. The article then arrives on the same cream with
-    the same ink title, so nothing changes colour mid-flight and there's no grey wash.
-  - `html` has a cream background, which is what shows behind pages during a transition. The
-    body keeps its black for the scroll effect. Without this, sliding pages show black edges.
-  - `transitions.js` loads in `<head>` so its `pagereveal` listener exists before the first
-    paint. At the end of `<body>` it was too late, and the back transition was aborted.
+- **Transitions** (`transitions.js` and `transitions.css`): each page animates itself. No
+  cross-document view transitions: they didn't work in the claude.ai viewer, which changes
+  pages its own way.
+  - **The rule:** the leaving page ends in exactly the state the arriving page starts from.
+    That's cream with the title in ink, so the cut between documents is invisible.
+  - **Opening an article:** a fixed stand-in keeps the clicked title in place. Everything else
+    fades and the black warms to cream, while the title lifts 3px and turns to ink, in about
+    240ms. Then the page changes. The article starts with only its title, placed where the
+    title was, then glides it into its heading on a `cubic-bezier(0.32, 0.72, 0, 1)` curve
+    while the rest rises in just behind.
+  - **Back home:** the back arrow or the browser back button. The article slides right,
+    shrinking and fading over cream, and home comes in from the left. Its intro shows at once
+    (`pt-skip-intro`), without waiting for the weather.
+  - **Hand-over:** the arriving page learns what's happening and where the title was through
+    `#pt=…` in the address, which it tidies straight away. `sessionStorage` is the backup.
+    The back arrow goes to the home page you came from (stored, else `document.referrer`),
+    never just `../`.
+  - **Preloading:** hovering a title prefetches its article, and an article prefetches home
+    once idle.
+  - **`html` is cream:** it shows behind the pages. The body keeps its black for the scroll
+    effect.
+  - **Load order:** `transitions.js` loads in `<head>`. It sets the arriving state before
+    anything is painted, and places the title in a frame callback as soon as it exists.
 - **Edit mode:**
   - Only shown where Send to Claude works: in the claude.ai preview, for its editors. On the
     real site there is no Edit button.
@@ -165,6 +173,8 @@ wakes the session.
   `comments` and `user`) to test Edit and Send to Claude locally.
 - Test the photo layout for overlaps at 1280×720 up to 2560×1440. Test transitions with
   screenshot strips.
+- **Watch transitions at real speed:** use a CDP screencast (`Page.startScreencast`) into a
+  contact sheet.
 - **Watch motion slowed down:** use a CDP session
   (`Animation.setPlaybackRate {playbackRate: 0.25}`) and grab frames with
   `Page.captureScreenshot` into a contact sheet. That's how muddy crossfades and overlaps
