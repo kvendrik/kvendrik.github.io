@@ -339,6 +339,12 @@
         caret-color: #0d99ff;
       }
 
+      /* selected text: a light tint of the selection blue, with the text keeping its own color */
+      ::selection {
+        background: #cfe6fd;
+        color: inherit;
+      }
+
       .selection {
         position: fixed;
         z-index: 7;
