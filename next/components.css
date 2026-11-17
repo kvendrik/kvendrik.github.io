@@ -260,7 +260,7 @@ figure.media.code pre code {
   top: 0;
   left: 0;
   width: 900px;
-  height: 900px;
+  height: 1000px;
   transform-origin: 0 0;
   font-size: 15px;
   line-height: 1.35;
@@ -270,77 +270,127 @@ figure.media.code pre code {
   position: absolute;
   inset: 0;
   overflow: visible;
-  color: rgb(53 53 53 / 0.35);
+  color: #6b6863;
 }
 
 .canvas-edges path[data-from] {
   fill: none;
   stroke: currentColor;
   stroke-width: 1.5;
-}
-
-.canvas-edges path.loop {
-  stroke-dasharray: 5 6;
-}
-
-.canvas-edges text {
-  fill: #8a867f;
-  font: 500 13px/1 -apple-system, BlinkMacSystemFont, system-ui, sans-serif;
-  text-anchor: middle;
-  dominant-baseline: middle;
-  paint-order: stroke;
-  stroke: #f8f6f0;
-  stroke-width: 6px;
+  stroke-linecap: round;
   stroke-linejoin: round;
 }
 
-.canvas-edges .loop-label {
-  text-anchor: start;
-  transform: translateX(10px);
+.canvas-edges path.loop {
+  stroke-dasharray: 2 6;
+  color: #9b978f;
 }
 
+/* labels on connectors: a small pill, like a whiteboard's */
+.canvas-label {
+  position: absolute;
+  translate: -50% -50%;
+  padding: 3px 9px;
+  border-radius: 999px;
+  background: var(--canvas);
+  box-shadow: 0 0 0 1px rgb(53 53 53 / 0.14);
+  color: #5f5c57;
+  font: 500 12px/1.2 var(--system);
+  white-space: nowrap;
+  pointer-events: none;
+}
+
+/* Shapes, in greyscale: a pill to start, boxes for steps, a diamond to decide, sticky notes
+   for what it learns. Cards lift a little under the pointer. */
 .canvas-node {
   position: absolute;
-  display: flex;
-  flex-direction: column;
-  align-items: flex-start;
-  gap: 6px;
-}
-
-.canvas-tag {
-  display: inline-flex;
-  align-items: center;
-  height: 22px;
-  padding: 0 8px;
-  border-radius: 6px;
-  background: color-mix(in srgb, var(--tag) 13%, #f8f6f0);
-  color: color-mix(in srgb, var(--tag) 80%, #353535);
-  font: 500 12px/1 -apple-system, BlinkMacSystemFont, system-ui, sans-serif;
-}
-
-.canvas-card {
   box-sizing: border-box;
-  width: 100%;
-  padding: 12px 14px;
-  border-radius: 16px;
-  background: #fffefb;
-  box-shadow:
-    0 0 0 1px rgb(53 53 53 / 0.06),
-    0 1px 2px rgb(53 53 53 / 0.05),
-    0 4px 12px rgb(53 53 53 / 0.05);
-}
-
-.canvas-card strong {
-  display: block;
-  font-weight: 500;
+  display: grid;
+  place-content: center;
+  gap: 3px;
+  padding: 14px 18px;
   color: #252525;
+  text-align: center;
+  transition: translate 200ms var(--ease-out), box-shadow 200ms var(--ease-out);
 }
 
-.canvas-card span {
-  display: block;
-  margin-top: 2px;
-  color: #8a867f;
+.canvas-node strong {
+  font-weight: 450;
+}
+
+.canvas-node span {
+  color: var(--muted);
   font-size: 14px;
+}
+
+.shape-pill {
+  border-radius: 999px;
+  background: var(--ink);
+  color: var(--cream);
+}
+
+.shape-pill span {
+  color: rgb(245 242 234 / 0.6);
+}
+
+.shape-box {
+  border-radius: 12px;
+  background: var(--surface);
+  box-shadow:
+    0 0 0 1.5px rgb(53 53 53 / 0.8),
+    0 2px 0 1.5px rgb(53 53 53 / 0.08);
+}
+
+.shape-diamond {
+  padding: 0 34px;
+}
+
+.shape-diamond::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  margin: auto;
+  width: 70.7%;
+  height: 70.7%;
+  rotate: 45deg;
+  border-radius: 10px;
+  background: var(--surface);
+  box-shadow:
+    0 0 0 1.5px rgb(53 53 53 / 0.8),
+    2px 2px 0 1.5px rgb(53 53 53 / 0.08);
+  z-index: -1;
+}
+
+.shape-diamond {
+  isolation: isolate;
+}
+
+.shape-sticky {
+  align-content: start;
+  place-content: start;
+  text-align: left;
+  padding: 18px 18px 22px;
+  background: #e9e6de;
+  border-radius: 2px;
+  box-shadow:
+    0 1px 1px rgb(53 53 53 / 0.08),
+    0 10px 18px -8px rgb(53 53 53 / 0.25);
+  rotate: var(--tilt, -1.5deg);
+}
+
+.shape-sticky strong {
+  font-weight: 450;
+}
+
+.shape-sticky span {
+  color: #6b6863;
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .canvas-stage:not(.is-grabbing) .shape-box:hover,
+  .canvas-stage:not(.is-grabbing) .shape-sticky:hover {
+    translate: 0 -2px;
+  }
 }
 
 .canvas-zoom {

@@ -490,27 +490,21 @@
           </div>
 
           <div class="component canvas-demo">
-            <p class="note">Canvas: drag to pan, pinch or ⌘-scroll to zoom</p>
+            <p class="note">Canvas: shapes and connectors like a whiteboard, in greyscale. Drag to pan, pinch or ⌘-scroll to zoom.</p>
             <figure class="media layer">
-              <div class="canvas-stage" data-live role="img" aria-label="A small flowchart: a trigger, a step and a decision">
+              <div class="canvas-stage" data-live role="img" aria-label="A small flowchart in the four shapes: a start, a step, a decision and a sticky note">
                 <div class="canvas-world">
                   <svg class="canvas-edges" aria-hidden="true">
-                    <defs><marker id="arrow" viewBox="0 0 10 10" refX="6" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M1 1 L8 5 L1 9" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" /></marker></defs>
-                    <path data-from="a" data-to="b" marker-end="url(#arrow)" />
-                    <path data-from="b" data-to="c" marker-end="url(#arrow)" />
+                    <defs><marker id="arrow" viewBox="0 0 10 10" refX="7" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse"><path d="M1.5 1.5 L8.5 5 L1.5 8.5 Z" fill="currentColor" stroke="currentColor" stroke-width="1" stroke-linejoin="round" /></marker></defs>
+                    <path data-from="a" data-to="b" data-out="bottom" data-in="top" marker-end="url(#arrow)" />
+                    <path data-from="b" data-to="c" data-out="bottom" data-in="top" marker-end="url(#arrow)" />
+                    <path id="edge-b-yes" data-from="c" data-to="d" data-out="right" data-in="top" marker-end="url(#arrow)" />
                   </svg>
-            <div class="canvas-node" data-node="a" style="left:20px;top:20px;width:240px">
-              <span class="canvas-tag" style="--tag:#9a5cff">Trigger</span>
-              <div class="canvas-card"><strong>Something happens</strong><span>A trigger starts the flow</span></div>
-            </div>
-            <div class="canvas-node" data-node="b" style="left:20px;top:170px;width:240px">
-              <span class="canvas-tag" style="--tag:#2f6fd0">Step</span>
-              <div class="canvas-card"><strong>Do a thing</strong><span>A step in the flow</span></div>
-            </div>
-            <div class="canvas-node" data-node="c" style="left:20px;top:320px;width:240px">
-              <span class="canvas-tag" style="--tag:#f09a2f">If / Else</span>
-              <div class="canvas-card"><strong>Check it</strong><span>A decision with two ways out</span></div>
-            </div>
+                <div class="canvas-node shape-pill" data-node="a" style="left:40px;top:20px;width:180px;"><strong>Start</strong></div>
+                <div class="canvas-node shape-box" data-node="b" style="left:30px;top:120px;width:200px;"><strong>A step</strong><span>What happens here</span></div>
+                <div class="canvas-node shape-diamond" data-node="c" style="left:50px;top:250px;width:160px;height:160px;"><strong>Decide</strong></div>
+                <div class="canvas-node shape-sticky" data-node="d" style="left:300px;top:420px;width:180px;--tilt:1.4deg;"><strong>A sticky note</strong><span>For thoughts on the side</span></div>
+                <span class="canvas-label" data-label-for="edge-b-yes" data-at="0.3">Yes</span>
                 </div>
                 <div class="canvas-zoom" aria-label="Zoom">
                   <button type="button" data-zoom="out" aria-label="Zoom out">−</button>

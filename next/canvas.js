@@ -18,9 +18,10 @@
     const measure = () => {
       const ns = [...world.querySelectorAll('[data-node]')];
       const l = Math.min(...ns.map((n) => n.offsetLeft)), t = Math.min(...ns.map((n) => n.offsetTop));
-      const r = Math.max(...ns.map((n) => n.offsetLeft + n.offsetWidth)) + 140; // room for the loop
+      const r = Math.max(...ns.map((n) => n.offsetLeft + n.offsetWidth));
       const b = Math.max(...ns.map((n) => n.offsetTop + n.offsetHeight));
-      bounds = { x: l, y: t, w: r - l, h: b - t };
+      const m = 70; // room around the cards for connectors that go around
+      bounds = { x: l - m, y: t - 10, w: r - l + m * 2, h: b - t + m + 10 };
     };
 
     // keep at least a corner of the diagram on screen, so it can never be lost
@@ -58,7 +59,7 @@
     const fit = () => {
       const pad = 28;
       const r = stage.getBoundingClientRect();
-      k = Math.min(1, Math.max(0.6, (r.width - pad * 2) / bounds.w));
+      k = Math.min(1, (r.width - pad * 2) / bounds.w, Math.max(0.6, (r.height - pad * 2) / bounds.h));
       x = (r.width - bounds.w * k) / 2 - bounds.x * k;
       y = pad - bounds.y * k;
       apply();
@@ -66,37 +67,65 @@
 
     // edges: a cubic curve from the bottom of one card to the top of the next,
     // or around the side for paths marked data-side
+    // Connectors, the way whiteboard tools draw them: straight runs at right angles with rounded
+    // bends. Each <path> names its ends: data-from / data-to, the side it leaves and enters by
+    // (data-out / data-in: top, right, bottom, left), and optionally data-via="x" or "y" for a
+    // detour around the diagram (a negative x goes around the left, see the loop).
+    const R = 16;
+    const anchor = (id, side) => {
+      const n = world.querySelector(`[data-node="${id}"]`);
+      const x = n.offsetLeft, y = n.offsetTop, w = n.offsetWidth, h = n.offsetHeight;
+      return {
+        top: [x + w / 2, y], bottom: [x + w / 2, y + h], left: [x, y + h / 2], right: [x + w, y + h / 2],
+      }[side];
+    };
+    const GAP = 7; // the arrowhead stops just short of the shape
+    const nudge = ([x, y], side) => ({ top: [x, y - GAP], bottom: [x, y + GAP], left: [x - GAP, y], right: [x + GAP, y] })[side];
+    const rounded = (pts) => {
+      let d = `M${pts[0][0]} ${pts[0][1]}`;
+      for (let i = 1; i < pts.length - 1; i++) {
+        const [px, py] = pts[i - 1], [cx, cy] = pts[i], [nx, ny] = pts[i + 1];
+        const r = Math.min(R, Math.hypot(cx - px, cy - py) / 2, Math.hypot(nx - cx, ny - cy) / 2);
+        const ax = cx - Math.sign(cx - px) * r, ay = cy - Math.sign(cy - py) * r;
+        const bx = cx + Math.sign(nx - cx) * r, by = cy + Math.sign(ny - cy) * r;
+        d += ` L${ax} ${ay} Q${cx} ${cy} ${bx} ${by}`;
+      }
+      const [lx, ly] = pts[pts.length - 1];
+      return d + ` L${lx} ${ly}`;
+    };
     const drawEdges = () => {
-      const box = (id) => {
-        const n = world.querySelector(`[data-node="${id}"]`);
-        return { x: n.offsetLeft, y: n.offsetTop, w: n.offsetWidth, h: n.offsetHeight };
-      };
       svg.setAttribute('width', world.scrollWidth);
       svg.setAttribute('height', world.scrollHeight);
       svg.querySelectorAll('path[data-from]').forEach((p) => {
-        const a = box(p.dataset.from), b = box(p.dataset.to);
-        let d;
-        if (p.dataset.side) {
-          const side = p.dataset.side === 'right' ? 1 : -1;
-          const ax = side > 0 ? a.x + a.w : a.x, ay = a.y + a.h / 2;
-          const bx = side > 0 ? b.x + b.w : b.x, by = b.y + b.h / 2;
-          const out = side > 0 ? bounds.x + bounds.w - 100 : bounds.x - 40;
-          const r = 18 * side, up = by < ay ? -1 : 1;
-          // out to the side, along it with rounded corners, and back in
-          d = `M${ax} ${ay} H${out - r} Q${out} ${ay} ${out} ${ay + 18 * up} V${by - 18 * up} Q${out} ${by} ${out - r} ${by} H${bx + side * 6}`;
+        const out = p.dataset.out || 'bottom', inn = p.dataset.in || 'top';
+        const a = anchor(p.dataset.from, out), b = nudge(anchor(p.dataset.to, inn), inn);
+        const vertical = (side) => side === 'top' || side === 'bottom';
+        let pts;
+        if (p.dataset.via) {
+          // leave, run out to the detour line, along it, and come back in
+          const v = +p.dataset.via;
+          const lineX = v < 0 ? bounds.x + 24 : bounds.x + bounds.w - 24;
+          const drop = a[1] + 36;
+          pts = [a, [a[0], drop], [lineX, drop], [lineX, b[1]], b];
+        } else if (vertical(out) && vertical(inn)) {
+          const mid = (a[1] + b[1]) / 2;
+          pts = Math.abs(a[0] - b[0]) < 1 ? [a, b] : [a, [a[0], mid], [b[0], mid], b];
+        } else if (vertical(out)) {
+          pts = [a, [a[0], b[1]], b]; // down, then across into a side
+        } else if (vertical(inn)) {
+          pts = [a, [b[0], a[1]], b]; // across, then down into a top
         } else {
-          const ax = a.x + a.w / 2, ay = a.y + a.h;
-          const bx = b.x + b.w / 2, by = b.y - 6;
-          const m = (by - ay) / 2;
-          d = `M${ax} ${ay} C${ax} ${ay + m}, ${bx} ${by - m}, ${bx} ${by}`;
+          const mid = (a[0] + b[0]) / 2;
+          pts = [a, [mid, a[1]], [mid, b[1]], b];
         }
-        p.setAttribute('d', d);
+        p.setAttribute('d', rounded(pts));
       });
-      svg.querySelectorAll('[data-label-for]').forEach((t) => {
+      // labels sit on their connector in a small pill
+      world.querySelectorAll('.canvas-label[data-label-for]').forEach((t) => {
         const p = svg.querySelector(`#${t.dataset.labelFor}`);
         const at = p.getPointAtLength(p.getTotalLength() * (+t.dataset.at || 0.5));
-        t.setAttribute('x', at.x);
-        t.setAttribute('y', at.y);
+        t.style.left = `${at.x}px`;
+        t.style.top = `${at.y}px`;
       });
     };
 

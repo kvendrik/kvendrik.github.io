@@ -282,47 +282,26 @@
             <div class="canvas-stage" data-live role="img" aria-label="A loop: a task comes in, the model tries it, checks the result and asks whether it worked. If it did, it keeps the run as an example; if not, it reflects on what went wrong. Both update its memory, which it uses on the next task.">
               <div class="canvas-world">
                 <svg class="canvas-edges" aria-hidden="true">
-                  <defs><marker id="arrow" viewBox="0 0 10 10" refX="6" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M1 1 L8 5 L1 9" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" /></marker></defs>
-                  <path data-from="task" data-to="try" marker-end="url(#arrow)" />
-                  <path data-from="try" data-to="check" marker-end="url(#arrow)" />
-                  <path data-from="check" data-to="if" marker-end="url(#arrow)" />
-                  <path id="edge-yes" data-from="if" data-to="keep" marker-end="url(#arrow)" />
-                  <path id="edge-no" data-from="if" data-to="reflect" marker-end="url(#arrow)" />
-                  <path data-from="keep" data-to="memory" marker-end="url(#arrow)" />
-                  <path data-from="reflect" data-to="memory" marker-end="url(#arrow)" />
-                  <path id="edge-next" class="loop" data-from="memory" data-to="try" data-side="right" marker-end="url(#arrow)" />
-                  <text data-label-for="edge-yes" data-at="0.45">Yes</text>
-                  <text data-label-for="edge-no" data-at="0.45">No</text>
-                  <text data-label-for="edge-next" data-at="0.5" class="loop-label">Next task, a little better</text>
+                  <defs><marker id="arrow" viewBox="0 0 10 10" refX="7" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse"><path d="M1.5 1.5 L8.5 5 L1.5 8.5 Z" fill="currentColor" stroke="currentColor" stroke-width="1" stroke-linejoin="round" /></marker></defs>
+                  <path data-from="task" data-to="try" data-out="bottom" data-in="top" marker-end="url(#arrow)" />
+                  <path data-from="try" data-to="check" data-out="bottom" data-in="top" marker-end="url(#arrow)" />
+                  <path data-from="check" data-to="if" data-out="bottom" data-in="top" marker-end="url(#arrow)" />
+                  <path id="edge-yes" data-from="if" data-to="keep" data-out="left" data-in="top" marker-end="url(#arrow)" />
+                  <path id="edge-no" data-from="if" data-to="reflect" data-out="right" data-in="top" marker-end="url(#arrow)" />
+                  <path data-from="keep" data-to="memory" data-out="bottom" data-in="left" marker-end="url(#arrow)" />
+                  <path data-from="reflect" data-to="memory" data-out="bottom" data-in="right" marker-end="url(#arrow)" />
+                  <path id="edge-next" class="loop" data-from="memory" data-to="try" data-out="bottom" data-in="left" data-via="-1" marker-end="url(#arrow)" />
                 </svg>
-              <div class="canvas-node" data-node="task" style="left:320px;top:20px;width:260px">
-                <span class="canvas-tag" style="--tag:#9a5cff">Trigger</span>
-                <div class="canvas-card"><strong>A task comes in</strong><span>Someone asks for something</span></div>
-              </div>
-              <div class="canvas-node" data-node="try" style="left:320px;top:170px;width:260px">
-                <span class="canvas-tag" style="--tag:#2f6fd0">Step</span>
-                <div class="canvas-card"><strong>Try it</strong><span>The model plans and acts with its tools</span></div>
-              </div>
-              <div class="canvas-node" data-node="check" style="left:320px;top:320px;width:260px">
-                <span class="canvas-tag" style="--tag:#2f6fd0">Step</span>
-                <div class="canvas-card"><strong>Check the result</strong><span>Tests, a judge model or the person grade it</span></div>
-              </div>
-              <div class="canvas-node" data-node="if" style="left:320px;top:470px;width:260px">
-                <span class="canvas-tag" style="--tag:#f09a2f">If / Else</span>
-                <div class="canvas-card"><strong>Did it work?</strong><span>Compare the outcome with the goal</span></div>
-              </div>
-              <div class="canvas-node" data-node="keep" style="left:80px;top:640px;width:260px">
-                <span class="canvas-tag" style="--tag:#2f9e5f">Learn</span>
-                <div class="canvas-card"><strong>Keep what worked</strong><span>Save the good run as an example to copy</span></div>
-              </div>
-              <div class="canvas-node" data-node="reflect" style="left:560px;top:640px;width:260px">
-                <span class="canvas-tag" style="--tag:#2f9e5f">Learn</span>
-                <div class="canvas-card"><strong>Reflect on what didn’t</strong><span>Write down what went wrong, and why</span></div>
-              </div>
-              <div class="canvas-node" data-node="memory" style="left:320px;top:810px;width:260px">
-                <span class="canvas-tag" style="--tag:#9a5cff">Remember</span>
-                <div class="canvas-card"><strong>Update its memory</strong><span>Lessons and examples, or a fine-tune on them</span></div>
-              </div>
+              <div class="canvas-node shape-pill" data-node="task" style="left:340px;top:20px;width:220px;"><strong>A task comes in</strong></div>
+              <div class="canvas-node shape-box" data-node="try" style="left:320px;top:130px;width:260px;"><strong>Try it</strong><span>The model plans and acts with its tools</span></div>
+              <div class="canvas-node shape-box" data-node="check" style="left:320px;top:265px;width:260px;"><strong>Check the result</strong><span>Tests, a judge model or the person grade it</span></div>
+              <div class="canvas-node shape-diamond" data-node="if" style="left:360px;top:400px;width:180px;height:180px;"><strong>Did it work?</strong></div>
+              <div class="canvas-node shape-sticky" data-node="keep" style="left:120px;top:650px;width:210px;--tilt:-1.6deg;"><strong>Keep what worked</strong><span>Save the good run as an example to copy</span></div>
+              <div class="canvas-node shape-sticky" data-node="reflect" style="left:570px;top:650px;width:210px;--tilt:1.2deg;"><strong>Reflect on what didn’t</strong><span>Write down what went wrong, and why</span></div>
+              <div class="canvas-node shape-box" data-node="memory" style="left:320px;top:880px;width:260px;"><strong>Update its memory</strong><span>Lessons and examples, or a fine-tune on them</span></div>
+              <span class="canvas-label" data-label-for="edge-yes" data-at="0.35">Yes</span>
+              <span class="canvas-label" data-label-for="edge-no" data-at="0.35">No</span>
+              <span class="canvas-label" data-label-for="edge-next" data-at="0.16">Next task, a little better</span>
               </div>
               <div class="canvas-zoom" aria-label="Zoom">
                 <button type="button" data-zoom="out" aria-label="Zoom out">−</button>
