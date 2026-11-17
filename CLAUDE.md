@@ -15,6 +15,19 @@ Koen is a Staff Engineer at Shopify with strong taste. He iterates fast in short
 often several in a row while you're still working. Fold each one into the work in progress
 rather than finishing the old plan first.
 
+## Articles are made together, one by one
+
+Every blog article is its own HTML page in `next/writing/`, and Koen and Claude work on each one
+together. Articles should each feel unique: not a template filled in, but a page shaped around
+that piece, with its own details, imagery or interactions where the story calls for it.
+- They share a few things so the site stays one place: the cream card, Allo at 20px, the back
+  arrow, the title with its pen underline (it's where the transition lands), the signature,
+  More writing, `editor.js`, `controls.js` and `transitions.*`.
+- Everything else is open per article.
+- When Koen starts a new piece, ask what it should feel like before building. Don't just copy
+  `what-kitt-taught-me.html`.
+- Add each new article to the Writing list on the home page.
+
 ## Where things are
 
 The concept lives in `next/` on the dev branch. The live Win95 site at the repo root stays
@@ -50,7 +63,10 @@ untouched.
 - **Spacing he set:** 50px between wave, name block and paragraph. Text sits 100px from the
   page top and 150px from the black section. Article titles in the list are 25px apart, with
   no dividers or dates. Article paragraphs are 1.8em apart.
-- **Links:** a thin 1px underline with a 0.2em offset. Writing titles get a *pen* underline on
+- **Links:** a thin 1px underline with a 0.2em offset.
+- **Pen underline width:** it sits under a title's *last line* only, as wide as that line.
+  `sizePen` in `transitions.js` measures the text and sets `--pen-left` and `--pen-width`.
+  Wrapped titles otherwise get an underline across the whole box. Writing titles get a *pen* underline on
   hover: an inline SVG, slightly uneven, thicker in the middle with a flick at the end. It
   fades in and does **not** draw left to right ("too slow"). The article title carries the
   same pen underline in ink.
@@ -94,8 +110,11 @@ untouched.
   - Back to home: the article slides right, scaling and fading, and home comes in from the
     left (view transition type `back`). The article is mostly gone before home arrives, so
     the two never smear over each other.
-  - A new page must become opaque fast: a slow fade of cream over black reads as a muddy grey
-    wash.
+  - Leaving for an article, the black warms to cream and the title turns from cream to ink
+    in a 180ms beat before the page changes. The article then arrives on the same cream with
+    the same ink title, so nothing changes colour mid-flight and there's no grey wash.
+  - `html` has a cream background, which is what shows behind pages during a transition. The
+    body keeps its black for the scroll effect. Without this, sliding pages show black edges.
   - `transitions.js` loads in `<head>` so its `pagereveal` listener exists before the first
     paint. At the end of `<body>` it was too late, and the back transition was aborted.
 - **Edit mode:**

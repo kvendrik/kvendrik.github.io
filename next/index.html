@@ -116,8 +116,9 @@
       .articles .title::after {
         content: '';
         position: absolute;
-        left: -0.1em;
-        right: -0.15em;
+        /* under the last line only (see sizePen in transitions.js) */
+        left: calc(var(--pen-left, 0px) - 0.1em);
+        width: calc(var(--pen-width, 100%) + 0.25em);
         bottom: -0.3em;
         height: 0.42em;
         background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 300 12' preserveAspectRatio='none'%3E%3Cpath fill='%23f5f2ea' d='M2 8.9C60 7.4 140 7.6 212 6.6 252 6 281 3.9 297.2 1.4c.6-.9 2-.4 1.6.6-12.4 3.8-44 7.2-86.4 7.9-72 1.1-150 .3-210 .1-1.1 0-1.2-1.3 0-1.1Z'/%3E%3C/svg%3E")

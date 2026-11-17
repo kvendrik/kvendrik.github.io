@@ -59,7 +59,6 @@
       lineHeight: cs.lineHeight,
       fontVariationSettings: cs.fontVariationSettings,
       letterSpacing: cs.letterSpacing,
-      color: cs.color,
       opacity: cs.opacity,
       viewTransitionName: NAME,
     });
@@ -71,13 +70,14 @@
       flying.style.scale = scale;
     }
     document.body.append(flying);
+    flying.style.setProperty('--pen-left', title.style.getPropertyValue('--pen-left'));
+    flying.style.setProperty('--pen-width', title.style.getPropertyValue('--pen-width'));
     title.style.visibility = 'hidden';
     root.classList.add('vt-leaving');
-    requestAnimationFrame(() => {
-      flying?.classList.add('is-lifted');
-      // no waiting: the fade plays while the article loads (it's usually preloaded already)
-      location.href = link.href;
-    });
+    requestAnimationFrame(() => flying?.classList.add('is-lifted'));
+    // one short beat for the page to warm to cream; the article is usually preloaded already,
+    // so this is the only wait
+    setTimeout(() => (location.href = link.href), 180);
   });
 
   // Going back from an article to the home page is a sideways move: the article slides off
@@ -103,6 +103,31 @@
     if (isArticle() || !e.viewTransition || !isArticleUrl(from)) return;
     clear();
     e.viewTransition.types.add('back');
+  });
+
+  // The pen underline sits under a title's last line, as wide as that line. A wrapped title's
+  // box is wider than its last line, so measure the text and hand the line to the CSS.
+  const sizePen = (el) => {
+    if (!el?.firstChild) return;
+    const range = document.createRange();
+    range.selectNodeContents(el);
+    const lines = [...range.getClientRects()].filter((r) => r.width > 0);
+    const last = lines[lines.length - 1];
+    if (!last) return;
+    const box = el.getBoundingClientRect();
+    const scale = box.width / el.offsetWidth || 1; // the list may be scaled by the scroll effect
+    el.style.setProperty('--pen-left', `${(last.left - box.left) / scale}px`);
+    el.style.setProperty('--pen-width', `${last.width / scale}px`);
+  };
+  const sizeAllPens = () => document.querySelectorAll('.articles .title, .article h1').forEach(sizePen);
+  addEventListener('DOMContentLoaded', sizeAllPens);
+  addEventListener('load', sizeAllPens);
+  addEventListener('resize', sizeAllPens);
+  document.fonts?.ready.then(sizeAllPens);
+  // after writing (the title may have changed)
+  new MutationObserver(() => !root.classList.contains('writing-mode') && sizeAllPens()).observe(root, {
+    attributes: true,
+    attributeFilter: ['class'],
   });
 
   // Preload an article as soon as its title is hovered or focused, so the click has nothing to
