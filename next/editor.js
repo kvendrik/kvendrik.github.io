@@ -60,16 +60,16 @@
     '<span class="write-sep"></span>' +
     `<button type="button" class="write-icon write-focus" aria-pressed="true" aria-label="Focus mode" title="Focus mode: dim all but the paragraph you\u2019re in">${ICON_FOCUS}</button>` +
     `<button type="button" class="write-icon write-discard" aria-label="Discard draft" title="Discard draft: go back to the published text">${ICON_DISCARD}</button>` +
-    '<button type="button" class="write-done">Done</button>' +
     '<button type="button" class="write-send" hidden title="Send this version to Claude to publish">Send to Claude</button>';
   document.body.append(status);
   const countEl = status.querySelector('.write-count');
   const saveEl = status.querySelector('.write-save');
   const words = () => (body.innerText.trim().match(/\S+/g) || []).length;
   // state: 'saved' | 'saving' | 'restored' | 'error'
+  // there's no saving here (only Send to Claude), so the routine draft states show nothing
   const LABELS = {
-    saved: 'Saved',
-    saving: 'Saving',
+    saved: '',
+    saving: '',
     restored: 'Draft restored',
     error: 'Not saved',
     sending: 'Sending to Claude',
@@ -196,12 +196,16 @@
     root.classList.remove('is-typing');
   });
 
-  // ---- Edit / Done
-  const toggle = document.createElement('button');
-  toggle.type = 'button';
-  toggle.className = 'edit-toggle';
-  toggle.textContent = 'Edit';
-  document.body.append(toggle);
+  // ---- Edit (top right), with a note when the page is showing your unsent draft. Editing is
+  // only offered where Send to Claude can work (the claude.ai preview, for its editors): there
+  // is no saving on the page itself, the draft only survives a refresh.
+  const editBar = document.createElement('div');
+  editBar.className = 'edit-bar';
+  editBar.innerHTML =
+    '<span class="draft-note" title="Your changes are kept in this browser until you send them to Claude">Showing your draft</span>' +
+    '<button type="button" class="edit-toggle" hidden>Edit</button>';
+  document.body.append(editBar);
+  const toggle = editBar.querySelector('.edit-toggle');
 
   const supportsPlain = (() => {
     const d = document.createElement('div');
@@ -213,7 +217,6 @@
   const setWriting = (on) => {
     writing = on;
     root.classList.toggle('writing-mode', on);
-    toggle.textContent = on ? 'Done' : 'Edit';
     title.contentEditable = on ? (supportsPlain ? 'plaintext-only' : 'true') : 'false';
     if (meta) meta.contentEditable = title.contentEditable;
     body.contentEditable = on ? 'true' : 'false';
@@ -224,7 +227,7 @@
       markEmpty();
       // drop any Figma-style selection so the two modes don't overlap
       dispatchEvent(new KeyboardEvent('keydown', { key: 'Escape' }));
-      setStatus(restored ? 'restored' : 'saved');
+      setStatus(hasDraft ? 'restored' : 'saved');
       refreshSend?.();
       if (!title.textContent.trim()) title.focus();
     } else {
@@ -238,8 +241,11 @@
       getSelection().removeAllRanges();
     }
   };
-  toggle.addEventListener('click', () => setWriting(!writing));
-  status.querySelector('.write-done').addEventListener('click', () => setWriting(false));
+  toggle.addEventListener('click', () => setWriting(true));
+  // there is no Done button: Esc quietly steps out of writing mode (the draft stays)
+  addEventListener('keydown', (e) => {
+    if (e.key === 'Escape' && e.isTrusted && writing && bar.dataset.view !== 'link' && !bar.classList.contains('is-open')) setWriting(false);
+  });
 
   // ---- Send to Claude: inside the claude.ai preview, the edited article is stored in the
   // page's private database (editors only) and a short note is sent to the Claude session
@@ -266,7 +272,11 @@
     Promise.all([claude.use('db').catch(() => null), claude.use('comments').catch(() => null)]).then(([d, c]) => {
       db = d;
       comments = c;
+      if (!db) return;
+      toggle.hidden = false; // editing is available here
       refreshSend();
+      // a brand-new article opens straight into writing mode
+      if (document.body.hasAttribute('data-new-article')) setWriting(true);
     });
   }
   sendBtn.addEventListener('click', async () => {
@@ -545,6 +555,4 @@
     }
   });
 
-  // a brand-new article opens straight into writing mode
-  if (document.body.hasAttribute('data-new-article')) setWriting(true);
 })();

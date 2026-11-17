@@ -1,12 +1,40 @@
 /* Live editing for article pages: an Edit button, in-place writing, a selection toolbar and a
    quiet status line. Shared by every article page (see editor.js). */
 
-/* Edit / Done, top right */
-.edit-toggle {
+/* Edit, top right, with "Showing your draft" beside it when there is one */
+.edit-bar {
   position: fixed;
   top: 20px;
   right: 20px;
   z-index: 20;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  transition: opacity 150ms ease;
+}
+
+.draft-note {
+  display: none;
+  align-items: center;
+  gap: 8px;
+  color: #8a867f;
+  font: 15px/1 'Allo', system-ui, sans-serif;
+  font-variation-settings: 'ROND' 100;
+}
+
+.draft-note::before {
+  content: '';
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: #e8875b;
+}
+
+.has-draft .draft-note {
+  display: inline-flex;
+}
+
+.edit-toggle {
   height: 34px;
   padding: 0 14px;
   border: 0;
@@ -220,10 +248,22 @@
     scale 250ms var(--ease-out, ease-out);
 }
 
-/* while writing, Done lives in the toolbar, so the top-right button steps aside */
-.writing-mode .edit-toggle {
+/* while writing, the toolbar takes over and the top-right bar steps aside */
+.writing-mode .edit-bar {
   opacity: 0;
   pointer-events: none;
+}
+
+.edit-toggle[hidden] {
+  display: none;
+}
+
+/* the routine draft states have no label: hide the dot and its divider */
+.write-status .write-save[data-state='saved'],
+.write-status .write-save[data-state='saving'],
+.write-status .write-save[data-state='saved'] + .write-sep,
+.write-status .write-save[data-state='saving'] + .write-sep {
+  display: none;
 }
 
 .write-sep {

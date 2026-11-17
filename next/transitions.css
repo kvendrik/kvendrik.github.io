@@ -1,0 +1,66 @@
+/* Page transitions between the home page and the articles (cross-document view transitions).
+   Clicking an article title: everything else fades out, the title glides to where the
+   article's heading sits, and the article fades in around it. Going back reverses it.
+   Browsers without support simply navigate as usual. */
+
+@view-transition {
+  navigation: auto;
+}
+
+/* the article's heading is the title's landing spot (the home page names the clicked title) */
+.article h1 {
+  view-transition-name: article-title;
+  /* hug the text, so the heading and the list title are the same shape in flight */
+  width: fit-content;
+}
+
+/* 1. the page you leave fades out quickly */
+::view-transition-old(root) {
+  animation: vt-fade-out 180ms ease-out both;
+}
+
+/* 3. the new page fades in once the title is nearly in place */
+::view-transition-new(root) {
+  animation: vt-fade-in 320ms 260ms var(--ease-out, ease-out) both;
+}
+
+/* 2. the title moves across the screen */
+::view-transition-group(article-title) {
+  animation-duration: 520ms;
+  animation-timing-function: cubic-bezier(0.77, 0, 0.175, 1);
+}
+
+/* its colour changes with the page (cream on black, ink on cream): swap the two snapshots
+   as the new page arrives, rather than blending them mid-flight */
+::view-transition-old(article-title) {
+  animation: vt-fade-out 160ms 300ms ease-out both;
+}
+
+::view-transition-new(article-title) {
+  animation: vt-fade-in 200ms 300ms ease-out both;
+}
+
+@keyframes vt-fade-out {
+  to {
+    opacity: 0;
+  }
+}
+
+@keyframes vt-fade-in {
+  from {
+    opacity: 0;
+  }
+}
+
+/* reduced motion: a plain, quick crossfade with nothing moving */
+@media (prefers-reduced-motion: reduce) {
+  ::view-transition-group(article-title) {
+    animation-duration: 0s;
+  }
+
+  ::view-transition-old(root),
+  ::view-transition-new(root) {
+    animation-duration: 150ms;
+    animation-delay: 0s;
+  }
+}
