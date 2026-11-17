@@ -13,7 +13,7 @@
     el.style.setProperty('--pen-left', `${(last.left - box.left) / scale}px`);
     el.style.setProperty('--pen-width', `${last.width / scale}px`);
   };
-  const sizeAllPens = () => document.querySelectorAll('.articles .title, .article h1').forEach(sizePen);
+  const sizeAllPens = () => document.querySelectorAll('.articles .title, .article h1, .title-demo').forEach(sizePen);
   addEventListener('DOMContentLoaded', sizeAllPens);
   addEventListener('load', sizeAllPens);
   addEventListener('resize', sizeAllPens);

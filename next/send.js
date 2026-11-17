@@ -64,7 +64,7 @@
     state = 'sending';
     render();
     // the file to change: an article page, or the home page
-    const page = location.pathname.match(/writing\/[^/]+\.html$/)?.[0] ?? 'index.html';
+    const page = location.pathname.match(/(writing\/)?[^/]+\.html$/)?.[0] ?? 'index.html';
     try {
       const ref = await db.collection('edits').add({ kind: 'page', page, changes, sentAt: Date.now() });
       const note = `Please apply my ${changes.length} ${changes.length === 1 ? 'change' : 'changes'} to ${page}. They're stored as edits/${ref.id} in this page's database.`;

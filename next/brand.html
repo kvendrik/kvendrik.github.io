@@ -1,0 +1,573 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Brand · Koen Vendrik</title>
+    <meta name="robots" content="noindex" />
+    <link rel="preload" href="fonts/AlloVariable.woff2" as="font" type="font/woff2" crossorigin />
+    <style>
+      /* Allo by Josh Puckett, SIL Open Font License 1.1 (see fonts/Allo-OFL.txt) */
+      @font-face {
+        font-family: 'Allo';
+        src: url('fonts/AlloVariable.woff2') format('woff2');
+        font-weight: 100 900;
+        font-display: swap;
+      }
+
+      body {
+        margin: 0;
+        background: var(--black);
+        color: var(--ink);
+        font-family: 'Allo', system-ui, sans-serif;
+        font-size: 20px;
+        font-weight: 300;
+        font-variation-settings: 'ROND' 100;
+        line-height: 1.6;
+      }
+
+      ::selection {
+        background: var(--blue-tint);
+        color: inherit;
+      }
+
+      /* the brand book: everything the site is made of, on the same cream card as every page */
+      .sheet {
+        min-height: 100svh;
+        box-sizing: border-box;
+        padding: 100px 24px 150px;
+        background: var(--cream);
+      }
+
+      .column {
+        max-width: 32em;
+        margin: 0 auto;
+      }
+
+      .back {
+        display: inline-flex;
+        padding: 10px;
+        margin: -10px;
+        color: var(--muted);
+        transition: color 150ms ease;
+      }
+
+      @media (hover: hover) and (pointer: fine) {
+        .back:hover {
+          color: var(--ink);
+        }
+      }
+
+      header {
+        margin: 100px 0;
+      }
+
+      h1 {
+        margin: 0 0 0.6em;
+        font: inherit;
+      }
+
+      .lede {
+        margin: 0;
+        color: var(--muted);
+      }
+
+      section {
+        margin-top: 120px;
+      }
+
+      /* section names: small, muted, numbered, like a spec sheet */
+      .label {
+        display: flex;
+        gap: 12px;
+        margin: 0 0 32px;
+        color: var(--muted);
+        font: inherit;
+        font-size: 16px;
+      }
+
+      .label span {
+        font-variant-numeric: tabular-nums;
+        opacity: 0.6;
+      }
+
+      .note {
+        margin: 0 0 32px;
+        color: var(--muted);
+        font-size: 16px;
+      }
+
+      /* colour */
+      .swatches {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+        gap: 28px 20px;
+      }
+
+      .swatch {
+        display: grid;
+        gap: 2px;
+        font-size: 16px;
+        line-height: 1.4;
+      }
+
+      .chip {
+        height: 72px;
+        margin-bottom: 10px;
+        border-radius: 12px;
+        box-shadow: inset 0 0 0 1px var(--hairline);
+      }
+
+      .swatch-name {
+        color: var(--ink);
+      }
+
+      .swatch-value {
+        color: var(--muted);
+        font: 13px/1.5 var(--mono);
+      }
+
+      .swatch-use {
+        color: var(--muted);
+        font-size: 14px;
+      }
+
+      /* type */
+      .specimen {
+        display: grid;
+        grid-template-columns: 1fr;
+        gap: 6px;
+        padding: 22px 0;
+        border-top: 1px solid var(--hairline);
+      }
+
+      .specimen:last-child {
+        border-bottom: 1px solid var(--hairline);
+      }
+
+      .specimen-meta {
+        color: var(--muted);
+        font: 12.5px/1.5 var(--mono);
+      }
+
+      .t-muted { color: var(--muted); }
+      .t-small { font-size: 16px; }
+      .t-heading { font-weight: 450; }
+      .t-wave { font-size: 2em; line-height: 1.2; }
+      .t-mono { font: 12.5px/1.65 var(--mono); }
+      .t-system { font: 500 13px/1.4 var(--system); color: #1d1d1f; }
+      .t-w95 { font: 16px/1.4 'W95fa', sans-serif; -webkit-font-smoothing: none; }
+
+      /* motion: press a curve to play it */
+      .curves {
+        display: grid;
+        gap: 14px;
+      }
+
+      .curve {
+        display: grid;
+        grid-template-columns: 1fr;
+        gap: 10px;
+        width: 100%;
+        padding: 16px 18px;
+        border: 0;
+        border-radius: 14px;
+        background: var(--surface);
+        box-shadow: 0 0 0 1px var(--hairline), 0 1px 2px rgb(53 53 53 / 0.04);
+        color: inherit;
+        font: inherit;
+        font-size: 16px;
+        text-align: left;
+        cursor: pointer;
+      }
+
+      .curve:active {
+        scale: 0.99;
+      }
+
+      .curve-head {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: space-between;
+        gap: 2px 12px;
+      }
+
+      .curve-head code {
+        white-space: nowrap;
+        color: var(--muted);
+        font: 12.5px/1.6 var(--mono);
+      }
+
+      .track {
+        position: relative;
+        height: 14px;
+        border-radius: 7px;
+        background: rgb(53 53 53 / 0.05);
+      }
+
+      .dot {
+        position: absolute;
+        top: 2px;
+        left: 2px;
+        width: 10px;
+        height: 10px;
+        border-radius: 50%;
+        background: var(--ink);
+      }
+
+      .curve.is-on .dot {
+        translate: calc(var(--track) - 14px) 0;
+      }
+
+      /* spacing */
+      .spaces {
+        display: grid;
+        gap: 12px;
+        font-size: 16px;
+      }
+
+      .space {
+        display: grid;
+        grid-template-columns: 64px 1fr;
+        align-items: center;
+        gap: 16px;
+      }
+
+      .space code {
+        color: var(--muted);
+        font: 12.5px/1 var(--mono);
+      }
+
+      .space-bar {
+        height: 10px;
+        border-radius: 3px;
+        background: var(--blue-tint);
+        box-shadow: inset 0 0 0 1px rgb(13 153 255 / 0.25);
+      }
+
+      /* components */
+      .component {
+        margin: 0 0 72px;
+      }
+
+      .component:last-child {
+        margin-bottom: 0;
+      }
+
+      .component > .note {
+        margin-bottom: 20px;
+      }
+
+      .quote {
+        margin: 0;
+        padding: 0 0 0 1em;
+        border-left: 2px solid rgb(53 53 53 / 0.15);
+      }
+
+      .title-demo {
+        position: relative;
+        width: fit-content;
+        margin: 0;
+        font: inherit;
+        line-height: 1.2;
+      }
+
+      .title-demo::after {
+        content: '';
+        position: absolute;
+        /* under the last line only, measured by sizePen in pen.js */
+        left: calc(var(--pen-left, 0px) - 0.1em);
+        width: calc(var(--pen-width, 100%) + 0.25em);
+        bottom: -0.3em;
+        height: 0.42em;
+        background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 300 12' preserveAspectRatio='none'%3E%3Cpath fill='%23353535' d='M2 8.9C60 7.4 140 7.6 212 6.6 252 6 281 3.9 297.2 1.4c.6-.9 2-.4 1.6.6-12.4 3.8-44 7.2-86.4 7.9-72 1.1-150 .3-210 .1-1.1 0-1.2-1.3 0-1.1Z'/%3E%3C/svg%3E") center / 100% 100% no-repeat;
+        opacity: 0.9;
+      }
+
+      .ink-demo {
+        margin: 0;
+        line-height: 2;
+      }
+
+      .black {
+        padding: 40px 32px;
+        border-radius: 14px;
+        background: var(--black);
+        color: var(--cream);
+      }
+
+      .black .muted {
+        margin: 0 0 32px;
+        color: var(--muted);
+      }
+
+      .signature-name {
+        display: block;
+        height: 52px;
+        width: auto;
+        margin-left: -4px;
+        opacity: 0.9;
+      }
+
+      .signoff-place {
+        margin: 20px 0 0;
+        color: var(--muted);
+        font-size: 16px;
+      }
+
+      /* the Windows 95 window, shown in place instead of floating */
+      .win95.is-static {
+        position: relative;
+        top: auto;
+        left: auto;
+        translate: none;
+        margin: 0;
+        animation: none;
+      }
+
+      .canvas-demo .canvas-stage {
+        height: 360px;
+      }
+
+      a:focus-visible,
+      button:focus-visible {
+        outline: 2px solid var(--blue);
+        outline-offset: 3px;
+        border-radius: 4px;
+      }
+
+      @media (max-width: 600px) {
+        .sheet {
+          padding: 40px 24px 96px;
+        }
+
+        header {
+          margin: 56px 0 64px;
+        }
+
+        section {
+          margin-top: 88px;
+        }
+
+        .swatches {
+          grid-template-columns: 1fr 1fr;
+        }
+
+        .black {
+          padding: 32px 24px;
+        }
+      }
+    </style>
+    <link rel="stylesheet" href="vendor/dialkit/styles.css" />
+    <link rel="stylesheet" href="controls.css" />
+    <link rel="stylesheet" href="send.css" />
+    <link rel="stylesheet" href="components.css" />
+    <link rel="stylesheet" href="pen.css" />
+  </head>
+  <body>
+    <main class="sheet layer">
+      <div class="column">
+        <a class="back" href="./" aria-label="Back to Koen Vendrik">
+          <svg width="20" height="20" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M13 8H3M7 4 3 8l4 4" /></svg>
+        </a>
+
+        <header class="layer">
+          <h1 class="layer">Brand</h1>
+          <p class="lede layer">Everything the site is made of, in one place. Select anything to tune it, then send it to Claude to make it real everywhere.</p>
+        </header>
+
+        <section aria-labelledby="colour">
+          <h2 class="label" id="colour"><span>01</span>Colour</h2>
+          <div class="swatches layer">
+          <div class="swatch layer"><span class="chip" style="background:var(--cream)"></span><span class="swatch-name">Cream</span><code class="swatch-value">#f5f2ea</code><span class="swatch-use">Every page’s card</span></div>
+          <div class="swatch layer"><span class="chip" style="background:var(--ink)"></span><span class="swatch-name">Ink</span><code class="swatch-value">#353535</code><span class="swatch-use">Text</span></div>
+          <div class="swatch layer"><span class="chip" style="background:var(--muted)"></span><span class="swatch-name">Muted</span><code class="swatch-value">#8a867f</code><span class="swatch-use">Subdued text, captions</span></div>
+          <div class="swatch layer"><span class="chip" style="background:var(--black)"></span><span class="swatch-name">Black</span><code class="swatch-value">#111110</code><span class="swatch-use">Writing, behind the cards</span></div>
+          <div class="swatch layer"><span class="chip" style="background:var(--blue)"></span><span class="swatch-name">Selection</span><code class="swatch-value">#0d99ff</code><span class="swatch-use">Focus, selection boxes</span></div>
+          <div class="swatch layer"><span class="chip" style="background:var(--blue-tint)"></span><span class="swatch-name">Selection tint</span><code class="swatch-value">#cfe6fd</code><span class="swatch-use">Selected text</span></div>
+          <div class="swatch layer"><span class="chip" style="background:var(--surface)"></span><span class="swatch-name">Surface</span><code class="swatch-value">#fffefb</code><span class="swatch-use">Cards on cream</span></div>
+          <div class="swatch layer"><span class="chip" style="background:var(--canvas)"></span><span class="swatch-name">Canvas</span><code class="swatch-value">#f8f6f0</code><span class="swatch-use">Diagrams</span></div>
+          </div>
+        </section>
+
+        <section aria-labelledby="type">
+          <h2 class="label" id="type"><span>02</span>Type</h2>
+          <p class="note layer">Allo, fully rounded, light. One size: everything is 20px, with a few deliberate exceptions.</p>
+          <div class="specimens">
+            <div class="specimen layer"><span class="specimen-meta">Body · Allo 300 · ROND 100 · 20/1.6</span><span>Good afternoon! And greetings from Amsterdam.</span></div>
+            <div class="specimen layer"><span class="specimen-meta">Muted · 20px · #8a867f</span><span class="t-muted">Building experiences at Shopify</span></div>
+            <div class="specimen layer"><span class="specimen-meta">Heading · Allo 450 · 20px</span><span class="t-heading">It knew when to talk</span></div>
+            <div class="specimen layer"><span class="specimen-meta">Small · 16px · dates, places, captions</span><span class="t-small t-muted">November 2026 · Amsterdam</span></div>
+            <div class="specimen layer"><span class="specimen-meta">Wave · 2em</span><span class="t-wave" aria-hidden="true">👋</span></div>
+            <div class="specimen layer"><span class="specimen-meta">Code · system mono · 12.5/1.65</span><span class="t-mono">await agent.say("I’m about to deploy.");</span></div>
+            <div class="specimen layer"><span class="specimen-meta">Interface · system 500 · 13px · controls, tags</span><span class="t-system">Padding · Font size · Copy</span></div>
+            <div class="specimen layer"><span class="specimen-meta">Retro · W95fa · 16px · the Windows 95 window</span><span class="t-w95">Scanner online.</span></div>
+          </div>
+        </section>
+
+        <section aria-labelledby="motion">
+          <h2 class="label" id="motion"><span>03</span>Motion</h2>
+          <p class="note layer">Press a curve to play it. Never a stiff ease-in-out.</p>
+          <div class="curves">
+            <button class="curve layer" type="button" data-live style="--ease: var(--ease-out); --dur: 500ms"><span class="curve-head"><span>Ease out · entering, fading, settling</span><code>0.23, 1, 0.32, 1</code></span><span class="track"><span class="dot"></span></span></button>
+            <button class="curve layer" type="button" data-live style="--ease: var(--ease-glide); --dur: 460ms"><span class="curve-head"><span>Glide · sheets, things that travel</span><code>0.32, 0.72, 0, 1</code></span><span class="track"><span class="dot"></span></span></button>
+          </div>
+        </section>
+
+        <section aria-labelledby="space">
+          <h2 class="label" id="space"><span>04</span>Space</h2>
+          <div class="spaces layer">
+            <div class="space"><code>25px</code><span class="space-bar" style="width:25px" title="Between Writing titles"></span></div>
+            <div class="space"><code>1.8em</code><span class="space-bar" style="width:36px" title="Between paragraphs"></span></div>
+            <div class="space"><code>50px</code><span class="space-bar" style="width:50px" title="Wave, name, paragraph"></span></div>
+            <div class="space"><code>100px</code><span class="space-bar" style="width:100px" title="Text from the top of the page"></span></div>
+            <div class="space"><code>150px</code><span class="space-bar" style="width:150px" title="Text to the black section"></span></div>
+          </div>
+          <p class="note layer" style="margin: 24px 0 0">25px between Writing titles, 1.8em between paragraphs, 50px between the wave, name and paragraph, 100px from the top, 150px to the black section. Phones keep a 24px edge.</p>
+        </section>
+
+        <section aria-labelledby="components">
+          <h2 class="label" id="components"><span>05</span>Components</h2>
+
+          <div class="component">
+            <p class="note">Title, with the pen underline under its last line</p>
+            <h3 class="title-demo layer">What KITT taught me about building agents</h3>
+          </div>
+
+          <div class="component">
+            <p class="note">Links: every one drawn by hand, a little differently</p>
+            <p class="ink-demo layer"><a class="ink-link" href="#">Default stroke</a>, <a class="ink-link" data-stroke="2" href="#">a hook at the start</a> and <a class="ink-link" data-stroke="3" href="#">a gentle wave</a>.</p>
+          </div>
+
+          <div class="component">
+            <p class="note">Quote</p>
+            <blockquote class="quote layer"><p style="margin:0">Trust isn’t built by being clever. It’s built by being predictable.</p></blockquote>
+          </div>
+
+          <div class="component">
+            <p class="note">Writing list, on black: hover a title</p>
+            <div class="black layer">
+              <p class="muted">Writing</p>
+              <ul class="articles">
+                <li><a href="#"><span class="title layer">What KITT taught me about building agents</span></a></li>
+                <li><a href="#"><span class="title layer">Designing for software that talks back</span></a></li>
+              </ul>
+            </div>
+          </div>
+
+          <div class="component">
+            <p class="note">Signature</p>
+            <div class="signoff layer">
+              <svg class="signature-name" viewBox="-39 -864 2233 1110" fill="currentColor" role="img" aria-label="Koen"><path d="M234 -44Q232 -37 222 -30Q212 -24 204 -24Q194 -24 187 -31Q180 -38 180 -48Q180 -49 180 -53Q181 -57 181 -58L242 -302H234Q197 -287 164 -275Q131 -263 93 -263Q77 -263 64 -270Q50 -276 40 -288Q31 -299 26 -314Q20 -328 20 -344Q20 -375 31 -404Q42 -434 62 -457Q83 -480 110 -494Q138 -508 171 -508Q197 -508 222 -502Q247 -495 268 -478L277 -498L321 -780Q323 -788 332 -796Q341 -805 348 -805Q366 -805 374 -790Q381 -776 381 -760V-756L326 -438V-416Q328 -416 330 -415Q331 -414 332 -415Q333 -415 336 -418Q340 -420 344 -423Q349 -426 354 -429Q358 -432 360 -434Q361 -434 363 -436Q365 -437 366 -438Q429 -484 492 -533Q554 -582 609 -639Q616 -646 630 -668Q644 -689 660 -712Q677 -735 692 -753Q707 -771 717 -771Q727 -771 734 -764Q742 -757 742 -746Q742 -744 742 -743Q741 -742 741 -741Q741 -739 739 -734Q737 -728 736 -726Q733 -720 726 -710Q720 -699 714 -689Q707 -679 702 -672Q697 -664 697 -663L571 -536L341 -366Q337 -362 336 -360Q336 -359 336 -354V-349Q336 -347 337 -346L526 -61Q528 -52 533 -46Q538 -40 543 -34Q548 -29 552 -22Q555 -16 555 -7Q555 4 552 6Q548 7 537 7Q526 7 516 1Q506 -5 497 -14Q488 -24 482 -36Q475 -47 472 -56L298 -273ZM68 -358Q68 -340 76 -326Q84 -311 104 -311Q124 -311 144 -316Q164 -321 183 -329Q202 -337 220 -347Q238 -357 254 -366Q254 -368 254 -374Q255 -381 255 -382Q255 -399 246 -412Q238 -426 226 -436Q213 -445 198 -450Q182 -454 167 -454Q147 -454 129 -447Q111 -440 98 -427Q84 -414 76 -396Q68 -379 68 -358ZM654 -78Q654 -79 655 -85Q656 -91 657 -98Q658 -104 659 -110Q660 -115 660 -117V-121V-127L674 -190Q691 -226 709 -259Q728 -292 752 -317Q776 -342 807 -357Q839 -372 884 -372Q893 -372 906 -366Q920 -361 933 -353Q947 -345 958 -336Q970 -328 976 -321Q1007 -326 1021 -326Q1035 -327 1045 -328Q1055 -328 1066 -331Q1078 -334 1102 -344Q1119 -349 1135 -349Q1142 -349 1148 -343Q1155 -337 1155 -329Q1155 -319 1148 -311Q1141 -303 1131 -301L1006 -273L995 -268Q994 -214 971 -165Q948 -116 910 -79Q872 -42 822 -20Q772 1 718 1Q714 1 705 0Q696 0 693 0Q671 -9 662 -33Q654 -57 654 -78ZM718 -58Q719 -53 726 -53Q733 -53 736 -53Q772 -53 810 -72Q848 -90 878 -120Q909 -149 928 -186Q948 -224 948 -262Q916 -262 884 -268Q852 -273 822 -273H821L738 -185Q731 -178 727 -166Q723 -154 721 -140Q719 -126 718 -112Q717 -98 717 -87Q717 -84 717 -73Q717 -62 718 -58ZM1122 -156Q1124 -162 1129 -178Q1133 -193 1138 -211Q1142 -229 1146 -246Q1149 -262 1151 -268Q1157 -292 1166 -320Q1174 -348 1189 -372Q1204 -396 1228 -412Q1251 -427 1286 -427Q1299 -427 1305 -418Q1310 -408 1314 -397Q1314 -393 1315 -382Q1315 -372 1315 -368Q1315 -325 1307 -292Q1298 -259 1281 -231Q1263 -203 1238 -178Q1213 -154 1181 -127Q1180 -124 1178 -117Q1176 -110 1176 -107V-105Q1176 -87 1182 -76Q1188 -65 1199 -58Q1209 -52 1223 -50Q1236 -49 1252 -49Q1299 -49 1342 -62Q1385 -75 1421 -104Q1426 -109 1434 -118Q1441 -128 1449 -138Q1457 -148 1466 -156Q1475 -163 1485 -163Q1495 -163 1497 -155Q1499 -147 1499 -139Q1499 -117 1486 -98Q1472 -78 1451 -62Q1429 -47 1402 -35Q1374 -23 1347 -15Q1320 -7 1296 -3Q1271 1 1254 1Q1201 1 1166 -16Q1130 -34 1117 -87ZM1265 -353Q1245 -335 1234 -320Q1222 -306 1216 -290Q1209 -275 1205 -257Q1200 -239 1195 -215Q1214 -230 1227 -245Q1239 -260 1247 -276Q1255 -292 1259 -310Q1263 -329 1265 -353ZM1470 -20 1504 -220V-248L1524 -381Q1527 -385 1535 -386Q1543 -386 1546 -386Q1554 -386 1564 -380Q1575 -375 1575 -366V-298Q1579 -301 1589 -310Q1599 -319 1610 -329Q1622 -339 1632 -348Q1642 -357 1645 -361Q1656 -371 1671 -378Q1687 -385 1701 -385Q1730 -385 1746 -367Q1763 -349 1763 -321Q1763 -319 1762 -318Q1762 -318 1762 -316V-312L1724 -141V-60Q1755 -60 1788 -72Q1822 -85 1853 -104Q1884 -123 1911 -148Q1938 -172 1958 -195H1962Q1969 -195 1973 -190Q1978 -186 1978 -179Q1978 -157 1963 -136Q1949 -114 1926 -95Q1904 -76 1874 -59Q1845 -42 1816 -30Q1788 -18 1761 -11Q1734 -4 1715 -4Q1696 -4 1685 -11Q1674 -18 1668 -30Q1663 -41 1661 -55Q1660 -69 1660 -85V-98L1699 -292V-325Q1675 -325 1651 -304Q1628 -283 1609 -253Q1591 -223 1577 -192Q1564 -161 1558 -141Q1556 -134 1552 -116Q1548 -98 1544 -78Q1541 -58 1538 -40Q1535 -22 1534 -14Q1535 -8 1530 -5Q1526 -2 1520 0Q1514 1 1507 1Q1501 1 1497 1Q1488 1 1479 -2Q1470 -5 1470 -17Z"/><path d="M58 138 L89 142 L126 147 L168 146 L216 143 L268 140 L323 136 L381 132 L441 128 L503 124 L565 120 L628 116 L689 113 L748 109 L804 107 L860 104 L917 102 L975 100 L1033 99 L1091 98 L1150 97 L1208 96 L1266 95 L1323 93 L1379 91 L1434 89 L1487 85 L1538 81 L1586 76 L1633 71 L1679 66 L1724 60 L1768 54 L1810 49 L1851 43 L1890 37 L1927 32 L1962 26 L1995 22 L2025 18 L2051 14 L2075 11 L2095 9 L2094 2 L2074 5 L2050 8 L2024 11 L1994 15 L1961 20 L1926 24 L1889 28 L1850 32 L1809 36 L1766 39 L1722 43 L1677 47 L1631 50 L1584 53 L1536 55 L1485 57 L1433 58 L1378 59 L1322 60 L1265 61 L1208 61 L1149 62 L1091 63 L1032 64 L974 66 L916 67 L859 69 L803 72 L746 75 L687 78 L625 82 L563 86 L501 90 L439 94 L379 98 L321 102 L265 105 L214 108 L166 110 L124 113 L88 123 L58 131 Z"/></svg>
+              <p class="signoff-place">Amsterdam</p>
+            </div>
+          </div>
+
+          <div class="component">
+            <p class="note">Image</p>
+            <figure class="media layer">
+              <img src="writing/images/scanner.gif" width="1200" height="600" alt="A red light sweeping back and forth across a row of lamps" />
+              <figcaption>A caption, 16px and muted.</figcaption>
+            </figure>
+          </div>
+
+          <div class="component">
+            <p class="note">Video: muted, looping, rounded like images</p>
+            <figure class="media layer">
+              <video src="writing/images/night-drive.mp4" poster="writing/images/night-drive.jpg" width="1280" height="720" autoplay muted loop playsinline aria-label="Driving down an empty road at night"></video>
+            </figure>
+          </div>
+
+          <div class="component">
+            <p class="note">Code block</p>
+            <figure class="media code layer">
+              <div class="code-head">
+                <span class="code-file"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8z" /><path d="M14 3v5h5" /></svg>example.ts</span>
+                <button class="code-copy" type="button" data-live aria-label="Copy code"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="9" y="9" width="12" height="12" rx="2.5" /><path d="M5 15V5a2 2 0 0 1 2-2h10" /></svg><span>Copy</span></button>
+              </div>
+              <pre><code><span class="line"><span class="c">// keywords, functions, strings and comments</span></span><span class="line"><span class="k">const</span> greeting = <span class="f">hello</span>(<span class="s">"Amsterdam"</span>);</span><span class="line"><span class="k">if</span> (!greeting) <span class="k">return</span>;</span></code></pre>
+            </figure>
+          </div>
+
+          <div class="component canvas-demo">
+            <p class="note">Canvas: drag to pan, pinch or ⌘-scroll to zoom</p>
+            <figure class="media layer">
+              <div class="canvas-stage" data-live role="img" aria-label="A small flowchart: a trigger, a step and a decision">
+                <div class="canvas-world">
+                  <svg class="canvas-edges" aria-hidden="true">
+                    <defs><marker id="arrow" viewBox="0 0 10 10" refX="6" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M1 1 L8 5 L1 9" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" /></marker></defs>
+                    <path data-from="a" data-to="b" marker-end="url(#arrow)" />
+                    <path data-from="b" data-to="c" marker-end="url(#arrow)" />
+                  </svg>
+            <div class="canvas-node" data-node="a" style="left:20px;top:20px;width:240px">
+              <span class="canvas-tag" style="--tag:#9a5cff">Trigger</span>
+              <div class="canvas-card"><strong>Something happens</strong><span>A trigger starts the flow</span></div>
+            </div>
+            <div class="canvas-node" data-node="b" style="left:20px;top:170px;width:240px">
+              <span class="canvas-tag" style="--tag:#2f6fd0">Step</span>
+              <div class="canvas-card"><strong>Do a thing</strong><span>A step in the flow</span></div>
+            </div>
+            <div class="canvas-node" data-node="c" style="left:20px;top:320px;width:240px">
+              <span class="canvas-tag" style="--tag:#f09a2f">If / Else</span>
+              <div class="canvas-card"><strong>Check it</strong><span>A decision with two ways out</span></div>
+            </div>
+                </div>
+                <div class="canvas-zoom" aria-label="Zoom">
+                  <button type="button" data-zoom="out" aria-label="Zoom out">−</button>
+                  <button type="button" class="canvas-zoom-value" data-zoom="fit" aria-label="Fit to view">100%</button>
+                  <button type="button" data-zoom="in" aria-label="Zoom in">+</button>
+                </div>
+              </div>
+            </figure>
+          </div>
+
+          <div class="component">
+            <p class="note">Windows 95 window: KITT on the home page opens one</p>
+            <div class="win95 is-static layer" role="group" aria-label="Windows 95 window">
+              <div class="win95-bar" style="cursor: default"><span>KITT.exe</span><button class="win95-button" type="button" data-live aria-label="Close" tabindex="-1">X</button></div>
+              <div class="win95-body">
+                <img src="writing/images/scanner.gif" width="1200" height="600" alt="" />
+                <p>Scanner online. Where are we going tonight, Koen?</p>
+                <button class="win95-button" type="button" data-live tabindex="-1">OK</button>
+              </div>
+            </div>
+          </div>
+        </section>
+      </div>
+    </main>
+
+    <script>
+      // curves: press to play, press again to send it back
+      document.querySelectorAll('.curve').forEach((c) => {
+        const dot = c.querySelector('.dot');
+        dot.style.transition = `translate var(--dur) var(--ease)`;
+        const size = () => c.style.setProperty('--track', `${c.querySelector('.track').offsetWidth}px`);
+        size();
+        addEventListener('resize', size);
+        c.addEventListener('click', () => c.classList.toggle('is-on'));
+      });
+
+      // Copy on the code block
+      document.querySelectorAll('.code-copy').forEach((button) => {
+        const label = button.querySelector('span');
+        button.addEventListener('click', async () => {
+          const text = [...button.closest('figure').querySelectorAll('.line')].map((l) => l.textContent).join('\n');
+          try {
+            await navigator.clipboard.writeText(text);
+            label.textContent = 'Copied';
+          } catch {
+            label.textContent = 'Select to copy';
+          }
+          clearTimeout(button.reset);
+          button.reset = setTimeout(() => (label.textContent = 'Copy'), 1400);
+        });
+      });
+    </script>
+    <script src="vendor/dialkit/browser.global.js"></script>
+    <script src="sounds.js"></script>
+    <script src="controls.js"></script>
+    <script src="send.js"></script>
+    <script src="pen.js"></script>
+    <script src="canvas.js"></script>
+  </body>
+</html>
