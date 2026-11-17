@@ -105,16 +105,23 @@ untouched.
 - **Transitions** (`transitions.js` and `transitions.css`): each page animates itself. No
   cross-document view transitions: they didn't work in the claude.ai viewer, which changes
   pages its own way.
-  - **The rule:** the leaving page ends in exactly the state the arriving page starts from.
-    That's cream with the title in ink, so the cut between documents is invisible.
-  - **Opening an article:** a fixed stand-in keeps the clicked title in place. Everything else
-    fades and the black warms to cream, while the title lifts 3px and turns to ink, in about
-    240ms. Then the page changes. The article starts with only its title, placed where the
-    title was, then glides it into its heading on a `cubic-bezier(0.32, 0.72, 0, 1)` curve
-    while the rest rises in just behind.
-  - **Back home:** the back arrow or the browser back button. The article slides right,
-    shrinking and fading over cream, and home comes in from the left. Its intro shows at once
-    (`pt-skip-intro`), without waiting for the weather.
+  - **The rule:** the leaving page ends in exactly the state the arriving page starts from, so
+    the cut between documents is invisible.
+  - **Opening an article:** a fixed stand-in keeps the clicked title in place.
+    - A circle of cream grows out of the title and covers the page (`.pt-veil`, a clip-path,
+      400ms). A reveal never passes through grey, and a black-to-cream fade always did.
+    - The title turns to ink as the circle starts, and the page changes at 300ms.
+    - The article starts on cream with only its title, placed where the title was. It glides
+      the title into its heading on a `cubic-bezier(0.32, 0.72, 0, 1)` curve while the rest
+      rises in 90ms behind.
+  - **Back home:** the back arrow or the browser back button. It all happens on black, where
+    you're going.
+    - The article slides right, shrinking and fading.
+    - Home restores your spot in the list (the scroll position travels in the hand-over) and
+      comes in from the left. Its intro shows at once (`pt-skip-intro`).
+    - In the viewer there's a ~180ms black beat while home loads. That's the load itself.
+  - **Only fade what you mean to:** never apply a blanket `opacity` override to `body > *`.
+    It made the hidden edit pill and controls visible mid-transition.
   - **Hand-over:** the arriving page learns what's happening and where the title was through
     `#pt=…` in the address, which it tidies straight away. `sessionStorage` is the backup.
     The back arrow goes to the home page you came from (stored, else `document.referrer`),
@@ -173,6 +180,16 @@ wakes the session.
   `comments` and `user`) to test Edit and Send to Claude locally.
 - Test the photo layout for overlaps at 1280×720 up to 2560×1440. Test transitions with
   screenshot strips.
+- **Check transitions in the real viewer:**
+  1. Bootstrap the artifact emulator (`anthropic-skills:artifact-emulator`) and serve
+     `next/` through it.
+  2. Drive the artifact frame, and record a CDP screencast of the *shell* page, with each
+     frame's `metadata.timestamp`.
+  3. Turn the frames into a timed contact sheet.
+- **What the viewer does:** it changes pages as normal iframe navigations, keeps `#hash`
+  hand-overs, allows `sessionStorage`, and restores the previous scroll on home.
+- **Weather in the viewer:** its CSP blocks Open-Meteo, so the preview always shows the
+  weather fallback. Only the real site has live weather.
 - **Watch transitions at real speed:** use a CDP screencast (`Page.startScreencast`) into a
   contact sheet.
 - **Watch motion slowed down:** use a CDP session

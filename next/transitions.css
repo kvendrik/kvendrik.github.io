@@ -40,14 +40,26 @@ body {
 }
 
 /* ---------------------------------------------------------------- 1. leaving home for an article */
-/* everything but the title fades, and the black warms to the article's cream */
-.pt-leave-home body > :not(.pt-flying) {
-  opacity: 0 !important; /* wins over the scroll effect's own opacity */
-  transition: opacity 200ms var(--pt-out);
+/* a circle of cream grows out of the clicked title and covers the page: a reveal rather
+   than a fade, so it never passes through grey */
+.pt-veil {
+  position: fixed;
+  inset: 0;
+  z-index: 49;
+  background: #f5f2ea;
+  pointer-events: none;
+  transition: clip-path 400ms cubic-bezier(0.65, 0, 0.35, 1);
 }
 
-.pt-leave-home body {
-  background-color: #f5f2ea;
+.pt-veil.is-open {
+  clip-path: var(--pt-veil-full) !important;
+}
+
+/* under the veil, the list steps back a little so the reveal reads as depth */
+.pt-leave-home body > .hero,
+.pt-leave-home body > .writing {
+  opacity: 0.4 !important; /* wins over the scroll effect's own opacity */
+  transition: opacity 300ms ease-out;
 }
 
 /* the title's stand-in: lifts a hair and turns from cream to ink, underline and all */
@@ -59,10 +71,11 @@ body {
   pointer-events: none;
   color: #f5f2ea;
   opacity: 0.9;
+  /* the veil starts at the title, so the title turns to ink right away */
   transition:
-    translate 220ms var(--pt-out),
-    color 220ms ease-out,
-    opacity 220ms ease-out;
+    translate 260ms var(--pt-out),
+    color 160ms ease-out,
+    opacity 160ms ease-out;
 }
 
 .pt-flying.is-lifted {
@@ -79,7 +92,7 @@ body {
   width: calc(var(--pen-width, 100%) + 0.25em);
   bottom: -0.3em;
   height: 0.42em;
-  transition: opacity 220ms ease-out;
+  transition: opacity 160ms ease-out;
 }
 
 .pt-flying::before {
@@ -131,16 +144,13 @@ body {
   opacity: 1;
   translate: 0 0;
   transition:
-    opacity 420ms 200ms var(--pt-out),
-    translate 520ms 200ms var(--pt-out);
+    opacity 420ms 90ms var(--pt-out),
+    translate 520ms 90ms var(--pt-out);
 }
 
 /* ---------------------------------------------------------------- 3. leaving an article for home */
 /* the article slides off to the right, shrinking a little as it fades, over cream */
-.pt-leave-article body {
-  background-color: #f5f2ea;
-  transition: none; /* straight to cream, so the sliding article shows no dark edges */
-}
+/* (all over the body's black: home's list, where you're going, is black too) */
 
 .pt-leave-article .article,
 .pt-leave-article .more {
@@ -148,9 +158,9 @@ body {
   translate: 64px 0;
   scale: 0.97 !important; /* wins over the scroll effect's own scale */
   transition:
-    opacity 200ms var(--pt-out),
-    translate 220ms var(--pt-out),
-    scale 220ms var(--pt-out);
+    opacity 170ms var(--pt-out),
+    translate 190ms var(--pt-out),
+    scale 190ms var(--pt-out);
 }
 
 .pt-leave-article .edit-bar {
@@ -160,11 +170,6 @@ body {
 
 /* ---------------------------------------------------------------- 4. arriving back home */
 /* home comes in from the left */
-.pt-arrive-back body {
-  background-color: #f5f2ea;
-  transition: none;
-}
-
 /* coming back, the intro is there at once: no waiting for the weather like a first visit */
 .pt-skip-intro .bio {
   opacity: 1 !important;
@@ -175,8 +180,8 @@ body {
 .pt-arrive-back body > .writing,
 .pt-arrive-back .edit-bar {
   opacity: 0 !important;
-  translate: -56px 0;
-  scale: 0.98 !important;
+  translate: -40px 0;
+  scale: 0.985 !important;
 }
 
 .pt-arrive-back.pt-play body > .hero,
@@ -186,7 +191,7 @@ body {
   translate: 0 0;
   scale: 1 !important;
   transition:
-    opacity 380ms var(--pt-out),
-    translate 440ms var(--pt-out),
-    scale 440ms var(--pt-out);
+    opacity 300ms var(--pt-out),
+    translate 420ms var(--pt-out),
+    scale 420ms var(--pt-out);
 }

@@ -1,11 +1,13 @@
 // Page transitions between the home page and the articles. Each page animates itself, so they
 // work however the page change happens (a normal site, or the claude.ai preview, which loads
 // pages its own way):
-// - Opening an article: everything but the clicked title fades as the black warms to cream and
-//   the title turns to ink. The article page then starts in exactly that state, the title glides
-//   from where it was into its heading, and the rest of the article rises in.
-// - Back home (the back arrow, or the browser's back button): the article slides off to the
-//   right, shrinking a little as it fades, and the home page comes in from the left.
+// - Opening an article: a circle of the article's cream grows out of the clicked title and
+//   covers the page (no fading through grey), the title turning from cream to ink as it's
+//   covered. The article page starts in exactly that state: the title glides from where it was
+//   into its heading, and the rest of the article rises in.
+// - Back home (the back arrow, or the browser's back button): it all happens on black, where
+//   you're going. The article slides off to the right, shrinking a little as it fades, and home
+//   comes in from the left, at the exact spot in the list you left from.
 // The two pages hand over through sessionStorage: what's happening, and where the title was.
 // Loaded in <head>, so a page can set up its starting state before anything is painted.
 (() => {
@@ -99,6 +101,16 @@
 
   // ---------------------------------------------------------------- arriving on a page
   const arriving = reduce ? null : takeOver();
+  // the article remembers where in the list you came from, to take you back there
+  const cameFromScroll = arriving?.type === 'open' ? arriving.scroll : null;
+  const homeScroll = () => {
+    if (typeof cameFromScroll === 'number') return cameFromScroll;
+    try {
+      const s = sessionStorage.getItem('home-scroll');
+      if (s != null) return Number(s);
+    } catch {}
+    return null;
+  };
 
   if (arriving?.type === 'open') {
     // the article starts as the home page ended: cream, the title where it was, nothing else
@@ -120,13 +132,18 @@
     });
   } else if (arriving?.type === 'back') {
     root.classList.add('pt-arrive-back', 'pt-skip-intro');
-    whenReady('.writing', () => play('pt-arrive-back', 700));
+    whenReady('.writing', () => {
+      // back to the spot in the list you left from
+      if (typeof arriving.scroll === 'number') scrollTo({ top: arriving.scroll, behavior: 'instant' });
+      play('pt-arrive-back', 600);
+    });
   }
 
   // ---------------------------------------------------------------- leaving the home page
   let flying = null;
   const cleanup = () => {
     root.classList.remove('pt-leave-home', 'pt-leave-article', 'pt-arrive-article', 'pt-arrive-back', 'pt-play');
+    document.querySelectorAll('.pt-veil').forEach((v) => v.remove());
     flying?.remove();
     flying = null;
     titles().forEach((t) => (t.style.visibility = ''));
@@ -169,15 +186,33 @@
     }
     flying.style.setProperty('--pen-left', title.style.getPropertyValue('--pen-left'));
     flying.style.setProperty('--pen-width', title.style.getPropertyValue('--pen-width'));
-    document.body.append(flying);
+    // the cream veil, growing from the title's centre to past the furthest corner
+    const veil = document.createElement('div');
+    veil.className = 'pt-veil';
+    const cx = r.left + r.width / 2;
+    const cy = r.top + r.height / 2;
+    const radius = Math.hypot(Math.max(cx, innerWidth - cx), Math.max(cy, innerHeight - cy)) + 20;
+    veil.style.clipPath = `circle(0px at ${cx}px ${cy}px)`;
+    veil.style.setProperty('--pt-veil-full', `circle(${radius}px at ${cx}px ${cy}px)`);
+    document.body.append(veil, flying);
     title.style.visibility = 'hidden';
     root.classList.add('pt-leave-home');
-    requestAnimationFrame(() => requestAnimationFrame(() => flying?.classList.add('is-lifted')));
+    requestAnimationFrame(() =>
+      requestAnimationFrame(() => {
+        veil.classList.add('is-open');
+        flying?.classList.add('is-lifted');
+      }),
+    );
 
-    // where the title is on screen once it has lifted; the article picks it up from there
-    const data = { type: 'open', title: { left: Math.round(r.left), top: Math.round(r.top - 3) } };
+    // where the title is on screen once it has lifted (the article picks it up from there),
+    // and where you were in the list (to take you back there)
+    const scroll = Math.round(scrollY);
+    try {
+      sessionStorage.setItem('home-scroll', String(scroll));
+    } catch {}
+    const data = { type: 'open', title: { left: Math.round(r.left), top: Math.round(r.top - 3) }, scroll };
     handOver(data);
-    setTimeout(() => (location.href = withHandOver(link.href, data)), 240);
+    setTimeout(() => (location.href = withHandOver(link.href, data)), 300);
   });
 
   // ---------------------------------------------------------------- leaving an article
@@ -189,8 +224,9 @@
     e.preventDefault();
     if (reduce) return void (location.href = target);
     root.classList.add('pt-leave-article');
-    handOver({ type: 'back' });
-    setTimeout(() => (location.href = withHandOver(target, { type: 'back' })), 220);
+    const data = { type: 'back', scroll: homeScroll() };
+    handOver(data);
+    setTimeout(() => (location.href = withHandOver(target, data)), 160);
   });
 
   // The browser's back button may restore the home page from its cache, still mid-exit: tidy
