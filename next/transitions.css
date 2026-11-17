@@ -76,7 +76,8 @@
   position: fixed;
   z-index: 50;
   margin: 0;
-  white-space: nowrap;
+  /* same width as the title, so a two-line title wraps the same way */
+  text-wrap: pretty;
   pointer-events: none;
 }
 

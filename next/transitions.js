@@ -51,7 +51,12 @@
       left: `${r.left}px`,
       top: `${r.top}px`,
       width: `${Math.ceil(r.width) + 1}px`,
-      font: cs.font,
+      // copied one by one: the font shorthand comes back empty for this variable font
+      fontFamily: cs.fontFamily,
+      fontSize: cs.fontSize,
+      fontWeight: cs.fontWeight,
+      fontStyle: cs.fontStyle,
+      lineHeight: cs.lineHeight,
       fontVariationSettings: cs.fontVariationSettings,
       letterSpacing: cs.letterSpacing,
       color: cs.color,
