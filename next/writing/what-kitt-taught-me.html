@@ -136,6 +136,25 @@
         margin: 0;
       }
 
+      /* images: the full column width, softly rounded, with a quiet caption */
+      .body figure {
+        margin: 2em 0;
+      }
+
+      .body figure img {
+        display: block;
+        width: 100%;
+        height: auto;
+        border-radius: 14px;
+        background: #111110;
+      }
+
+      .body figcaption {
+        margin-top: 0.8em;
+        color: #8a867f;
+        font-size: 16px;
+      }
+
       /* signature: "Koen" in the handwriting of Cedarville Cursive (SIL Open Font License 1.1),
          converted to a drawing so no extra font loads, with a hand-drawn underline and where
          it was written below */
@@ -274,6 +293,10 @@
             light sweeping across its hood and a voice that talked back. KITT could drive itself, crack a dry joke, and above
             all, it knew Michael.
           </p>
+          <figure class="layer">
+            <img src="images/scanner.gif" width="1200" height="600" alt="A red light sweeping back and forth across a row of lamps on a dark panel" />
+            <figcaption>The red light that swept across the hood.</figcaption>
+          </figure>
           <p class="layer">
             I wanted one so badly. Not the car, really. I wanted the friend that lived inside it.
           </p>

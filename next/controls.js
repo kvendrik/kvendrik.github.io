@@ -31,7 +31,7 @@
       ['.article', 'Article'],
     ].find(([sel]) => el.matches(sel));
     if (by) return by[1];
-    return { H1: 'Title', H2: 'Heading', P: 'Paragraph', BLOCKQUOTE: 'Quote', SECTION: 'Section', IMG: 'Image' }[el.tagName] || 'Layer';
+    return { H1: 'Title', H2: 'Heading', P: 'Paragraph', BLOCKQUOTE: 'Quote', SECTION: 'Section', IMG: 'Image', FIGURE: 'Image' }[el.tagName] || 'Layer';
   };
 
   // ---- what changed: element -> kinds of change. Read at send time, so values are current.
