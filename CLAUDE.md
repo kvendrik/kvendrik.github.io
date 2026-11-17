@@ -95,6 +95,13 @@ untouched.
   - They fade in in a random order (a different first photo each time), with a subtle tilt,
     glint and per-photo parallax.
   - Koen picks photos from contact sheets of about 20 numbered options.
+- **Phones** (under 600px wide):
+  - The intro drops its 50px block padding, so it shares one 24px edge with the Writing list.
+    Spacing is scaled down: 40px between wave, name and paragraph.
+  - Tapping Amsterdam doesn't leave for Maps. It opens the photos as a pile of slightly
+    tilted prints over a cream veil (`layoutPile`, two or three columns, whichever shows them
+    bigger), and a tap anywhere closes it.
+  - In edit mode, the controls panel spans the width as a cream card just above the pill.
 - **Scroll:**
   - On the home page, the cream intro (its own card on a black page) shrinks to 85%, dims and
     rounds its bottom corners up to 32px as you scroll.

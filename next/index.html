@@ -429,6 +429,63 @@
         }
       }
 
+      /* On touch screens there's no hover: tapping Amsterdam opens the photos as a loose pile of
+         prints over a soft cream veil (laid out by the script), and a tap anywhere closes it. */
+      .photos-open .photos {
+        background: rgb(245 242 234 / 0.9);
+        -webkit-backdrop-filter: blur(10px);
+        backdrop-filter: blur(10px);
+        pointer-events: auto;
+        z-index: 30;
+        transition: background-color 250ms ease;
+      }
+
+      .photos-open .photo {
+        opacity: 1;
+        scale: 1;
+        transition-duration: 450ms;
+        transition-delay: var(--delay, calc(var(--i) * 50ms));
+        box-shadow: 0 6px 20px rgb(0 0 0 / 0.12);
+      }
+
+      .photos-hint {
+        position: absolute;
+        left: 0;
+        right: 0;
+        bottom: max(20px, env(safe-area-inset-bottom));
+        text-align: center;
+        color: #8a867f;
+        font-size: 15px;
+        opacity: 0;
+        transition: opacity 300ms ease;
+      }
+
+      .photos-open .photos-hint {
+        opacity: 1;
+        transition-delay: 500ms;
+      }
+
+      /* Phones: the intro uses the full width and shares one 24px edge with the Writing list,
+         with spacing scaled to a small screen */
+      @media (max-width: 600px) {
+        .hero {
+          padding: 56px 24px 88px;
+        }
+
+        .bio {
+          padding: 0;
+        }
+
+        .wave,
+        .intro {
+          margin-bottom: 40px;
+        }
+
+        .writing {
+          padding: 72px 24px 112px;
+        }
+      }
+
       /* Figma-style selection: click a line to select it, then tune it in the DialKit panel */
       .bio {
         cursor: default;
@@ -500,6 +557,7 @@
 
     <!-- Amsterdam photos from Unsplash, see photos/CREDITS.txt -->
     <div class="photos" aria-hidden="true">
+      <div class="photos-hint">Amsterdam · tap to close</div>
       <div class="photo" style="--i: 0" data-aspect="4/3" data-region="left" data-span="0 0.34" data-size="1.0" data-at="0.3 0.3"><img src="photos/canal-bike.webp" alt="" /></div>
       <div class="photo" style="--i: 1" data-aspect="3/2" data-region="top" data-span="0 0.5" data-size="0.9" data-at="0.2 0.5"><img src="photos/tree-canal.webp" alt="" /></div>
       <div class="photo" style="--i: 2" data-aspect="2/3" data-region="right" data-span="0 0.4" data-size="0.8" data-at="0.6 0.2"><img src="photos/stoop.webp" alt="" /></div>
@@ -563,6 +621,8 @@
     <script>
       const amsterdam = document.querySelector('.amsterdam');
       const photos = [...document.querySelectorAll('.photo')];
+      // touch screens (no hover) get the photos as a pile on tap instead (see layoutPile)
+      const touch = matchMedia('(hover: none), (pointer: coarse)');
 
       // Layout: measure where the text is, split the free space around it into
       // regions (left and right columns, bands above and below), and fit each photo
@@ -575,6 +635,7 @@
       const MAX_WIDTH = 500;
 
       function layout() {
+        if (touch.matches) return; // touch screens use the pile
         const W = innerWidth;
         const H = innerHeight;
         const t = bio.getBoundingClientRect();
@@ -621,6 +682,64 @@
         for (const p of shown) p.dataset.depth = ((p.offsetWidth / widest) ** 1.5).toFixed(3);
         container.classList.add('placed');
       }
+
+      // On touch screens: a pile of prints filling the screen. Two columns, each photo placed in
+      // the shorter one, the whole pile scaled to fit, every print tilted a little.
+      function layoutPile() {
+        const W = innerWidth;
+        const H = innerHeight;
+        const PAD = 20;
+        const G = 12;
+        const top = PAD + 24;
+        const bottom = 64; // room for "tap to close"
+        const room = H - top - bottom;
+        // masonry: each photo goes into the shortest column
+        const place = (n, cw) => {
+          const cols = Array(n).fill(0);
+          const spots = photos.map((p) => {
+            const [aw, ah] = p.dataset.aspect.split('/').map(Number);
+            const h = cw / (aw / ah);
+            const c = cols.indexOf(Math.min(...cols));
+            const y = cols[c];
+            cols[c] += h + G;
+            return { p, c, y, h };
+          });
+          return { spots, height: Math.max(...cols) - G, cw, n };
+        };
+        // two or three columns, whichever shows the photos bigger once the pile fits the screen
+        const fit = (n) => {
+          let cw = (W - PAD * 2 - G * (n - 1)) / n;
+          let pile = place(n, cw);
+          if (pile.height > room) pile = place(n, cw * (room / pile.height));
+          return pile;
+        };
+        const [two, three] = [fit(2), fit(3)];
+        const pile = two.cw * 2 >= three.cw * 3 * 0.9 ? two : three;
+        const pileW = pile.cw * pile.n + G * (pile.n - 1);
+        const left = (W - pileW) / 2;
+        const offsetY = top + Math.max(0, (room - pile.height) / 2);
+        for (const { p, c, y, h } of pile.spots) {
+          p.hidden = false;
+          p.style.width = `${pile.cw}px`;
+          p.style.height = `${h}px`;
+          p.style.left = `${left + c * (pile.cw + G)}px`;
+          p.style.top = `${offsetY + y}px`;
+          p.style.rotate = `${(Math.random() * 4 - 2).toFixed(2)}deg`;
+          p.style.translate = '';
+        }
+        container.classList.add('placed');
+      }
+
+      const closePile = () => document.documentElement.classList.remove('photos-open');
+      amsterdam.addEventListener('click', (e) => {
+        if (!touch.matches || document.documentElement.classList.contains('edit-mode')) return;
+        e.preventDefault(); // show the photos instead of leaving for a map
+        shuffleDelays();
+        layoutPile();
+        requestAnimationFrame(() => document.documentElement.classList.add('photos-open'));
+      });
+      container.addEventListener('click', closePile);
+      addEventListener('keydown', (e) => e.key === 'Escape' && closePile());
 
       // re-run when the window changes or the text reflows (e.g. once the weather loads)
       new ResizeObserver(layout).observe(bio);

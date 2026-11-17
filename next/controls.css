@@ -280,3 +280,28 @@
     transition: opacity 150ms ease-out;
   }
 }
+
+/* Phones: the panel spans the width and sits just above the floating pill instead of on it */
+@media (max-width: 600px) {
+  .dialkit-root .dialkit-panel {
+    left: 12px !important;
+    right: 12px !important;
+    top: auto !important;
+    bottom: calc(84px + env(safe-area-inset-bottom)) !important;
+    transform-origin: bottom center;
+  }
+
+  .dialkit-root .dialkit-panel-wrapper,
+  .dialkit-root .dialkit-panel-inner {
+    width: 100% !important;
+  }
+
+  /* on a small screen it sits over the text, so it gets a solid cream card */
+  .dialkit-root .dialkit-panel-inner {
+    box-sizing: border-box;
+    padding: 8px !important;
+    border-radius: 20px;
+    background: rgb(245 242 234 / 0.97) !important;
+    box-shadow: 0 10px 30px rgb(0 0 0 / 0.12) !important;
+  }
+}
