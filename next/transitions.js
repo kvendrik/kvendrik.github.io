@@ -73,25 +73,65 @@
     document.body.append(flying);
     title.style.visibility = 'hidden';
     root.classList.add('vt-leaving');
-
-    setTimeout(() => {
-      scrollTo({ top: 0, behavior: 'instant' });
-      requestAnimationFrame(() => (location.href = link.href));
-    }, 240);
+    requestAnimationFrame(() => {
+      flying?.classList.add('is-lifted');
+      // no waiting: the fade plays while the article loads (it's usually preloaded already)
+      location.href = link.href;
+    });
   });
 
-  // arriving back from an article: its heading flies back into the list
+  // Going back from an article to the home page is a sideways move: the article slides off
+  // to the right (shrinking a little as it fades) and the home page comes in from the left.
+  const isArticle = !!document.querySelector('.article');
+  const isArticleUrl = (url) => !!url && new URL(url, location.href).pathname.includes('/writing/');
+
+  // on the article, as it's left for a page that isn't another article
+  addEventListener('pageswap', (e) => {
+    if (!isArticle || !e.viewTransition) return;
+    const to = e.activation?.entry?.url;
+    if (!to || isArticleUrl(to)) return;
+    e.viewTransition.types.add('back');
+    // the whole article moves as one, title included
+    const h1 = document.querySelector('.article h1');
+    if (h1) h1.style.viewTransitionName = 'none';
+  });
+
+  // on the home page, as it's reached from an article
   addEventListener('pagereveal', (e) => {
     const from = window.navigation?.activation?.from?.url;
-    if (!e.viewTransition || !from) return;
+    if (isArticle || !e.viewTransition || !isArticleUrl(from)) return;
     clear();
-    const title = nameFor(from);
-    // only when the title is on screen; otherwise the heading would fly off the edge
-    const r = title?.getBoundingClientRect();
-    if (title && r.bottom > 0 && r.top < innerHeight) title.style.viewTransitionName = NAME;
-    e.viewTransition.finished.finally(clear);
+    e.viewTransition.types.add('back');
   });
 
+  // Preload an article as soon as its title is hovered or focused, so the click has nothing to
+  // wait for: Chrome renders it fully in the background, other browsers fetch it.
+  const preloaded = new Set();
+  const preload = (e) => {
+    const link = e.target.closest?.('.articles a[href]');
+    if (!link || link.getAttribute('href') === '#' || preloaded.has(link.href)) return;
+    preloaded.add(link.href);
+    if (HTMLScriptElement.supports?.('speculationrules')) {
+      const rules = document.createElement('script');
+      rules.type = 'speculationrules';
+      rules.textContent = JSON.stringify({ prerender: [{ source: 'list', urls: [link.href] }] });
+      document.head.append(rules);
+    } else {
+      const hint = document.createElement('link');
+      hint.rel = 'prefetch';
+      hint.href = link.href;
+      document.head.append(hint);
+    }
+  };
+  document.addEventListener('pointerover', preload, { passive: true });
+  document.addEventListener('focusin', preload);
+  document.addEventListener('touchstart', preload, { passive: true });
+
   // coming back through the browser's back button restores this page from cache: tidy up
-  addEventListener('pageshow', (e) => e.persisted && cleanup());
+  addEventListener('pageshow', (e) => {
+    if (!e.persisted) return;
+    cleanup();
+    const h1 = document.querySelector('.article h1');
+    if (h1) h1.style.viewTransitionName = ''; // ready to take part in the next transition again
+  });
 })();

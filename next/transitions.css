@@ -19,25 +19,27 @@
   animation: vt-fade-out 180ms ease-out both;
 }
 
-/* 3. the new page fades in once the title is nearly in place */
+/* 3. the new page rises a few pixels into place, a touch of blur clearing, as the title
+   settles: it starts while the title is still moving, so the two read as one motion */
 ::view-transition-new(root) {
-  animation: vt-fade-in 320ms 260ms var(--ease-out, ease-out) both;
+  animation: vt-arrive 460ms 180ms cubic-bezier(0.23, 1, 0.32, 1) both;
 }
 
-/* 2. the title moves across the screen */
+/* 2. the title glides: quick to leave, soft to land (an iOS-like curve, not a stiff
+   ease-in-out that crawls off the mark) */
 ::view-transition-group(article-title) {
-  animation-duration: 520ms;
-  animation-timing-function: cubic-bezier(0.77, 0, 0.175, 1);
+  animation-duration: 560ms;
+  animation-timing-function: cubic-bezier(0.32, 0.72, 0, 1);
 }
 
-/* its colour changes with the page (cream on black, ink on cream): swap the two snapshots
-   as the new page arrives, rather than blending them mid-flight */
+/* its colour changes with the page (cream on black, ink on cream): the two snapshots blend
+   as the new page arrives, softened with a little blur so it reads as one title */
 ::view-transition-old(article-title) {
-  animation: vt-fade-out 160ms 300ms ease-out both;
+  animation: vt-fade-out-soft 260ms 180ms ease both;
 }
 
 ::view-transition-new(article-title) {
-  animation: vt-fade-in 200ms 300ms ease-out both;
+  animation: vt-fade-in-soft 300ms 180ms ease both;
 }
 
 @keyframes vt-fade-out {
@@ -52,6 +54,54 @@
   }
 }
 
+@keyframes vt-arrive {
+  from {
+    opacity: 0;
+    translate: 0 10px;
+    filter: blur(3px);
+  }
+}
+
+@keyframes vt-fade-out-soft {
+  to {
+    opacity: 0;
+    filter: blur(2px);
+  }
+}
+
+@keyframes vt-fade-in-soft {
+  from {
+    opacity: 0;
+    filter: blur(2px);
+  }
+}
+
+/* Back to the home page: the article slides off to the right, shrinking a little as it
+   fades, and the home page comes in from the left. */
+html:active-view-transition-type(back)::view-transition-old(root) {
+  animation: vt-out-right 260ms cubic-bezier(0.23, 1, 0.32, 1) both;
+}
+
+html:active-view-transition-type(back)::view-transition-new(root) {
+  animation: vt-in-left 420ms 60ms cubic-bezier(0.23, 1, 0.32, 1) both;
+}
+
+@keyframes vt-out-right {
+  to {
+    opacity: 0;
+    translate: 72px 0;
+    scale: 0.96;
+  }
+}
+
+@keyframes vt-in-left {
+  from {
+    opacity: 0;
+    translate: -72px 0;
+    scale: 0.96;
+  }
+}
+
 /* reduced motion: a plain, quick crossfade with nothing moving */
 @media (prefers-reduced-motion: reduce) {
   ::view-transition-group(article-title) {
@@ -60,8 +110,19 @@
 
   ::view-transition-old(root),
   ::view-transition-new(root) {
-    animation-duration: 150ms;
-    animation-delay: 0s;
+    animation: vt-fade-in 150ms ease both;
+  }
+
+  ::view-transition-old(root) {
+    animation-name: vt-fade-out;
+  }
+
+  html:active-view-transition-type(back)::view-transition-old(root) {
+    animation: vt-fade-out 150ms ease both;
+  }
+
+  html:active-view-transition-type(back)::view-transition-new(root) {
+    animation: vt-fade-in 150ms ease both;
   }
 }
 
@@ -69,7 +130,16 @@
    (see transitions.js), then the page transition takes over. */
 .vt-leaving body > :not(.vt-flying) {
   opacity: 0 !important; /* wins over the scroll effect's own opacity */
-  transition: opacity 220ms ease-out;
+  transition: opacity 200ms cubic-bezier(0.23, 1, 0.32, 1);
+}
+
+/* the title is "picked up": it lifts a hair while everything else goes */
+.vt-flying {
+  transition: translate 200ms cubic-bezier(0.23, 1, 0.32, 1);
+}
+
+.vt-flying.is-lifted {
+  translate: 0 -3px;
 }
 
 .vt-flying {
