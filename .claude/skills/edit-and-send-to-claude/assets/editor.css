@@ -1,0 +1,458 @@
+/* Live editing for article pages: an Edit button, in-place writing, a selection toolbar and a
+   quiet status line. Shared by every article page (see editor.js). */
+
+/* Edit, top right, with "Showing your draft" beside it when there is one */
+.edit-bar {
+  position: fixed;
+  top: 20px;
+  right: 20px;
+  z-index: 20;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  transition: opacity 150ms ease;
+}
+
+.draft-note {
+  display: none;
+  opacity: 0.6;
+  align-items: center;
+  gap: 8px;
+  color: #8a867f;
+  font: 15px/1 'Allo', system-ui, sans-serif;
+  font-variation-settings: 'ROND' 100;
+}
+
+.has-draft .draft-note {
+  display: inline-flex;
+}
+
+.edit-toggle {
+  height: 34px;
+  padding: 0 14px;
+  border: 0;
+  border-radius: 999px;
+  background: rgb(53 53 53 / 0.06);
+  color: #8a867f;
+  font: 400 15px/1 'Allo', system-ui, sans-serif;
+  font-variation-settings: 'ROND' 100;
+  cursor: pointer;
+  transition:
+    background-color 150ms ease,
+    color 150ms ease,
+    scale 120ms ease-out;
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .edit-toggle:hover {
+    color: #353535;
+    background: rgb(53 53 53 / 0.1);
+  }
+}
+
+.edit-toggle:active {
+  scale: 0.96;
+}
+
+.edit-toggle:focus-visible {
+  outline: 2px solid #0d99ff;
+  outline-offset: 2px;
+}
+
+.writing-mode .edit-toggle {
+  background: #353535;
+  color: #f5f2ea;
+}
+
+/* while writing, the editable parts get a text cursor and no focus ring */
+.writing-mode [data-editable] {
+  outline: none;
+  cursor: text;
+  caret-color: #0d99ff;
+}
+
+/* placeholders for empty fields */
+.writing-mode [data-editable]:empty::before,
+.writing-mode [data-editable] > p:only-child:empty::before {
+  content: attr(data-placeholder);
+  color: #b8b3aa;
+  pointer-events: none;
+}
+
+/* an empty body: the placeholder sits on its first (empty) paragraph */
+.writing-mode .body.is-empty > :first-child {
+  position: relative;
+}
+
+.writing-mode .body.is-empty > :first-child::before {
+  content: attr(data-placeholder);
+  content: 'Start writing…';
+  position: absolute;
+  inset: 0 auto auto 0;
+  color: #b8b3aa;
+  pointer-events: none;
+}
+
+/* the Figma-style controls step back while you type, like the rest of the chrome */
+.is-typing .selection,
+.is-typing .dialkit-panel {
+  opacity: 0 !important;
+  pointer-events: none;
+  transition: opacity 400ms ease;
+}
+
+/* Selection toolbar: a small dark pill above the selected text */
+.format-bar {
+  position: fixed;
+  z-index: 30;
+  display: flex;
+  align-items: center;
+  gap: 2px;
+  padding: 4px;
+  border-radius: 12px;
+  background: #1c1c1b;
+  box-shadow:
+    0 6px 20px rgb(0 0 0 / 0.18),
+    0 1px 3px rgb(0 0 0 / 0.2);
+  opacity: 0;
+  scale: 0.96;
+  translate: 0 4px;
+  transform-origin: 50% 100%;
+  pointer-events: none;
+  transition:
+    opacity 120ms ease-out,
+    scale 120ms ease-out,
+    translate 120ms ease-out;
+}
+
+.format-bar.is-open {
+  opacity: 1;
+  scale: 1;
+  translate: 0 0;
+  pointer-events: auto;
+  transition:
+    opacity 150ms var(--ease-out, ease-out),
+    scale 150ms var(--ease-out, ease-out),
+    translate 150ms var(--ease-out, ease-out);
+}
+
+.format-bar button {
+  display: grid;
+  place-items: center;
+  width: 32px;
+  height: 30px;
+  padding: 0;
+  border: 0;
+  border-radius: 8px;
+  background: none;
+  color: rgb(245 242 234 / 0.7);
+  font: 600 15px/1 system-ui, sans-serif;
+  cursor: pointer;
+  transition:
+    background-color 120ms ease,
+    color 120ms ease;
+}
+
+.format-bar button em {
+  font-family: Georgia, serif;
+  font-weight: 400;
+  font-size: 17px;
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .format-bar button:hover {
+    background: rgb(245 242 234 / 0.1);
+    color: #f5f2ea;
+  }
+}
+
+.format-bar button.is-active {
+  color: #6cc0ff;
+}
+
+.format-bar .divider {
+  width: 1px;
+  height: 18px;
+  margin: 0 3px;
+  background: rgb(245 242 234 / 0.15);
+}
+
+/* the link field replaces the buttons while you type a URL */
+.format-bar input {
+  width: 220px;
+  height: 30px;
+  padding: 0 10px;
+  border: 0;
+  border-radius: 8px;
+  background: rgb(245 242 234 / 0.08);
+  color: #f5f2ea;
+  font: 14px system-ui, sans-serif;
+  outline: none;
+}
+
+.format-bar input::placeholder {
+  color: rgb(245 242 234 / 0.4);
+}
+
+.format-bar[data-view='link'] button,
+.format-bar[data-view='link'] .divider,
+.format-bar:not([data-view='link']) input {
+  display: none;
+}
+
+/* Floating toolbar while writing: a dark pill at the bottom centre, the same family as the
+   selection toolbar. Save state, word count, Focus, Discard and Done. */
+.write-status {
+  position: fixed;
+  left: 50%;
+  bottom: 24px;
+  z-index: 20;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  height: 44px;
+  padding: 0 5px 0 16px;
+  border-radius: 999px;
+  background: #1c1c1b;
+  box-shadow:
+    inset 0 0 0 1px rgb(245 242 234 / 0.08),
+    0 10px 30px rgb(0 0 0 / 0.16),
+    0 1px 3px rgb(0 0 0 / 0.2);
+  color: rgb(245 242 234 / 0.55);
+  font: 14px/1 'Allo', system-ui, sans-serif;
+  font-variation-settings: 'ROND' 100;
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+  opacity: 0;
+  translate: -50% 12px;
+  scale: 0.97;
+  pointer-events: none;
+  transition:
+    opacity 150ms ease-out,
+    translate 150ms ease-out,
+    scale 150ms ease-out;
+}
+
+.writing-mode .write-status,
+.edit-mode .write-status {
+  opacity: 1;
+  translate: -50% 0;
+  scale: 1;
+  pointer-events: auto;
+  transition:
+    opacity 250ms var(--ease-out, ease-out),
+    translate 250ms var(--ease-out, ease-out),
+    scale 250ms var(--ease-out, ease-out);
+}
+
+/* while writing, the toolbar takes over and the top-right bar steps aside */
+.writing-mode .edit-bar,
+.edit-mode .edit-bar {
+  opacity: 0;
+  pointer-events: none;
+}
+
+.edit-toggle[hidden] {
+  display: none;
+}
+
+/* the routine draft states have no label: hide the dot and its divider */
+.write-status .write-save[data-state='saved'],
+.write-status .write-save[data-state='saving'],
+.write-status .write-save[data-state='saved'] + .write-sep,
+.write-status .write-save[data-state='saving'] + .write-sep {
+  display: none;
+}
+
+.write-sep {
+  width: 1px;
+  height: 16px;
+  margin: 0 10px;
+  background: rgb(245 242 234 / 0.12);
+}
+
+/* save state: a small dot, green when saved, amber while saving */
+.write-save {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: rgb(245 242 234 / 0.8);
+}
+
+.write-save i {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: #5fd08a;
+  box-shadow: 0 0 0 3px rgb(95 208 138 / 0.15);
+  transition:
+    background-color 200ms ease,
+    box-shadow 200ms ease;
+}
+
+.write-save[data-state='saving'] i {
+  background: #f2b84b;
+  box-shadow: 0 0 0 3px rgb(242 184 75 / 0.15);
+}
+
+/* "Draft restored" is just words, no dot */
+.write-save[data-state='restored'] i {
+  display: none;
+}
+
+.write-save[data-state='error'] i {
+  background: #f06a5d;
+  box-shadow: 0 0 0 3px rgb(240 106 93 / 0.15);
+}
+
+.write-count {
+  color: rgb(245 242 234 / 0.8);
+}
+
+.write-count span {
+  color: rgb(245 242 234 / 0.45);
+}
+
+.write-status button {
+  display: grid;
+  place-items: center;
+  height: 34px;
+  border: 0;
+  border-radius: 999px;
+  background: none;
+  color: rgb(245 242 234 / 0.55);
+  font: inherit;
+  font-variation-settings: inherit;
+  cursor: pointer;
+  transition:
+    background-color 150ms ease,
+    color 150ms ease,
+    scale 120ms ease-out;
+}
+
+.write-status button:active {
+  scale: 0.95;
+}
+
+.write-icon {
+  width: 34px;
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .write-status button:hover {
+    background: rgb(245 242 234 / 0.1);
+    color: #f5f2ea;
+  }
+}
+
+.write-status button:focus-visible {
+  outline: 2px solid #0d99ff;
+  outline-offset: 1px;
+}
+
+.write-focus[aria-pressed='true'] {
+  color: #6cc0ff;
+}
+
+.write-discard {
+  display: none !important;
+}
+
+.has-draft .write-discard {
+  display: grid !important;
+}
+
+.write-done,
+.write-send {
+  margin-left: 6px;
+  padding: 0 16px;
+}
+
+/* Done is the primary action, unless Send to Claude is there: then Send leads */
+.write-done,
+.write-send {
+  background: #f5f2ea !important;
+  color: #1c1c1b !important;
+}
+
+.write-send:not([hidden]) ~ .write-done,
+.write-done:has(~ .write-send:not([hidden])) {
+  background: none !important;
+  color: rgb(245 242 234 / 0.7) !important;
+  margin-left: 2px;
+}
+
+.write-send[hidden] {
+  display: none !important;
+}
+
+.write-send:disabled {
+  opacity: 0.6;
+  cursor: progress;
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .write-done:hover,
+  .write-send:hover {
+    background: #fff !important;
+  }
+
+  .write-done:has(~ .write-send:not([hidden])):hover {
+    background: rgb(245 242 234 / 0.1) !important;
+    color: #f5f2ea !important;
+  }
+}
+
+/* sending: the dot turns Claude-orange; sent: blue */
+.write-save[data-state='sending'] i,
+.write-save[data-state='stored'] i {
+  background: #e8875b;
+  box-shadow: 0 0 0 3px rgb(232 135 91 / 0.18);
+}
+
+.write-save[data-state='sent'] i {
+  background: #6cc0ff;
+  box-shadow: 0 0 0 3px rgb(108 192 255 / 0.18);
+}
+
+.write-save[data-state='send-failed'] i {
+  background: #f06a5d;
+  box-shadow: 0 0 0 3px rgb(240 106 93 / 0.15);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .write-status,
+  .writing-mode .write-status {
+    translate: -50% 0;
+    scale: none;
+  }
+}
+
+/* Focus mode (iA Writer): everything but the paragraph you're in steps back. Switching
+   paragraphs happens on every arrow key, so it's instant rather than animated. */
+.writing-mode.focus-mode.focus-body .article .body > :not([data-current]),
+.writing-mode.focus-mode.focus-body .article h1,
+.writing-mode.focus-mode.focus-body .article .meta,
+.writing-mode.focus-mode.focus-body .article .signoff {
+  opacity: 0.28;
+}
+
+/* the signature and the More writing list belong to the finished article, not the draft */
+.writing-mode .article .signoff,
+.writing-mode .more {
+  display: none;
+}
+
+/* the page chrome steps back while you type */
+.edit-toggle,
+.article .back {
+  transition-property: background-color, color, scale, opacity;
+}
+
+.is-typing .edit-toggle,
+.is-typing .write-status,
+.is-typing .article .back {
+  opacity: 0 !important;
+  pointer-events: none;
+  transition: opacity 400ms ease;
+}
