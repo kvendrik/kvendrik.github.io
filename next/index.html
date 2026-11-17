@@ -75,12 +75,13 @@
 
       .wave {
         margin-bottom: 50px;
+        font-size: 2em;
+        line-height: 1.2;
       }
 
       .intro h1 {
         margin: 0;
         font: inherit;
-        font-weight: 450;
       }
 
       .tagline {
@@ -319,13 +320,20 @@
         }
       }
 
-      /* Figma-style selection: click the paragraph to select it, then tune it in the DialKit panel */
+      /* Figma-style selection: click a line to select it, then tune it in the DialKit panel */
       .bio {
         cursor: default;
       }
 
-      /* double-click to edit the text, like a Figma text layer */
-      .bio[contenteditable='true'] {
+      /* the name lines hug their text, like Figma text layers */
+      .wave,
+      .intro h1,
+      .tagline {
+        width: fit-content;
+      }
+
+      /* double-click to edit a line's text, like a Figma text layer */
+      .layer[contenteditable='true'] {
         outline: none;
         cursor: text;
         caret-color: #0d99ff;
@@ -356,6 +364,76 @@
       .selection i:nth-child(2) { top: -4px; right: -4px; }
       .selection i:nth-child(3) { bottom: -4px; left: -4px; }
       .selection i:nth-child(4) { bottom: -4px; right: -4px; }
+
+      /* The padding row has a small icon that splits it into Top, Left, Right and Bottom
+         sliders. The side rows fold open below it (an accordion, so height is animated). */
+      .dialkit-root .dialkit-panel-inner {
+        position: relative;
+      }
+
+      .dialkit-root .dialkit-slider-wrapper.pad-row {
+        margin-right: 42px;
+      }
+
+      .dialkit-root .dialkit-slider-wrapper.side {
+        height: 0;
+        margin-top: calc(-1 * var(--dial-row-gap));
+        opacity: 0;
+        overflow: hidden;
+        transition:
+          height 200ms var(--ease-out),
+          margin-top 200ms var(--ease-out),
+          opacity 150ms ease-out;
+      }
+
+      .sides-open .dialkit-root .dialkit-slider-wrapper.side {
+        height: var(--dial-row-height);
+        margin-top: 0;
+        opacity: 1;
+        transition:
+          height 250ms var(--ease-out),
+          margin-top 250ms var(--ease-out),
+          opacity 200ms 60ms ease-out;
+      }
+
+      .sides-toggle {
+        position: absolute;
+        top: 0;
+        right: 0;
+        display: grid;
+        place-items: center;
+        width: 36px;
+        height: var(--dial-row-height, 36px);
+        padding: 0;
+        border: 0;
+        border-radius: 8px;
+        background: #ebe9e4;
+        color: #8a867f;
+        cursor: pointer;
+        transition: background-color 150ms ease, color 150ms ease;
+      }
+
+      .sides-toggle:focus-visible {
+        outline: 2px solid #0d99ff;
+        outline-offset: 1px;
+      }
+
+      @media (hover: hover) and (pointer: fine) {
+        .sides-toggle:hover {
+          color: #353535;
+        }
+      }
+
+      .sides-open .sides-toggle {
+        background: #e0ddd7;
+        color: #353535;
+      }
+
+      @media (prefers-reduced-motion: reduce) {
+        .dialkit-root .dialkit-slider-wrapper.side {
+          transition: opacity 150ms ease-out;
+        }
+      }
 
       /* show only the slider from the DialKit panel: no card, no outline, very light grey */
       .dialkit-panel-header,
@@ -457,11 +535,11 @@
   <body>
     <main class="bio">
       <header class="intro">
-        <div class="wave" aria-hidden="true">👋</div>
-        <h1>Koen Vendrik</h1>
-        <div class="tagline">Building experiences at Shopify</div>
+        <div class="wave layer" aria-hidden="true">👋</div>
+        <h1 class="layer">Koen Vendrik</h1>
+        <div class="tagline layer">Building experiences at Shopify</div>
       </header>
-      <p>
+      <p class="layer">
         <span class="s">Hey, good <span id="time-of-day">day</span>—I'm Koen! </span><span class="s" id="weather">Greetings from
           <a class="amsterdam" href="https://maps.google.com/?q=Amsterdam">Amsterdam</a>! </span><span class="s">(Not Amsterdam, New York.) </span><span class="s">I'm a Staff Engineer at <a href="https://www.shopify.com">Shopify</a>, and lately I build AI agents, which is pretty wild for a 90s kid who grew up wanting KITT from Knight Rider. </span><span class="s">I've been coding since I was 15. </span><span class="s">If that sounds fun to you too, shoot me a message.</span>
       </p>
@@ -847,12 +925,14 @@
     <div class="selection" hidden aria-hidden="true"><i></i><i></i><i></i><i></i><span class="selection-size"></span></div>
 
     <script>
-      // Click the paragraph to select it (like Figma); the DialKit panel (dialkit.dev) then
-      // tunes whatever is selected. Click anywhere else or press Esc to deselect.
+      // Each line (the wave, the name, the tagline and the paragraph) is a layer: click one to
+      // select it (like Figma), and the DialKit panel (dialkit.dev) tunes its padding.
+      // Double-click edits its text. Click anywhere else or press Esc to deselect.
       (() => {
         const box = document.querySelector('.selection');
         const size = box.querySelector('.selection-size');
         let selected = null;
+        let editing = null;
         let frame = 0;
 
         const track = () => {
@@ -862,55 +942,125 @@
           frame = requestAnimationFrame(track);
         };
 
+        const stopEditing = () => {
+          if (!editing) return;
+          editing.contentEditable = 'false';
+          editing = null;
+          getSelection().removeAllRanges();
+        };
+
         const select = (el) => {
           if (el === selected) return;
+          stopEditing();
           cancelAnimationFrame(frame);
           selected = el;
           box.hidden = !el;
           document.documentElement.classList.toggle('has-selection', !!el);
           if (!el) return;
-          dial.setValue('padding', parseFloat(getComputedStyle(el).paddingTop) || 0);
+          read(el);
           track();
         };
 
         DialKit.createDialRoot({ position: 'bottom-right', theme: 'light' });
-        const dial = DialKit.createDialKit('Selection', { padding: [50, 0, 120, 1] });
-        dial.subscribe(({ padding }) => {
-          if (selected) selected.style.padding = `${padding}px`;
+        const SIDES = ['Top', 'Left', 'Right', 'Bottom'];
+        const dial = DialKit.createDialKit('Selection', {
+          Padding: [0, 0, 120, 1],
+          Top: [0, 0, 120, 1],
+          Left: [0, 0, 120, 1],
+          Right: [0, 0, 120, 1],
+          Bottom: [0, 0, 120, 1],
+          'Font size': [22, 10, 96, 1],
+          'Font weight': [300, 100, 900, 10],
         });
 
-        const bio = document.querySelector('.bio');
-        const editing = () => bio.isContentEditable;
-        const stopEditing = () => {
-          bio.contentEditable = 'false';
-          getSelection().removeAllRanges();
+        // Show the selected layer's current values in the panel.
+        let syncing = false;
+        let last = dial.getValues();
+        const read = (el) => {
+          const cs = getComputedStyle(el);
+          const px = (v) => Math.round(parseFloat(v) || 0);
+          const values = {
+            Padding: px(cs.paddingTop),
+            Top: px(cs.paddingTop),
+            Left: px(cs.paddingLeft),
+            Right: px(cs.paddingRight),
+            Bottom: px(cs.paddingBottom),
+            'Font size': px(cs.fontSize),
+            'Font weight': px(cs.fontWeight),
+          };
+          syncing = true;
+          dial.setValues(values);
+          syncing = false;
+          last = values;
         };
+
+        // The Padding slider sets all four sides; a side slider sets just that side.
+        dial.subscribe((values) => {
+          if (syncing || !selected) return (last = values);
+          const st = selected.style;
+          if (values.Padding !== last.Padding) {
+            st.padding = `${values.Padding}px`;
+            syncing = true;
+            dial.setValues(Object.fromEntries(SIDES.map((k) => [k, values.Padding])));
+            syncing = false;
+            values = dial.getValues();
+          } else {
+            for (const k of SIDES) if (values[k] !== last[k]) st[`padding${k}`] = `${values[k]}px`;
+          }
+          if (values['Font size'] !== last['Font size']) st.fontSize = `${values['Font size']}px`;
+          if (values['Font weight'] !== last['Font weight']) st.fontWeight = values['Font weight'];
+          last = values;
+        });
+
+        // The icon next to Padding folds the four side sliders open and closed.
+        const toggle = document.createElement('button');
+        toggle.className = 'sides-toggle';
+        toggle.type = 'button';
+        toggle.setAttribute('aria-label', 'Padding per side');
+        toggle.setAttribute('aria-expanded', 'false');
+        toggle.innerHTML =
+          '<svg width="14" height="14" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><path d="M4 1.5h6M4 12.5h6M1.5 4v6M12.5 4v6"/></svg>';
+        toggle.addEventListener('click', () => {
+          const open = document.documentElement.classList.toggle('sides-open');
+          toggle.setAttribute('aria-expanded', String(open));
+        });
+        const mount = () => {
+          const inner = document.querySelector('.dialkit-folder-inner');
+          if (!inner) return requestAnimationFrame(mount);
+          const rows = inner.querySelectorAll(':scope > .dialkit-slider-wrapper');
+          rows.forEach((row, i) => i >= 1 && i <= 4 && row.classList.add('side'));
+          rows[0].classList.add('pad-row');
+          rows[0].after(toggle);
+          // keep the icon beside the Padding row, outside the slider so it isn't dragged
+          toggle.style.top = `${rows[0].offsetTop}px`;
+        };
+        mount();
 
         document.addEventListener('click', (e) => {
           if (e.target.closest('[class*="dialkit"]')) return;
-          if (editing()) {
-            if (bio.contains(e.target)) {
-              e.preventDefault(); // while editing, links are just text
-              return;
-            }
-            stopEditing();
-          } else if (e.target.closest('a')) return; // links still just work
-          select(e.target.closest('.bio'));
+          if (editing?.contains(e.target)) {
+            e.preventDefault(); // while editing, links are just text
+            return;
+          }
+          if (!editing && e.target.closest('a')) return; // links still just work
+          select(e.target.closest('.layer'));
         });
 
         // Double-click enters text editing, keeping the word the browser just selected.
-        bio.addEventListener('dblclick', (e) => {
-          if (editing() || e.target.closest('a')) return;
-          select(bio);
-          bio.contentEditable = 'true';
-          bio.spellcheck = false;
-          bio.focus({ preventScroll: true });
+        document.addEventListener('dblclick', (e) => {
+          const layer = e.target.closest('.layer');
+          if (!layer || layer === editing || e.target.closest('a')) return;
+          select(layer);
+          editing = layer;
+          layer.contentEditable = 'true';
+          layer.spellcheck = false;
+          layer.focus({ preventScroll: true });
         });
 
         // Esc leaves editing first, then clears the selection.
         addEventListener('keydown', (e) => {
           if (e.key !== 'Escape') return;
-          if (editing()) stopEditing();
+          if (editing) stopEditing();
           else select(null);
         });
       })();
