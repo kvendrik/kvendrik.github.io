@@ -26,7 +26,7 @@ black `#111110`, and the font is Allo.
   - Links and buttons select instead of firing while editing.
   - To limit selection to chosen elements, set `window.EDIT_SELECT = 'layers'` before
     `controls.js` and mark them `class="layer"`.
-- **A controls panel** in the bottom-right corner, collapsed by default:
+- **A controls panel**, built on Josh Puckett's [DialKit](https://www.dialkit.dev/), in the bottom-right corner, collapsed by default:
   - Padding and Margin, each with an icon that splits it into top, left, right and bottom
     sliders. When the sides differ, the panel opens them and says "mixed".
   - Font size and Font weight.
@@ -113,7 +113,9 @@ An **article edit**, from `editor.js`:
 
 ## Setting it up on a site
 
-1. **Get DialKit.** It's MIT, by Josh Puckett: `npm pack dialkit`, then copy
+1. **Get [DialKit](https://www.dialkit.dev/)** by Josh Puckett (MIT, source on
+   [GitHub](https://github.com/joshpuckett/dialkit)). It's the slider panel the controls are
+   built on. Run `npm pack dialkit`, then copy
    `dist/vanilla/browser.global.js` and `dist/vanilla/styles.css` into `vendor/dialkit/`.
    Keep its LICENSE alongside.
 2. **Copy the files** from `assets/` next to the page: `controls.js`, `controls.css`,
