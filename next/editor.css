@@ -22,14 +22,6 @@
   font-variation-settings: 'ROND' 100;
 }
 
-.draft-note::before {
-  content: '';
-  width: 6px;
-  height: 6px;
-  border-radius: 50%;
-  background: #e8875b;
-}
-
 .has-draft .draft-note {
   display: inline-flex;
 }
