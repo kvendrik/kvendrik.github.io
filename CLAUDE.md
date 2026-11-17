@@ -63,7 +63,9 @@ untouched.
   page top and 150px from the black section. Article titles in the list are 25px apart, with
   no dividers or dates. Article paragraphs are 1.8em apart.
 - **Links on home** (Amsterdam, Shopify): a hand-drawn stroke instead of a ruled line, a
-  variation of the pen underline in ink at 70%. It's a background image with
+  variation of the pen underline in ink at 70%. Every link gets its *own* stroke
+  (`data-stroke="2"`, `"3"`, default 1) so they look drawn one by one; add a new variation
+  for new links rather than reusing one. It's a background image with
   `box-decoration-break: clone`, so it follows wrapped lines.
 - **Pen underline width:** it sits under a title's *last line* only, as wide as that line.
   `sizePen` in `pen.js` measures the text and sets `--pen-left` and `--pen-width`.
