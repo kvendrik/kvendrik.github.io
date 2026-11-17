@@ -83,15 +83,16 @@
         flex: 1;
         min-width: 0;
         opacity: 0.9;
-        text-decoration-thickness: 1px;
+        text-decoration: underline 1px transparent;
         text-underline-offset: 0.2em;
+        transition: text-decoration-color 200ms ease;
         transition: opacity 150ms ease;
       }
 
       /* hovering an article shows its underline, the same thin line as the links above */
       @media (hover: hover) and (pointer: fine) {
         .articles a:hover .title {
-          text-decoration-line: underline;
+          text-decoration-color: currentColor;
         }
       }
 
