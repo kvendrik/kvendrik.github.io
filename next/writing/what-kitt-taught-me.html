@@ -30,7 +30,7 @@
         font-variation-settings: 'ROND' 100;
         color: var(--ink);
         background: var(--black);
-        font-size: clamp(18px, 2.2vw, 22px);
+        font-size: 20px;
         line-height: 1.6;
       }
 
@@ -69,10 +69,12 @@
         }
       }
 
+      /* just an arrow, with a comfortable hit area around it */
       .back {
         display: inline-flex;
         align-items: center;
-        gap: 0.4em;
+        padding: 10px;
+        margin: -10px;
         color: var(--muted);
         text-decoration: none;
         transition: color 150ms ease;
@@ -98,8 +100,7 @@
 
       h1 {
         margin: 0 0 0.6em;
-        font-size: 1.9em;
-        font-weight: 300;
+        font: inherit;
         line-height: 1.2;
         text-wrap: balance;
       }
@@ -110,7 +111,7 @@
       }
 
       .body p {
-        margin: 0 0 1.2em;
+        margin: 0 0 1.8em;
         text-wrap: pretty;
       }
 
@@ -124,8 +125,6 @@
         margin: 2em 0;
         padding: 0 0 0 1em;
         border-left: 2px solid rgb(53 53 53 / 0.15);
-        font-size: 1.25em;
-        line-height: 1.4;
       }
 
       .body blockquote p {
@@ -208,85 +207,88 @@
         }
       }
     </style>
+    <link rel="stylesheet" href="../vendor/dialkit/styles.css" />
+    <link rel="stylesheet" href="../controls.css" />
   </head>
   <body>
     <!-- A design mockup: the article text is placeholder writing, not a published piece. -->
-    <article class="article">
+    <article class="article layer">
       <div class="column">
-        <a class="back" href="../">
-          <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M13 8H3M7 4 3 8l4 4" /></svg>
-          Koen Vendrik
+        <a class="back" href="../" aria-label="Back to Koen Vendrik">
+          <svg width="20" height="20" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M13 8H3M7 4 3 8l4 4" /></svg>
         </a>
 
         <header>
-          <h1>What KITT taught me about building agents</h1>
-          <p class="meta"><time datetime="2026-11">November 2026</time> · 4 min read</p>
+          <h1 class="layer">What KITT taught me about building agents</h1>
+          <p class="meta layer"><time datetime="2026-11">November 2026</time> · Amsterdam</p>
         </header>
 
         <div class="body">
-          <p>
+          <p class="layer">
             When I was a kid, the coolest thing on television wasn't a superhero. It was a car. A black Trans Am with a red
             light sweeping across its hood and a voice that talked back. KITT could drive itself, crack a dry joke, and above
             all, it knew Michael.
           </p>
-          <p>
+          <p class="layer">
             I wanted one so badly. Not the car, really. I wanted the friend that lived inside it.
           </p>
-          <p>
+          <p class="layer">
             These days I spend most of my time building AI agents at Shopify. Somewhere along the way I noticed that a lot of
             what I believe about good agents, I first learned from a talking car.
           </p>
 
-          <h2>It knew when to talk</h2>
-          <p>
+          <h2 class="layer">It knew when to talk</h2>
+          <p class="layer">
             KITT never narrated everything it was doing. It spoke up when it mattered: a warning, a question, a joke at exactly
             the right moment. The rest of the time it just drove. The agents I like best work the same way. They do the work
             quietly and only interrupt you when they actually need you.
           </p>
 
-          <h2>It told you what it was about to do</h2>
-          <p>
+          <h2 class="layer">It told you what it was about to do</h2>
+          <p class="layer">
             "Michael, I'm going to use Turbo Boost." You always knew what was coming. That, more than any gadget, is what made it
             feel safe. When an agent is about to do something that matters, it should say so plainly, and leave you a moment to
             say no.
           </p>
-          <blockquote>
+          <blockquote class="layer">
             <p>Trust isn't built by being clever. It's built by being predictable.</p>
           </blockquote>
 
-          <h2>It had a personality, not a script</h2>
-          <p>
+          <h2 class="layer">It had a personality, not a script</h2>
+          <p class="layer">
             KITT was a little vain, a little sarcastic and completely loyal. Those quirks made it feel like someone rather than
             something. Personality isn't decoration. A consistent voice is how people learn what to expect, and what to expect
             is how they learn to rely on it.
           </p>
 
-          <h2>It was on your side</h2>
-          <p>
+          <h2 class="layer">It was on your side</h2>
+          <p class="layer">
             Above everything else, KITT's job was Michael. Not the mission, not the car, not looking impressive. A good agent
             makes the person it works for more capable, not more dependent.
           </p>
 
-          <p>
+          <p class="layer">
             I still don't have a car that talks back. But some days, when an agent quietly finishes a task and asks what's next,
             I'm that 90s kid again, watching the red light sweep across the hood.
           </p>
 
-          <p class="signoff">— Koen</p>
+          <p class="signoff layer">— Koen</p>
         </div>
       </div>
     </article>
 
-    <section class="more" aria-labelledby="more-title">
+    <section class="more layer" aria-labelledby="more-title">
       <div class="column">
-        <h2 id="more-title">More writing</h2>
+        <h2 id="more-title" class="layer">More writing</h2>
         <ul class="articles">
-          <li><a href="../"><span class="title">Ten years of helping people turn passion into work</span></a></li>
-          <li><a href="../"><span class="title">Designing for software that talks back</span></a></li>
-          <li><a href="../"><span class="title">Notes on taste in the age of AI</span></a></li>
-          <li><a href="../"><span class="title">The dial-up sound I still hear</span></a></li>
+          <li><a href="#"><span class="title layer">Ten years of helping people turn passion into work</span></a></li>
+          <li><a href="#"><span class="title layer">Designing for software that talks back</span></a></li>
+          <li><a href="#"><span class="title layer">Notes on taste in the age of AI</span></a></li>
+          <li><a href="#"><span class="title layer">The dial-up sound I still hear</span></a></li>
         </ul>
       </div>
     </section>
+    <script src="../vendor/dialkit/browser.global.js"></script>
+    <script src="../controls.js"></script>
   </body>
 </html>

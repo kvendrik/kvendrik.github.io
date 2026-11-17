@@ -1,0 +1,211 @@
+/* Figma-style controls, shared by the home page and the article pages: click a .layer to select
+   it, tune it in the DialKit panel (dialkit.dev) in the bottom right, double-click to edit it. */
+
+/* double-click to edit a line's text, like a Figma text layer */
+.layer[contenteditable='true'] {
+  outline: none;
+  cursor: text;
+  caret-color: #0d99ff;
+}
+
+.selection {
+  position: fixed;
+  z-index: 7;
+  box-sizing: border-box;
+  border: 1px solid #0d99ff;
+  pointer-events: none;
+}
+
+.selection[hidden] {
+  display: none;
+}
+
+.selection i {
+  position: absolute;
+  width: 7px;
+  height: 7px;
+  box-sizing: border-box;
+  border: 1px solid #0d99ff;
+  background: #fff;
+}
+
+.selection i:nth-child(1) { top: -4px; left: -4px; }
+.selection i:nth-child(2) { top: -4px; right: -4px; }
+.selection i:nth-child(3) { bottom: -4px; left: -4px; }
+.selection i:nth-child(4) { bottom: -4px; right: -4px; }
+
+/* The padding row has a small icon that splits it into Top, Left, Right and Bottom
+   sliders. The side rows fold open below it (an accordion, so height is animated). */
+.dialkit-root .dialkit-panel-inner {
+  position: relative;
+}
+
+.dialkit-root .dialkit-slider-wrapper.pad-row {
+  margin-right: 38px; /* the 36px icon button plus a 2px gap */
+}
+
+/* the slider and the icon button read as one split control: square where they meet */
+.dialkit-root .pad-row .dialkit-slider {
+  border-top-right-radius: 0;
+  border-bottom-right-radius: 0;
+}
+
+.dialkit-root .sides-toggle {
+  border-top-left-radius: 0;
+  border-bottom-left-radius: 0;
+}
+
+.dialkit-root .dialkit-slider-wrapper.side {
+  height: 0;
+  margin-top: calc(-1 * var(--dial-row-gap));
+  opacity: 0;
+  overflow: hidden;
+  transition:
+    height 200ms var(--ease-out),
+    margin-top 200ms var(--ease-out),
+    opacity 150ms ease-out;
+}
+
+.sides-open .dialkit-root .dialkit-slider-wrapper.side {
+  height: var(--dial-row-height);
+  margin-top: 0;
+  opacity: 1;
+  transition:
+    height 250ms var(--ease-out),
+    margin-top 250ms var(--ease-out),
+    opacity 200ms 60ms ease-out;
+}
+
+.sides-toggle {
+  position: absolute;
+  top: 0;
+  right: 0;
+  display: grid;
+  place-items: center;
+  width: 36px;
+  height: var(--dial-row-height, 36px);
+  padding: 0;
+  border: 0;
+  border-radius: var(--dial-radius, 8px); /* same rounding as the sliders */
+  background: #ebe9e4;
+  color: #8a867f;
+  cursor: pointer;
+  transition: background-color 150ms ease, color 150ms ease;
+}
+
+.sides-toggle:focus-visible {
+  outline: 2px solid #0d99ff;
+  outline-offset: 1px;
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .sides-toggle:hover {
+    color: #353535;
+  }
+}
+
+.sides-open .sides-toggle {
+  background: #e0ddd7;
+  color: #353535;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .dialkit-root .dialkit-slider-wrapper.side {
+    transition: opacity 150ms ease-out;
+  }
+}
+
+/* show only the slider from the DialKit panel: no card, no outline, very light grey */
+.dialkit-panel-header,
+.dialkit-versions {
+  display: none !important;
+}
+
+.dialkit-root .dialkit-panel-inner {
+  padding: 0 !important;
+  border: 0;
+  background: none !important;
+  box-shadow: none !important;
+  backdrop-filter: none;
+  -webkit-backdrop-filter: none;
+}
+
+/* The slider only shows while something is selected. It rises up from the bottom with a
+   touch of blur and settles; it leaves faster than it arrives. */
+.dialkit-panel {
+  opacity: 0;
+  translate: 0 16px;
+  scale: 0.96;
+  filter: blur(4px);
+  transform-origin: bottom center;
+  visibility: hidden;
+  pointer-events: none;
+  transition:
+    opacity 160ms ease-out,
+    translate 160ms ease-out,
+    scale 160ms ease-out,
+    filter 160ms ease-out,
+    visibility 0s 160ms;
+}
+
+.has-selection .dialkit-panel {
+  opacity: 1;
+  translate: 0 0;
+  scale: 1;
+  filter: blur(0);
+  visibility: visible;
+  pointer-events: auto;
+  transition:
+    opacity 300ms var(--ease-out),
+    translate 300ms var(--ease-out),
+    scale 300ms var(--ease-out),
+    filter 300ms var(--ease-out);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .dialkit-panel,
+  .has-selection .dialkit-panel {
+    translate: none;
+    scale: none;
+    filter: none;
+  }
+}
+
+.dialkit-root .dialkit-slider {
+  background: #ebe9e4;
+  outline: none !important;
+  box-shadow: none !important;
+}
+
+.dialkit-root .dialkit-slider-fill,
+.dialkit-root .dialkit-slider-active .dialkit-slider-fill,
+.dialkit-root .dialkit-slider:focus-visible .dialkit-slider-fill {
+  background: #e0ddd7;
+}
+
+.dialkit-root .dialkit-slider-active .dialkit-slider-hashmark {
+  background: rgb(0 0 0 / 0.08);
+}
+
+.dialkit-root .dialkit-slider-handle {
+  background: #b5b1aa;
+}
+
+.dialkit-root .dialkit-slider-label,
+.dialkit-root .dialkit-slider-value {
+  color: #8a867f !important;
+}
+
+.selection-size {
+  position: absolute;
+  top: calc(100% + 8px);
+  left: 50%;
+  translate: -50% 0;
+  padding: 2px 5px;
+  border-radius: 3px;
+  background: #0d99ff;
+  color: #fff;
+  font: 500 11px/1.4 system-ui, sans-serif;
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}

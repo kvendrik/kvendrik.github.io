@@ -47,7 +47,7 @@
       .writing {
         background: #111110;
         color: #f5f2ea;
-        font-size: clamp(18px, 2.2vw, 22px);
+        font-size: 20px;
         line-height: 1.55;
         padding: 120px 24px 160px;
       }
@@ -127,7 +127,7 @@
         max-width: 32em;
         margin: 0;
         padding: 50px;
-        font-size: clamp(18px, 2.2vw, 22px);
+        font-size: 20px;
         line-height: 1.55;
         text-align: left;
         text-wrap: pretty;
@@ -420,12 +420,6 @@
         width: fit-content;
       }
 
-      /* double-click to edit a line's text, like a Figma text layer */
-      .layer[contenteditable='true'] {
-        outline: none;
-        cursor: text;
-        caret-color: #0d99ff;
-      }
 
       /* selected text: a light tint of the selection blue, with the text keeping its own color */
       ::selection {
@@ -433,209 +427,9 @@
         color: inherit;
       }
 
-      .selection {
-        position: fixed;
-        z-index: 7;
-        box-sizing: border-box;
-        border: 1px solid #0d99ff;
-        pointer-events: none;
-      }
-
-      .selection[hidden] {
-        display: none;
-      }
-
-      .selection i {
-        position: absolute;
-        width: 7px;
-        height: 7px;
-        box-sizing: border-box;
-        border: 1px solid #0d99ff;
-        background: #fff;
-      }
-
-      .selection i:nth-child(1) { top: -4px; left: -4px; }
-      .selection i:nth-child(2) { top: -4px; right: -4px; }
-      .selection i:nth-child(3) { bottom: -4px; left: -4px; }
-      .selection i:nth-child(4) { bottom: -4px; right: -4px; }
-
-      /* The padding row has a small icon that splits it into Top, Left, Right and Bottom
-         sliders. The side rows fold open below it (an accordion, so height is animated). */
-      .dialkit-root .dialkit-panel-inner {
-        position: relative;
-      }
-
-      .dialkit-root .dialkit-slider-wrapper.pad-row {
-        margin-right: 38px; /* the 36px icon button plus a 2px gap */
-      }
-
-      /* the slider and the icon button read as one split control: square where they meet */
-      .dialkit-root .pad-row .dialkit-slider {
-        border-top-right-radius: 0;
-        border-bottom-right-radius: 0;
-      }
-
-      .dialkit-root .sides-toggle {
-        border-top-left-radius: 0;
-        border-bottom-left-radius: 0;
-      }
-
-      .dialkit-root .dialkit-slider-wrapper.side {
-        height: 0;
-        margin-top: calc(-1 * var(--dial-row-gap));
-        opacity: 0;
-        overflow: hidden;
-        transition:
-          height 200ms var(--ease-out),
-          margin-top 200ms var(--ease-out),
-          opacity 150ms ease-out;
-      }
-
-      .sides-open .dialkit-root .dialkit-slider-wrapper.side {
-        height: var(--dial-row-height);
-        margin-top: 0;
-        opacity: 1;
-        transition:
-          height 250ms var(--ease-out),
-          margin-top 250ms var(--ease-out),
-          opacity 200ms 60ms ease-out;
-      }
-
-      .sides-toggle {
-        position: absolute;
-        top: 0;
-        right: 0;
-        display: grid;
-        place-items: center;
-        width: 36px;
-        height: var(--dial-row-height, 36px);
-        padding: 0;
-        border: 0;
-        border-radius: var(--dial-radius, 8px); /* same rounding as the sliders */
-        background: #ebe9e4;
-        color: #8a867f;
-        cursor: pointer;
-        transition: background-color 150ms ease, color 150ms ease;
-      }
-
-      .sides-toggle:focus-visible {
-        outline: 2px solid #0d99ff;
-        outline-offset: 1px;
-      }
-
-      @media (hover: hover) and (pointer: fine) {
-        .sides-toggle:hover {
-          color: #353535;
-        }
-      }
-
-      .sides-open .sides-toggle {
-        background: #e0ddd7;
-        color: #353535;
-      }
-
-      @media (prefers-reduced-motion: reduce) {
-        .dialkit-root .dialkit-slider-wrapper.side {
-          transition: opacity 150ms ease-out;
-        }
-      }
-
-      /* show only the slider from the DialKit panel: no card, no outline, very light grey */
-      .dialkit-panel-header,
-      .dialkit-versions {
-        display: none !important;
-      }
-
-      .dialkit-root .dialkit-panel-inner {
-        padding: 0 !important;
-        border: 0;
-        background: none !important;
-        box-shadow: none !important;
-        backdrop-filter: none;
-        -webkit-backdrop-filter: none;
-      }
-
-      /* The slider only shows while something is selected. It rises up from the bottom with a
-         touch of blur and settles; it leaves faster than it arrives. */
-      .dialkit-panel {
-        opacity: 0;
-        translate: 0 16px;
-        scale: 0.96;
-        filter: blur(4px);
-        transform-origin: bottom center;
-        visibility: hidden;
-        pointer-events: none;
-        transition:
-          opacity 160ms ease-out,
-          translate 160ms ease-out,
-          scale 160ms ease-out,
-          filter 160ms ease-out,
-          visibility 0s 160ms;
-      }
-
-      .has-selection .dialkit-panel {
-        opacity: 1;
-        translate: 0 0;
-        scale: 1;
-        filter: blur(0);
-        visibility: visible;
-        pointer-events: auto;
-        transition:
-          opacity 300ms var(--ease-out),
-          translate 300ms var(--ease-out),
-          scale 300ms var(--ease-out),
-          filter 300ms var(--ease-out);
-      }
-
-      @media (prefers-reduced-motion: reduce) {
-        .dialkit-panel,
-        .has-selection .dialkit-panel {
-          translate: none;
-          scale: none;
-          filter: none;
-        }
-      }
-
-      .dialkit-root .dialkit-slider {
-        background: #ebe9e4;
-        outline: none !important;
-        box-shadow: none !important;
-      }
-
-      .dialkit-root .dialkit-slider-fill,
-      .dialkit-root .dialkit-slider-active .dialkit-slider-fill,
-      .dialkit-root .dialkit-slider:focus-visible .dialkit-slider-fill {
-        background: #e0ddd7;
-      }
-
-      .dialkit-root .dialkit-slider-active .dialkit-slider-hashmark {
-        background: rgb(0 0 0 / 0.08);
-      }
-
-      .dialkit-root .dialkit-slider-handle {
-        background: #b5b1aa;
-      }
-
-      .dialkit-root .dialkit-slider-label,
-      .dialkit-root .dialkit-slider-value {
-        color: #8a867f !important;
-      }
-
-      .selection-size {
-        position: absolute;
-        top: calc(100% + 8px);
-        left: 50%;
-        translate: -50% 0;
-        padding: 2px 5px;
-        border-radius: 3px;
-        background: #0d99ff;
-        color: #fff;
-        font: 500 11px/1.4 system-ui, sans-serif;
-        font-variant-numeric: tabular-nums;
-        white-space: nowrap;
-      }
     </style>
     <link rel="stylesheet" href="vendor/dialkit/styles.css" />
+    <link rel="stylesheet" href="controls.css" />
   </head>
   <body>
     <div class="hero">
@@ -1039,155 +833,7 @@
       );
     </script>
     <script src="vendor/dialkit/browser.global.js"></script>
-    <div class="selection" hidden aria-hidden="true"><i></i><i></i><i></i><i></i><span class="selection-size"></span></div>
-
-    <script>
-      // Each line (the wave, the name, the tagline, the paragraph, and in Writing the section, its
-      // heading and each title) is a layer: click one to
-      // select it (like Figma), and the DialKit panel (dialkit.dev) tunes its padding.
-      // Double-click edits its text. Click anywhere else or press Esc to deselect.
-      (() => {
-        const box = document.querySelector('.selection');
-        const size = box.querySelector('.selection-size');
-        let selected = null;
-        let editing = null;
-        let frame = 0;
-
-        const track = () => {
-          const r = selected.getBoundingClientRect();
-          Object.assign(box.style, { left: `${r.left}px`, top: `${r.top}px`, width: `${r.width}px`, height: `${r.height}px` });
-          size.textContent = `${Math.round(r.width)} × ${Math.round(r.height)}`;
-          frame = requestAnimationFrame(track);
-        };
-
-        const stopEditing = () => {
-          if (!editing) return;
-          editing.contentEditable = 'false';
-          editing = null;
-          getSelection().removeAllRanges();
-        };
-
-        const select = (el) => {
-          if (el === selected) return;
-          stopEditing();
-          cancelAnimationFrame(frame);
-          selected = el;
-          box.hidden = !el;
-          document.documentElement.classList.toggle('has-selection', !!el);
-          if (!el) return;
-          read(el);
-          track();
-        };
-
-        DialKit.createDialRoot({ position: 'bottom-right', theme: 'light' });
-        const SIDES = ['Top', 'Left', 'Right', 'Bottom'];
-        const dial = DialKit.createDialKit('Selection', {
-          Padding: [0, 0, 120, 1],
-          Top: [0, 0, 120, 1],
-          Left: [0, 0, 120, 1],
-          Right: [0, 0, 120, 1],
-          Bottom: [0, 0, 120, 1],
-          'Font size': [22, 10, 96, 1],
-          'Font weight': [300, 100, 900, 10],
-        });
-
-        // Show the selected layer's current values in the panel.
-        let syncing = false;
-        let last = dial.getValues();
-        const read = (el) => {
-          const cs = getComputedStyle(el);
-          const px = (v) => Math.round(parseFloat(v) || 0);
-          const values = {
-            Padding: px(cs.paddingTop),
-            Top: px(cs.paddingTop),
-            Left: px(cs.paddingLeft),
-            Right: px(cs.paddingRight),
-            Bottom: px(cs.paddingBottom),
-            'Font size': px(cs.fontSize),
-            'Font weight': px(cs.fontWeight),
-          };
-          syncing = true;
-          dial.setValues(values);
-          syncing = false;
-          last = values;
-        };
-
-        // The Padding slider sets all four sides; a side slider sets just that side.
-        dial.subscribe((values) => {
-          if (syncing || !selected) return (last = values);
-          const st = selected.style;
-          if (values.Padding !== last.Padding) {
-            st.padding = `${values.Padding}px`;
-            syncing = true;
-            dial.setValues(Object.fromEntries(SIDES.map((k) => [k, values.Padding])));
-            syncing = false;
-            values = dial.getValues();
-          } else {
-            for (const k of SIDES) if (values[k] !== last[k]) st[`padding${k}`] = `${values[k]}px`;
-          }
-          if (values['Font size'] !== last['Font size']) st.fontSize = `${values['Font size']}px`;
-          if (values['Font weight'] !== last['Font weight']) st.fontWeight = values['Font weight'];
-          last = values;
-        });
-
-        // The icon next to Padding folds the four side sliders open and closed.
-        const toggle = document.createElement('button');
-        toggle.className = 'sides-toggle';
-        toggle.type = 'button';
-        toggle.setAttribute('aria-label', 'Padding per side');
-        toggle.setAttribute('aria-expanded', 'false');
-        toggle.innerHTML =
-          '<svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.25">' +
-          '<rect x="1.75" y="1.75" width="12.5" height="12.5" rx="3.25" stroke-opacity="0.5" pathLength="48" stroke-dasharray="1.5 1.5" stroke-dashoffset="0.75" stroke-linecap="round"/>' +
-          '<rect x="5.5" y="5.5" width="5" height="5" rx="1.25"/></svg>';
-        toggle.addEventListener('click', () => {
-          const open = document.documentElement.classList.toggle('sides-open');
-          toggle.setAttribute('aria-expanded', String(open));
-        });
-        const mount = () => {
-          const inner = document.querySelector('.dialkit-folder-inner');
-          if (!inner) return requestAnimationFrame(mount);
-          const rows = inner.querySelectorAll(':scope > .dialkit-slider-wrapper');
-          rows.forEach((row, i) => i >= 1 && i <= 4 && row.classList.add('side'));
-          rows[0].classList.add('pad-row');
-          rows[0].after(toggle);
-          // keep the icon beside the Padding row, outside the slider so it isn't dragged
-          toggle.style.top = `${rows[0].offsetTop}px`;
-        };
-        mount();
-
-        document.addEventListener('click', (e) => {
-          if (e.target.closest('[class*="dialkit"]')) return;
-          if (editing?.contains(e.target)) {
-            e.preventDefault(); // while editing, links are just text
-            return;
-          }
-          const link = e.target.closest('a');
-          if (link?.getAttribute('href') === '#') e.preventDefault(); // placeholder links just select
-          else if (!editing && link) return; // real links still just work
-          select(e.target.closest('.layer'));
-        });
-
-        // Double-click enters text editing, keeping the word the browser just selected.
-        document.addEventListener('dblclick', (e) => {
-          const layer = e.target.closest('.layer');
-          const link = e.target.closest('a');
-          if (!layer || layer === editing || (link && link.getAttribute('href') !== '#')) return;
-          select(layer);
-          editing = layer;
-          layer.contentEditable = 'true';
-          layer.spellcheck = false;
-          layer.focus({ preventScroll: true });
-        });
-
-        // Esc leaves editing first, then clears the selection.
-        addEventListener('keydown', (e) => {
-          if (e.key !== 'Escape') return;
-          if (editing) stopEditing();
-          else select(null);
-        });
-      })();
-    </script>
+    <script src="controls.js"></script>
     <script>
       // The further you scroll down, the further back the cream intro goes (down to 85%) and the
       // closer the Writing content comes (from 85% up to full size). Driven by scroll position, eased per frame so it feels smooth.
