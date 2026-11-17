@@ -44,8 +44,8 @@
   // Padding and Margin each have an "all sides" slider plus four side sliders.
   const SIDES = ['Top', 'Left', 'Right', 'Bottom'];
   const GROUPS = [
-    { name: 'Padding', prop: 'padding', max: 120 },
-    { name: 'Margin', prop: 'margin', max: 200 },
+    { name: 'Padding', prop: 'padding', max: 300 },
+    { name: 'Margin', prop: 'margin', max: 300 },
   ];
   const sideKey = (g, side) => `${g.name} ${side.toLowerCase()}`;
   const config = {};
@@ -64,14 +64,20 @@
     const cs = getComputedStyle(el);
     const px = (v) => Math.round(parseFloat(v) || 0);
     const values = { 'Font size': px(cs.fontSize), 'Font weight': px(cs.fontWeight) };
+    const mixed = {};
     for (const g of GROUPS) {
-      values[g.name] = px(cs[`${g.prop}Top`]);
-      for (const side of SIDES) values[sideKey(g, side)] = px(cs[`${g.prop}${side}`]);
+      const sides = SIDES.map((side) => px(cs[`${g.prop}${side}`]));
+      SIDES.forEach((side, i) => (values[sideKey(g, side)] = sides[i]));
+      // all four the same: the main slider shows that value; mixed: it shows the largest side
+      mixed[g.name] = new Set(sides).size > 1;
+      values[g.name] = Math.max(...sides);
     }
     syncing = true;
     dial.setValues(values);
     syncing = false;
     last = values;
+    // when the sides differ, open the side sliders so the real values are visible
+    for (const g of GROUPS) g.show?.(mixed[g.name]);
   };
 
   // An "all sides" slider sets all four sides; a side slider sets just that side.
@@ -81,6 +87,7 @@
     for (const g of GROUPS) {
       if (values[g.name] !== last[g.name]) {
         st[g.prop] = `${values[g.name]}px`;
+        g.show?.(false);
         syncing = true;
         dial.setValues(Object.fromEntries(SIDES.map((side) => [sideKey(g, side), values[g.name]])));
         syncing = false;
@@ -90,6 +97,7 @@
           const k = sideKey(g, side);
           if (values[k] !== last[k]) st[`${g.prop}${side}`] = `${values[k]}px`;
         }
+        g.show?.(new Set(SIDES.map((side) => values[sideKey(g, side)])).size > 1);
       }
     }
     if (values['Font size'] !== last['Font size']) st.fontSize = `${values['Font size']}px`;
@@ -118,11 +126,18 @@
       toggle.setAttribute('aria-label', `${g.name} per side`);
       toggle.setAttribute('aria-expanded', 'false');
       toggle.innerHTML = ICON;
-      toggle.addEventListener('click', () => {
-        const open = toggle.classList.toggle('is-open');
+      const labelEl = row.querySelector('.dialkit-slider-label');
+      const setOpen = (open) => {
+        toggle.classList.toggle('is-open', open);
         toggle.setAttribute('aria-expanded', String(open));
         sides.forEach((r) => r.classList.toggle('open', open));
-      });
+      };
+      toggle.addEventListener('click', () => setOpen(!toggle.classList.contains('is-open')));
+      // on selecting a layer: mark the main slider "mixed" and open the sides when they differ
+      g.show = (isMixed) => {
+        labelEl.textContent = isMixed ? `${g.name} · mixed` : g.name;
+        if (isMixed) setOpen(true);
+      };
       row.append(toggle);
     }
   };
