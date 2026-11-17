@@ -78,6 +78,7 @@
       .articles .title {
         flex: 1;
         min-width: 0;
+        opacity: 0.8;
         transition: opacity 150ms ease;
       }
 
@@ -91,6 +92,10 @@
       @media (hover: hover) and (pointer: fine) {
         .articles:has(a:hover) a:not(:hover) .title {
           opacity: 0.45;
+        }
+
+        .articles a:hover .title {
+          opacity: 1;
         }
       }
 
