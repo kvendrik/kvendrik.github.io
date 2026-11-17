@@ -41,16 +41,21 @@
   };
 
   DialKit.createDialRoot({ position: 'bottom-right', theme: 'light' });
+  // Padding and Margin each have an "all sides" slider plus four side sliders.
   const SIDES = ['Top', 'Left', 'Right', 'Bottom'];
-  const dial = DialKit.createDialKit('Selection', {
-    Padding: [0, 0, 120, 1],
-    Top: [0, 0, 120, 1],
-    Left: [0, 0, 120, 1],
-    Right: [0, 0, 120, 1],
-    Bottom: [0, 0, 120, 1],
-    'Font size': [20, 10, 96, 1],
-    'Font weight': [300, 100, 900, 10],
-  });
+  const GROUPS = [
+    { name: 'Padding', prop: 'padding', max: 120 },
+    { name: 'Margin', prop: 'margin', max: 200 },
+  ];
+  const sideKey = (g, side) => `${g.name} ${side.toLowerCase()}`;
+  const config = {};
+  for (const g of GROUPS) {
+    config[g.name] = [0, 0, g.max, 1];
+    for (const side of SIDES) config[sideKey(g, side)] = [0, 0, g.max, 1];
+  }
+  config['Font size'] = [20, 10, 96, 1];
+  config['Font weight'] = [300, 100, 900, 10];
+  const dial = DialKit.createDialKit('Selection', config);
 
   // Show the selected layer's current values in the panel.
   let syncing = false;
@@ -58,62 +63,68 @@
   const read = (el) => {
     const cs = getComputedStyle(el);
     const px = (v) => Math.round(parseFloat(v) || 0);
-    const values = {
-      Padding: px(cs.paddingTop),
-      Top: px(cs.paddingTop),
-      Left: px(cs.paddingLeft),
-      Right: px(cs.paddingRight),
-      Bottom: px(cs.paddingBottom),
-      'Font size': px(cs.fontSize),
-      'Font weight': px(cs.fontWeight),
-    };
+    const values = { 'Font size': px(cs.fontSize), 'Font weight': px(cs.fontWeight) };
+    for (const g of GROUPS) {
+      values[g.name] = px(cs[`${g.prop}Top`]);
+      for (const side of SIDES) values[sideKey(g, side)] = px(cs[`${g.prop}${side}`]);
+    }
     syncing = true;
     dial.setValues(values);
     syncing = false;
     last = values;
   };
 
-  // The Padding slider sets all four sides; a side slider sets just that side.
+  // An "all sides" slider sets all four sides; a side slider sets just that side.
   dial.subscribe((values) => {
     if (syncing || !selected) return (last = values);
     const st = selected.style;
-    if (values.Padding !== last.Padding) {
-      st.padding = `${values.Padding}px`;
-      syncing = true;
-      dial.setValues(Object.fromEntries(SIDES.map((k) => [k, values.Padding])));
-      syncing = false;
-      values = dial.getValues();
-    } else {
-      for (const k of SIDES) if (values[k] !== last[k]) st[`padding${k}`] = `${values[k]}px`;
+    for (const g of GROUPS) {
+      if (values[g.name] !== last[g.name]) {
+        st[g.prop] = `${values[g.name]}px`;
+        syncing = true;
+        dial.setValues(Object.fromEntries(SIDES.map((side) => [sideKey(g, side), values[g.name]])));
+        syncing = false;
+        values = dial.getValues();
+      } else {
+        for (const side of SIDES) {
+          const k = sideKey(g, side);
+          if (values[k] !== last[k]) st[`${g.prop}${side}`] = `${values[k]}px`;
+        }
+      }
     }
     if (values['Font size'] !== last['Font size']) st.fontSize = `${values['Font size']}px`;
     if (values['Font weight'] !== last['Font weight']) st.fontWeight = values['Font weight'];
     last = values;
   });
 
-  // The icon next to Padding folds the four side sliders open and closed.
-  const toggle = document.createElement('button');
-  toggle.className = 'sides-toggle';
-  toggle.type = 'button';
-  toggle.setAttribute('aria-label', 'Padding per side');
-  toggle.setAttribute('aria-expanded', 'false');
-  toggle.innerHTML =
+  // The icon next to Padding or Margin folds its four side sliders open and closed.
+  const ICON =
     '<svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.25">' +
     '<rect x="1.75" y="1.75" width="12.5" height="12.5" rx="3.25" stroke-opacity="0.5" pathLength="48" stroke-dasharray="1.5 1.5" stroke-dashoffset="0.75" stroke-linecap="round"/>' +
     '<rect x="5.5" y="5.5" width="5" height="5" rx="1.25"/></svg>';
-  toggle.addEventListener('click', () => {
-    const open = document.documentElement.classList.toggle('sides-open');
-    toggle.setAttribute('aria-expanded', String(open));
-  });
   const mount = () => {
     const inner = document.querySelector('.dialkit-folder-inner');
     if (!inner) return requestAnimationFrame(mount);
-    const rows = inner.querySelectorAll(':scope > .dialkit-slider-wrapper');
-    rows.forEach((row, i) => i >= 1 && i <= 4 && row.classList.add('side'));
-    rows[0].classList.add('pad-row');
-    rows[0].after(toggle);
-    // keep the icon beside the Padding row, outside the slider so it isn't dragged
-    toggle.style.top = `${rows[0].offsetTop}px`;
+    const rows = [...inner.querySelectorAll(':scope > .dialkit-slider-wrapper')];
+    const label = (row) => row.querySelector('.dialkit-slider-label')?.textContent.trim();
+    for (const g of GROUPS) {
+      const row = rows.find((r) => label(r) === g.name);
+      const sides = rows.filter((r) => label(r)?.startsWith(`${g.name} `));
+      sides.forEach((r) => r.classList.add('side'));
+      row.classList.add('pad-row');
+      const toggle = document.createElement('button');
+      toggle.className = 'sides-toggle';
+      toggle.type = 'button';
+      toggle.setAttribute('aria-label', `${g.name} per side`);
+      toggle.setAttribute('aria-expanded', 'false');
+      toggle.innerHTML = ICON;
+      toggle.addEventListener('click', () => {
+        const open = toggle.classList.toggle('is-open');
+        toggle.setAttribute('aria-expanded', String(open));
+        sides.forEach((r) => r.classList.toggle('open', open));
+      });
+      row.append(toggle);
+    }
   };
   mount();
 

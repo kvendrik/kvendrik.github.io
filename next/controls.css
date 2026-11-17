@@ -34,8 +34,8 @@
 .selection i:nth-child(3) { bottom: -4px; left: -4px; }
 .selection i:nth-child(4) { bottom: -4px; right: -4px; }
 
-/* The padding row has a small icon that splits it into Top, Left, Right and Bottom
-   sliders. The side rows fold open below it (an accordion, so height is animated). */
+/* The Padding and Margin rows each have a small icon that splits them into Top, Left, Right and
+   Bottom sliders. The side rows fold open below (an accordion, so height is animated). */
 .dialkit-root .dialkit-panel-inner {
   position: relative;
 }
@@ -66,7 +66,7 @@
     opacity 150ms ease-out;
 }
 
-.sides-open .dialkit-root .dialkit-slider-wrapper.side {
+.dialkit-root .dialkit-slider-wrapper.side.open {
   height: var(--dial-row-height);
   margin-top: 0;
   opacity: 1;
@@ -76,10 +76,11 @@
     opacity 200ms 60ms ease-out;
 }
 
+/* the icon sits inside its row, just past the slider's right edge */
 .sides-toggle {
   position: absolute;
   top: 0;
-  right: 0;
+  right: -38px;
   display: grid;
   place-items: center;
   width: 36px;
@@ -104,7 +105,7 @@
   }
 }
 
-.sides-open .sides-toggle {
+.sides-toggle.is-open {
   background: #e0ddd7;
   color: #353535;
 }
