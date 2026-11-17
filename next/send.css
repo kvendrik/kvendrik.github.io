@@ -1,0 +1,98 @@
+/* Send to Claude: a small dark pill at the bottom centre, shown once something has changed */
+.send-pill {
+  position: fixed;
+  left: 50%;
+  bottom: max(20px, env(safe-area-inset-bottom));
+  z-index: 40;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  height: 40px;
+  padding: 0 4px 0 16px;
+  border-radius: 999px;
+  background: rgb(28 28 27 / 0.92);
+  -webkit-backdrop-filter: blur(20px) saturate(180%);
+  backdrop-filter: blur(20px) saturate(180%);
+  box-shadow:
+    inset 0 0 0 0.5px rgb(255 255 255 / 0.12),
+    0 8px 24px rgb(0 0 0 / 0.18),
+    0 1px 3px rgb(0 0 0 / 0.2);
+  color: rgb(245 242 234 / 0.75);
+  font: 500 13px/1 -apple-system, BlinkMacSystemFont, system-ui, sans-serif;
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+  opacity: 0;
+  translate: -50% 12px;
+  scale: 0.96;
+  filter: blur(4px);
+  pointer-events: none;
+  transition:
+    opacity 160ms ease-out,
+    translate 160ms ease-out,
+    scale 160ms ease-out,
+    filter 160ms ease-out;
+}
+
+.send-pill.is-shown {
+  opacity: 1;
+  translate: -50% 0;
+  scale: 1;
+  filter: blur(0);
+  pointer-events: auto;
+  transition:
+    opacity 280ms var(--ease-out, ease-out),
+    translate 280ms var(--ease-out, ease-out),
+    scale 280ms var(--ease-out, ease-out),
+    filter 280ms var(--ease-out, ease-out);
+}
+
+.send-button {
+  height: 32px;
+  padding: 0 14px;
+  border: 0;
+  border-radius: 999px;
+  background: #f5f2ea;
+  color: #1c1c1b;
+  font: inherit;
+  cursor: pointer;
+  transition:
+    background-color 150ms ease,
+    scale 120ms ease-out;
+}
+
+.send-button[hidden] {
+  display: none;
+}
+
+.send-pill:has(.send-button[hidden]) {
+  padding-right: 16px;
+}
+
+.send-button:active {
+  scale: 0.96;
+}
+
+.send-button:disabled {
+  opacity: 0.6;
+  cursor: progress;
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .send-button:hover {
+    background: #fff;
+  }
+}
+
+.send-button:focus-visible {
+  outline: 2px solid #0d99ff;
+  outline-offset: 2px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .send-pill,
+  .send-pill.is-shown {
+    translate: -50% 0;
+    scale: none;
+    filter: none;
+  }
+}

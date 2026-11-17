@@ -35,9 +35,6 @@ body {
   pointer-events: none;
 }
 
-.writing-mode .article h1::after {
-  display: none;
-}
 
 /* ---------------------------------------------------------------- 1. leaving home for an article */
 /* a circle of cream grows out of the clicked title and covers the page: a reveal rather
@@ -126,8 +123,7 @@ body {
 
 .pt-arrive-article .article .column > :not(header),
 .pt-arrive-article .article header > :not(h1),
-.pt-arrive-article .more,
-.pt-arrive-article .edit-bar {
+.pt-arrive-article .more {
   opacity: 0;
   translate: 0 14px;
 }
@@ -139,8 +135,7 @@ body {
 
 .pt-arrive-article.pt-play .article .column > :not(header),
 .pt-arrive-article.pt-play .article header > :not(h1),
-.pt-arrive-article.pt-play .more,
-.pt-arrive-article.pt-play .edit-bar {
+.pt-arrive-article.pt-play .more {
   opacity: 1;
   translate: 0 0;
   transition:
@@ -163,10 +158,6 @@ body {
     scale 190ms var(--pt-out);
 }
 
-.pt-leave-article .edit-bar {
-  opacity: 0;
-  transition: opacity 150ms ease-out;
-}
 
 /* ---------------------------------------------------------------- 4. arriving back home */
 /* home comes in from the left */
@@ -177,16 +168,14 @@ body {
 }
 
 .pt-arrive-back body > .hero,
-.pt-arrive-back body > .writing,
-.pt-arrive-back .edit-bar {
+.pt-arrive-back body > .writing {
   opacity: 0 !important;
   translate: -40px 0;
   scale: 0.985 !important;
 }
 
 .pt-arrive-back.pt-play body > .hero,
-.pt-arrive-back.pt-play body > .writing,
-.pt-arrive-back.pt-play .edit-bar {
+.pt-arrive-back.pt-play body > .writing {
   opacity: 1 !important; /* at the top of the page the scroll effect's values are 1 too */
   translate: 0 0;
   scale: 1 !important;

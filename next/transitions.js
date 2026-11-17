@@ -94,10 +94,6 @@
   addEventListener('load', sizeAllPens);
   addEventListener('resize', sizeAllPens);
   document.fonts?.ready.then(sizeAllPens);
-  new MutationObserver(() => !root.classList.contains('writing-mode') && sizeAllPens()).observe(root, {
-    attributes: true,
-    attributeFilter: ['class'],
-  });
 
   // ---------------------------------------------------------------- arriving on a page
   const arriving = reduce ? null : takeOver();
@@ -152,7 +148,7 @@
   document.addEventListener('click', (e) => {
     const link = e.target.closest('.articles a[href]');
     if (!link || link.getAttribute('href') === '#' || e.metaKey || e.ctrlKey || e.shiftKey || e.defaultPrevented) return;
-    if (root.classList.contains('edit-mode')) return; // in edit mode a click selects instead
+    if (e.altKey) return; // Alt-click selects the title in the controls instead
     try {
       sessionStorage.setItem('home-url', location.href);
     } catch {}

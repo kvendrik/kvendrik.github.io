@@ -305,3 +305,150 @@
     box-shadow: 0 10px 30px rgb(0 0 0 / 0.12) !important;
   }
 }
+
+/* ======================================================================================
+   The inspector card, native style: a frosted, translucent material (like a macOS popover
+   or an iOS sheet) with a hairline edge and a bright top highlight, system type, compact
+   28px rows, values in tabular figures, and the selected layer's name as its title.
+   ====================================================================================== */
+.dialkit-root {
+  --dial-row-height: 28px;
+  --dial-row-gap: 4px;
+  --dial-radius: 7px;
+  --native-fill: rgb(0 0 0 / 0.045);
+  --native-fill-strong: rgb(0 0 0 / 0.075);
+  --native-label: rgb(60 60 67 / 0.88);
+  --native-secondary: rgb(60 60 67 / 0.55);
+  --native-accent: #0a84ff;
+  font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Text', system-ui, sans-serif;
+}
+
+html .dialkit-root .dialkit-panel-inner {
+  width: 264px;
+  padding: 6px !important;
+  border-radius: 14px;
+  background: rgb(250 248 243 / 0.84) !important;
+  -webkit-backdrop-filter: blur(30px) saturate(180%);
+  backdrop-filter: blur(30px) saturate(180%);
+  box-shadow:
+    inset 0 0.5px 0 rgb(255 255 255 / 0.9),
+    0 0 0 0.5px rgb(0 0 0 / 0.12),
+    0 2px 6px rgb(0 0 0 / 0.06),
+    0 14px 36px rgb(0 0 0 / 0.14) !important;
+}
+
+/* header: the selected layer's name, like an inspector title */
+html .dialkit-root .controls-head {
+  height: 30px;
+  padding: 0 6px 0 8px;
+  border-radius: 8px;
+  background: none;
+  color: #1d1d1f;
+  font: 600 13px/1 -apple-system, BlinkMacSystemFont, system-ui, sans-serif;
+  letter-spacing: -0.01em;
+}
+
+html .dialkit-root .controls-head svg {
+  color: var(--native-secondary);
+}
+
+@media (hover: hover) and (pointer: fine) {
+  html .dialkit-root .controls-head:hover {
+    background: var(--native-fill);
+    color: #1d1d1f;
+  }
+}
+
+/* a hairline between the title and the controls when open */
+html .dialkit-root .controls-rows {
+  gap: var(--dial-row-gap);
+  padding-top: 6px;
+  margin-top: 4px;
+  border-top: 0.5px solid rgb(0 0 0 / 0.08);
+}
+
+html .dialkit-root .dialkit-slider {
+  border-radius: var(--dial-radius);
+  background: var(--native-fill) !important;
+}
+
+html .dialkit-root .dialkit-slider-fill,
+html .dialkit-root .dialkit-slider-active .dialkit-slider-fill,
+html .dialkit-root .dialkit-slider:focus-visible .dialkit-slider-fill {
+  background: var(--native-fill-strong) !important;
+}
+
+html .dialkit-root .dialkit-slider-handle {
+  width: 2px;
+  height: 14px;
+  background: rgb(0 0 0 / 0.28) !important;
+}
+
+html .dialkit-root .dialkit-slider-label {
+  left: 9px;
+  color: var(--native-label) !important;
+  font: 500 12.5px/1 -apple-system, BlinkMacSystemFont, system-ui, sans-serif;
+}
+
+html .dialkit-root .dialkit-slider-value,
+html .dialkit-root .dialkit-slider-input {
+  color: var(--native-secondary) !important;
+  font: 500 12.5px/1 -apple-system, BlinkMacSystemFont, system-ui, sans-serif !important;
+  font-variant-numeric: tabular-nums;
+}
+
+html .dialkit-root .dialkit-slider-active .dialkit-slider-hashmark {
+  background: rgb(0 0 0 / 0.1);
+}
+
+/* the per-side icon: a small square button joined to its slider */
+html .dialkit-root .dialkit-slider-wrapper.pad-row {
+  margin-right: 30px;
+}
+
+html .dialkit-root .sides-toggle {
+  right: -30px;
+  width: 28px;
+  height: 28px;
+  border-radius: 0 var(--dial-radius) var(--dial-radius) 0;
+  background: var(--native-fill);
+  color: var(--native-secondary);
+}
+
+html .dialkit-root .sides-toggle svg {
+  width: 14px;
+  height: 14px;
+}
+
+html .dialkit-root .sides-toggle.is-open {
+  background: var(--native-fill-strong);
+  color: var(--native-accent);
+}
+
+@media (hover: hover) and (pointer: fine) {
+  html .dialkit-root .sides-toggle:hover {
+    color: #1d1d1f;
+  }
+}
+
+/* frostier and solid when transparency is turned down */
+@media (prefers-reduced-transparency: reduce) {
+  html .dialkit-root .dialkit-panel-inner {
+    background: #faf8f3 !important;
+    -webkit-backdrop-filter: none;
+    backdrop-filter: none;
+  }
+}
+
+/* phones: full width above the pill (see above), same material */
+@media (max-width: 600px) {
+  html .dialkit-root .dialkit-panel-inner {
+    width: 100% !important;
+    padding: 8px !important;
+    border-radius: 18px;
+  }
+
+  html .dialkit-root .dialkit-panel {
+    bottom: calc(76px + env(safe-area-inset-bottom)) !important;
+  }
+}

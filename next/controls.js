@@ -1,13 +1,31 @@
-// Figma-style controls, shared by the home page and the article pages. They belong to edit mode
-// (the page's Edit button sets the "edit-mode" class): every element with the class "layer"
-// can then be clicked to select it (a blue box with handles), the DialKit panel (dialkit.dev)
-// in the bottom right tunes its padding, margin, font size and weight, and double-click edits
-// its text. Esc or a click elsewhere deselects. Every change is remembered (window.pageEdits)
-// so it can be sent to Claude with the rest of the edit.
+// Figma-style controls, shared by the home page and the article pages. Always on inside the
+// claude.ai preview (for its editors; on the real site they never switch on): click any element
+// with the class "layer" to select it (a blue box with handles), and an inspector card in the
+// bottom right tunes its padding, margin, font size and weight (DialKit, dialkit.dev).
+// Double-click edits its text. Links still work; Alt-click a link to select it instead.
+// Esc or a click elsewhere deselects. Every change is remembered (window.pageEdits) so
+// send.js can send it to Claude.
 (() => {
   const root = document.documentElement;
-  const editMode = () => root.classList.contains('edit-mode');
-  const writingMode = () => root.classList.contains('writing-mode');
+  const controlsOn = () => root.classList.contains('controls-on');
+  // switched on where Send to Claude can work: the preview's database is available
+  window.claude?.use?.('db').then((db) => db && root.classList.add('controls-on')).catch(() => {});
+
+  // what the inspector calls the selected element, like a layer name in Figma
+  const nameOf = (el) => {
+    if (!el) return '';
+    const by = [
+      ['.wave', 'Wave'],
+      ['.tagline', 'Tagline'],
+      ['.articles .title', 'Article title'],
+      ['.signoff', 'Signature'],
+      ['.meta', 'Date line'],
+      ['.writing, .more', 'Writing section'],
+      ['.article', 'Article'],
+    ].find(([sel]) => el.matches(sel));
+    if (by) return by[1];
+    return { H1: 'Title', H2: 'Heading', P: 'Paragraph', BLOCKQUOTE: 'Quote', SECTION: 'Section', IMG: 'Image' }[el.tagName] || 'Layer';
+  };
 
   // ---- what changed: element -> kinds of change. Read at send time, so values are current.
   const changed = new Map();
@@ -71,6 +89,8 @@
   };
 
   const select = (el) => {
+    const label = document.querySelector('.controls-name');
+    if (label && el) label.textContent = nameOf(el);
     if (el === selected) return;
     stopEditing();
     cancelAnimationFrame(frame);
@@ -196,7 +216,7 @@
     head.type = 'button';
     head.className = 'controls-head';
     head.innerHTML =
-      '<span>Controls</span><svg width="14" height="14" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3.5 8.5 7 5l3.5 3.5"/></svg>';
+      '<span class="controls-name">Controls</span><svg width="14" height="14" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3.5 8.5 7 5l3.5 3.5"/></svg>';
     inner.append(head, body);
     let open = false;
     try {
@@ -216,30 +236,22 @@
   };
   mount();
 
-  // leaving edit mode drops the selection (and any text editing)
-  new MutationObserver(() => !editMode() && select(null)).observe(root, { attributes: true, attributeFilter: ['class'] });
-
   document.addEventListener('click', (e) => {
-    if (!editMode()) return;
-    if (e.target.closest('[class*="dialkit"], .edit-bar, .write-status, .format-bar')) return;
-    // while an article is being written, a click both places the caret and selects its layer
-    if (writingMode()) {
-      if (e.target.closest('a')?.getAttribute('href') === '#') e.preventDefault();
-      return select(e.target.closest('.layer'));
-    }
+    if (!controlsOn()) return;
+    if (e.target.closest('[class*="dialkit"], .send-pill')) return;
     if (editing?.contains(e.target)) {
       e.preventDefault(); // while editing, links are just text
       return;
     }
     const link = e.target.closest('a');
-    if (link?.getAttribute('href') === '#') e.preventDefault(); // placeholder links just select
+    if (link?.getAttribute('href') === '#' || (link && e.altKey)) e.preventDefault(); // placeholder or Alt: select
     else if (!editing && link) return; // real links still just work
     select(e.target.closest('.layer'));
   });
 
   // Double-click enters text editing, keeping the word the browser just selected.
   document.addEventListener('dblclick', (e) => {
-    if (!editMode() || writingMode()) return;
+    if (!controlsOn()) return;
     const layer = e.target.closest('.layer');
     const link = e.target.closest('a');
     if (!layer || layer === editing || (link && link.getAttribute('href') !== '#')) return;
@@ -252,7 +264,6 @@
   });
 
   // Esc leaves editing first, then clears the selection.
-  // (a handled Esc is marked, so the page's own Esc-to-leave-edit-mode waits for the next one)
   addEventListener('keydown', (e) => {
     if (e.key !== 'Escape') return;
     if (editing) {

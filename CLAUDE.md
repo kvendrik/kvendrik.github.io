@@ -22,7 +22,7 @@ together. Articles should each feel unique: not a template filled in, but a page
 that piece, with its own details, imagery or interactions where the story calls for it.
 - They share a few things so the site stays one place: the cream card, Allo at 20px, the back
   arrow, the title with its pen underline (it's where the transition lands), the signature,
-  More writing, `editor.js`, `controls.js` and `transitions.*`.
+  More writing, `controls.js`, `send.js` and `transitions.*`.
 - Everything else is open per article.
 - When Koen starts a new piece, ask what it should feel like before building. Don't just copy
   `what-kitt-taught-me.html`.
@@ -36,10 +36,9 @@ untouched.
 | File | What it is |
 | --- | --- |
 | `next/index.html` | Home: intro (wave, name, tagline, live paragraph), Amsterdam photos, black Writing list. Inline CSS and JS. |
-| `next/writing/<slug>.html` | One page per article (`what-kitt-taught-me.html`). `new.html` is a blank one that opens in writing mode. |
-| `next/controls.js` / `controls.css` | Figma-style controls: select a `.layer`, tune padding, margin, font size and weight in a DialKit panel, double-click to edit text. Tracks every change in `window.pageEdits`. |
-| `next/editor.js` / `editor.css` | Article editor (iA Writer style) and the floating pill with Send to Claude. |
-| `next/page-edit.js` | Edit mode for non-article pages (the home page): Edit button, pill with change count, Send to Claude. |
+| `next/writing/<slug>.html` | One page per article (`what-kitt-taught-me.html`). |
+| `next/controls.js` / `controls.css` | Figma-style controls, always on in the preview: click a `.layer`, tune padding, margin, font size and weight in a native-looking inspector card (DialKit underneath), double-click to edit text. Tracks every change in `window.pageEdits`. |
+| `next/send.js` / `send.css` | The Send to Claude pill: appears once something has changed. |
 | `next/transitions.css` / `transitions.js` | Page transitions between home and articles (each page animates itself), plus preloading. |
 | `next/vendor/dialkit/` | DialKit (MIT, Josh Puckett), plain-JS build: `browser.global.js` and `styles.css`. |
 | `next/fonts/` | Allo variable font (OFL), weights 100–900, roundness axis `ROND`. |
@@ -101,7 +100,7 @@ untouched.
   - Tapping Amsterdam doesn't leave for Maps. It opens the photos as a pile of slightly
     tilted prints over a cream veil (`layoutPile`, two or three columns, whichever shows them
     bigger), and a tap anywhere closes it.
-  - In edit mode, the controls panel spans the width as a cream card just above the pill.
+  - The controls card spans the width just above the pill.
 - **Scroll:**
   - On the home page, the cream intro (its own card on a black page) shrinks to 85%, dims and
     rounds its bottom corners up to 32px as you scroll.
@@ -139,15 +138,19 @@ untouched.
     effect.
   - **Load order:** `transitions.js` loads in `<head>`. It sets the arriving state before
     anything is painted, and places the title in a frame callback as soon as it exists.
-- **Edit mode:**
-  - Only shown where Send to Claude works: in the claude.ai preview, for its editors. On the
-    real site there is no Edit button.
-  - The controls only work in edit mode, and the panel starts collapsed.
-  - On articles, edit mode is the writing mode. There is no Done button and no "Saved". The
-    draft in `localStorage` exists only so a refresh doesn't lose work. A page with a draft
-    always shows it, with "Showing your draft" next to Edit.
-  - The signature and "More writing" are hidden while writing.
-  - Esc deselects first, then leaves edit mode.
+- **Controls, no edit mode:** there is no Edit button and no writing mode; Koen removed them.
+  - The Figma-style controls are always on inside the claude.ai preview, for its editors.
+    They switch on when `claude.use('db')` resolves, which sets `controls-on` on `<html>`. On
+    the real site they never switch on.
+  - Click a layer to select it. Real links still work; Alt-click a link to select it instead.
+    Double-click edits text, and Esc deselects.
+  - **The inspector card:** native-feeling. It's a frosted translucent material
+    (`blur(30px) saturate(180%)` over cream at 84%) with a hairline edge, a bright top
+    highlight and layered shadows. It uses system type, compact 28px rows and tabular
+    figures, and its title is the selected layer's name ("Tagline", "Paragraph"…). It starts
+    collapsed. On phones it spans the width just above the pill.
+  - **The pill:** appears bottom centre as soon as something has changed, with "3 changes" and
+    Send to Claude.
 
 ## Applying an edit Koen sends from the preview
 
@@ -155,11 +158,11 @@ Send to Claude stores the edit in the artifact database and comments on the arti
 wakes the session.
 1. Read the comment and the document, e.g.
    `ArtifactData get collection=edits doc_id=<id> out_dir=<scratchpad>`.
-2. Article edits are `{slug, title, meta, body (clean HTML), words, styles[]}`. Page edits are
-   `{kind: 'page', page, changes: [{path, tag, text, style, html?}]}`, where `path` is a CSS
-   path from `body` and `style` is the full inline style the controls set.
-3. Apply to `next/…`: put article body blocks back with `class="layer"`, and move style
-   changes into the page's CSS rather than inline styles where it reads cleanly.
+2. Edits are `{kind: 'page', page, changes: [{path, tag, text, style, html?}]}`. `page` is
+   `index.html` or `writing/<slug>.html`. `path` is a CSS path from `body`, and `style` is
+   the full inline style the controls set. `html` is present when the text was edited.
+3. Apply to `next/…`: move style changes into the page's CSS rather than inline styles where
+   it reads cleanly. Keep `class="layer"` on blocks.
 4. Commit, push and republish. Reply in the comment thread, then resolve it.
 5. **Ask before applying when unsure:** once Koen sent a test edit and then said "dont
    actually do that".

@@ -58,29 +58,8 @@
         margin: 0 auto;
       }
 
-      /* "New article" shows only for editors inside the claude.ai preview */
-      .writing-head {
-        display: flex;
-        align-items: baseline;
-        justify-content: space-between;
-        margin: 0 0 40px;
-      }
-
-      .new-article {
-        color: #8a867f;
-        font-size: 16px;
-        text-decoration: none;
-        transition: color 150ms ease;
-      }
-
-      @media (hover: hover) and (pointer: fine) {
-        .new-article:hover {
-          color: #f5f2ea;
-        }
-      }
-
       .writing h2 {
-        margin: 0;
+        margin: 0 0 40px;
         font: inherit;
         color: #8a867f;
       }
@@ -509,7 +488,7 @@
     </style>
     <link rel="stylesheet" href="vendor/dialkit/styles.css" />
     <link rel="stylesheet" href="controls.css" />
-    <link rel="stylesheet" href="editor.css" />
+    <link rel="stylesheet" href="send.css" />
     <link rel="stylesheet" href="transitions.css" />
     <!-- in the head so its page-transition listeners are ready before the first paint -->
     <script src="transitions.js"></script>
@@ -535,10 +514,7 @@
     <!-- Writing. There are no articles yet: these are placeholders to design the list with. -->
     <section class="writing layer" aria-labelledby="writing-title">
       <div class="writing-inner">
-        <div class="writing-head">
-          <h2 id="writing-title" class="layer">Writing</h2>
-          <a class="new-article" href="writing/new.html" hidden>New article</a>
-        </div>
+        <h2 id="writing-title" class="layer">Writing</h2>
         <ul class="articles">
           <li><a href="writing/what-kitt-taught-me.html"><span class="title layer">What KITT taught me about building agents</span></a></li>
           <li><a href="#"><span class="title layer">Ten years of helping people turn passion into work</span></a></li>
@@ -732,7 +708,7 @@
 
       const closePile = () => document.documentElement.classList.remove('photos-open');
       amsterdam.addEventListener('click', (e) => {
-        if (!touch.matches || document.documentElement.classList.contains('edit-mode')) return;
+        if (!touch.matches || e.altKey) return;
         e.preventDefault(); // show the photos instead of leaving for a map
         shuffleDelays();
         layoutPile();
@@ -982,13 +958,7 @@
     </script>
     <script src="vendor/dialkit/browser.global.js"></script>
     <script src="controls.js"></script>
-    <script src="page-edit.js"></script>
-    <script>
-      // editors of the claude.ai preview get a way to start a new article
-      window.claude?.use?.('user').then((user) => {
-        if (user?.canEdit()) document.querySelector('.new-article').hidden = false;
-      });
-    </script>
+    <script src="send.js"></script>
     <script>
       // The further you scroll down, the further back the cream intro goes (down to 85%) and the
       // closer the Writing content comes (from 85% up to full size). Driven by scroll position, eased per frame so it feels smooth.
