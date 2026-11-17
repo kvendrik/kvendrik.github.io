@@ -1204,13 +1204,13 @@
       })();
     </script>
     <script>
-      // The further you scroll down, the further back the cream intro goes (down to 92%) and the
-      // closer the Writing content comes (from 92% up to full size). Driven by scroll position, eased per frame so it feels smooth.
+      // The further you scroll down, the further back the cream intro goes (down to 85%) and the
+      // closer the Writing content comes (from 85% up to full size). Driven by scroll position, eased per frame so it feels smooth.
       (() => {
         if (matchMedia('(prefers-reduced-motion: reduce)').matches) return;
         const hero = document.querySelector('.hero');
         const inner = document.querySelector('.writing-inner');
-        const MIN = 0.92;
+        const MIN = 0.85;
         let frame = 0;
         const update = () => {
           frame = 0;
