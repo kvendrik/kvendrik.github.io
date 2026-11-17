@@ -49,7 +49,7 @@
       /* the article sits on the same cream card as the intro on the home page */
       .article {
         background: var(--cream);
-        border-radius: 0 0 32px 32px;
+        transform-origin: 50% 100%;
         padding: 100px 24px 150px;
       }
 
@@ -59,7 +59,7 @@
       }
 
       /* fades in once on load, like the intro */
-      .column {
+      .article .column {
         animation: fade 1000ms var(--ease-out) both;
       }
 
@@ -158,7 +158,12 @@
       /* More writing: the black section from the home page, with the same pen underline */
       .more {
         color: var(--cream);
+        overflow: hidden;
         padding: 120px 24px 160px;
+      }
+
+      .more .column {
+        transform-origin: 50% 0;
       }
 
       .more h2 {
@@ -217,7 +222,7 @@
       }
 
       @media (prefers-reduced-motion: reduce) {
-        .column {
+        .article .column {
           animation: none;
         }
 
@@ -310,6 +315,32 @@
         </ul>
       </div>
     </section>
+    <script>
+      // Like the home page: as the black More writing section scrolls into view, the cream article
+      // goes back (smaller, dimmer, bottom corners rounding off) and the list comes towards you.
+      // Driven by how far that section has come into view, so reading the article isn't affected.
+      (() => {
+        if (matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+        const card = document.querySelector('.article');
+        const more = document.querySelector('.more');
+        const inner = more.querySelector('.column');
+        const MIN = 0.85;
+        let frame = 0;
+        const update = () => {
+          frame = 0;
+          const top = more.getBoundingClientRect().top;
+          const p = Math.min(1, Math.max(0, (innerHeight - top) / Math.min(more.offsetHeight, innerHeight)));
+          card.style.scale = 1 - (1 - MIN) * p;
+          card.style.opacity = 1 - 0.5 * p;
+          card.style.borderRadius = `0 0 ${32 * p}px ${32 * p}px`;
+          inner.style.scale = MIN + (1 - MIN) * p;
+          inner.style.opacity = 0.4 + 0.6 * p;
+        };
+        addEventListener('scroll', () => (frame ||= requestAnimationFrame(update)), { passive: true });
+        addEventListener('resize', update);
+        update();
+      })();
+    </script>
     <script src="../vendor/dialkit/browser.global.js"></script>
     <script src="../controls.js"></script>
   </body>
