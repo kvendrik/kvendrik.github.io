@@ -1,0 +1,292 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>What KITT taught me about building agents · Koen Vendrik</title>
+    <link rel="preload" href="../fonts/AlloVariable.woff2" as="font" type="font/woff2" crossorigin />
+    <style>
+      /* Allo by Josh Puckett, SIL Open Font License 1.1 (see ../fonts/Allo-OFL.txt) */
+      @font-face {
+        font-family: 'Allo';
+        src: url('../fonts/AlloVariable.woff2') format('woff2');
+        font-weight: 100 900;
+        font-style: oblique 0deg 10deg;
+        font-display: swap;
+      }
+
+      :root {
+        --ease-out: cubic-bezier(0.23, 1, 0.32, 1);
+        --cream: #f5f2ea;
+        --ink: #353535;
+        --muted: #8a867f;
+        --black: #111110;
+      }
+
+      body {
+        margin: 0;
+        font-family: 'Allo', system-ui, sans-serif;
+        font-weight: 300;
+        font-variation-settings: 'ROND' 100;
+        color: var(--ink);
+        background: var(--black);
+        font-size: clamp(18px, 2.2vw, 22px);
+        line-height: 1.6;
+      }
+
+      ::selection {
+        background: #cfe6fd;
+        color: inherit;
+      }
+
+      a {
+        color: inherit;
+        text-decoration: underline;
+        text-decoration-thickness: 1px;
+        text-underline-offset: 0.2em;
+      }
+
+      /* the article sits on the same cream card as the intro on the home page */
+      .article {
+        background: var(--cream);
+        border-radius: 0 0 32px 32px;
+        padding: 100px 24px 150px;
+      }
+
+      .column {
+        max-width: 32em;
+        margin: 0 auto;
+      }
+
+      /* fades in once on load, like the intro */
+      .column {
+        animation: fade 1000ms var(--ease-out) both;
+      }
+
+      @keyframes fade {
+        from {
+          opacity: 0;
+        }
+      }
+
+      .back {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.4em;
+        color: var(--muted);
+        text-decoration: none;
+        transition: color 150ms ease;
+      }
+
+      .back svg {
+        transition: translate 200ms var(--ease-out);
+      }
+
+      @media (hover: hover) and (pointer: fine) {
+        .back:hover {
+          color: var(--ink);
+        }
+
+        .back:hover svg {
+          translate: -3px 0;
+        }
+      }
+
+      header {
+        margin: 100px 0;
+      }
+
+      h1 {
+        margin: 0 0 0.6em;
+        font-size: 1.9em;
+        font-weight: 300;
+        line-height: 1.2;
+        text-wrap: balance;
+      }
+
+      .meta {
+        margin: 0;
+        color: var(--muted);
+      }
+
+      .body p {
+        margin: 0 0 1.2em;
+        text-wrap: pretty;
+      }
+
+      .body h2 {
+        margin: 2.4em 0 0.6em;
+        font: inherit;
+        font-weight: 450;
+      }
+
+      .body blockquote {
+        margin: 2em 0;
+        padding: 0 0 0 1em;
+        border-left: 2px solid rgb(53 53 53 / 0.15);
+        font-size: 1.25em;
+        line-height: 1.4;
+      }
+
+      .body blockquote p {
+        margin: 0;
+      }
+
+      .signoff {
+        margin-top: 2.4em;
+        color: var(--muted);
+      }
+
+      /* More writing: the black section from the home page, with the same pen underline */
+      .more {
+        color: var(--cream);
+        padding: 120px 24px 160px;
+      }
+
+      .more h2 {
+        margin: 0 0 40px;
+        font: inherit;
+        color: var(--muted);
+      }
+
+      .articles {
+        margin: 0;
+        padding: 0;
+        list-style: none;
+      }
+
+      .articles li + li {
+        margin-top: 25px;
+      }
+
+      .articles a {
+        text-decoration: none;
+      }
+
+      .articles .title {
+        position: relative;
+        opacity: 0.9;
+      }
+
+      .articles .title::after {
+        content: '';
+        position: absolute;
+        left: -0.1em;
+        right: -0.15em;
+        bottom: -0.3em;
+        height: 0.42em;
+        background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 300 12' preserveAspectRatio='none'%3E%3Cpath fill='%23f5f2ea' d='M2 8.9C60 7.4 140 7.6 212 6.6 252 6 281 3.9 297.2 1.4c.6-.9 2-.4 1.6.6-12.4 3.8-44 7.2-86.4 7.9-72 1.1-150 .3-210 .1-1.1 0-1.2-1.3 0-1.1Z'/%3E%3C/svg%3E")
+          center / 100% 100% no-repeat;
+        opacity: 0;
+        pointer-events: none;
+        transition: opacity 200ms ease;
+      }
+
+      @media (hover: hover) and (pointer: fine) {
+        .articles a:hover .title::after {
+          opacity: 0.9;
+        }
+      }
+
+      .more ::selection {
+        background: rgb(13 153 255 / 0.4);
+      }
+
+      a:focus-visible {
+        outline: 2px solid #0d99ff;
+        outline-offset: 4px;
+        border-radius: 2px;
+      }
+
+      @media (prefers-reduced-motion: reduce) {
+        .column {
+          animation: none;
+        }
+
+        .back svg {
+          transition: none;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <!-- A design mockup: the article text is placeholder writing, not a published piece. -->
+    <article class="article">
+      <div class="column">
+        <a class="back" href="../">
+          <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M13 8H3M7 4 3 8l4 4" /></svg>
+          Koen Vendrik
+        </a>
+
+        <header>
+          <h1>What KITT taught me about building agents</h1>
+          <p class="meta"><time datetime="2026-11">November 2026</time> · 4 min read</p>
+        </header>
+
+        <div class="body">
+          <p>
+            When I was a kid, the coolest thing on television wasn't a superhero. It was a car. A black Trans Am with a red
+            light sweeping across its hood and a voice that talked back. KITT could drive itself, crack a dry joke, and above
+            all, it knew Michael.
+          </p>
+          <p>
+            I wanted one so badly. Not the car, really. I wanted the friend that lived inside it.
+          </p>
+          <p>
+            These days I spend most of my time building AI agents at Shopify. Somewhere along the way I noticed that a lot of
+            what I believe about good agents, I first learned from a talking car.
+          </p>
+
+          <h2>It knew when to talk</h2>
+          <p>
+            KITT never narrated everything it was doing. It spoke up when it mattered: a warning, a question, a joke at exactly
+            the right moment. The rest of the time it just drove. The agents I like best work the same way. They do the work
+            quietly and only interrupt you when they actually need you.
+          </p>
+
+          <h2>It told you what it was about to do</h2>
+          <p>
+            "Michael, I'm going to use Turbo Boost." You always knew what was coming. That, more than any gadget, is what made it
+            feel safe. When an agent is about to do something that matters, it should say so plainly, and leave you a moment to
+            say no.
+          </p>
+          <blockquote>
+            <p>Trust isn't built by being clever. It's built by being predictable.</p>
+          </blockquote>
+
+          <h2>It had a personality, not a script</h2>
+          <p>
+            KITT was a little vain, a little sarcastic and completely loyal. Those quirks made it feel like someone rather than
+            something. Personality isn't decoration. A consistent voice is how people learn what to expect, and what to expect
+            is how they learn to rely on it.
+          </p>
+
+          <h2>It was on your side</h2>
+          <p>
+            Above everything else, KITT's job was Michael. Not the mission, not the car, not looking impressive. A good agent
+            makes the person it works for more capable, not more dependent.
+          </p>
+
+          <p>
+            I still don't have a car that talks back. But some days, when an agent quietly finishes a task and asks what's next,
+            I'm that 90s kid again, watching the red light sweep across the hood.
+          </p>
+
+          <p class="signoff">— Koen</p>
+        </div>
+      </div>
+    </article>
+
+    <section class="more" aria-labelledby="more-title">
+      <div class="column">
+        <h2 id="more-title">More writing</h2>
+        <ul class="articles">
+          <li><a href="../"><span class="title">Ten years of helping people turn passion into work</span></a></li>
+          <li><a href="../"><span class="title">Designing for software that talks back</span></a></li>
+          <li><a href="../"><span class="title">Notes on taste in the age of AI</span></a></li>
+          <li><a href="../"><span class="title">The dial-up sound I still hear</span></a></li>
+        </ul>
+      </div>
+    </section>
+  </body>
+</html>
