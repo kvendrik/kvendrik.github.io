@@ -273,6 +273,21 @@
       </div>
     </section>
     <script>
+      // Opening an article always starts at its top, also when the claude.ai preview (or the
+      // browser) would keep the scroll position from the page you came from.
+      (() => {
+        if ('scrollRestoration' in history) history.scrollRestoration = 'manual';
+        const toTop = () => {
+          scrollTo(0, 0);
+          // scrollIntoView also scrolls any frame the page sits in, like the preview's viewer
+          document.querySelector('.article')?.scrollIntoView({ block: 'start' });
+        };
+        toTop();
+        addEventListener('load', toTop);
+        addEventListener('pageshow', (e) => e.persisted && toTop());
+      })();
+    </script>
+    <script>
       // Like the home page: as the black More writing section scrolls into view, the cream article
       // goes back (smaller, dimmer, bottom corners rounding off) and the list comes towards you.
       // Driven by how far that section has come into view, so reading the article isn't affected.
