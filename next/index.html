@@ -82,18 +82,16 @@
       .articles .title {
         flex: 1;
         min-width: 0;
-        opacity: 0.8;
+        opacity: 0.9;
+        text-decoration-thickness: 1px;
+        text-underline-offset: 0.2em;
         transition: opacity 150ms ease;
       }
 
-      /* hovering one article fades the others back a little */
+      /* hovering an article shows its underline, the same thin line as the links above */
       @media (hover: hover) and (pointer: fine) {
-        .articles:has(a:hover) a:not(:hover) .title {
-          opacity: 0.45;
-        }
-
         .articles a:hover .title {
-          opacity: 1;
+          text-decoration-line: underline;
         }
       }
 
