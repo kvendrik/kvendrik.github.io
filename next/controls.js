@@ -27,6 +27,8 @@
       ['.articles .title', 'Article title'],
       ['.signoff', 'Signature'],
       ['.meta', 'Date line'],
+      ['figure.code', 'Code block'],
+      ['figure:has(video)', 'Video'],
       ['.writing, .more', 'Writing section'],
       ['.article', 'Article'],
     ].find(([sel]) => el.matches(sel));
