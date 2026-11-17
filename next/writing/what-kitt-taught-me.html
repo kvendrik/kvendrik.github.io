@@ -50,6 +50,10 @@
       .article {
         background: var(--cream);
         transform-origin: 50% 100%;
+        /* always at least a full screen, so a short or empty article never shows the black
+           section straight away */
+        min-height: 100svh;
+        box-sizing: border-box;
         padding: 100px 24px 150px;
       }
 
@@ -330,7 +334,9 @@
         const update = () => {
           frame = 0;
           const top = more.getBoundingClientRect().top;
-          const p = Math.min(1, Math.max(0, (innerHeight - top) / Math.min(more.offsetHeight, innerHeight)));
+          // while writing, the article stays put and fully bright
+          const writing = document.documentElement.classList.contains('writing-mode');
+          const p = writing ? 0 : Math.min(1, Math.max(0, (innerHeight - top) / Math.min(more.offsetHeight, innerHeight)));
           card.style.scale = 1 - (1 - MIN) * p;
           card.style.opacity = 1 - 0.5 * p;
           card.style.borderRadius = `0 0 ${32 * p}px ${32 * p}px`;
@@ -339,6 +345,8 @@
         };
         addEventListener('scroll', () => (frame ||= requestAnimationFrame(update)), { passive: true });
         addEventListener('resize', update);
+        // re-check when writing mode switches on or off
+        new MutationObserver(update).observe(document.documentElement, { attributes: true, attributeFilter: ['class'] });
         update();
       })();
     </script>

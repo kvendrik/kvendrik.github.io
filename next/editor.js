@@ -80,7 +80,9 @@
   const setStatus = (state) => {
     const n = words();
     const mins = Math.max(1, Math.round(n / 230));
-    countEl.innerHTML = `${n.toLocaleString()} <span>${n === 1 ? 'word' : 'words'}</span> · ${mins} <span>min</span>`;
+    countEl.innerHTML = n
+      ? `${n.toLocaleString()} <span>${n === 1 ? 'word' : 'words'}</span> · ${mins} <span>min</span>`
+      : '<span>No words yet</span>';
     saveEl.dataset.state = state;
     saveEl.querySelector('span').textContent = LABELS[state];
     saveEl.title = state === 'error' ? 'This browser won\u2019t let the draft be saved' : 'Drafts are saved in this browser';
@@ -119,6 +121,10 @@
     clearTimeout(saveTimer);
     saveTimer = setTimeout(save, 600);
   };
+
+  // show the "Start writing…" placeholder while the body has no words
+  const markEmpty = () => body.classList.toggle('is-empty', !body.textContent.trim());
+  body.addEventListener('input', () => markEmpty());
 
   const restored = load();
   let hasDraft = restored;
@@ -213,6 +219,9 @@
     body.contentEditable = on ? 'true' : 'false';
     if (on) {
       document.execCommand('defaultParagraphSeparator', false, 'p');
+      // an empty body starts with one empty paragraph, so the first words land in a <p>
+      if (!body.querySelector('p, h2, blockquote')) body.innerHTML = '<p><br></p>';
+      markEmpty();
       // drop any Figma-style selection so the two modes don't overlap
       dispatchEvent(new KeyboardEvent('keydown', { key: 'Escape' }));
       setStatus(restored ? 'restored' : 'saved');
@@ -535,4 +544,7 @@
       run('link');
     }
   });
+
+  // a brand-new article opens straight into writing mode
+  if (document.body.hasAttribute('data-new-article')) setWriting(true);
 })();
