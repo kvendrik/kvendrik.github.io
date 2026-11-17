@@ -295,6 +295,11 @@
   box-shadow: 0 0 0 3px rgb(242 184 75 / 0.15);
 }
 
+/* "Draft restored" is just words, no dot */
+.write-save[data-state='restored'] i {
+  display: none;
+}
+
 .write-save[data-state='error'] i {
   background: #f06a5d;
   box-shadow: 0 0 0 3px rgb(240 106 93 / 0.15);
