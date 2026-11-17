@@ -35,7 +35,6 @@
          above the wave and 100px between the paragraph and the Writing section */
       .hero {
         background: #f5f2ea;
-        border-radius: 48px;
         transform-origin: 50% 100%;
         display: grid;
         place-items: center;
@@ -1220,6 +1219,9 @@
           const pageProgress = Math.min(1, y / max);
           hero.style.scale = 1 - (1 - MIN) * heroProgress;
           inner.style.scale = MIN + (1 - MIN) * pageProgress; // comes towards you
+          // the intro's bottom corners round off as you go, up to 32px
+          const r = 32 * pageProgress;
+          hero.style.borderRadius = `0 0 ${r}px ${r}px`;
         };
         addEventListener('scroll', () => (frame ||= requestAnimationFrame(update)), { passive: true });
         addEventListener('resize', update);
