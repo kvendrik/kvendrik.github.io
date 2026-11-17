@@ -68,6 +68,25 @@
         margin: 0 0 1em;
       }
 
+      /* name and tagline above the paragraph, at the same size as the text */
+      .intro {
+        margin-bottom: 50px;
+      }
+
+      .wave {
+        margin-bottom: 50px;
+      }
+
+      .intro h1 {
+        margin: 0;
+        font: inherit;
+        font-weight: 450;
+      }
+
+      .tagline {
+        color: #8a867f;
+      }
+
       .bio p:last-child {
         margin-bottom: 0;
       }
@@ -437,6 +456,11 @@
   </head>
   <body>
     <main class="bio">
+      <header class="intro">
+        <div class="wave" aria-hidden="true">👋</div>
+        <h1>Koen Vendrik</h1>
+        <div class="tagline">Building experiences at Shopify</div>
+      </header>
       <p>
         <span class="s">Hey, good <span id="time-of-day">day</span>—I'm Koen! </span><span class="s" id="weather">Greetings from
           <a class="amsterdam" href="https://maps.google.com/?q=Amsterdam">Amsterdam</a>! </span><span class="s">(Not Amsterdam, New York.) </span><span class="s">I'm a Staff Engineer at <a href="https://www.shopify.com">Shopify</a>, and lately I build AI agents, which is pretty wild for a 90s kid who grew up wanting KITT from Knight Rider. </span><span class="s">I've been coding since I was 15. </span><span class="s">If that sounds fun to you too, shoot me a message.</span>
