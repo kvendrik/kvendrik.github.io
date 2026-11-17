@@ -1203,8 +1203,8 @@
       })();
     </script>
     <script>
-      // The further you scroll down, the smaller the cream intro and the Writing content get
-      // (down to 92%). Driven by scroll position, eased per frame so it feels smooth.
+      // The further you scroll down, the further back the cream intro goes (down to 92%) and the
+      // closer the Writing content comes (from 92% up to full size). Driven by scroll position, eased per frame so it feels smooth.
       (() => {
         if (matchMedia('(prefers-reduced-motion: reduce)').matches) return;
         const hero = document.querySelector('.hero');
@@ -1218,7 +1218,7 @@
           const heroProgress = Math.min(1, y / hero.offsetHeight);
           const pageProgress = Math.min(1, y / max);
           hero.style.scale = 1 - (1 - MIN) * heroProgress;
-          inner.style.scale = 1 - (1 - MIN) * pageProgress;
+          inner.style.scale = MIN + (1 - MIN) * pageProgress; // comes towards you
         };
         addEventListener('scroll', () => (frame ||= requestAnimationFrame(update)), { passive: true });
         addEventListener('resize', update);
