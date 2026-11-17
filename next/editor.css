@@ -380,6 +380,11 @@
   opacity: 0.28;
 }
 
+/* the signature belongs to the finished article, not the draft */
+.writing-mode .article .signoff {
+  display: none;
+}
+
 /* the page chrome steps back while you type */
 .edit-toggle,
 .article .back {
