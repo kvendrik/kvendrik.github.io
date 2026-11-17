@@ -283,7 +283,7 @@
       e.preventDefault(); // while editing, links are just text
       return;
     }
-    const link = e.target.closest('a');
+    const link = e.target.closest('a, [data-live]'); // [data-live]: buttons and widgets that do something
     if (link?.getAttribute('href') === '#' || (link && e.altKey)) e.preventDefault(); // placeholder or Alt: select
     else if (!editing && link) return; // real links still just work
     select(e.target.closest('.layer'));
@@ -293,7 +293,7 @@
   document.addEventListener('dblclick', (e) => {
     if (!controlsOn()) return;
     const layer = e.target.closest('.layer');
-    const link = e.target.closest('a');
+    const link = e.target.closest('a, [data-live]');
     if (!layer || layer === editing || (link && link.getAttribute('href') !== '#')) return;
     select(layer);
     editing = layer;

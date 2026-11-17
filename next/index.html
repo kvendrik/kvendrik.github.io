@@ -191,7 +191,8 @@
 
       /* the home page's links (Amsterdam, Shopify) get a hand-drawn stroke instead of a ruled
          line: a variation of the pen underline, in ink, on every line the link wraps onto */
-      .bio a {
+      .bio a,
+      .bio .kitt {
         --stroke: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 300 12' preserveAspectRatio='none'%3E%3Cpath fill='%23353535' fill-opacity='0.7' d='M3 6.8C46 8.2 104 8.6 166 8 214 7.6 258 6.2 296.4 3.6c.9-.6 2.1.5 1.4 1.3-11.6 3.6-48 6.4-95.8 7-66 .8-132 .2-198.4-.6-1.4 0-1.6-1.6-.4-1.5Z'/%3E%3C/svg%3E");
         color: inherit;
         text-decoration: none;
@@ -393,6 +394,120 @@
         color: inherit;
       }
 
+
+      /* KITT opens a window from the old Windows 95 site: same chrome, same font */
+      @font-face {
+        font-family: 'W95fa';
+        src: url('fonts/w95fa.woff2') format('woff2');
+        font-display: swap;
+      }
+
+      .bio .kitt {
+        padding: 0 0 0.14em;
+        border: 0;
+        font: inherit;
+        font-variation-settings: inherit;
+        cursor: pointer;
+      }
+
+      .win95 {
+        position: fixed;
+        z-index: 20;
+        top: 50%;
+        left: 50%;
+        width: min(320px, calc(100vw - 32px));
+        translate: calc(-50% + var(--x, 0px)) calc(-50% + var(--y, 0px));
+        border-top: 2px solid #fff;
+        border-left: 2px solid #fff;
+        border-right: 2px solid #393939;
+        border-bottom: 2px solid #393939;
+        background: #c0c0c0;
+        box-shadow: 1px 1px 0 #08080e;
+        color: #000;
+        font: 16px/1.4 'W95fa', Helvetica, Arial, sans-serif;
+        font-variation-settings: normal;
+        -webkit-font-smoothing: none;
+      }
+
+      .win95[hidden] {
+        display: none;
+      }
+
+      /* Windows 95 didn't animate; this only takes the edge off */
+      .win95:not([hidden]) {
+        animation: win-open 90ms ease-out;
+      }
+
+      @keyframes win-open {
+        from {
+          opacity: 0;
+          scale: 0.98;
+        }
+      }
+
+      .win95-bar {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        margin: 2px;
+        padding: 2px 2px 2px 6px;
+        background: linear-gradient(90deg, #020080, #1084d0);
+        color: #fff;
+        font-size: 14px;
+        cursor: move;
+        user-select: none;
+        touch-action: none;
+      }
+
+      .win95-button {
+        min-width: 22px;
+        padding: 2px 6px;
+        border-top: 2px solid #fff;
+        border-left: 2px solid #fff;
+        border-right: 2px solid #393939;
+        border-bottom: 2px solid #393939;
+        border-radius: 2px;
+        background: #c0c0c0;
+        color: #000;
+        font: inherit;
+        font-size: 14px;
+        line-height: 14px;
+        cursor: pointer;
+      }
+
+      .win95-button:active {
+        border-color: #393939 #fff #fff #393939;
+      }
+
+      .win95-button:focus-visible {
+        outline: 1px dotted #000;
+        outline-offset: -5px;
+      }
+
+      .win95-body {
+        padding: 12px 12px 14px;
+        text-align: center;
+      }
+
+      .win95-body img {
+        display: block;
+        width: 100%;
+        height: auto;
+        margin-bottom: 12px;
+        border-top: 2px solid #393939;
+        border-left: 2px solid #393939;
+        border-right: 2px solid #fff;
+        border-bottom: 2px solid #fff;
+      }
+
+      .win95-body p {
+        margin: 0 0 14px;
+      }
+
+      .win95-body .win95-button {
+        min-width: 90px;
+        padding: 5px 10px;
+      }
     </style>
     <link rel="stylesheet" href="vendor/dialkit/styles.css" />
     <link rel="stylesheet" href="controls.css" />
@@ -412,7 +527,7 @@
           <a class="amsterdam" data-stroke="3" href="https://maps.google.com/?q=Amsterdam">Amsterdam</a>.</span> My name is Koen, and I'm a Staff
         Engineer at <a data-stroke="2" href="https://www.shopify.com">Shopify</a>. For the past decade I've been working on helping people turn
         their passion into their work. Lately I've been spending most of my time building AI agents, which is pretty wild for a
-        90s kid who grew up wanting KITT from Knight Rider.
+        90s kid who grew up wanting <button class="kitt" type="button" data-live aria-haspopup="dialog">KITT</button> from Knight Rider.
       </p>
     </main>
     </div>
@@ -674,6 +789,57 @@
         addEventListener('scroll', () => (frame ||= requestAnimationFrame(update)), { passive: true });
         addEventListener('resize', update);
         update();
+      })();
+    </script>
+    <div class="win95" id="kitt-window" role="dialog" aria-modal="true" aria-labelledby="kitt-title" hidden>
+      <div class="win95-bar"><span id="kitt-title">KITT.exe</span><button class="win95-button" type="button" data-close aria-label="Close">X</button></div>
+      <div class="win95-body">
+        <img src="writing/images/scanner.gif" width="1200" height="600" alt="A red light sweeping back and forth" />
+        <p>Scanner online. Where are we going tonight, Koen?</p>
+        <button class="win95-button" type="button" data-close>OK</button>
+      </div>
+    </div>
+    <script>
+      // The KITT window: opens from the word KITT, drags by its title bar, closes on OK, X or Esc
+      (() => {
+        const opener = document.querySelector('.kitt');
+        const win = document.getElementById('kitt-window');
+        let x = 0, y = 0;
+        const place = () => {
+          win.style.setProperty('--x', `${x}px`);
+          win.style.setProperty('--y', `${y}px`);
+        };
+        const open = () => {
+          x = 0; y = 0; place();
+          win.hidden = false;
+          win.querySelector('.win95-body [data-close]').focus();
+        };
+        const close = () => {
+          if (win.hidden) return;
+          win.hidden = true;
+          opener.focus({ preventScroll: true });
+        };
+        opener.addEventListener('click', (e) => {
+          if (e.altKey) return; // Alt-click selects it in the controls
+          open();
+        });
+        win.querySelectorAll('[data-close]').forEach((b) => b.addEventListener('click', close));
+        addEventListener('keydown', (e) => {
+          if (e.key === 'Escape' && !win.hidden) {
+            e.preventDefault();
+            close();
+          }
+        });
+        const bar = win.querySelector('.win95-bar');
+        bar.addEventListener('pointerdown', (e) => {
+          if (e.target.closest('button')) return;
+          bar.setPointerCapture(e.pointerId);
+          const sx = e.clientX - x, sy = e.clientY - y;
+          const move = (m) => { x = m.clientX - sx; y = m.clientY - sy; place(); };
+          const up = () => { bar.removeEventListener('pointermove', move); bar.removeEventListener('pointerup', up); };
+          bar.addEventListener('pointermove', move);
+          bar.addEventListener('pointerup', up);
+        });
       })();
     </script>
   </body>

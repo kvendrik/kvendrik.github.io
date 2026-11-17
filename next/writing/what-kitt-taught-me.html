@@ -261,6 +261,164 @@
       .code .s { color: #d9622b; }
       .code .c { color: #a19d95; font-style: italic; }
 
+      /* the canvas: a dotted surface you can pan and zoom, with the flowchart on it
+         (styled after beautifului.dev's Flowchart, MIT) */
+      .canvas-stage {
+        position: relative;
+        height: 460px;
+        overflow: hidden;
+        border-radius: 14px;
+        background-color: #f8f6f0;
+        background-image: radial-gradient(rgb(53 53 53 / 0.16) 1px, transparent 1.25px);
+        box-shadow: inset 0 0 0 1px rgb(53 53 53 / 0.07);
+        cursor: grab;
+        touch-action: none;
+        user-select: none;
+        -webkit-user-select: none;
+      }
+
+      .canvas-stage.is-grabbing {
+        cursor: grabbing;
+      }
+
+      .canvas-world {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 900px;
+        height: 900px;
+        transform-origin: 0 0;
+        font-size: 15px;
+        line-height: 1.35;
+      }
+
+      .canvas-edges {
+        position: absolute;
+        inset: 0;
+        overflow: visible;
+        color: rgb(53 53 53 / 0.35);
+      }
+
+      .canvas-edges path[data-from] {
+        fill: none;
+        stroke: currentColor;
+        stroke-width: 1.5;
+      }
+
+      .canvas-edges path.loop {
+        stroke-dasharray: 5 6;
+      }
+
+      .canvas-edges text {
+        fill: #8a867f;
+        font: 500 13px/1 -apple-system, BlinkMacSystemFont, system-ui, sans-serif;
+        text-anchor: middle;
+        dominant-baseline: middle;
+        paint-order: stroke;
+        stroke: #f8f6f0;
+        stroke-width: 6px;
+        stroke-linejoin: round;
+      }
+
+      .canvas-edges .loop-label {
+        text-anchor: start;
+        transform: translateX(10px);
+      }
+
+      .canvas-node {
+        position: absolute;
+        display: flex;
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 6px;
+      }
+
+      .canvas-tag {
+        display: inline-flex;
+        align-items: center;
+        height: 22px;
+        padding: 0 8px;
+        border-radius: 6px;
+        background: color-mix(in srgb, var(--tag) 13%, #f8f6f0);
+        color: color-mix(in srgb, var(--tag) 80%, #353535);
+        font: 500 12px/1 -apple-system, BlinkMacSystemFont, system-ui, sans-serif;
+      }
+
+      .canvas-card {
+        box-sizing: border-box;
+        width: 100%;
+        padding: 12px 14px;
+        border-radius: 16px;
+        background: #fffefb;
+        box-shadow:
+          0 0 0 1px rgb(53 53 53 / 0.06),
+          0 1px 2px rgb(53 53 53 / 0.05),
+          0 4px 12px rgb(53 53 53 / 0.05);
+      }
+
+      .canvas-card strong {
+        display: block;
+        font-weight: 500;
+        color: #252525;
+      }
+
+      .canvas-card span {
+        display: block;
+        margin-top: 2px;
+        color: #8a867f;
+        font-size: 14px;
+      }
+
+      .canvas-zoom {
+        position: absolute;
+        right: 10px;
+        bottom: 10px;
+        display: flex;
+        padding: 2px;
+        border-radius: 10px;
+        background: rgb(255 254 251 / 0.9);
+        box-shadow:
+          0 0 0 1px rgb(53 53 53 / 0.07),
+          0 2px 6px rgb(53 53 53 / 0.06);
+        -webkit-backdrop-filter: blur(12px);
+        backdrop-filter: blur(12px);
+      }
+
+      .canvas-zoom button {
+        min-width: 28px;
+        height: 26px;
+        padding: 0 6px;
+        border: 0;
+        border-radius: 8px;
+        background: none;
+        color: #5f5c57;
+        font: 500 13px/1 -apple-system, BlinkMacSystemFont, system-ui, sans-serif;
+        font-variant-numeric: tabular-nums;
+        cursor: pointer;
+        transition: background-color 100ms ease, color 100ms ease;
+      }
+
+      .canvas-zoom .canvas-zoom-value {
+        min-width: 48px;
+      }
+
+      @media (hover: hover) and (pointer: fine) {
+        .canvas-zoom button:hover {
+          background: rgb(53 53 53 / 0.06);
+          color: #252525;
+        }
+      }
+
+      .canvas-zoom button:active {
+        scale: 0.96;
+      }
+
+      @media (max-width: 600px) {
+        .canvas-stage {
+          height: 400px;
+        }
+      }
+
       .body figcaption {
         margin-top: 0.8em;
         color: #8a867f;
@@ -447,6 +605,60 @@
             something. Personality isn't decoration. A consistent voice is how people learn what to expect, and what to expect
             is how they learn to rely on it.
           </p>
+          <figure class="canvas layer">
+            <div class="canvas-stage" data-live role="img" aria-label="A loop: a task comes in, the model tries it, checks the result and asks whether it worked. If it did, it keeps the run as an example; if not, it reflects on what went wrong. Both update its memory, which it uses on the next task.">
+              <div class="canvas-world">
+                <svg class="canvas-edges" aria-hidden="true">
+                  <defs><marker id="arrow" viewBox="0 0 10 10" refX="6" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M1 1 L8 5 L1 9" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" /></marker></defs>
+                  <path data-from="task" data-to="try" marker-end="url(#arrow)" />
+                  <path data-from="try" data-to="check" marker-end="url(#arrow)" />
+                  <path data-from="check" data-to="if" marker-end="url(#arrow)" />
+                  <path id="edge-yes" data-from="if" data-to="keep" marker-end="url(#arrow)" />
+                  <path id="edge-no" data-from="if" data-to="reflect" marker-end="url(#arrow)" />
+                  <path data-from="keep" data-to="memory" marker-end="url(#arrow)" />
+                  <path data-from="reflect" data-to="memory" marker-end="url(#arrow)" />
+                  <path id="edge-next" class="loop" data-from="memory" data-to="try" data-side="right" marker-end="url(#arrow)" />
+                  <text data-label-for="edge-yes" data-at="0.45">Yes</text>
+                  <text data-label-for="edge-no" data-at="0.45">No</text>
+                  <text data-label-for="edge-next" data-at="0.5" class="loop-label">Next task, a little better</text>
+                </svg>
+              <div class="canvas-node" data-node="task" style="left:320px;top:20px;width:260px">
+                <span class="canvas-tag" style="--tag:#9a5cff">Trigger</span>
+                <div class="canvas-card"><strong>A task comes in</strong><span>Someone asks for something</span></div>
+              </div>
+              <div class="canvas-node" data-node="try" style="left:320px;top:170px;width:260px">
+                <span class="canvas-tag" style="--tag:#2f6fd0">Step</span>
+                <div class="canvas-card"><strong>Try it</strong><span>The model plans and acts with its tools</span></div>
+              </div>
+              <div class="canvas-node" data-node="check" style="left:320px;top:320px;width:260px">
+                <span class="canvas-tag" style="--tag:#2f6fd0">Step</span>
+                <div class="canvas-card"><strong>Check the result</strong><span>Tests, a judge model or the person grade it</span></div>
+              </div>
+              <div class="canvas-node" data-node="if" style="left:320px;top:470px;width:260px">
+                <span class="canvas-tag" style="--tag:#f09a2f">If / Else</span>
+                <div class="canvas-card"><strong>Did it work?</strong><span>Compare the outcome with the goal</span></div>
+              </div>
+              <div class="canvas-node" data-node="keep" style="left:80px;top:640px;width:260px">
+                <span class="canvas-tag" style="--tag:#2f9e5f">Learn</span>
+                <div class="canvas-card"><strong>Keep what worked</strong><span>Save the good run as an example to copy</span></div>
+              </div>
+              <div class="canvas-node" data-node="reflect" style="left:560px;top:640px;width:260px">
+                <span class="canvas-tag" style="--tag:#2f9e5f">Learn</span>
+                <div class="canvas-card"><strong>Reflect on what didn’t</strong><span>Write down what went wrong, and why</span></div>
+              </div>
+              <div class="canvas-node" data-node="memory" style="left:320px;top:810px;width:260px">
+                <span class="canvas-tag" style="--tag:#9a5cff">Remember</span>
+                <div class="canvas-card"><strong>Update its memory</strong><span>Lessons and examples, or a fine-tune on them</span></div>
+              </div>
+              </div>
+              <div class="canvas-zoom" aria-label="Zoom">
+                <button type="button" data-zoom="out" aria-label="Zoom out">−</button>
+                <button type="button" class="canvas-zoom-value" data-zoom="fit" aria-label="Fit to view">100%</button>
+                <button type="button" data-zoom="in" aria-label="Zoom in">+</button>
+              </div>
+            </div>
+            <figcaption>How an agent can learn from its own work. Drag to look around, pinch or ⌘-scroll to zoom.</figcaption>
+          </figure>
 
           <h2 class="layer">It was on your side</h2>
           <p class="layer">
@@ -530,6 +742,7 @@
     <script src="../controls.js"></script>
     <script src="../send.js"></script>
     <script src="../pen.js"></script>
+    <script src="../canvas.js"></script>
     <script>
       // Copy on code blocks: copies the code and says so for a moment
       document.querySelectorAll('.code-copy').forEach((button) => {

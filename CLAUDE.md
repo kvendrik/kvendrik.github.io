@@ -38,6 +38,7 @@ untouched.
 | `next/writing/<slug>.html` | One page per article (`what-kitt-taught-me.html`). |
 | `next/controls.js` / `controls.css` | Figma-style controls, always on in the preview: click a `.layer`, tune padding, margin, font size and weight in a native-looking inspector card (DialKit underneath), double-click to edit text. Tracks every change in `window.pageEdits`. |
 | `next/send.js` / `send.css` | The Send to Claude pill: appears once something has changed. |
+| `next/canvas.js` | Pan-and-zoom canvas for diagrams (`.canvas-stage` > `.canvas-world` with `[data-node]` cards and `<path data-from data-to>` edges), styled after beautifului.dev's Flowchart (MIT). Drag pans with momentum, pinch or Ctrl/⌘-scroll zooms, it can't be thrown out of view. |
 | `next/sounds.js` | UI sounds for the controls, synthesized with Web Audio: `window.uiSound(name)`. |
 | `next/pen.css` / `pen.js` | The pen underline: under the article title (sized to its last line), and a variation under the home page's links. |
 | `next/vendor/dialkit/` | DialKit (MIT, Josh Puckett), plain-JS build: `browser.global.js` and `styles.css`. |
@@ -84,6 +85,14 @@ untouched.
   a real-handwriting font, converted to paths and tweaked, works.
 
 ## Behaviours worth keeping
+
+- **KITT window (home):** the word KITT opens a Windows 95 dialog like the live site's (W95fa
+  font in `next/fonts/w95fa.woff2`), with the scanner GIF and a line. It drags by its title bar
+  and closes on OK, X or Esc. Elements that do something get `data-live` so the controls let
+  clicks through, like real links.
+- **Article media so far:** an image (`figure img`), a beautifului-style code block
+  (`figure.code`, hand-marked `.k .f .s .c` tokens, Copy), a looping video, and the canvas.
+  The GIF and video are original renders; there's no footage from the show (copyright).
 
 - **Live words:**
   - "Good *afternoon*!" follows the visitor's clock.
