@@ -1219,6 +1219,9 @@
           const pageProgress = Math.min(1, y / max);
           hero.style.scale = 1 - (1 - MIN) * heroProgress;
           inner.style.scale = MIN + (1 - MIN) * pageProgress; // comes towards you
+          // and fade with it: the intro dims as it goes back, the Writing content brightens as it comes
+          hero.style.opacity = 1 - 0.5 * pageProgress;
+          inner.style.opacity = 0.4 + 0.6 * pageProgress;
           // the intro's bottom corners round off as you go, up to 32px
           const r = 32 * pageProgress;
           hero.style.borderRadius = `0 0 ${r}px ${r}px`;
