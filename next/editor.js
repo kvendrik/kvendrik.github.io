@@ -44,19 +44,46 @@
     return wrap.innerHTML;
   };
 
+  // Floating toolbar at the bottom while writing: save state, word count, Focus, Discard, Done
+  const ICON_FOCUS =
+    '<svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"><path d="M2 5.5V3.5A1.5 1.5 0 0 1 3.5 2h2M10.5 2h2A1.5 1.5 0 0 1 14 3.5v2M14 10.5v2a1.5 1.5 0 0 1-1.5 1.5h-2M5.5 14h-2A1.5 1.5 0 0 1 2 12.5v-2"/><path d="M5 8h6"/></svg>';
+  const ICON_DISCARD =
+    '<svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"><path d="M3.5 6.5h6a3.5 3.5 0 0 1 0 7H7"/><path d="M6 3.5 3 6.5l3 3"/></svg>';
   const status = document.createElement('div');
   status.className = 'write-status';
+  status.setAttribute('role', 'toolbar');
+  status.setAttribute('aria-label', 'Writing');
   status.innerHTML =
-    '<span class="write-count" aria-live="polite"></span>' +
-    '<button type="button" class="write-focus" aria-pressed="true" title="Dim everything but the paragraph you\u2019re in">Focus</button>' +
-    '<button type="button" class="write-discard" title="Throw away your changes and go back to the published text">Discard draft</button>';
+    '<span class="write-save" aria-live="polite"><i></i><span></span></span>' +
+    '<span class="write-sep"></span>' +
+    '<span class="write-count"></span>' +
+    '<span class="write-sep"></span>' +
+    `<button type="button" class="write-icon write-focus" aria-pressed="true" aria-label="Focus mode" title="Focus mode: dim all but the paragraph you\u2019re in">${ICON_FOCUS}</button>` +
+    `<button type="button" class="write-icon write-discard" aria-label="Discard draft" title="Discard draft: go back to the published text">${ICON_DISCARD}</button>` +
+    '<button type="button" class="write-done">Done</button>' +
+    '<button type="button" class="write-send" hidden title="Send this version to Claude to publish">Send to Claude</button>';
   document.body.append(status);
   const countEl = status.querySelector('.write-count');
+  const saveEl = status.querySelector('.write-save');
   const words = () => (body.innerText.trim().match(/\S+/g) || []).length;
+  // state: 'saved' | 'saving' | 'restored' | 'error'
+  const LABELS = {
+    saved: 'Saved',
+    saving: 'Saving',
+    restored: 'Draft restored',
+    error: 'Not saved',
+    sending: 'Sending to Claude',
+    sent: 'Sent to Claude',
+    stored: 'Stored for Claude',
+    'send-failed': 'Not sent',
+  };
   const setStatus = (state) => {
     const n = words();
     const mins = Math.max(1, Math.round(n / 230));
-    countEl.textContent = `${n} ${n === 1 ? 'word' : 'words'} · ${mins} min read · ${state}`;
+    countEl.innerHTML = `${n.toLocaleString()} <span>${n === 1 ? 'word' : 'words'}</span> · ${mins} <span>min</span>`;
+    saveEl.dataset.state = state;
+    saveEl.querySelector('span').textContent = LABELS[state];
+    saveEl.title = state === 'error' ? 'This browser won\u2019t let the draft be saved' : 'Drafts are saved in this browser';
   };
 
   const load = () => {
@@ -82,13 +109,13 @@
       );
       hasDraft = true;
       root.classList.add('has-draft');
-      setStatus('Draft saved in this browser');
+      setStatus('saved');
     } catch {
-      setStatus('Couldn’t save the draft here');
+      setStatus('error');
     }
   };
   const queueSave = () => {
-    setStatus('Saving…');
+    setStatus('saving');
     clearTimeout(saveTimer);
     saveTimer = setTimeout(save, 600);
   };
@@ -188,7 +215,8 @@
       document.execCommand('defaultParagraphSeparator', false, 'p');
       // drop any Figma-style selection so the two modes don't overlap
       dispatchEvent(new KeyboardEvent('keydown', { key: 'Escape' }));
-      setStatus(restored ? 'Draft restored' : 'Draft saved in this browser');
+      setStatus(restored ? 'restored' : 'saved');
+      refreshSend?.();
       if (!title.textContent.trim()) title.focus();
     } else {
       closeBar();
@@ -202,6 +230,75 @@
     }
   };
   toggle.addEventListener('click', () => setWriting(!writing));
+  status.querySelector('.write-done').addEventListener('click', () => setWriting(false));
+
+  // ---- Send to Claude: inside the claude.ai preview, the edited article is stored in the
+  // page's private database (editors only) and a short note is sent to the Claude session
+  // watching it, which applies the edit to the site and deploys it. Elsewhere the button stays
+  // hidden.
+  const sendBtn = status.querySelector('.write-send');
+  let db = null;
+  let comments = null;
+  const refreshSend = async () => {
+    if (!db) return (sendBtn.hidden = true);
+    let can = 'off';
+    try {
+      can = comments ? await comments.canSendToClaude() : 'off';
+    } catch {}
+    sendBtn.hidden = false;
+    sendBtn.dataset.mode = can === 'available' ? 'send' : 'store';
+    sendBtn.textContent = can === 'available' ? 'Send to Claude' : 'Save for Claude';
+    sendBtn.title =
+      can === 'available'
+        ? 'Send this version to Claude to publish'
+        : 'No Claude session is listening right now: store this version, then tell Claude in chat';
+  };
+  if (window.claude?.use) {
+    Promise.all([claude.use('db').catch(() => null), claude.use('comments').catch(() => null)]).then(([d, c]) => {
+      db = d;
+      comments = c;
+      refreshSend();
+    });
+  }
+  sendBtn.addEventListener('click', async () => {
+    if (!db || sendBtn.disabled) return;
+    save();
+    sendBtn.disabled = true;
+    setStatus('sending');
+    const n = words();
+    const name = title.textContent.trim() || 'Untitled';
+    try {
+      const ref = await db.collection('edits').add({
+        slug,
+        title: name,
+        meta: meta?.textContent.trim() ?? '',
+        body: clean(body.innerHTML),
+        words: n,
+        sentAt: Date.now(),
+      });
+      if (sendBtn.dataset.mode === 'send') {
+        try {
+          await comments.sendToClaude({
+            anchor: await comments.anchorFor(title),
+            text: `Please publish my edit to "${name}" (${n} words). It's stored as edits/${ref.id} in this page's database.`,
+          });
+          setStatus('sent');
+        } catch (err) {
+          // the edit is stored either way; only the note didn't go out
+          setStatus('stored');
+          saveEl.title = `Stored as edits/${ref.id}. Tell Claude in chat to publish it.`;
+          refreshSend();
+        }
+      } else {
+        setStatus('stored');
+        saveEl.title = `Stored as edits/${ref.id}. Tell Claude in chat to publish it.`;
+      }
+    } catch {
+      setStatus('send-failed');
+    } finally {
+      sendBtn.disabled = false;
+    }
+  });
 
   // ---- typing behaviour
   for (const el of [title, meta].filter(Boolean)) {

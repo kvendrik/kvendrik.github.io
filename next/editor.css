@@ -163,65 +163,128 @@
   display: none;
 }
 
-/* Status line, bottom left: word count, reading time, draft state, Focus and Discard */
+/* Floating toolbar while writing: a dark pill at the bottom centre, the same family as the
+   selection toolbar. Save state, word count, Focus, Discard and Done. */
 .write-status {
   position: fixed;
-  left: 20px;
-  bottom: 20px;
+  left: 50%;
+  bottom: 24px;
   z-index: 20;
   display: flex;
   align-items: center;
-  gap: 14px;
-  color: #8a867f;
+  gap: 4px;
+  height: 44px;
+  padding: 0 5px 0 16px;
+  border-radius: 999px;
+  background: #1c1c1b;
+  box-shadow:
+    0 10px 30px rgb(0 0 0 / 0.16),
+    0 1px 3px rgb(0 0 0 / 0.2);
+  color: rgb(245 242 234 / 0.55);
   font: 14px/1 'Allo', system-ui, sans-serif;
   font-variation-settings: 'ROND' 100;
   font-variant-numeric: tabular-nums;
+  white-space: nowrap;
   opacity: 0;
-  translate: 0 6px;
+  translate: -50% 12px;
+  scale: 0.97;
   pointer-events: none;
   transition:
     opacity 150ms ease-out,
-    translate 150ms ease-out;
+    translate 150ms ease-out,
+    scale 150ms ease-out;
 }
 
 .writing-mode .write-status {
   opacity: 1;
-  translate: 0 0;
+  translate: -50% 0;
+  scale: 1;
   pointer-events: auto;
   transition:
     opacity 250ms var(--ease-out, ease-out),
-    translate 250ms var(--ease-out, ease-out);
+    translate 250ms var(--ease-out, ease-out),
+    scale 250ms var(--ease-out, ease-out);
 }
 
-@media (prefers-reduced-motion: reduce) {
-  .format-bar,
-  .format-bar.is-open,
-  .write-status,
-  .writing-mode .write-status {
-    translate: none;
-    scale: none;
-  }
+/* while writing, Done lives in the toolbar, so the top-right button steps aside */
+.writing-mode .edit-toggle {
+  opacity: 0;
+  pointer-events: none;
+}
+
+.write-sep {
+  width: 1px;
+  height: 16px;
+  margin: 0 10px;
+  background: rgb(245 242 234 / 0.12);
+}
+
+/* save state: a small dot, green when saved, amber while saving */
+.write-save {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: rgb(245 242 234 / 0.8);
+}
+
+.write-save i {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: #5fd08a;
+  box-shadow: 0 0 0 3px rgb(95 208 138 / 0.15);
+  transition:
+    background-color 200ms ease,
+    box-shadow 200ms ease;
+}
+
+.write-save[data-state='saving'] i {
+  background: #f2b84b;
+  box-shadow: 0 0 0 3px rgb(242 184 75 / 0.15);
+}
+
+.write-save[data-state='error'] i {
+  background: #f06a5d;
+  box-shadow: 0 0 0 3px rgb(240 106 93 / 0.15);
+}
+
+.write-count {
+  color: rgb(245 242 234 / 0.8);
+}
+
+.write-count span {
+  color: rgb(245 242 234 / 0.45);
 }
 
 .write-status button {
-  padding: 6px 10px;
-  margin: -6px 0;
+  display: grid;
+  place-items: center;
+  height: 34px;
   border: 0;
   border-radius: 999px;
   background: none;
-  color: inherit;
+  color: rgb(245 242 234 / 0.55);
   font: inherit;
   font-variation-settings: inherit;
   cursor: pointer;
   transition:
     background-color 150ms ease,
-    color 150ms ease;
+    color 150ms ease,
+    scale 120ms ease-out;
+}
+
+.write-status button:active {
+  scale: 0.95;
+}
+
+.write-icon {
+  width: 34px;
 }
 
 @media (hover: hover) and (pointer: fine) {
   .write-status button:hover {
-    background: rgb(53 53 53 / 0.06);
-    color: #353535;
+    background: rgb(245 242 234 / 0.1);
+    color: #f5f2ea;
   }
 }
 
@@ -231,15 +294,81 @@
 }
 
 .write-focus[aria-pressed='true'] {
-  color: #353535;
+  color: #6cc0ff;
 }
 
 .write-discard {
-  display: none;
+  display: none !important;
 }
 
 .has-draft .write-discard {
-  display: block;
+  display: grid !important;
+}
+
+.write-done,
+.write-send {
+  margin-left: 6px;
+  padding: 0 16px;
+}
+
+/* Done is the primary action, unless Send to Claude is there: then Send leads */
+.write-done,
+.write-send {
+  background: #f5f2ea !important;
+  color: #1c1c1b !important;
+}
+
+.write-send:not([hidden]) ~ .write-done,
+.write-done:has(~ .write-send:not([hidden])) {
+  background: none !important;
+  color: rgb(245 242 234 / 0.7) !important;
+  margin-left: 2px;
+}
+
+.write-send[hidden] {
+  display: none !important;
+}
+
+.write-send:disabled {
+  opacity: 0.6;
+  cursor: progress;
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .write-done:hover,
+  .write-send:hover {
+    background: #fff !important;
+  }
+
+  .write-done:has(~ .write-send:not([hidden])):hover {
+    background: rgb(245 242 234 / 0.1) !important;
+    color: #f5f2ea !important;
+  }
+}
+
+/* sending: the dot turns Claude-orange; sent: blue */
+.write-save[data-state='sending'] i,
+.write-save[data-state='stored'] i {
+  background: #e8875b;
+  box-shadow: 0 0 0 3px rgb(232 135 91 / 0.18);
+}
+
+.write-save[data-state='sent'] i {
+  background: #6cc0ff;
+  box-shadow: 0 0 0 3px rgb(108 192 255 / 0.18);
+}
+
+.write-save[data-state='send-failed'] i {
+  background: #f06a5d;
+  box-shadow: 0 0 0 3px rgb(240 106 93 / 0.15);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .write-status,
+  .writing-mode .write-status {
+    translate: -50% 0;
+    scale: none;
+  }
 }
 
 /* Focus mode (iA Writer): everything but the paragraph you're in steps back. Switching
