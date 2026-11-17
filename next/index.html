@@ -450,14 +450,14 @@
         -webkit-backdrop-filter: none;
       }
 
-      /* The slider only shows while something is selected. It rises in from the corner with a
+      /* The slider only shows while something is selected. It rises up from the bottom with a
          touch of blur and settles; it leaves faster than it arrives. */
       .dialkit-panel {
         opacity: 0;
-        translate: 0 10px;
+        translate: 0 16px;
         scale: 0.96;
         filter: blur(4px);
-        transform-origin: bottom right;
+        transform-origin: bottom center;
         visibility: hidden;
         pointer-events: none;
         transition:
