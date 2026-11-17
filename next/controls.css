@@ -210,3 +210,73 @@
   font-variant-numeric: tabular-nums;
   white-space: nowrap;
 }
+
+/* "Controls" header: collapses the sliders (collapsed by default). The body folds with the
+   grid-rows trick, so it animates to its natural height. */
+.controls-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  height: var(--dial-row-height, 36px);
+  padding: 0 12px 0 10px;
+  border: 0;
+  border-radius: var(--dial-radius, 8px);
+  background: #ebe9e4;
+  color: #8a867f;
+  font: 500 13px system-ui, -apple-system, sans-serif;
+  cursor: pointer;
+  transition: color 150ms ease;
+}
+
+.controls-head svg {
+  transition: rotate 200ms var(--ease-out);
+}
+
+.controls-open .controls-head svg {
+  rotate: 180deg;
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .controls-head:hover {
+    color: #353535;
+  }
+}
+
+.controls-head:focus-visible {
+  outline: 2px solid #0d99ff;
+  outline-offset: 1px;
+}
+
+.controls-body {
+  display: grid;
+  grid-template-rows: 0fr;
+  opacity: 0;
+  transition:
+    grid-template-rows 200ms var(--ease-out),
+    opacity 150ms ease-out;
+}
+
+.controls-open .controls-body {
+  grid-template-rows: 1fr;
+  opacity: 1;
+  transition:
+    grid-template-rows 250ms var(--ease-out),
+    opacity 200ms 50ms ease-out;
+}
+
+.controls-rows {
+  display: flex;
+  flex-direction: column;
+  gap: var(--dial-row-gap, 6px);
+  min-height: 0;
+  overflow: hidden;
+  padding-top: var(--dial-row-gap, 6px);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .controls-body,
+  .controls-open .controls-body {
+    transition: opacity 150ms ease-out;
+  }
+}

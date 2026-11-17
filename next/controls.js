@@ -140,6 +140,36 @@
       };
       row.append(toggle);
     }
+
+    // A "Controls" header that collapses and expands the sliders. Collapsed by default; the
+    // choice is remembered for this browser.
+    const body = document.createElement('div');
+    body.className = 'controls-body';
+    const list = document.createElement('div');
+    list.className = 'controls-rows';
+    list.append(...inner.children);
+    body.append(list);
+    const head = document.createElement('button');
+    head.type = 'button';
+    head.className = 'controls-head';
+    head.innerHTML =
+      '<span>Controls</span><svg width="14" height="14" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3.5 8.5 7 5l3.5 3.5"/></svg>';
+    inner.append(head, body);
+    let open = false;
+    try {
+      open = localStorage.getItem('controls-open') === '1';
+    } catch {}
+    const setPanel = (next) => {
+      open = next;
+      inner.classList.toggle('controls-open', open);
+      head.setAttribute('aria-expanded', String(open));
+      body.inert = !open;
+      try {
+        localStorage.setItem('controls-open', open ? '1' : '0');
+      } catch {}
+    };
+    head.addEventListener('click', () => setPanel(!open));
+    setPanel(open);
   };
   mount();
 
