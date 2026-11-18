@@ -1,0 +1,867 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="color-scheme" content="dark">
+<meta name="theme-color" content="#000000">
+<title>Bodega brand guide</title>
+<meta name="description" content="Bodega's brand guide: voice, black and white, type, components and logos. No questions asked.">
+<link rel="icon" type="image/svg+xml" href="logos/bodega-monogram-reverse.svg">
+<style>
+  @font-face { font-family:"Allo"; src:url("../fonts/AlloVariable.woff2") format("woff2"); font-weight:100 900; font-display:swap; }
+  @font-face { font-family:"Instrument Serif"; src:url("../fonts/InstrumentSerif-Regular.woff2") format("woff2"); font-weight:400; font-style:normal; font-display:swap; }
+  @font-face { font-family:"Instrument Serif"; src:url("../fonts/InstrumentSerif-Italic.woff2") format("woff2"); font-weight:400; font-style:italic; font-display:swap; }
+  @font-face { font-family:"Space Mono"; src:url("../fonts/SpaceMono-Regular.woff2") format("woff2"); font-weight:400; font-display:swap; }
+  @font-face { font-family:"Space Mono"; src:url("../fonts/SpaceMono-Bold.woff2") format("woff2"); font-weight:700; font-display:swap; }
+
+  /* Night is the default, as on bodega itself. Day is shown alongside where it matters. */
+  :root {
+    color-scheme:dark;
+    --black:#000; --white:#fff;
+    --surface-100:#000; --surface-200:#141414;
+    --ink:#fff; --ink-muted:#a6a6a6; --line:#fff; --line-soft:#8a8a8a;
+    --fill:#fff; --on-fill:#000; --field:#000; --focus:#fff;
+    --shadow-hard:6px 6px 0 0 #fff; --shadow-hard-sm:3px 3px 0 0 #fff;
+    --shadow-frame:0 0 0 3px #000, 0 0 0 4px #fff;
+    --font-display:"Instrument Serif","Bodoni Moda",Didot,"Bodoni 72",Georgia,serif;
+    --font-sans:"Allo",system-ui,-apple-system,"Segoe UI",sans-serif;
+    --font-mono:"Space Mono",ui-monospace,Menlo,Consolas,monospace;
+    --space-1:4px; --space-2:8px; --space-3:12px; --space-4:16px; --space-6:24px; --space-8:32px; --space-12:48px; --space-16:64px;
+    --radius-none:0; --radius-pill:999px; --border-thick:3px; --border-thin:1px;
+    --ease-out:cubic-bezier(0.23, 1, 0.32, 1);
+  }
+  /* A Day ground, for showing things in the light theme. */
+  .day {
+    --surface-100:#fff; --surface-200:#f2f2f2;
+    --ink:#000; --ink-muted:#595959; --line:#000; --line-soft:#767676;
+    --fill:#000; --on-fill:#fff; --field:#fff; --focus:#000;
+    --shadow-hard:6px 6px 0 0 #000; --shadow-hard-sm:3px 3px 0 0 #000;
+    --shadow-frame:0 0 0 3px #fff, 0 0 0 4px #000;
+    background:var(--surface-100); color:var(--ink);
+  }
+
+  * { box-sizing:border-box; }
+  [hidden] { display:none !important; }
+  .linkish { padding:0; border:0; background:none; color:var(--ink); font:inherit; text-decoration:underline; text-underline-offset:3px; cursor:pointer; -webkit-tap-highlight-color:transparent; }
+  html { -webkit-text-size-adjust:100%; scroll-behavior:smooth; }
+  @media (prefers-reduced-motion: reduce) { html { scroll-behavior:auto; } }
+  body { margin:0; background:var(--surface-100); color:var(--ink); font:400 16px/24px var(--font-sans); font-variation-settings:"ROND" 0; }
+  img { display:block; max-width:100%; height:auto; }
+  a { color:inherit; text-underline-offset:3px; }
+  a:focus-visible, button:focus-visible, input:focus-visible { outline:3px solid var(--focus); outline-offset:3px; }
+  code { font:400 14px/22px var(--font-mono); }
+
+  .wrap { max-width:1040px; margin:0 auto; padding:0 max(var(--space-4), env(safe-area-inset-right)) var(--space-16) max(var(--space-4), env(safe-area-inset-left)); }
+  @media (min-width:720px) { .wrap { padding-left:var(--space-8); padding-right:var(--space-8); } }
+
+  .label { font:700 12px/16px var(--font-sans); font-variation-settings:"ROND" 0; letter-spacing:.18em; text-transform:uppercase; }
+  .muted { color:var(--ink-muted); }
+  .lead { max-width:640px; margin:0 0 var(--space-6); font:400 20px/30px var(--font-sans); }
+  .prose { max-width:640px; }
+  .prose p { margin:0 0 var(--space-4); }
+
+  /* Masthead */
+  .masthead { padding:var(--space-12) 0 var(--space-8); text-align:center; }
+  .masthead img { width:min(520px, 100%); margin:0 auto; }
+  .masthead .tagline { margin:var(--space-4) 0 0; font:italic 400 32px/38px var(--font-display); color:var(--ink-muted); }
+
+  /* Contents */
+  .toc { display:flex; flex-wrap:wrap; justify-content:center; gap:var(--space-2) var(--space-3); margin:0 0 var(--space-12); padding:0; list-style:none; }
+  .toc a { display:inline-block; padding:var(--space-1) var(--space-3); border:var(--border-thick) solid var(--line); text-decoration:none;
+    -webkit-tap-highlight-color:transparent; transition:transform 120ms var(--ease-out), box-shadow 120ms var(--ease-out); }
+  @media (hover:hover) { .toc a:hover { transform:translate(-3px,-3px); box-shadow:var(--shadow-hard-sm); } }
+  .toc a:active { transform:translate(0,0); box-shadow:none; }
+
+  /* Sections */
+  section { padding:var(--space-12) 0; border-top:var(--border-thick) solid var(--line); scroll-margin-top:var(--space-4); }
+  .kicker { margin:0 0 var(--space-2); color:var(--ink-muted); }
+  h2 { margin:0 0 var(--space-6); font:italic 400 72px/72px var(--font-display); letter-spacing:-.01em; }
+  h3 { margin:var(--space-8) 0 var(--space-4); font:400 44px/46px var(--font-display); }
+  h4 { margin:0 0 var(--space-2); }
+  @media (max-width:600px) { h2 { font-size:52px; line-height:54px; } h3 { font-size:36px; line-height:40px; } }
+
+  .grid { display:grid; gap:var(--space-6); }
+  .grid--2 { grid-template-columns:repeat(auto-fit, minmax(280px, 1fr)); }
+  .grid--3 { grid-template-columns:repeat(auto-fit, minmax(220px, 1fr)); }
+
+  .card { padding:var(--space-6); border:var(--border-thick) solid var(--line); background:var(--surface-100); color:var(--ink); }
+  .card p:last-child { margin-bottom:0; }
+  .stage { display:flex; flex-wrap:wrap; gap:var(--space-6); align-items:center; padding:var(--space-8) var(--space-6); border:var(--border-thick) solid var(--line); }
+  .stage + .note { margin-top:var(--space-3); }
+  .note { margin:0; font:400 14px/20px var(--font-sans); color:var(--ink-muted); max-width:640px; }
+
+  /* Tables */
+  .table-wrap { overflow-x:auto; border:var(--border-thick) solid var(--line); }
+  table { width:100%; border-collapse:collapse; font:400 14px/20px var(--font-sans); }
+  th, td { padding:var(--space-3) var(--space-4); text-align:left; vertical-align:top; border-top:1px dashed var(--line-soft); }
+  thead th { border-top:0; border-bottom:var(--border-thick) solid var(--line); font:700 12px/16px var(--font-sans); letter-spacing:.18em; text-transform:uppercase; }
+  tbody tr:nth-child(even) { background:var(--surface-200); }
+  td code, th code { font-size:13px; }
+
+  /* Do / don't lists */
+  .rules { margin:0; padding:0; list-style:none; }
+  .rules li { padding:var(--space-2) 0 var(--space-2) var(--space-8); position:relative; border-top:1px dashed var(--line-soft); }
+  .rules li:first-child { border-top:0; }
+  .rules li::before { position:absolute; left:0; font:700 14px/24px var(--font-sans); }
+  .rules--do li::before { content:"✓"; }
+  .rules--dont li::before { content:"✕"; }
+
+  /* Color swatches */
+  .swatches { display:grid; grid-template-columns:repeat(auto-fit, minmax(200px, 1fr)); gap:var(--space-4); }
+  .swatch { border:var(--border-thick) solid var(--line); }
+  .swatch__chips { display:grid; grid-template-columns:1fr 1fr; height:96px; border-bottom:var(--border-thick) solid var(--line); }
+  .swatch__chips span { display:flex; align-items:flex-end; padding:var(--space-2); font:400 11px/14px var(--font-mono); text-transform:uppercase; }
+  .swatch__body { padding:var(--space-3) var(--space-4); }
+  .swatch__body p { margin:var(--space-1) 0 0; font:400 13px/18px var(--font-sans); color:var(--ink-muted); }
+
+  /* Type specimens */
+  .specimen { padding:var(--space-6) 0; border-top:1px dashed var(--line-soft); display:grid; gap:var(--space-2); }
+  .specimen:first-of-type { border-top:0; }
+  .specimen__meta { font:400 12px/16px var(--font-mono); color:var(--ink-muted); }
+  .faces { display:grid; grid-template-columns:repeat(auto-fit, minmax(260px, 1fr)); gap:var(--space-4); margin-bottom:var(--space-8); }
+  .face { padding:var(--space-6); border:var(--border-thick) solid var(--line); }
+  .face__sample { margin:var(--space-3) 0; font-size:56px; line-height:60px; overflow-wrap:anywhere; }
+  .face p:not(.face__sample) { margin:0; font:400 14px/20px var(--font-sans); color:var(--ink-muted); }
+
+  /* Logos */
+  .logos { display:grid; grid-template-columns:repeat(auto-fit, minmax(240px, 1fr)); gap:var(--space-4); }
+  .logo { border:var(--border-thick) solid var(--line); display:flex; flex-direction:column; }
+  .logo__ground { display:grid; place-items:center; min-height:200px; padding:var(--space-8); }
+  .logo__ground--day { background:#fff; }
+  .logo__ground--night { background:#000; }
+  .logo__ground img { max-height:140px; width:auto; }
+  .logo__meta { display:flex; justify-content:space-between; align-items:center; gap:var(--space-3); padding:var(--space-3) var(--space-4); border-top:var(--border-thick) solid var(--line); }
+  .logo__meta code { font-size:12px; overflow-wrap:anywhere; }
+
+  /* Glyphs */
+  .glyphs { display:flex; flex-wrap:wrap; gap:var(--space-3); margin:0; padding:0; list-style:none; }
+  .glyphs li { display:grid; place-items:center; width:64px; height:64px; border:var(--border-thick) solid var(--line); font:700 24px/1 var(--font-sans); }
+
+  /* Spacing scale */
+  .scale { display:grid; gap:var(--space-3); }
+  .scale__row { display:grid; grid-template-columns:96px 56px 1fr; gap:var(--space-4); align-items:center; font:400 13px/18px var(--font-mono); }
+  .scale__bar { height:16px; background:var(--fill); }
+
+  /* ---------- Bodega components (bd-) ---------- */
+  .bd-btn { display:inline-flex; align-items:center; gap:var(--space-2); padding:var(--space-3) var(--space-6); background:var(--fill); color:var(--on-fill); border:var(--border-thick) solid var(--line); border-radius:var(--radius-none); box-shadow:var(--shadow-hard-sm);
+    font:700 12px/16px var(--font-sans); font-variation-settings:"ROND" 0; letter-spacing:.18em; text-transform:uppercase; cursor:pointer; -webkit-tap-highlight-color:transparent; touch-action:manipulation;
+    transition:transform 120ms var(--ease-out), box-shadow 120ms var(--ease-out); }
+  @media (hover:hover) { .bd-btn:not([disabled]):hover { box-shadow:var(--shadow-hard); transform:translate(-3px,-3px); } }
+  .bd-btn:not([disabled]):active { box-shadow:none; transform:translate(3px,3px); transition-duration:40ms; }
+  .bd-btn--quiet { background:var(--surface-100); color:var(--ink); }
+  .bd-btn--danger { background:var(--surface-100); color:var(--ink); border-style:dashed; }
+  .bd-btn[disabled] { background:var(--surface-200); color:var(--ink-muted); border-color:var(--line-soft); border-style:dotted; box-shadow:none; transform:none; cursor:not-allowed; }
+
+  .bd-chip { display:inline-flex; align-items:center; gap:var(--space-2); padding:var(--space-1) var(--space-3); background:var(--surface-100); color:var(--ink); border:var(--border-thick) solid var(--line); border-radius:var(--radius-pill); box-shadow:var(--shadow-hard-sm); font:700 12px/16px var(--font-sans); font-variation-settings:"ROND" 0; letter-spacing:.18em; text-transform:uppercase; }
+  .bd-chip--open { background:var(--fill); color:var(--on-fill); }
+  .bd-chip--closed { border-style:dashed; box-shadow:none; }
+  .bd-chip--house { box-shadow:var(--shadow-frame); margin:4px; }
+
+  .bd-field { display:grid; gap:var(--space-2); width:100%; max-width:320px; }
+  .bd-field__label { font:700 12px/16px var(--font-sans); font-variation-settings:"ROND" 0; letter-spacing:.18em; text-transform:uppercase; color:var(--ink); }
+  .bd-input { font:400 16px/24px var(--font-sans); padding:var(--space-3) var(--space-4); background:var(--field); color:var(--ink); border:var(--border-thick) solid var(--line); border-radius:var(--radius-none); }
+  .bd-input::placeholder { color:var(--ink-muted); opacity:1; }
+  .bd-input[aria-invalid="true"] { border-style:dashed; }
+  .bd-field__help { font:400 14px/20px var(--font-sans); color:var(--ink-muted); }
+  .bd-field__error { font:700 14px/20px var(--font-sans); color:var(--ink); }
+
+  .bd-panel { margin:4px; padding:var(--space-6); background:var(--surface-100); color:var(--ink); border:var(--border-thick) solid var(--line); border-radius:var(--radius-none); box-shadow:var(--shadow-frame); }
+  .bd-panel--raised { box-shadow:var(--shadow-hard); }
+  .bd-panel__title { margin:0 0 var(--space-3); font:400 44px/46px var(--font-display); }
+  .bd-panel__body { margin:0; }
+
+  .bd-arch { width:320px; max-width:calc(100% - 8px); margin:4px; padding:var(--space-12) var(--space-6) var(--space-6); background:var(--surface-100); color:var(--ink); border:var(--border-thick) solid var(--line); border-bottom:0; border-radius:var(--radius-pill) var(--radius-pill) 0 0; box-shadow:var(--shadow-frame); text-align:center; }
+  .bd-arch__title { margin:0 0 var(--space-4); font:italic 400 44px/46px var(--font-display); }
+
+  .bd-title { display:grid; gap:var(--space-3); justify-items:center; width:100%; padding:var(--space-12) var(--space-6); background:var(--fill); color:var(--on-fill); text-align:center; outline:1px solid var(--on-fill); outline-offset:-10px; }
+  .bd-title__kicker { font:700 12px/16px var(--font-sans); font-variation-settings:"ROND" 0; letter-spacing:.18em; text-transform:uppercase; }
+  .bd-title__text { margin:0; font:italic 400 72px/72px var(--font-display); letter-spacing:-.01em; }
+  @media (max-width:600px) { .bd-title__text { font-size:48px; line-height:50px; } }
+
+  .bd-receipt { width:300px; max-width:100%; padding:var(--space-6) var(--space-4); background:var(--surface-100); color:var(--ink); border:var(--border-thin) solid var(--line-soft); font:400 13px/20px var(--font-mono); letter-spacing:.02em; text-transform:uppercase; }
+  .bd-receipt__head { margin:0 0 var(--space-3); font:italic 400 36px/36px var(--font-display); letter-spacing:-.01em; text-align:center; text-transform:none; }
+  .bd-receipt__row, .bd-receipt__total { display:flex; justify-content:space-between; gap:var(--space-4); }
+  .bd-receipt__rule { height:0; margin:var(--space-3) 0; border:0; border-top:1px dashed var(--line-soft); }
+  .bd-receipt__total { padding-top:var(--space-2); border-top:3px double var(--line); font-weight:700; }
+  .bd-receipt__foot { margin-top:var(--space-4); text-align:center; }
+
+  .bd-awning { --bd-awning-h:72px; height:var(--bd-awning-h); width:100%; border:var(--border-thick) solid var(--line); border-bottom:0; background:
+    radial-gradient(circle at 16px 0,var(--fill) 15.5px,transparent 16px) 0 100%/64px 16px repeat-x,
+    radial-gradient(circle at 16px 0,var(--surface-100) 12.5px,var(--line) 13px 16px,transparent 16.5px) 32px 100%/64px 16px repeat-x,
+    repeating-linear-gradient(90deg,var(--fill) 0 32px,var(--surface-100) 32px 64px) 0 0/100% calc(100% - 16px) no-repeat; }
+
+  .bd-checker { background:conic-gradient(var(--fill) 25%,var(--surface-100) 0 50%,var(--fill) 0 75%,var(--surface-100) 0) 0 0/32px 32px; }
+  .bd-halftone { background:radial-gradient(circle,var(--fill) 1.2px,transparent 1.6px) 0 0/8px 8px; }
+
+  .bd-step { animation:bd-step 120ms steps(4,end) both; }
+  @keyframes bd-step { from { opacity:0; transform:translateY(6px); } to { opacity:1; transform:none; } }
+
+  @media (prefers-reduced-motion: reduce) {
+    .bd-step { animation:none; }
+    .bd-btn, .toc a { transition:none; }
+    .bd-btn:hover, .bd-btn:active, .toc a:hover { transform:none; }
+  }
+
+  /* ---------- The picture house ---------- */
+
+  /* Photos are kept strictly black and white and pushed a little harder, like a print. */
+  .still { filter:grayscale(1) contrast(1.12) brightness(.92); }
+
+  /* Hero: a full-bleed film still with the title card set into it. */
+  .hero { position:relative; min-height:min(100svh, 980px); display:grid; grid-template-rows:auto 1fr; background:#000; color:#fff; overflow:hidden; border-bottom:var(--border-thick) solid var(--line); }
+  .hero .bd-awning { position:relative; z-index:2; border-left:0; border-right:0; border-top:0; }
+  .hero__photo { position:absolute; inset:0; margin:0; }
+  .hero__photo img { width:100%; height:100%; max-width:none; object-fit:cover; object-position:50% 40%; }
+  .hero__frame { position:absolute; inset:var(--space-6); top:calc(88px + var(--space-6)); border:1px solid rgba(255,255,255,.85); pointer-events:none; z-index:1; }
+  .hero__card { position:relative; z-index:2; align-self:end; justify-self:start; margin:0 0 var(--space-12) var(--space-12); padding:var(--space-8) var(--space-8) var(--space-6);
+    background:#000; color:#fff; outline:1px solid #fff; outline-offset:-10px; max-width:min(640px, calc(100% - 2 * var(--space-6))); }
+  .hero__card h1 { margin:var(--space-3) 0 0; }
+  .hero__card h1 img { width:min(460px, 100%); }
+  .hero__card .tagline { margin:var(--space-3) 0 0; font:italic 400 34px/40px var(--font-display); color:#a6a6a6; }
+  .hero__slate { position:absolute; z-index:2; right:var(--space-12); bottom:var(--space-12); margin:0; text-align:right; font:400 12px/18px var(--font-mono); letter-spacing:.08em; text-transform:uppercase; color:#fff; background:#000; padding:var(--space-2) var(--space-3); }
+  @media (max-width:720px) {
+    .hero { min-height:auto; }
+    .hero__photo { position:relative; inset:auto; aspect-ratio:4 / 5; }
+    .hero__frame { display:none; }
+    .hero__card { margin:0; max-width:none; width:100%; outline-offset:-8px; padding:var(--space-6); }
+    .hero__card .tagline { font-size:26px; line-height:32px; }
+    .hero__slate { right:var(--space-4); bottom:auto; top:calc(88px + var(--space-4)); }
+  }
+
+  /* A subtitle bar, the way a foreign film tells you what was said. */
+  .subtitle { display:inline-block; padding:var(--space-1) var(--space-3); background:#000; color:#fff; font:400 18px/28px var(--font-sans); box-decoration-break:clone; -webkit-box-decoration-break:clone; }
+
+  /* Sticky contents bar */
+  .topbar { position:sticky; top:0; z-index:10; background:var(--surface-100); border-bottom:var(--border-thick) solid var(--line); }
+  .topbar__in { max-width:1040px; margin:0 auto; display:flex; align-items:center; gap:var(--space-4); padding:var(--space-3) max(var(--space-4), env(safe-area-inset-right)) var(--space-3) max(var(--space-4), env(safe-area-inset-left)); }
+  .topbar__mark { display:flex; align-items:center; gap:var(--space-3); flex:none; text-decoration:none; }
+  .topbar__mark img { width:22px; height:auto; }
+  .topbar .toc { flex:1; min-width:0; flex-wrap:nowrap; justify-content:flex-start; margin:0; overflow-x:auto; scrollbar-width:none; padding:3px 3px 6px; }
+  .topbar .toc::-webkit-scrollbar { display:none; }
+  .topbar .toc a { white-space:nowrap; border-width:0; padding:var(--space-1) var(--space-2); }
+  .topbar .toc a[aria-current="true"] { background:var(--fill); color:var(--on-fill); }
+  @media (min-width:720px) { .topbar__in { padding-left:var(--space-8); padding-right:var(--space-8); } }
+
+  /* The storefront ticker */
+  .ticker { overflow:hidden; border-bottom:var(--border-thick) solid var(--line); background:var(--fill); color:var(--on-fill); }
+  .ticker__track { display:flex; width:max-content; animation:ticker 40s linear infinite; }
+  .ticker__track span { padding:var(--space-3) var(--space-6); font:700 12px/16px var(--font-sans); letter-spacing:.18em; text-transform:uppercase; white-space:nowrap; }
+  @keyframes ticker { to { transform:translateX(-50%); } }
+
+  /* A letterboxed film still between sections */
+  .reel { margin:0 calc(50% - 50vw); padding:var(--space-12) 0; background:#000; color:#fff; border-top:var(--border-thick) solid var(--line); border-bottom:var(--border-thick) solid var(--line); }
+  .reel__in { max-width:1040px; margin:0 auto; padding:0 var(--space-4); }
+  @media (min-width:720px) { .reel__in { padding:0 var(--space-8); } }
+  .reel__frame { position:relative; margin:0; border:var(--border-thick) solid #fff; box-shadow:0 0 0 3px #000, 0 0 0 4px #fff; }
+  .reel__frame img { width:100%; aspect-ratio:21 / 9; object-fit:cover; object-position:50% 45%; }
+  .reel__sub { position:absolute; left:0; right:0; bottom:var(--space-6); text-align:center; padding:0 var(--space-4); }
+  .reel__meta { display:flex; flex-wrap:wrap; justify-content:space-between; gap:var(--space-2) var(--space-6); margin-top:var(--space-4); font:400 12px/18px var(--font-mono); letter-spacing:.08em; text-transform:uppercase; color:#a6a6a6; }
+  .reel__meta a { color:#fff; }
+  @media (max-width:600px) { .reel__frame img { aspect-ratio:4 / 3; } .reel__sub { bottom:var(--space-3); } .subtitle { font-size:15px; line-height:24px; } }
+
+  /* Section openers read like reel numbers. */
+  .kicker { display:flex; align-items:center; gap:var(--space-3); }
+  .kicker::after { content:""; flex:1; height:0; border-top:1px dashed var(--line-soft); }
+
+  .foot { padding-top:var(--space-12); display:flex; flex-wrap:wrap; justify-content:space-between; align-items:center; gap:var(--space-4); }
+  .floor { height:96px; margin:var(--space-12) calc(50% - 50vw) 0; border-top:var(--border-thick) solid var(--line); }
+
+  /* Motion opinions */
+  .opinions { display:grid; grid-template-columns:repeat(auto-fit, minmax(280px, 1fr)); border-top:var(--border-thick) solid var(--line); border-left:var(--border-thick) solid var(--line); }
+  .opinion { position:relative; padding:var(--space-6) var(--space-6) var(--space-8); border-right:var(--border-thick) solid var(--line); border-bottom:var(--border-thick) solid var(--line); }
+  .opinion__no { display:block; margin-bottom:var(--space-3); font:italic 400 64px/56px var(--font-display); }
+  .opinion h4 { margin:0 0 var(--space-2); font:700 20px/26px var(--font-sans); letter-spacing:-.01em; }
+  .opinion p { margin:0; color:var(--ink-muted); font-size:15px; line-height:22px; }
+
+  .demos { display:grid; grid-template-columns:repeat(auto-fit, minmax(260px, 1fr)); gap:var(--space-4); }
+  .demo { margin:0; border:var(--border-thick) solid var(--line); display:flex; flex-direction:column; }
+  .demo__stage { flex:1; min-height:200px; display:grid; place-items:center; padding:var(--space-6); }
+  .demo__stage--split { grid-template-columns:1fr 1fr; gap:var(--space-4); }
+  .demo__half { display:grid; justify-items:center; gap:var(--space-3); }
+  .demo__card { margin:4px; padding:var(--space-4) var(--space-4); }
+  .demo__tag { font-size:11px; }
+  .demo figcaption { display:flex; justify-content:space-between; align-items:center; gap:var(--space-3); padding:var(--space-3) var(--space-4); border-top:var(--border-thick) solid var(--line); font-size:13px; line-height:18px; }
+  .demo figcaption .muted { text-align:right; }
+  .demo__swap { width:100%; max-width:220px; height:72px; display:grid; }
+  .demo__view { grid-area:1 / 1; display:grid; place-items:center; border:var(--border-thick) solid var(--line); box-shadow:var(--shadow-hard-sm); }
+  .demo__view[data-view="b"] { background:var(--fill); color:var(--on-fill); }
+  .play-cut { animation:bd-step 120ms steps(4,end) both; }
+  .play-fade { animation:fade-slow 900ms ease-in-out both; }
+  @keyframes fade-slow { from { opacity:0; } }
+
+  /* Sign-in field: input and button fused, as on bodega */
+  .bd-signin { display:flex; width:100%; max-width:440px; background:var(--field); border:var(--border-thick) solid var(--line); box-shadow:var(--shadow-hard-sm); transition:transform 150ms var(--ease-out), box-shadow 150ms var(--ease-out); }
+  .bd-signin:focus-within { transform:translate(-3px,-3px); box-shadow:var(--shadow-hard); }
+  .bd-signin:has(.bd-btn:active) { transform:translate(3px,3px); box-shadow:none; transition-duration:40ms; }
+  .bd-signin input { flex:1; min-width:0; padding:var(--space-4); border:0; outline:0; background:transparent; color:var(--ink); font:400 18px/24px var(--font-sans); }
+  .bd-signin input::placeholder { color:var(--ink-muted); }
+  .bd-signin .bd-btn { border:0; border-left:var(--border-thick) solid var(--line); box-shadow:none; transform:none; background:var(--surface-100); color:var(--ink); }
+  .bd-signin .bd-btn:focus-visible { outline-offset:-8px; outline-color:currentColor; }
+  .bd-signin.is-ready .bd-btn { background:var(--fill); color:var(--on-fill); }
+  @media (max-width:420px) { .bd-signin { flex-direction:column; } .bd-signin .bd-btn { border-left:0; border-top:var(--border-thick) solid var(--line); } }
+
+  /* About: a tall still beside the words */
+  .split { display:grid; grid-template-columns:minmax(0, 1.1fr) minmax(0, 1fr); gap:var(--space-8); align-items:stretch; }
+  .split__photo { margin:0; position:relative; border:var(--border-thick) solid var(--line); box-shadow:var(--shadow-hard); min-height:520px; }
+  .split__photo img { position:absolute; inset:0; width:100%; height:100%; max-width:none; object-fit:cover; object-position:42% 50%; }
+  .split__photo .subtitle { position:absolute; left:var(--space-4); right:var(--space-4); bottom:var(--space-4); width:fit-content; margin:0 auto; }
+  @media (max-width:820px) { .split { grid-template-columns:1fr; } .split__photo { min-height:0; aspect-ratio:4 / 5; } }
+
+
+  /* ---------- 1950s Vogue ---------- */
+
+  /* Cover: masthead across the top of a full-bleed still, cover lines down the side. */
+  .cover { position:relative; min-height:min(100svh, 1100px); overflow:hidden; background:#fff; color:#000; border-bottom:var(--border-thick) solid var(--line); display:grid; grid-template-rows:auto 1fr auto; }
+  .cover__photo { position:absolute; inset:0; margin:0; }
+  .cover__photo img { width:100%; height:100%; max-width:none; object-fit:cover; object-position:50% 70%; }
+  .cover__photo .still { filter:grayscale(1) contrast(1.05) brightness(1.06); }
+  .cover__issue span { background:#fff; padding:2px 6px; }
+  .cover__top { position:relative; z-index:1; padding:var(--space-6) var(--space-6) 0; text-align:center; }
+  .cover__issue { display:flex; justify-content:space-between; gap:var(--space-4); margin:0 auto var(--space-3); max-width:1180px; padding-bottom:var(--space-2); border-bottom:1px solid #000;
+    font:400 11px/16px var(--font-mono); letter-spacing:.12em; text-transform:uppercase; }
+  .cover__mast { margin:0; }
+  .cover__mast img { width:min(1180px, 100%); margin:0 auto; }
+  .cover__lines { position:relative; z-index:1; align-self:end; margin:0 0 var(--space-12) var(--space-6); padding:0; list-style:none; display:grid; gap:var(--space-4); max-width:420px; }
+  .cover__lines li { display:grid; gap:var(--space-1); padding:var(--space-3) var(--space-4); background:#fff; border-left:var(--border-thick) solid #000; width:fit-content; }
+  .cover__lines em { font:italic 400 34px/36px var(--font-display); }
+  .cover__lines .label { font-size:10px; color:#595959; }
+  .cover__slate { position:absolute; z-index:1; right:var(--space-6); bottom:var(--space-12); margin:0; padding:var(--space-2) var(--space-3); background:#000; color:#fff;
+    font:400 11px/16px var(--font-mono); letter-spacing:.12em; text-transform:uppercase; writing-mode:vertical-rl; }
+  @media (max-width:720px) {
+    .cover { min-height:auto; }
+    .cover__photo { position:relative; inset:auto; grid-row:2; aspect-ratio:4 / 5; }
+    .cover__photo img { object-position:40% 60%; }
+    .cover__issue span:nth-child(2) { display:none; }
+    .cover__lines { grid-row:3; margin:0; padding:var(--space-4); max-width:none; }
+    .cover__lines li { width:auto; }
+    .cover__lines em { font-size:28px; line-height:32px; }
+    .cover__slate { display:none; }
+  }
+
+  .topbar__mark img { width:18px; }
+
+  /* Section openers, set like a magazine department. */
+  section { padding:var(--space-16) 0; border-top:1px solid var(--line); }
+  .kicker { justify-content:center; gap:var(--space-4); margin:0 0 var(--space-4); color:var(--ink); }
+  .kicker::before, .kicker::after { content:""; flex:0 1 96px; border-top:1px solid var(--line); }
+  .kicker span + span::before { content:"·"; margin-right:var(--space-4); }
+  section > h2 { text-align:center; font:italic 400 clamp(56px, 10vw, 120px)/.95 var(--font-display); letter-spacing:-.02em; margin:0 auto var(--space-6); max-width:900px; }
+  section > .lead { text-align:center; margin:0 auto var(--space-12); max-width:620px; font:italic 400 26px/34px var(--font-display); color:var(--ink-muted); }
+  h3 { font-style:italic; }
+
+  /* Long reading: a drop cap, a pull quote. */
+  .prose--dropcap > p:first-child::first-letter { float:left; margin:6px var(--space-3) 0 0; font:italic 400 104px/80px var(--font-display); }
+  .prose--dropcap p { font-size:18px; line-height:29px; }
+  .pull { margin:var(--space-8) 0; padding:var(--space-6) 0; border-top:var(--border-thick) solid var(--line); border-bottom:1px solid var(--line); font:italic 400 40px/44px var(--font-display); letter-spacing:-.01em; }
+
+  .split { grid-template-columns:minmax(0, 1.15fr) minmax(0, 1fr); gap:var(--space-12); }
+  .split__photo { border:0; box-shadow:none; min-height:640px; }
+  .split__photo img { object-position:38% 50%; }
+  .split__photo .subtitle { left:var(--space-6); right:var(--space-6); bottom:var(--space-6); text-align:center; font-size:16px; line-height:26px; }
+  @media (max-width:820px) { .split { grid-template-columns:1fr; gap:var(--space-8); } .split__photo { min-height:0; aspect-ratio:4 / 5; } .pull { font-size:32px; line-height:36px; } }
+
+  /* Spreads run off the edge of the page. */
+  .reel { margin:0 calc(50% - 50vw); padding:0 0 var(--space-6); background:#000; border:0; }
+  .reel__frame { border:0; box-shadow:none; }
+  .reel__frame img { aspect-ratio:auto; height:min(88svh, 900px); object-position:80% 35%; }
+  .reel__sub { bottom:var(--space-12); }
+  .reel__sub .subtitle { font:italic 400 clamp(28px, 4vw, 48px)/1.2 var(--font-display); padding:var(--space-2) var(--space-6); }
+  .reel__meta { max-width:1040px; margin:var(--space-4) auto 0; padding:0 var(--space-8); }
+  @media (max-width:720px) { .reel__frame img { height:70svh; } .reel__meta { padding:0 var(--space-4); } }
+
+  @media (prefers-reduced-motion: reduce) { .ticker__track, .play-cut, .play-fade { animation:none; } .bd-signin { transition:none; } .bd-signin:focus-within, .bd-signin:has(.bd-btn:active) { transform:none; } }
+</style>
+</head>
+<body>
+<header class="cover">
+  <figure class="cover__photo">
+    <img class="still" alt="Seven men in hats, suspenders and waistcoats wait on a rail outside the Baker-Boyer National Bank."
+      src="https://images.unsplash.com/photo-1572972520867-b87dc7707b3d?auto=format&fit=crop&w=2000&q=80" srcset="https://images.unsplash.com/photo-1572972520867-b87dc7707b3d?auto=format&fit=crop&w=800&q=80 800w, https://images.unsplash.com/photo-1572972520867-b87dc7707b3d?auto=format&fit=crop&w=1400&q=80 1400w, https://images.unsplash.com/photo-1572972520867-b87dc7707b3d?auto=format&fit=crop&w=2400&q=80 2400w" sizes="100vw" fetchpriority="high">
+  </figure>
+  <div class="cover__top">
+    <p class="cover__issue"><span>Vol. I · No. 1</span><span>The black-and-white issue</span><span>On the house</span></p>
+    <h1 class="cover__mast"><img src="logos/bodega-wordmark.svg" alt="Bodega" width="427" height="119"></h1>
+  </div>
+  <ul class="cover__lines">
+    <li><em>No questions asked.</em><span class="label">The house rules, in one line</span></li>
+    <li><em>Black, white, nothing else.</em><span class="label">Color without color</span></li>
+    <li><em>Nine opinions on motion.</em><span class="label">Fast is polite</span></li>
+  </ul>
+  <p class="cover__slate">The brand guide</p>
+</header>
+
+<nav class="topbar" aria-label="Contents">
+  <div class="topbar__in">
+    <a class="topbar__mark label" href="#top"><img src="logos/bodega-monogram-reverse.svg" alt="" width="22" height="27">The guide</a>
+    <ul class="toc label">
+      <li><a href="#about">About</a></li>
+      <li><a href="#voice">Voice</a></li>
+      <li><a href="#color">Color</a></li>
+      <li><a href="#type">Type</a></li>
+      <li><a href="#shape">Shape</a></li>
+      <li><a href="#motion">Motion</a></li>
+      <li><a href="#components">Components</a></li>
+      <li><a href="#logo">Logo</a></li>
+      <li><a href="#tokens">Tokens</a></li>
+    </ul>
+  </div>
+</nav>
+
+<div class="ticker" aria-hidden="true">
+  <div class="ticker__track">
+    <span>● Open</span><span>No questions asked</span><span>★ On the house</span><span>Get it done</span><span>One moment</span><span>Nothing on the shelf</span><span>Come again</span>
+    <span>● Open</span><span>No questions asked</span><span>★ On the house</span><span>Get it done</span><span>One moment</span><span>Nothing on the shelf</span><span>Come again</span>
+  </div>
+</div>
+
+<div class="wrap" id="top">
+  <main>
+
+    <!-- About -->
+    <section id="about">
+      <p class="kicker label"><span>No. 01</span><span>About</span></p>
+      <h2>The corner shop.</h2>
+      <p class="lead">Bodega is a small corner shop for web pages. Hand it a page and it gets the page a database, a sign-in, live updates and an AI. It has what you need, it does not make a fuss, and it never asks why.</p>
+      <div class="split">
+        <figure class="split__photo">
+          <img class="still" loading="lazy" alt="Four men in overcoats and hats lift a live turkey off the hood of a 1930s sedan lettered for a Duluth dealer."
+            src="https://images.unsplash.com/photo-1580117287417-dffd539907d9?auto=format&fit=crop&w=1400&q=80" srcset="https://images.unsplash.com/photo-1580117287417-dffd539907d9?auto=format&fit=crop&w=800&q=80 800w, https://images.unsplash.com/photo-1580117287417-dffd539907d9?auto=format&fit=crop&w=1400&q=80 1400w, https://images.unsplash.com/photo-1580117287417-dffd539907d9?auto=format&fit=crop&w=2400&q=80 2400w" sizes="(max-width: 820px) 100vw, 560px">
+          <figcaption class="subtitle">Somebody needed a turkey in Washington. It got there.</figcaption>
+        </figure>
+        <div class="prose prose--dropcap">
+          <p>The look is a 1950s Brooklyn Italian shopfront, shot as a black-and-white mobster film and set like a fashion magazine: a sharp Didone italic, striped awnings, a checkerboard floor, a painted window with a double rule around it. No color, ever.</p>
+          <p>It is discreet the way good service is discreet. Nobody asks what the database is for. Nobody needs to know who signed in. The page gets what it came for, and the door closes quietly behind it.</p>
+          <blockquote class="pull">The bodega asks no questions. It just gets it done.</blockquote>
+          <p class="muted">Old-school quality, no issues, no questions asked.</p>
+        </div>
+      </div>
+      <div class="grid grid--3" style="margin-top:var(--space-8)">
+        <div class="card"><h4 class="label">The shopfront</h4><p class="muted" style="margin:0">Striped scalloped awnings, a checker tile floor, an arched door, window lettering with a double rule.</p></div>
+        <div class="card"><h4 class="label">The film</h4><p class="muted" style="margin:0">Black and white, title cards, discretion as a brand. Quiet competence, never parody.</p></div>
+        <div class="card"><h4 class="label">The magazine</h4><p class="muted" style="margin:0">Big, sharp, high-contrast serif letters on a lot of ground, with plain sans beside them.</p></div>
+      </div>
+    </section>
+
+    <!-- Voice -->
+    <section id="voice">
+      <p class="kicker label"><span>No. 02</span><span>Voice</span></p>
+      <h2>The voice.</h2>
+      <p class="lead">Deadpan, discreet, quietly sure of itself. Short sentences that end in a full stop. It never apologizes, never explains itself twice and never asks why you want something.</p>
+      <div class="grid grid--2">
+        <div class="card">
+          <h4 class="label">Name</h4>
+          <p class="muted">BODEGA in the wordmark. Bodega in a sentence. Say "Bodega", never "the Bodega platform".</p>
+          <h4 class="label" style="margin-top:var(--space-6)">Casing</h4>
+          <p class="muted" style="margin:0">Headlines and sentences are sentence case. Labels, buttons and chips are ALL CAPS with wide tracking.</p>
+        </div>
+        <div class="card">
+          <h4 class="label">Never</h4>
+          <ul class="rules rules--dont">
+            <li>Exclamation marks.</li>
+            <li>Emoji.</li>
+            <li>Jokes at the user's expense.</li>
+            <li>Mob parody: no guns, no fedoras, no "capisce".</li>
+            <li>More than one Italian word on a screen, and only where a shopkeeper would say it ("grazie", "prego").</li>
+          </ul>
+        </div>
+      </div>
+
+      <h3>Copy, by moment</h3>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th scope="col">Moment</th><th scope="col">Copy</th></tr></thead>
+          <tbody>
+            <tr><td>Tagline</td><td>No questions asked.</td></tr>
+            <tr><td>Sign-in</td><td>Who sent you?</td></tr>
+            <tr><td>Main button</td><td><span class="label">Get it done</span></td></tr>
+            <tr><td>Cancel</td><td><span class="label">Never mind</span></td></tr>
+            <tr><td>Delete</td><td><span class="label">Throw it out</span>, then "Gone for good."</td></tr>
+            <tr><td>Success</td><td>Done.</td></tr>
+            <tr><td>Loading</td><td>One moment.</td></tr>
+            <tr><td>Empty shelf</td><td>Nothing on the shelf.</td></tr>
+            <tr><td>No permission</td><td>Not on the list.</td></tr>
+            <tr><td>Not found</td><td>Can't find it.</td></tr>
+            <tr><td>Too many requests</td><td>Come back in a minute.</td></tr>
+            <tr><td>Offline</td><td>We're closed.</td></tr>
+            <tr><td>Free tier</td><td>On the house.</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <figure class="reel">
+      <div class="reel__frame">
+        <img class="still" loading="lazy" alt="Men in hats lean against the wall of the Baker-Boyer National Bank."
+          src="https://images.unsplash.com/photo-1572972520867-b87dc7707b3d?auto=format&fit=crop&w=2400&q=80" srcset="https://images.unsplash.com/photo-1572972520867-b87dc7707b3d?auto=format&fit=crop&w=800&q=80 800w, https://images.unsplash.com/photo-1572972520867-b87dc7707b3d?auto=format&fit=crop&w=1400&q=80 1400w, https://images.unsplash.com/photo-1572972520867-b87dc7707b3d?auto=format&fit=crop&w=2400&q=80 2400w" sizes="100vw">
+        <figcaption class="reel__sub"><span class="subtitle">Who sent you?</span></figcaption>
+      </div>
+      <p class="reel__meta"><span>Reel 2 · The regulars</span><span>Photograph via <a href="https://unsplash.com/">Unsplash</a></span></p>
+    </figure>
+
+    <!-- Color -->
+    <section id="color">
+      <p class="kicker label"><span>No. 03</span><span>Color</span></p>
+      <h2>Black, white, nothing else.</h2>
+      <p class="lead">Strictly black and white, in two themes. Day is a white ground with black ink. Night is the same thing inverted, and it is the default on screen. There is no accent color.</p>
+      <div class="prose">
+        <p class="muted">Emphasis is inversion: a black <code>fill</code> block with <code>on-fill</code> text. A grey <code>surface-200</code> is allowed for wells and table stripes. Every text pair is at least 4.5:1, and every border and focus ring at least 3:1, in both themes.</p>
+      </div>
+
+      <div class="swatches" style="margin-top:var(--space-6)">
+        <div class="swatch"><div class="swatch__chips"><span style="background:#fff;color:#000">Day #fff</span><span style="background:#000;color:#fff">Night #000</span></div><div class="swatch__body"><code>surface-100</code><p>Page ground.</p></div></div>
+        <div class="swatch"><div class="swatch__chips"><span style="background:#f2f2f2;color:#000">Day #f2f2f2</span><span style="background:#141414;color:#fff">Night #141414</span></div><div class="swatch__body"><code>surface-200</code><p>Wells and table stripes.</p></div></div>
+        <div class="swatch"><div class="swatch__chips"><span style="background:#000;color:#fff">Day #000</span><span style="background:#fff;color:#000">Night #fff</span></div><div class="swatch__body"><code>ink</code> · <code>line</code> · <code>fill</code> · <code>focus</code><p>Text, borders, solid fills, focus rings.</p></div></div>
+        <div class="swatch"><div class="swatch__chips"><span style="background:#595959;color:#fff">Day #595959</span><span style="background:#a6a6a6;color:#000">Night #a6a6a6</span></div><div class="swatch__body"><code>ink-muted</code><p>Secondary text, taglines, labels.</p></div></div>
+        <div class="swatch"><div class="swatch__chips"><span style="background:#767676;color:#fff">Day #767676</span><span style="background:#8a8a8a;color:#000">Night #8a8a8a</span></div><div class="swatch__body"><code>line-soft</code><p>Quiet dividers and receipt rules.</p></div></div>
+        <div class="swatch"><div class="swatch__chips"><span style="background:#fff;color:#000">Day #fff</span><span style="background:#000;color:#fff">Night #000</span></div><div class="swatch__body"><code>on-fill</code> · <code>field</code><p>Text on a fill. Input background.</p></div></div>
+      </div>
+
+      <h3>Status without color</h3>
+      <p class="note" style="margin-bottom:var(--space-4)">Every state is a word, a glyph and a border style together. Errors begin with ✕.</p>
+      <div class="stage">
+        <span class="bd-chip bd-chip--open">● Open</span>
+        <span class="bd-chip bd-chip--closed">○ Closed</span>
+        <span class="bd-chip bd-chip--house">★ On the house</span>
+        <span class="bd-chip">Draft</span>
+      </div>
+    </section>
+
+    <!-- Type -->
+    <section id="type">
+      <p class="kicker label"><span>No. 04</span><span>Type</span></p>
+      <h2>The letters.</h2>
+      <p class="lead">Three faces. A sharp Didone for the name and headlines, a square sans for everything you read, a typewriter for receipts.</p>
+
+      <div class="faces">
+        <div class="face">
+          <span class="label muted">Display</span>
+          <p class="face__sample" style="font-family:var(--font-display);font-style:italic;color:var(--ink)">Bodega</p>
+          <p><strong style="color:var(--ink)">Instrument Serif.</strong> Italic for the name, headlines and the tagline. Roman for quieter titles. Never bold, never below 28px.</p>
+        </div>
+        <div class="face">
+          <span class="label muted">UI sans</span>
+          <p class="face__sample" style="font-family:var(--font-sans);font-weight:700;color:var(--ink)">Bodega</p>
+          <p><strong style="color:var(--ink)">Allo.</strong> Body text, labels and buttons. Headings and labels set roundness to 0 (<code>"ROND" 0</code>) so the letters stay square.</p>
+        </div>
+        <div class="face">
+          <span class="label muted">Receipts</span>
+          <p class="face__sample" style="font-family:var(--font-mono);font-size:44px;color:var(--ink)">BODEGA</p>
+          <p><strong style="color:var(--ink)">Space Mono.</strong> Typewriter lines, always capitals on a receipt. Also code and data.</p>
+        </div>
+      </div>
+
+      <h3>Scale</h3>
+      <div>
+        <div class="specimen"><span class="specimen__meta">display-xl · 128/116 · Instrument Serif Italic · caps</span><span style="font:italic 400 clamp(64px, 14vw, 128px)/1 var(--font-display);letter-spacing:-.01em">BODEGA</span></div>
+        <div class="specimen"><span class="specimen__meta">display-lg · 72/72 · Instrument Serif Italic</span><span style="font:italic 400 clamp(44px, 9vw, 72px)/1 var(--font-display);letter-spacing:-.01em">No questions asked.</span></div>
+        <div class="specimen"><span class="specimen__meta">display-md · 44/46 · Instrument Serif</span><span style="font:400 44px/46px var(--font-display)">Consider it done.</span></div>
+        <div class="specimen"><span class="specimen__meta">headline · 28/34 · Allo 700</span><span style="font:700 28px/34px var(--font-sans);letter-spacing:-.01em">A database, a login, a brain</span></div>
+        <div class="specimen"><span class="specimen__meta">subhead · 20/28 · Allo 600</span><span style="font:600 20px/28px var(--font-sans)">One script tag and you are open</span></div>
+        <div class="specimen"><span class="specimen__meta">body · 16/24 · Allo 400</span><span style="font:400 16px/24px var(--font-sans)">Hand us a page. We get it done.</span></div>
+        <div class="specimen"><span class="specimen__meta">body-sm · 14/20 · Allo 400</span><span style="font:400 14px/20px var(--font-sans)">Your data stays yours until you say otherwise.</span></div>
+        <div class="specimen"><span class="specimen__meta">caption · 12/16 · Allo 500</span><span style="font:500 12px/16px var(--font-sans);letter-spacing:.01em">Updated 2 minutes ago</span></div>
+        <div class="specimen"><span class="specimen__meta">label · 12/16 · Allo 700 · tracked .18em · caps</span><span class="label">No questions asked</span></div>
+        <div class="specimen"><span class="specimen__meta">receipt · 13/20 · Space Mono · caps</span><span style="font:400 13px/20px var(--font-mono);letter-spacing:.02em;text-transform:uppercase">1 database ........ on the house</span></div>
+        <div class="specimen"><span class="specimen__meta">code · 14/22 · Space Mono</span><code>site.db.collection("notes")</code></div>
+      </div>
+    </section>
+
+    <!-- Shape -->
+    <section id="shape">
+      <p class="kicker label"><span>No. 05</span><span>Shape and line</span></p>
+      <h2>Shape and line.</h2>
+      <p class="lead">Square corners everywhere. Thick borders, a double rule like window lettering, and a hard sign-painter shadow with no blur.</p>
+      <div class="grid grid--2">
+        <div class="card">
+          <h4 class="label">Corners</h4>
+          <p class="muted">Square. The one curve is the arch of a shop door or window: <code>radius-pill</code> on the top two corners. Chips are the only full pill.</p>
+        </div>
+        <div class="card">
+          <h4 class="label">Lines</h4>
+          <p class="muted">Controls and panels carry a 3px border. A panel adds a double-rule frame (<code>shadow-frame</code>). Rules inside a panel are 1px dashed.</p>
+        </div>
+        <div class="card">
+          <h4 class="label">Shadows</h4>
+          <p class="muted">A hard offset in the ink color: 3px at rest, 6px when raised or hovered. No blur, ever.</p>
+        </div>
+        <div class="card">
+          <h4 class="label">Texture</h4>
+          <p class="muted">Awning stripes at a 32px pitch with half-round scallops, a checker tile floor, and a halftone dot field used sparingly. No gradients, grain or noise.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- Motion -->
+    <section id="motion">
+      <p class="kicker label"><span>No. 06</span><span>Motion</span></p>
+      <h2>On motion.</h2>
+      <p class="lead">A good shopkeeper doesn't perform. Motion in Bodega is a cut, a press and a nod: it tells you something happened, then gets out of the way.</p>
+
+      <div class="opinions">
+        <article class="opinion"><span class="opinion__no">1</span><h4>Cut, don't dissolve.</h4><p>Things arrive in four hard frames over 120ms, like a splice. A slow fade is a film student's idea of drama.</p></article>
+        <article class="opinion"><span class="opinion__no">2</span><h4>Fast is polite.</h4><p>Nothing takes longer than 300ms. A press answers in 40ms. If you can watch it finish, it's too slow.</p></article>
+        <article class="opinion"><span class="opinion__no">3</span><h4>Leave faster than you came.</h4><p>Exits take 90ms, entrances 300ms. Nobody waits for the door to close.</p></article>
+        <article class="opinion"><span class="opinion__no">4</span><h4>Lift, then sink.</h4><p>Buttons rise 3px toward you on hover and sink 3px into the page when pressed. Three pixels. Never more.</p></article>
+        <article class="opinion"><span class="opinion__no">5</span><h4>One curve.</h4><p><code>cubic-bezier(0.23, 1, 0.32, 1)</code>. Quick out of the gate, settles quietly. No bounce, no elastic, no overshoot.</p></article>
+        <article class="opinion"><span class="opinion__no">6</span><h4>Nothing comes from nowhere.</h4><p>Never scale from zero. Start at .97 and 8px away. Things were already in the shop; you just noticed them.</p></article>
+        <article class="opinion"><span class="opinion__no">7</span><h4>Move the sign, not the shop.</h4><p>Animate <code>transform</code> and <code>box-shadow</code> only. Never <code>transition: all</code>. Layout stays put.</p></article>
+        <article class="opinion"><span class="opinion__no">8</span><h4>Say it, don't spin.</h4><p>No spinners, no skeleton shimmer. A label that says "Sending" with three stepped dots, or "One moment."</p></article>
+        <article class="opinion"><span class="opinion__no">9</span><h4>When in doubt, cut it.</h4><p>If an animation doesn't tell you what just happened, it's decoration. Bodega doesn't decorate. With reduced motion on, everything simply appears.</p></article>
+      </div>
+
+      <h3>See for yourself</h3>
+      <div class="demos">
+        <figure class="demo">
+          <div class="demo__stage"><button class="bd-btn" type="button">Press me</button></div>
+          <figcaption><span class="label">Lift and sink</span><span class="muted">Hover lifts 3px in 120ms. Press sinks 3px in 40ms.</span></figcaption>
+        </figure>
+        <figure class="demo">
+          <div class="demo__stage demo__stage--split">
+            <div class="demo__half"><div class="bd-panel demo__card" data-play="cut"><p class="label" style="margin:0">● Open</p></div><span class="label demo__tag">✓ Cut</span></div>
+            <div class="demo__half"><div class="bd-panel demo__card" data-play="fade"><p class="label" style="margin:0">● Open</p></div><span class="label muted demo__tag">✕ Fade</span></div>
+          </div>
+          <figcaption><span class="label">Cut, not dissolve</span><button class="linkish" type="button" data-replay>Run it again</button></figcaption>
+        </figure>
+        <figure class="demo">
+          <div class="demo__stage"><div class="demo__swap" id="swap"><div class="demo__view" data-view="a"><span class="label">Who sent you?</span></div><div class="demo__view" data-view="b" hidden><span class="label">✓ Sent</span></div></div></div>
+          <figcaption><span class="label">Leave fast, arrive calm</span><button class="linkish" type="button" id="swap-btn">Swap</button></figcaption>
+        </figure>
+      </div>
+
+      <h3>Timing</h3>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th scope="col">Moment</th><th scope="col">Duration</th><th scope="col">Curve</th></tr></thead>
+          <tbody>
+            <tr><td>Press</td><td><code>40ms</code></td><td><code>ease-out</code> (the one curve)</td></tr>
+            <tr><td>Hover lift, focus lift</td><td><code>120–150ms</code></td><td><code>ease-out</code></td></tr>
+            <tr><td>Appear (panels, states)</td><td><code>120ms</code></td><td><code>steps(4, end)</code></td></tr>
+            <tr><td>Exit</td><td><code>90ms</code></td><td><code>ease-out</code>, to scale .98 and transparent</td></tr>
+            <tr><td>Enter after a swap</td><td><code>300ms</code>, children 40ms apart</td><td><code>ease-out</code>, from 8px and scale .97</td></tr>
+            <tr><td>An error</td><td><code>240ms</code>, once</td><td>A short shake, then a dashed border</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <p class="note" style="margin-top:var(--space-4)">Never: bounce, parallax, fade-in on scroll, confetti, loading spinners, skeleton shimmer, or anything that loops while you're trying to read. The ticker at the top is the one sign in the window, and it stops for reduced motion.</p>
+    </section>
+
+    <!-- Components -->
+    <section id="components">
+      <p class="kicker label"><span>No. 07</span><span>Components</span></p>
+      <h2>The counter.</h2>
+      <p class="lead">Plain CSS classes, prefixed <code style="font-size:18px">bd-</code>, built on the tokens. Any page can use them. Night above, Day below.</p>
+
+      <h3>Button</h3>
+      <div class="stage">
+        <button class="bd-btn" type="button">Get it done</button>
+        <button class="bd-btn bd-btn--quiet" type="button">Never mind</button>
+        <button class="bd-btn bd-btn--danger" type="button">Throw it out</button>
+        <button class="bd-btn" type="button" disabled>Closed</button>
+      </div>
+      <div class="stage day" style="border-top:0">
+        <button class="bd-btn" type="button">Get it done</button>
+        <button class="bd-btn bd-btn--quiet" type="button">Never mind</button>
+        <button class="bd-btn bd-btn--danger" type="button">Throw it out</button>
+        <button class="bd-btn" type="button" disabled>Closed</button>
+      </div>
+      <p class="note" style="margin-top:var(--space-3)">One filled button per screen. Quiet is outlined. Danger is dashed and always says THROW IT OUT. Disabled goes grey and dotted and loses its shadow.</p>
+
+      <h3>Sign-in field</h3>
+      <div class="stage" style="flex-direction:column;align-items:flex-start">
+        <label class="label" for="c-signin">Email</label>
+        <form class="bd-signin" id="signin-demo" onsubmit="return false"><input id="c-signin" type="email" placeholder="you@example.com" autocomplete="off" spellcheck="false"><button class="bd-btn" type="submit">Send link</button></form>
+        <span class="note" style="font-family:var(--font-mono);font-size:12px">The link works once and expires in an hour.</span>
+      </div>
+      <p class="note" style="margin-top:var(--space-3)">The input and the button are one block. Focus lifts it toward you, pressing sinks it. The button stays outlined until there's an address worth sending to, then fills. Type one and see.</p>
+
+      <h3>Input</h3>
+      <div class="stage" style="align-items:flex-start">
+        <div class="bd-field"><label class="bd-field__label" for="c-email">Email</label><input id="c-email" class="bd-input" placeholder="you@example.com" autocomplete="off"><span class="bd-field__help">We send one link. That's all.</span></div>
+        <div class="bd-field"><label class="bd-field__label" for="c-pass">Password</label><input id="c-pass" class="bd-input" type="password" value="xxxxxxxx" aria-invalid="true" aria-describedby="c-pass-err" autocomplete="off"><span class="bd-field__error" id="c-pass-err">✕ Not on the list.</span></div>
+      </div>
+      <p class="note" style="margin-top:var(--space-3)">Labels are short nouns in caps. Solid border by default, dashed when invalid. Errors start with ✕.</p>
+
+      <h3>Panel</h3>
+      <div class="stage" style="align-items:flex-start">
+        <div class="bd-panel" style="width:300px;max-width:calc(100% - 8px)"><h4 class="bd-panel__title">Consider it done.</h4><p class="bd-panel__body">Your page has a database. Nobody asked why.</p></div>
+        <div class="bd-panel bd-panel--raised" style="width:300px;max-width:calc(100% - 8px)"><h4 class="bd-panel__title">On the house.</h4><p class="bd-panel__body">The first hundred requests cost nothing.</p></div>
+      </div>
+      <p class="note" style="margin-top:var(--space-3)">The default carries the double-rule frame. Raised swaps it for the hard shadow. Leave 4px around a framed panel.</p>
+
+      <div class="grid grid--2" style="margin-top:var(--space-8)">
+        <div>
+          <h3 style="margin-top:0">Arch</h3>
+          <div class="stage" style="justify-content:center;padding-bottom:0;align-items:flex-end">
+            <div class="bd-arch"><h4 class="bd-arch__title">Who sent you?</h4><div class="bd-field" style="margin:0 auto;text-align:left"><label class="bd-field__label" for="c-arch">Email</label><input id="c-arch" class="bd-input" placeholder="you@example.com" autocomplete="off"></div><p style="margin:var(--space-4) 0 0"><button class="bd-btn" type="button">Get it done</button></p></div>
+          </div>
+          <p class="note" style="margin-top:var(--space-3)">A shop doorway, for the one thing a visitor must do first. Keep it around 320px so the curve stays a half circle.</p>
+        </div>
+        <div>
+          <h3 style="margin-top:0">Receipt</h3>
+          <div class="stage" style="justify-content:center">
+            <div class="bd-receipt"><h4 class="bd-receipt__head">Bodega</h4>
+              <div class="bd-receipt__row"><span>1 database</span><span>on the house</span></div>
+              <div class="bd-receipt__row"><span>1 sign-in</span><span>on the house</span></div>
+              <div class="bd-receipt__row"><span>40 ai requests</span><span>0.12</span></div>
+              <hr class="bd-receipt__rule">
+              <div class="bd-receipt__total"><span>Total</span><span>0.12</span></div>
+              <div class="bd-receipt__foot">Come again.</div></div>
+          </div>
+          <p class="note" style="margin-top:var(--space-3)">Usage, billing and confirmations. Space Mono in caps, a double-ruled total, "Come again."</p>
+        </div>
+      </div>
+
+      <h3>Title card</h3>
+      <div class="bd-title"><span class="bd-title__kicker">Bodega presents</span><p class="bd-title__text">No questions asked.</p></div>
+      <p class="note" style="margin-top:var(--space-3)">A 1950s film title card for hero statements and section breaks. One per screen, under six words.</p>
+
+      <h3>Awning and floor</h3>
+      <div class="bd-awning" aria-hidden="true"></div>
+      <div class="grid grid--2" style="margin-top:var(--space-6)">
+        <div class="bd-checker" style="height:128px;border:var(--border-thick) solid var(--line)" role="img" aria-label="Checker tile floor"></div>
+        <div class="bd-halftone" style="height:128px;border:var(--border-thick) solid var(--line)" role="img" aria-label="Halftone dot field"></div>
+      </div>
+      <p class="note" style="margin-top:var(--space-3)">The awning goes once per screen, across the very top, never behind text; use a width that's a multiple of 64px so stripes land whole. One pattern per screen, kept to a strip or a corner.</p>
+
+      <h3>Glyphs</h3>
+      <ul class="glyphs" aria-label="Approved glyphs">
+        <li>●</li><li>○</li><li>★</li><li>▲</li><li>✕</li><li>✓</li><li>▶</li><li>■</li>
+      </ul>
+      <p class="note" style="margin-top:var(--space-3)">There is no icon set. Use these Unicode glyphs in the label style. If an icon must be drawn: a 3px stroke, square caps, one ink. No emoji.</p>
+    </section>
+
+    <!-- Logo -->
+    <section id="logo">
+      <p class="kicker label"><span>No. 08</span><span>Logo</span></p>
+      <h2>The sign.</h2>
+      <p class="lead">Four logos, each in one ink. Black for light grounds, <code style="font-size:18px">-reverse</code> in white for dark grounds. A logo in an image can't change color, so pick the file that matches the ground.</p>
+      <div class="logos">
+        <figure class="logo" style="margin:0"><div class="logo__ground logo__ground--night"><img src="logos/bodega-wordmark-reverse.svg" alt="Bodega wordmark, white" width="427" height="119" style="width:100%;max-width:300px"></div><figcaption class="logo__meta"><span><span class="label">Wordmark</span><br><code class="muted">bodega-wordmark-reverse.svg</code></span><a class="label" href="logos/bodega-wordmark-reverse.svg" download>SVG</a></figcaption></figure>
+        <figure class="logo" style="margin:0"><div class="logo__ground logo__ground--day"><img src="logos/bodega-wordmark.svg" alt="Bodega wordmark, black" width="427" height="119" style="width:100%;max-width:300px"></div><figcaption class="logo__meta"><span><span class="label">Wordmark</span><br><code class="muted">bodega-wordmark.svg</code></span><a class="label" href="logos/bodega-wordmark.svg" download>SVG</a></figcaption></figure>
+        <figure class="logo" style="margin:0"><div class="logo__ground logo__ground--night"><img src="logos/bodega-sign-reverse.svg" alt="Bodega sign, white" width="482" height="310"></div><figcaption class="logo__meta"><span><span class="label">Sign</span><br><code class="muted">bodega-sign-reverse.svg</code></span><a class="label" href="logos/bodega-sign-reverse.svg" download>SVG</a></figcaption></figure>
+        <figure class="logo" style="margin:0"><div class="logo__ground logo__ground--day"><img src="logos/bodega-sign.svg" alt="Bodega sign, black" width="482" height="310"></div><figcaption class="logo__meta"><span><span class="label">Sign</span><br><code class="muted">bodega-sign.svg</code></span><a class="label" href="logos/bodega-sign.svg" download>SVG</a></figcaption></figure>
+        <figure class="logo" style="margin:0"><div class="logo__ground logo__ground--night"><img src="logos/bodega-monogram-reverse.svg" alt="Bodega monogram, white" width="176" height="216" style="height:120px"></div><figcaption class="logo__meta"><span><span class="label">Monogram</span><br><code class="muted">bodega-monogram-reverse.svg</code></span><a class="label" href="logos/bodega-monogram-reverse.svg" download>SVG</a></figcaption></figure>
+        <figure class="logo" style="margin:0"><div class="logo__ground logo__ground--day"><img src="logos/bodega-monogram.svg" alt="Bodega monogram, black" width="176" height="216" style="height:120px"></div><figcaption class="logo__meta"><span><span class="label">Monogram</span><br><code class="muted">bodega-monogram.svg</code></span><a class="label" href="logos/bodega-monogram.svg" download>SVG</a></figcaption></figure>
+        <figure class="logo" style="margin:0"><div class="logo__ground logo__ground--night"><img src="logos/bodega-mark-reverse.svg" alt="Bodega awning mark, white" width="166" height="79" style="width:166px"></div><figcaption class="logo__meta"><span><span class="label">Awning mark</span><br><code class="muted">bodega-mark-reverse.svg</code></span><a class="label" href="logos/bodega-mark-reverse.svg" download>SVG</a></figcaption></figure>
+        <figure class="logo" style="margin:0"><div class="logo__ground logo__ground--day"><img src="logos/bodega-mark.svg" alt="Bodega awning mark, black" width="166" height="79" style="width:166px"></div><figcaption class="logo__meta"><span><span class="label">Awning mark</span><br><code class="muted">bodega-mark.svg</code></span><a class="label" href="logos/bodega-mark.svg" download>SVG</a></figcaption></figure>
+      </div>
+
+      <h3>Which one</h3>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th scope="col">Logo</th><th scope="col">What it is</th><th scope="col">Use</th></tr></thead>
+          <tbody>
+            <tr><td>Wordmark</td><td>BODEGA in Instrument Serif Italic, outlined</td><td>The main logo. Headers, documents, anywhere there is room.</td></tr>
+            <tr><td>Sign</td><td>Awning, wordmark, double rule and "No questions asked"</td><td>Storefront moments: splash screens, posters, social cards.</td></tr>
+            <tr><td>Monogram</td><td>A door-shaped arch with the italic B knocked out</td><td>App icon, avatar, favicon.</td></tr>
+            <tr><td>Awning mark</td><td>The striped awning alone</td><td>Small badges and dividers. Never the only logo on a page.</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="grid grid--2" style="margin-top:var(--space-6)">
+        <div class="card"><h4 class="label">Do</h4><ul class="rules rules--do"><li>Leave clear space equal to the height of the B on every side.</li><li>Keep the wordmark at 96px wide or larger.</li><li>Keep the monogram at 24px or larger.</li></ul></div>
+        <div class="card"><h4 class="label">Don't</h4><ul class="rules rules--dont"><li>Recolor, outline, slant or stretch it.</li><li>Add a shadow.</li><li>Set the name in another typeface.</li></ul></div>
+      </div>
+    </section>
+
+    <!-- Tokens -->
+    <section id="tokens">
+      <p class="kicker label"><span>No. 09</span><span>Tokens</span></p>
+      <h2>The ledger.</h2>
+      <p class="lead">Every value above, by name. Download <a href="tokens.json">tokens.json</a> to use them elsewhere.</p>
+
+      <h3 style="margin-top:0">Spacing</h3>
+      <div class="scale">
+        <div class="scale__row"><span>space-1</span><span class="muted">4px</span><span class="scale__bar" style="width:4px"></span></div>
+        <div class="scale__row"><span>space-2</span><span class="muted">8px</span><span class="scale__bar" style="width:8px"></span></div>
+        <div class="scale__row"><span>space-3</span><span class="muted">12px</span><span class="scale__bar" style="width:12px"></span></div>
+        <div class="scale__row"><span>space-4</span><span class="muted">16px</span><span class="scale__bar" style="width:16px"></span></div>
+        <div class="scale__row"><span>space-6</span><span class="muted">24px</span><span class="scale__bar" style="width:24px"></span></div>
+        <div class="scale__row"><span>space-8</span><span class="muted">32px</span><span class="scale__bar" style="width:32px"></span></div>
+        <div class="scale__row"><span>space-12</span><span class="muted">48px</span><span class="scale__bar" style="width:48px"></span></div>
+        <div class="scale__row"><span>space-16</span><span class="muted">64px</span><span class="scale__bar" style="width:64px"></span></div>
+      </div>
+
+      <h3>Radius, border, shadow</h3>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th scope="col">Token</th><th scope="col">Day</th><th scope="col">Night</th><th scope="col">Use</th></tr></thead>
+          <tbody>
+            <tr><td><code>radius-none</code></td><td colspan="2"><code>0px</code></td><td>Everything by default.</td></tr>
+            <tr><td><code>radius-pill</code></td><td colspan="2"><code>999px</code></td><td>The status chip, and the top corners of an Arch.</td></tr>
+            <tr><td><code>border-thick</code></td><td colspan="2"><code>3px</code></td><td>Controls, panels and title cards.</td></tr>
+            <tr><td><code>border-thin</code></td><td colspan="2"><code>1px</code></td><td>Rules inside a panel and receipt lines.</td></tr>
+            <tr><td><code>shadow-hard</code></td><td><code>6px 6px 0 0 #000</code></td><td><code>6px 6px 0 0 #fff</code></td><td>Raised panels and hovered buttons.</td></tr>
+            <tr><td><code>shadow-hard-sm</code></td><td><code>3px 3px 0 0 #000</code></td><td><code>3px 3px 0 0 #fff</code></td><td>Buttons and chips at rest.</td></tr>
+            <tr><td><code>shadow-frame</code></td><td><code>0 0 0 3px #fff, 0 0 0 4px #000</code></td><td><code>0 0 0 3px #000, 0 0 0 4px #fff</code></td><td>The double-rule frame around a panel.</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <h3>Focus</h3>
+      <p class="note">A solid 3px <code>focus</code> outline with a 3px offset, on every interactive element. Tab through this page to see it.</p>
+    </section>
+
+    <section>
+      <p class="kicker label">Credits</p>
+      <div class="prose muted">
+        <p>Photographs: two archival black-and-white prints, via <a href="https://unsplash.com/">Unsplash</a>.</p>
+        <p>Instrument Serif and Space Mono are open-source fonts from Google Fonts. Allo is by Josh Puckett (allo.joshpuckett.me). All three are licensed under the SIL Open Font License.</p>
+      </div>
+    </section>
+  </main>
+
+  <footer class="foot">
+    <a class="label" href="../">● Back to Bodega</a>
+    <a class="label" href="../llms.md">llms.md</a>
+  </footer>
+  <div class="floor bd-checker" aria-hidden="true"></div>
+</div>
+
+<script>
+  // Cut vs fade: replay both side by side.
+  const play = () => document.querySelectorAll("[data-play]").forEach((el) => {
+    const cls = "play-" + el.dataset.play;
+    el.classList.remove(cls); void el.offsetWidth; el.classList.add(cls);
+  });
+  document.querySelector("[data-replay]").addEventListener("click", play);
+  new IntersectionObserver((entries, io) => {
+    if (entries.some((e) => e.isIntersecting)) { play(); io.disconnect(); }
+  }, { threshold: .6 }).observe(document.querySelector(".demo__stage--split"));
+
+  // Leave fast (90ms), arrive calm (300ms).
+  const reduce = () => matchMedia("(prefers-reduced-motion: reduce)").matches;
+  const ease = "cubic-bezier(0.23, 1, 0.32, 1)";
+  document.getElementById("swap-btn").addEventListener("click", () => {
+    const views = [...document.querySelectorAll("#swap .demo__view")];
+    const from = views.find((v) => !v.hidden), to = views.find((v) => v.hidden);
+    if (reduce()) { from.hidden = true; to.hidden = false; return; }
+    from.animate([{ opacity: 1, transform: "none" }, { opacity: 0, transform: "scale(.98)" }], { duration: 90, easing: ease }).onfinish = () => {
+      from.hidden = true; to.hidden = false;
+      to.animate([{ opacity: 0, transform: "translateY(8px) scale(.97)" }, { opacity: 1, transform: "none" }], { duration: 300, easing: ease });
+    };
+  });
+
+  // Sign-in field: fill the button once the address looks real.
+  const signin = document.getElementById("signin-demo");
+  signin.querySelector("input").addEventListener("input", (e) =>
+    signin.classList.toggle("is-ready", /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(e.target.value.trim())));
+
+  // Mark the section in view in the contents bar.
+  const links = new Map([...document.querySelectorAll(".topbar .toc a")].map((a) => [a.hash.slice(1), a]));
+  const spy = new IntersectionObserver((entries) => entries.forEach((e) => {
+    if (!e.isIntersecting) return;
+    links.forEach((a) => a.removeAttribute("aria-current"));
+    const a = links.get(e.target.id);
+    if (a) {
+      a.setAttribute("aria-current", "true");
+      const bar = a.closest(".toc");
+      bar.scrollTo({ left: a.offsetLeft - bar.clientWidth / 2 + a.clientWidth / 2, behavior: reduce() ? "auto" : "smooth" });
+    }
+  }), { rootMargin: "-40% 0px -55% 0px" });
+  document.querySelectorAll("main section[id]").forEach((s) => spy.observe(s));
+</script>
+</body>
+</html>

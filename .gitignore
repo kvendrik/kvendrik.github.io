@@ -3,3 +3,4 @@
 node_modules/
 public/**/*.html
 !public/bodega/index.html
+!public/bodega/brand/index.html
