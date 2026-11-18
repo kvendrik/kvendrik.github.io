@@ -219,7 +219,8 @@
   </footer>
 </div>
 
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<!-- supabase-js 2.118.0, served from this site (MIT, see vendor/supabase-js.LICENSE.txt) so no CDN can change it. -->
+<script src="vendor/supabase-js-2.118.0.js"></script>
 <script>
   // Publishable key: safe to ship. Row level security keeps each person's rows their own.
   const SUPABASE_URL = "https://ukxogodszvwxzlfxlgtv.supabase.co";
@@ -375,10 +376,15 @@
     input.select();
   };
 
-  // An expired or reused link comes back with the reason in the URL hash.
+  // An expired or reused link comes back with an error in the URL hash. Anyone can craft such a
+  // link, so never show its text: map known codes to our own words.
+  const LINK_ERRORS = {
+    otp_expired: "That link has expired or was already used.",
+    access_denied: "That link didn't work.",
+  };
   const back = new URLSearchParams(location.hash.slice(1));
-  if (back.get("error_description")) {
-    setHint("✕ " + back.get("error_description").replace(/\+/g, " ") + ". Send a new one.", true);
+  if (back.has("error") || back.has("error_code")) {
+    setHint("✕ " + (LINK_ERRORS[back.get("error_code")] || LINK_ERRORS.access_denied) + " Send a new one.", true);
     history.replaceState(null, "", location.pathname);
   }
 

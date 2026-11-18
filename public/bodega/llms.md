@@ -86,7 +86,7 @@ Replace `<ref>` with the Supabase project ref.
 | --- | --- |
 | Live page | https://kvendrik.com/bodega/ (from `public/bodega/` in `kvendrik/kvendrik.github.io`; `kvendrik.github.io/bodega/` redirects here because of the account's `CNAME`) |
 | Supabase project | `Bodega`, ref `ukxogodszvwxzlfxlgtv`, eu-central-1 |
-| Migrations | `create_notes_with_rls`, `notes_rls_select_auth_uid`, `ai_usage_quota` |
+| Migrations | `create_notes_with_rls`, `notes_rls_select_auth_uid`, `ai_usage_quota`, `notes_per_user_cap` |
 | Schema files | `bodega/supabase/schema.sql`, `bodega/supabase/ai_usage.sql` |
 | Edge Function | `ask` (verify_jwt on), source in `bodega/supabase/functions/ask/index.ts` |
 | AI limits | 20 questions per person per UTC day, 500 for the whole site |
@@ -168,7 +168,8 @@ the copy. These parts matter:
 ### Client
 
 ```html
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<!-- Serve an exact supabase-js build from your own site (vendor/), not a CDN. -->
+<script src="vendor/supabase-js-2.118.0.js"></script>
 <script>
   const sb = supabase.createClient("https://<ref>.supabase.co", "sb_publishable_...");
 </script>
@@ -192,8 +193,11 @@ const { error } = await sb.auth.signInWithOtp({
 
 - `emailRedirectTo` must match an entry in Supabase's Redirect URLs exactly, trailing slash
   included (step 4).
-- Links that fail come back as `#error=...&error_description=...`. Read the hash, show the
-  reason with "Send a new one.", then clear it with `history.replaceState`.
+- Links that fail come back as `#error=...&error_code=...&error_description=...`. **Never show
+  `error_description`**: anyone can craft a link that puts their own text on your page. Map the
+  known `error_code` values to your own words (`otp_expired`: "That link has expired or was already
+  used."; anything else: "That link didn't work."), add "Send a new one.", then clear the hash with
+  `history.replaceState`.
 - Map errors into plain words:
   - Status 429, or a message containing "rate limit": "Too many links sent. Give it an hour."
   - "...after N seconds": "Try again in N seconds", and start a countdown.
@@ -331,8 +335,7 @@ Don't start a background server. Stub the network:
 ```js
 // If the CDN is blocked, serve supabase-js from the npm package:
 //   npm pack @supabase/supabase-js@2 && tar xzf supabase-supabase-js-*.tgz
-await page.route("https://cdn.jsdelivr.net/**", r =>
-  r.fulfill({ path: "package/dist/umd/supabase.js", contentType: "text/javascript" }));
+// supabase-js is vendored, so no CDN stub is needed.
 await page.route("https://fonts.googleapis.com/**", r => r.abort());   // optional
 await page.route("**/auth/v1/otp**", r =>                               // fake a slow send
   setTimeout(() => r.fulfill({ status: 200, contentType: "application/json", body: "{}" }), 1200));
@@ -490,6 +493,9 @@ link, and `textContent` makes that harmless.
 
 ## Gotchas
 
+- **Anyone can lock everyone out of signing in** while the built-in mailer is on: requesting links
+  for random addresses uses up the project's 2 emails an hour. Custom SMTP, a higher email limit and
+  CAPTCHA (Authentication -> Attack Protection) fix it.
 - **Email limit:** Supabase's built-in mailer sends only a few emails per hour per project and is
   meant for testing. Before real traffic, add custom SMTP under Authentication -> Emails -> SMTP
   settings.
@@ -505,8 +511,14 @@ link, and `textContent` makes that harmless.
   why this guide uses them.
 - **An empty result while signed in** is normal for a new user. An RLS error on insert means
   `user_id` doesn't match `auth.uid()`; let the column default fill it in.
-- **The `supabase-js@2` CDN URL** follows the latest 2.x release. For a page that must never
-  change underneath you, pin an exact version.
+- **Don't load supabase-js from a CDN with a floating version** (`@2`). If the package or CDN is
+  compromised, that code runs on your page and can steal sessions and spend AI quota. Vendor an
+  exact build: `npm pack @supabase/supabase-js@<version>` (one that's been out at least two weeks),
+  copy `package/dist/umd/supabase.js` to `vendor/supabase-js-<version>.js`, and keep its MIT
+  `LICENSE` next to it.
+- **Cap rows per user.** Without a cap, one account can fill a free database. A `before insert`
+  trigger that counts the user's rows (with a per-user advisory lock against races) and raises
+  "The shelf is full." is enough. See `bodega/supabase/schema.sql`.
 
 ## Done means
 

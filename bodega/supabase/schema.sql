@@ -24,3 +24,27 @@ create policy "notes_update_own" on public.notes
 
 create policy "notes_delete_own" on public.notes
   for delete to authenticated using (user_id = (select auth.uid()));
+
+-- Applied as migration notes_per_user_cap: at most 100 rows per person.
+create or replace function public.notes_enforce_cap()
+returns trigger
+language plpgsql
+security invoker
+set search_path = ''
+as $$
+begin
+  -- Serialise inserts per user so parallel requests can't slip past the cap.
+  perform pg_advisory_xact_lock(hashtextextended(new.user_id::text, 0));
+  if (select count(*) from public.notes where user_id = new.user_id) >= 100 then
+    raise exception 'The shelf is full. Throw something out first.' using errcode = 'P0001';
+  end if;
+  return new;
+end;
+$$;
+
+drop trigger if exists notes_enforce_cap on public.notes;
+create trigger notes_enforce_cap
+  before insert on public.notes
+  for each row execute function public.notes_enforce_cap();
+
+revoke all on function public.notes_enforce_cap() from public, anon, authenticated;
