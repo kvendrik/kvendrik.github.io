@@ -229,7 +229,10 @@
   const sb = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
   const $ = (id) => document.getElementById(id);
   const say = (msg) => { $("status").textContent = msg || ""; };
-  const fail = (e) => say("✕ " + ((e && e.message) || "Can't find it."));
+  const fail = (e) => {
+    const m = (e && e.message) || "";
+    say("✕ " + (/row-level security/i.test(m) ? "Not on the list." : (m || "Can't find it.")));
+  };
   const reduced = () => matchMedia("(prefers-reduced-motion: reduce)").matches;
   const store = {
     get: (k) => { try { return localStorage.getItem(k); } catch { return null; } },
@@ -285,6 +288,8 @@
 
   function humanError(error) {
     const m = (error && error.message) || "";
+    // Supabase reports the friends-only sign-up guard as a generic database error.
+    if (/database error|not on the list/i.test(m)) return "Not on the list. Ask whoever sent you.";
     if (error && error.status === 429 || /rate limit/i.test(m)) return "Too many links sent. Give it an hour.";
     const wait = m.match(/after (\d+) seconds?/i);
     if (wait) { startCooldown(+wait[1]); return "Easy. Try again in " + wait[1] + " seconds."; }

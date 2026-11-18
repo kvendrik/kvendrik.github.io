@@ -59,6 +59,11 @@ Deno.serve(async (req) => {
   const user = auth?.user;
   if (authError || !user) return reply(401, { error: "Who sent you?" });
 
+  // Friends only: the address must be on the allow-list (public.allowed_emails).
+  const { data: listed } = await admin.from("allowed_emails").select("email")
+    .eq("email", (user.email ?? "").toLowerCase()).maybeSingle();
+  if (!listed) return reply(403, { error: "Not on the list." });
+
   let prompt = "";
   try {
     const body = await req.json();

@@ -86,7 +86,7 @@ Replace `<ref>` with the Supabase project ref.
 | --- | --- |
 | Live page | https://kvendrik.com/bodega/ (from `public/bodega/` in `kvendrik/kvendrik.github.io`; `kvendrik.github.io/bodega/` redirects here because of the account's `CNAME`) |
 | Supabase project | `Bodega`, ref `ukxogodszvwxzlfxlgtv`, eu-central-1 |
-| Migrations | `create_notes_with_rls`, `notes_rls_select_auth_uid`, `ai_usage_quota`, `notes_per_user_cap` |
+| Migrations | `create_notes_with_rls`, `notes_rls_select_auth_uid`, `ai_usage_quota`, `notes_per_user_cap`, `friends_allowlist`, `allowlist_private_schema` |
 | Schema files | `bodega/supabase/schema.sql`, `bodega/supabase/ai_usage.sql` |
 | Edge Function | `ask` (verify_jwt on), source in `bodega/supabase/functions/ask/index.ts` |
 | AI limits | 20 questions per person per UTC day, 500 for the whole site |
@@ -516,6 +516,14 @@ link, and `textContent` makes that harmless.
   exact build: `npm pack @supabase/supabase-js@<version>` (one that's been out at least two weeks),
   copy `package/dist/umd/supabase.js` to `vendor/supabase-js-<version>.js`, and keep its MIT
   `LICENSE` next to it.
+- **Friends only? Use an allow-list, not just RLS.** RLS alone still lets any email create an account
+  and receive emails (and use up the email limit). A `before insert` trigger on `auth.users` that
+  raises for unlisted addresses stops the account, and the email, from ever being created. Supabase
+  reports it to the page as "Database error saving new user", so map that to "Not on the list.".
+  Add the same check to the RLS policies (`private.is_allowed()`, which reads the caller's email from
+  the JWT; keep it in a schema the API doesn't serve, or the advisor flags it as callable) and to the Edge Function. Seed the list with existing accounts so the owner isn't locked
+  out. See `bodega/supabase/allowlist.sql`. To add someone, give the owner the SQL editor link
+  (`https://supabase.com/dashboard/project/<ref>/sql/new`) and a ready-to-run `insert`.
 - **Cap rows per user.** Without a cap, one account can fill a free database. A `before insert`
   trigger that counts the user's rows (with a per-user advisory lock against races) and raises
   "The shelf is full." is enough. See `bodega/supabase/schema.sql`.
