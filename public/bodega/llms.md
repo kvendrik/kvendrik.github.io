@@ -66,8 +66,11 @@ These cost the first build the most round trips:
    overrides last, and screenshot at 390px wide checking for horizontal overflow.
 9. **Called it done without an end-to-end test.** Everything was tested against stubs. Say so, and
    hand over the live checklist.
-10. **Hit Supabase's email limit on the very first test.** The built-in mailer sends **2 emails per
-    hour for the whole project**. Warn before they test. See "Email".
+10. **Hit Supabase's email limit on the very first test, and missed the bigger catch.** The built-in
+    mailer sends **2 emails per hour for the whole project**, and it **only sends to members of the
+    Supabase organization**, so friends get no email at all. I told the person "leave it, it's fine
+    for a few friends", which was wrong. Custom SMTP is required before anyone else can sign in. See
+    "Email".
 11. **Left sign-ups open on an app for friends.** Anyone with an email could create an account,
     store rows and use the AI quota. For anything friends-only, build the allow-list from the start.
 12. **Loaded supabase-js from a CDN with a floating version (`@2`).** A compromised package or CDN
@@ -89,7 +92,7 @@ project ref.
 | Edge Function secrets | `https://supabase.com/dashboard/project/<ref>/functions/secrets` | Name `OPENROUTER_API_KEY`, value the OpenRouter key, Save. Optional: `OPENROUTER_MODELS`. |
 | OpenRouter keys | `https://openrouter.ai/workspaces/default/keys` | Create a key (starts with `sk-or-`) and give it a credit limit. |
 | Function logs | `https://supabase.com/dashboard/project/<ref>/functions/ask/logs` | Where OpenRouter errors show up. |
-| SMTP | `https://supabase.com/dashboard/project/<ref>/auth/smtp` | Only if they want more than 2 emails an hour. See "Email". |
+| SMTP | `https://supabase.com/dashboard/project/<ref>/auth/smtp` | **Required before friends can sign in** (the built-in mailer only reaches the Supabase organization). See "Email". |
 | Email rate limit | `https://supabase.com/dashboard/project/<ref>/auth/rate-limits` | Raise "emails sent per hour" (only possible once custom SMTP is on). |
 | Gmail app password | `https://myaccount.google.com/apppasswords` | For sending through Gmail. Needs 2-Step Verification. |
 | Deploy runs | `https://github.com/<owner>/<repo>/actions` | Check the Pages deploy finished. |
@@ -213,8 +216,8 @@ page; until they're added, they see "Not on the list." and get no email.
 - **Remove:** `delete from public.allowed_emails where email = 'friend@example.com';` They're
   locked out at once (RLS and the function check the list); their account stays.
 - **See the list:** `select * from public.allowed_emails;`
-- Then send the friend the page link. While the built-in mailer is on (2 emails an hour), add
-  friends one or two at a time, or warn them they may have to wait.
+- Then send the friend the page link. **This only works once custom SMTP is set up**: Supabase's
+  built-in mailer doesn't send to anyone outside the Supabase organization (see "Email").
 
 ### Policies
 
@@ -409,23 +412,40 @@ rather than the magic-link email; either one signs them in.
 
 ## 5. Email
 
-Supabase's built-in mailer sends **2 emails per hour for the whole project**. A signup confirmation
-plus one magic link uses it up; after that, every request fails with `over_email_send_rate_limit`
-(`query_logs` on `auth_logs` shows it). Warn the person before their first test.
+**Supabase's built-in mailer is for the owner only.** Since September 2024 it sends only to members
+of the Supabase organization; anyone else gets `email_address_not_authorized` and no email. It also
+sends at most **2 emails per hour for the whole project** (`over_email_send_rate_limit`).
+`query_logs` on `auth_logs` shows both errors. So the owner can test, but **friends can't sign in
+until custom SMTP is set up**. Say this before the first test, not after.
+(Source: https://supabase.com/docs/guides/auth/auth-smtp and
+https://supabase.com/changelog/29370-supabase-auth-changes-to-default-email-provider)
 
-Options, least work first. Lead with the ones that need no domain:
+Options, for someone who won't touch DNS first:
 
-1. **Leave it.** With the allow-list, strangers can't use up the quota, and sessions persist, so
-   each friend needs an email about once per device. Fine for a handful of friends.
-2. **Send through Gmail (no domain needed).** Create an app password at
-   `https://myaccount.google.com/apppasswords` (needs 2-Step Verification). Then at
-   `https://supabase.com/dashboard/project/<ref>/auth/smtp` turn on custom SMTP: sender = their
-   Gmail address, host `smtp.gmail.com`, port `465`, username = their Gmail address, password = the
-   app password. Then raise the limit at `https://supabase.com/dashboard/project/<ref>/auth/rate-limits`.
-3. **A transactional email service** (Resend, Postmark and the like). Better deliverability, but
-   they want the domain verified with DNS records. Some people don't want that; ask first.
-4. **No email at all:** GitHub or Google sign-in. No email limit, and the allow-list still works on
-   the account's email. Needs an OAuth app and a secret pasted into Supabase.
+1. **Send through their Gmail (no DNS, best deliverability of the no-DNS options).** Mail goes
+   through Google's own servers, so it passes Gmail's sender checks (DMARC). Create an app password at
+   `https://myaccount.google.com/apppasswords` (needs 2-Step Verification), then at
+   `https://supabase.com/dashboard/project/<ref>/auth/smtp` turn on custom SMTP: sender = their Gmail
+   address, host `smtp.gmail.com`, port `465`, username = their Gmail address, password = the app
+   password. Raise the limit at `https://supabase.com/dashboard/project/<ref>/auth/rate-limits`.
+   Gmail allows a few hundred messages a day. Send one test link afterwards; this route isn't in
+   Supabase's docs.
+2. **Brevo with a single verified sender (no DNS).** Brevo verifies one address by email instead of
+   the domain. For free addresses like `@gmail.com` it swaps the sender to its own domain
+   (`brevosend.com`), so recipients may see a "via" label. SMTP host `smtp-relay.brevo.com`, login
+   = the Brevo account email plus an SMTP key.
+3. **A service with domain verification** (Resend, Postmark, SES and the like). Best deliverability,
+   but it needs DNS records on the domain. Ask first; some people don't want that.
+4. **No email at all:** GitHub or Google sign-in. The allow-list still works on the account's email.
+   Needs an OAuth app and a secret pasted into Supabase.
+
+Don't suggest these:
+- **SendGrid single-sender verification with a `@gmail.com` sender.** It isn't signed for gmail.com,
+  so Gmail's DMARC checks reject it or send it to spam. SendGrid itself says it's for testing.
+- **Resend without a domain.** `onboarding@resend.dev` only delivers to the Resend account's own
+  address.
+- **Adding friends to the Supabase organization** so the built-in mailer reaches them. That gives
+  them access to the project.
 
 Other email gotchas:
 - **Links work once and expire after 1 hour.** Corporate scanners can open a link before the person
