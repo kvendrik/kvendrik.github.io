@@ -18,7 +18,7 @@ block) and the script from `// ---------- Ask the shop ----------` up to (not in
 shows errors.
 
 Those two constants are the only values tied to the reference install in `index.html`. Check with
-`grep -n "ukxogodszvwxzlfxlgtv\|sb_publishable_" index.html` after editing: only the new values
+`grep -n "supabase.co\|sb_publishable_" index.html` after editing: only the new values
 should appear. The page links to `llms.md`; copy that too, or remove the footer link.
 
 ## Client

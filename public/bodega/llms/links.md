@@ -26,7 +26,7 @@ else's setup.
 | | |
 | --- | --- |
 | Live page | https://kvendrik.com/bodega/ (from `public/bodega/` in `kvendrik/kvendrik.github.io`; `kvendrik.github.io/bodega/` redirects there because of a `CNAME`) |
-| Supabase project | ref `ukxogodszvwxzlfxlgtv`, eu-central-1, free plan |
+| Supabase project | a dedicated project, free plan |
 | Sign-in | Google only |
 | Migrations | `create_notes_with_rls`, `notes_rls_select_auth_uid`, `ai_usage_quota`, `notes_per_user_cap`, `friends_allowlist`, `allowlist_private_schema`, `allowlist_select_own` |
 | Edge Function | `ask` (verify_jwt on) |

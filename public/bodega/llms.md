@@ -28,8 +28,8 @@ read; read it before doing the step.
 
 ## Placeholders
 
-Collect these first. **Never reuse the reference install's values** (`kvendrik.com`, project
-`ukxogodszvwxzlfxlgtv`, its keys); they belong to someone else.
+Collect these first. **Never reuse the reference install's values** (`kvendrik.com`, the Supabase URL and key in its
+page); they belong to someone else.
 
 | Placeholder | Meaning | Where from |
 | --- | --- | --- |
