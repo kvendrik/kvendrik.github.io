@@ -406,7 +406,9 @@
     if (!reduced()) answer.classList.add("is-entering");
   };
 
-  // The link usually opens in a new tab. When this tab comes back into view, pick up that session.
+  // ---------- Start-up ----------
+  // Render on every auth change. If the person signed in in another tab, pick that session up when
+  // this tab comes back into view.
   sb.auth.onAuthStateChange((_event, session) => render(session));
   sb.auth.getSession().then(({ data }) => render(data.session));
   document.addEventListener("visibilitychange", () => {
