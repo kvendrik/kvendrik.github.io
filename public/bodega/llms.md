@@ -85,7 +85,7 @@ project ref.
 | Task | Link | What to enter |
 | --- | --- | --- |
 | Auth URL configuration | `https://supabase.com/dashboard/project/<ref>/auth/url-configuration` | Site URL: the final page URL. Redirect URLs: Add URL, the same address. Save both. |
-| Add a friend | `https://supabase.com/dashboard/project/<ref>/sql/new` | `insert into public.allowed_emails (email, note) values ('friend@example.com', 'Sam');` then Run. Lowercase. |
+| Add a friend | `https://supabase.com/dashboard/project/<ref>/sql/new` | `insert into public.allowed_emails (email, note) values ('friend@example.com', 'Sam');` then Run. Lowercase. They then sign in themselves. Remove, list and no-SQL options under "Managing the list". |
 | Edge Function secrets | `https://supabase.com/dashboard/project/<ref>/functions/secrets` | Name `OPENROUTER_API_KEY`, value the OpenRouter key, Save. Optional: `OPENROUTER_MODELS`. |
 | OpenRouter keys | `https://openrouter.ai/workspaces/default/keys` | Create a key (starts with `sk-or-`) and give it a credit limit. |
 | Function logs | `https://supabase.com/dashboard/project/<ref>/functions/ask/logs` | Where OpenRouter errors show up. |
@@ -198,6 +198,23 @@ revoke all on function public.guard_signup() from public, anon, authenticated;
 create trigger guard_signup before insert on auth.users
   for each row execute function public.guard_signup();
 ```
+
+#### Managing the list (give the owner this, with their real links)
+
+The owner only adds an address. The friend still creates their own account by signing in on the
+page; until they're added, they see "Not on the list." and get no email.
+
+- **Add:** open `https://supabase.com/dashboard/project/<ref>/sql/new`, paste, Run:
+  `insert into public.allowed_emails (email, note) values ('friend@example.com', 'Sam');`
+  The address must be lowercase (the table rejects capitals; sign-in matches either way). The note
+  is optional.
+- **Without SQL:** `https://supabase.com/dashboard/project/<ref>/editor`, pick `allowed_emails`, then
+  Insert -> Insert row, type the email, Save.
+- **Remove:** `delete from public.allowed_emails where email = 'friend@example.com';` They're
+  locked out at once (RLS and the function check the list); their account stays.
+- **See the list:** `select * from public.allowed_emails;`
+- Then send the friend the page link. While the built-in mailer is on (2 emails an hour), add
+  friends one or two at a time, or warn them they may have to wait.
 
 ### Policies
 
