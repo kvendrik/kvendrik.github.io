@@ -1,12 +1,12 @@
 ---
 name: bodega
-description: Build a static web page where friends sign in with an emailed magic link, read and write their own rows in a Supabase database, and optionally ask an AI model through OpenRouter without exposing the key. Hosted free on GitHub Pages. Use when someone wants sign-in plus per-user data (and maybe AI) on a static site, with no server of their own and no paid developer accounts.
+description: Build a static web page where friends sign in with Google (or an emailed magic link), read and write their own rows in a Supabase database, and optionally ask an AI model through OpenRouter without exposing the key. Hosted free on GitHub Pages. Use when someone wants sign-in plus per-user data (and maybe AI) on a static site, with no server of their own and no paid developer accounts.
 ---
 
-# Bodega: magic-link sign-in, your own row, friends only
+# Bodega: Google sign-in, your own row, friends only
 
-A single static HTML page. A visitor types their email, clicks the link Supabase sends them, and
-lands back on the page signed in, looking at a value from the database that only they can see.
+A single static HTML page. A visitor clicks "Continue with Google" and lands back on the page
+signed in, looking at a value from the database that only they can see.
 Only addresses on an allow-list can get in. Optionally, they can ask an AI model a question; the
 API key stays on the server. There is no server of your own: Supabase handles auth, data and the
 one server function, and GitHub Pages serves the file. Nothing here needs a paid account.
@@ -21,8 +21,8 @@ one server function, and GitHub Pages serves the file. Nothing here needs a paid
 ```
 browser (static page on GitHub Pages, supabase-js served from the same site)
   │  publishable key + the user's session
-  ├─► Supabase Auth: signInWithOtp(email) ──► allow-list trigger ──► email with a link
-  │      link ──► Supabase verifies ──► redirect to the page, session in the URL hash
+  ├─► Supabase Auth: signInWithOAuth("google") ──► Google ──► Supabase callback
+  │      ──► allow-list trigger (new accounts) ──► back to the page, session in the URL hash
   ├─► Supabase Postgres (RLS: your own rows only, and only if you're on the list)
   └─► Edge Function "ask" (optional) ──(secret key)──► OpenRouter
 ```
@@ -77,8 +77,46 @@ These cost the first build the most round trips:
     would run on the page and could steal sessions. Serve an exact build from the site.
 13. **Echoed `error_description` from the URL.** Anyone can craft a link that puts their own text
     on your page. Show fixed messages only.
+15. **Picked email sign-in for a friends app.** Email brought the org-only mailer, the 2-an-hour limit,
+    SMTP and DNS. Google sign-in avoided all of it. See "Choosing how people sign in".
 14. **Suggested an email provider that needs domain verification.** The person didn't want to add
     their domain anywhere. Lead with options that need no domain (see "Email").
+
+## Choosing how people sign in
+
+**For friends, use Google (or another OAuth provider), not email.** The first build used magic links
+and ran into one email problem after another: Supabase's built-in mailer only reaches members of the
+Supabase organization and sends 2 emails an hour, custom SMTP needs a sending service, and most of
+those want DNS records on the person's domain. Google sign-in sends no email at all. It costs about
+10 minutes in the Google Cloud console (steps below), and the allow-list works unchanged because
+Google gives Supabase the account's email.
+
+Other options, if Google doesn't suit:
+- **Discord or GitHub:** the quickest OAuth setups (create an app, copy two values) if everyone
+  uses them.
+- **Email + password with "Confirm email" off:** one switch and no outside accounts. But there's no
+  password reset without email, and someone who knows a friend's address could sign up first.
+- **Magic links:** need custom SMTP before anyone but the owner can sign in. See "Email".
+
+Supabase supports Apple, Azure (Microsoft), Bitbucket, Discord, Facebook, Figma, GitHub, GitLab,
+Google, Kakao, Keycloak, LinkedIn, Notion, Slack, Snapchat, Spotify, Twitch, X/Twitter, WorkOS and
+Zoom. SAML SSO is for workplaces.
+
+### Google setup (human, about 10 minutes)
+
+Google moves these screens around; the names may differ.
+1. Create a project: `https://console.cloud.google.com/projectcreate`.
+2. Consent screen (Google Auth Platform): `https://console.cloud.google.com/auth/overview`. App
+   name, **External** audience, support email, then publish it ("In production") so it isn't limited
+   to test users. Basic email sign-in needs no Google review.
+3. Clients -> Create client -> **Web application**. Authorized JavaScript origin: the site's origin
+   (`https://kvendrik.com`). Authorized redirect URI: `https://<ref>.supabase.co/auth/v1/callback`.
+   Copy the client ID and secret.
+4. `https://supabase.com/dashboard/project/<ref>/auth/providers` -> Google: enable it, paste the ID and
+   secret, then Save.
+
+Google's screen says "continue to <ref>.supabase.co"; showing your own domain needs a paid
+Supabase add-on. Add each friend's **Google account** email to the list.
 
 ## Links to give the human
 
@@ -92,9 +130,11 @@ project ref.
 | Edge Function secrets | `https://supabase.com/dashboard/project/<ref>/functions/secrets` | Name `OPENROUTER_API_KEY`, value the OpenRouter key, Save. Optional: `OPENROUTER_MODELS`. |
 | OpenRouter keys | `https://openrouter.ai/workspaces/default/keys` | Create a key (starts with `sk-or-`) and give it a credit limit. |
 | Function logs | `https://supabase.com/dashboard/project/<ref>/functions/ask/logs` | Where OpenRouter errors show up. |
-| SMTP | `https://supabase.com/dashboard/project/<ref>/auth/smtp` | **Required before friends can sign in** (the built-in mailer only reaches the Supabase organization). See "Email". |
+| SMTP | `https://supabase.com/dashboard/project/<ref>/auth/smtp` | Only for email sign-in, and then **required before friends can sign in** (the built-in mailer only reaches the Supabase organization). See "Email". |
 | Email rate limit | `https://supabase.com/dashboard/project/<ref>/auth/rate-limits` | Raise "emails sent per hour" (only possible once custom SMTP is on). |
-| Gmail app password | `https://myaccount.google.com/apppasswords` | For sending through Gmail. Needs 2-Step Verification. |
+| Google sign-in | `https://supabase.com/dashboard/project/<ref>/auth/providers` | Google: enable, paste the client ID and secret from the Google Cloud console, Save. |
+| Google Cloud OAuth client | `https://console.cloud.google.com/auth/overview` | See "Google setup". Redirect URI `https://<ref>.supabase.co/auth/v1/callback`. |
+| Gmail app password | `https://myaccount.google.com/apppasswords` | Only if you use email sign-in through Gmail. Needs 2-Step Verification. |
 | Deploy runs | `https://github.com/<owner>/<repo>/actions` | Check the Pages deploy finished. |
 
 ### The reference install
@@ -103,7 +143,8 @@ project ref.
 | --- | --- |
 | Live page | https://kvendrik.com/bodega/ (from `public/bodega/` in `kvendrik/kvendrik.github.io`; `kvendrik.github.io/bodega/` redirects here because of the account's `CNAME`) |
 | Supabase project | `Bodega`, ref `ukxogodszvwxzlfxlgtv`, eu-central-1, free plan |
-| Migrations | `create_notes_with_rls`, `notes_rls_select_auth_uid`, `ai_usage_quota`, `notes_per_user_cap`, `friends_allowlist`, `allowlist_private_schema` |
+| Sign-in | Google only (Supabase Google provider, redirect URL `https://kvendrik.com/bodega/`) |
+| Migrations | `create_notes_with_rls`, `notes_rls_select_auth_uid`, `ai_usage_quota`, `notes_per_user_cap`, `friends_allowlist`, `allowlist_private_schema`, `allowlist_select_own` |
 | SQL in the repo | `bodega/supabase/schema.sql` (notes and cap), `allowlist.sql`, `ai_usage.sql` |
 | Edge Function | `ask` (verify_jwt on), source in `bodega/supabase/functions/ask/index.ts` |
 | supabase-js | 2.118.0, served from `public/bodega/vendor/` with its MIT license |
@@ -200,7 +241,20 @@ end; $$;
 revoke all on function public.guard_signup() from public, anon, authenticated;
 create trigger guard_signup before insert on auth.users
   for each row execute function public.guard_signup();
+
+-- Each person may see their own row only, so the page can sign out anyone who isn't listed.
+create policy "allowed_emails_select_own" on public.allowed_emails for select to authenticated
+  using (email = lower(coalesce((select auth.jwt()) ->> 'email', '')));
 ```
+
+Three layers keep it friends-only:
+1. **New accounts:** the trigger refuses unlisted addresses, for email and OAuth sign-ups alike.
+2. **Every read, write and AI call:** RLS and the Edge Function check the list each time, so removing
+   someone takes effect at once.
+3. **The page:** right after sign-in it reads the person's own row in `allowed_emails`, and if it's
+   missing it calls `signOut()` and shows "Not on the list."
+OAuth sign-ins for an address that already has an account (from email sign-in, say) are linked to
+that account, so the trigger doesn't fire and nobody is locked out.
 
 #### Managing the list (give the owner this, with their real links)
 
@@ -257,7 +311,6 @@ revoke all on function public.notes_enforce_cap() from public, anon, authenticat
 
 ### What the advisors will say afterwards
 
-- `rls_enabled_no_policy` (INFO) on `allowed_emails`: intended. No policies means no browser access.
 - `unused_index` (INFO) on a new table: expected until there's data. Keep the index.
 - `auth_leaked_password_protection` (WARN): not relevant, since there are no passwords.
 - Anything else: report it and offer a fix.
@@ -286,7 +339,27 @@ the copy.
 - Keep the default (implicit) auth flow, so a link opened in another browser (a phone's mail app,
   say) still works. `flowType: "pkce"` breaks that.
 
-### Sign in
+### Sign in with Google
+
+```js
+const { error } = await sb.auth.signInWithOAuth({
+  provider: "google",
+  options: { redirectTo: location.origin + location.pathname },   // must be a Redirect URL (step 4)
+});
+```
+
+- The browser leaves for Google. On success it comes back with the session in the hash, and
+  supabase-js picks it up.
+- Failures come back as `?error=...&error_description=...` (in the query string, the hash or both).
+  **Never show `error_description`**: read it only to choose your own message. "Database error saving
+  new user" means the allow-list trigger: "Not on the list. Ask whoever sent you.". `access_denied`:
+  "Sign-in was cancelled.". Anything else: "That didn't work. Try again.". Then clear the URL with
+  `history.replaceState(null, "", location.pathname)`.
+- Re-enable the button on `pageshow`: coming back with the browser's back button restores a disabled
+  "One moment" button otherwise.
+- Then run the list guard above (read your own `allowed_emails` row; sign out if missing).
+
+### Sign in with an email link (only with custom SMTP)
 
 ```js
 const { error } = await sb.auth.signInWithOtp({
@@ -616,15 +689,19 @@ await page.route("**/auth/v1/otp**", r =>                               // fake 
 - Signed in: put a fake session in `localStorage` under `sb-<ref>-auth-token` with `addInitScript`,
   and stub `**/rest/v1/notes**`, `**/rest/v1/ai_usage**` and `**/functions/v1/ask`, including a
   429 answer.
-- Crafted links: open `#error=access_denied&error_code=otp_expired&error_description=<your text>` on
-  a fresh page and check that your text never appears.
+- Google: stub `**/auth/v1/authorize**` and check the click calls it with `provider=google` and the
+  right `redirect_to`.
+- Signed in but not listed: stub `**/rest/v1/allowed_emails**` to return `[]` and check the page
+  signs out and shows "Not on the list."; return the row and check it stays signed in.
+- Crafted errors: open `?error=server_error&error_description=Database+error+saving+new+user#error_description=<your text>`
+  on a fresh page. Expect "Not on the list.", with your text never shown and the URL cleaned.
 - Screenshot at 390px and desktop, and check `scrollWidth - innerWidth` is 0.
 
 ### Live (human, or an agent that can reach the site)
 
 1. The page loads, with no console errors.
-2. A listed address gets a link; an unlisted one sees "Not on the list." and gets no email.
-3. The link lands back signed in, not on `localhost`.
+2. A listed Google account gets in; an unlisted one comes back to "Not on the list.".
+3. It lands back on the page signed in, not on `localhost`.
 4. Store a value; it shows with its row number.
 5. A second listed account can't see the first one's value.
 6. Ask a question: an answer appears and the count drops by one.

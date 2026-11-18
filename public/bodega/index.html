@@ -54,6 +54,7 @@
   .btn:not([disabled]):active { box-shadow:none; transform:translate(3px,3px); transition-duration:40ms; }
   .btn:focus-visible { outline:3px solid var(--focus); outline-offset:3px; }
   .btn--quiet { background:var(--surface-100); color:var(--ink); }
+  .btn--block { width:100%; padding:var(--space-4) var(--space-6); }
   .btn[disabled] { background:var(--surface-200); color:var(--ink-muted); border-color:var(--line-soft); border-style:dotted; box-shadow:none; transform:none; cursor:default; }
   .linkish { padding:0; border:0; background:none; color:var(--ink); font:inherit; text-decoration:underline; text-underline-offset:3px; cursor:pointer; -webkit-tap-highlight-color:transparent; }
   .linkish:focus-visible { outline:3px solid var(--focus); outline-offset:3px; }
@@ -147,29 +148,9 @@
 
     <section id="signed-out" class="panel step" hidden>
       <h2 class="panel__title">Who sent you?</h2>
-      <p class="muted" style="margin:0 0 var(--space-6)">No password. We email you a link, you click it, the shelf is yours.</p>
-
-      <form id="email-form" novalidate>
-        <label class="label field-label" for="email">Email</label>
-        <div class="field" id="email-field">
-          <input class="field__input" id="email" name="email" type="email" inputmode="email" placeholder="you@example.com"
-            autocomplete="email" autocapitalize="off" autocorrect="off" spellcheck="false" enterkeyhint="send"
-            required aria-describedby="email-hint">
-          <button class="btn" id="email-btn" type="submit">Send link</button>
-        </div>
-        <p class="hint" id="email-hint">The link works once and expires in an hour.</p>
-      </form>
-
-      <div class="sent" id="sent" tabindex="-1" hidden>
-        <p class="label muted" style="margin:0">Sent to</p>
-        <p class="sent__to" id="sent-to"></p>
-        <p class="sent__note muted">Click the link in the email. Keep this tab open and it lets you in.</p>
-        <div class="sent__actions">
-          <a class="btn" id="open-mail" target="_blank" rel="noopener" hidden>Open mail</a>
-          <button class="btn btn--quiet tabular" id="resend" type="button" disabled>Resend in 60</button>
-          <button class="linkish" id="change" type="button">Use another email</button>
-        </div>
-      </div>
+      <p class="muted" style="margin:0 0 var(--space-6)">Friends only. Sign in with the Google account that's on the list.</p>
+      <button class="btn btn--block" id="google-btn" type="button">Continue with Google</button>
+      <p class="hint" id="signin-hint">Not on the list? You'll be told, politely.</p>
     </section>
 
     <section id="signed-in" class="step" hidden>
@@ -263,133 +244,37 @@
   }
 
   // ---------- Sign in ----------
+  // Google only: Supabase sends no emails, so there are no email limits. The allow-list trigger
+  // on auth.users refuses accounts that aren't on the list.
+  const hint = $("signin-hint"), googleBtn = $("google-btn");
+  const GOOGLE_LABEL = googleBtn.textContent;
+  function setHint(msg, isError) { hint.textContent = msg; hint.classList.toggle("is-error", !!isError); }
+  function resetGoogle() { googleBtn.disabled = false; googleBtn.textContent = GOOGLE_LABEL; }
 
-  const EMAIL = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
-  const form = $("email-form"), field = $("email-field"), input = $("email"), btn = $("email-btn"), hint = $("email-hint");
-  const HINT = hint.textContent;
-  let cooldown = 0, timer = null, sending = false;
-
-  input.value = store.get("bodega:email") || "";
-
-  function setHint(msg, isError) {
-    hint.textContent = msg;
-    hint.classList.toggle("is-error", !!isError);
-    field.classList.toggle("is-invalid", !!isError);
-    input.setAttribute("aria-invalid", isError ? "true" : "false");
-  }
-
-  function syncReady() { field.classList.toggle("is-ready", EMAIL.test(input.value.trim())); }
-  input.addEventListener("input", () => {
-    syncReady();
-    if (hint.classList.contains("is-error")) setHint(HINT, false);
-  });
-  field.addEventListener("animationend", () => field.classList.remove("is-shaking"));
-  syncReady();
-
-  function humanError(error) {
-    const m = (error && error.message) || "";
-    // Supabase reports the friends-only sign-up guard as a generic database error.
-    if (/database error|not on the list/i.test(m)) return "Not on the list. Ask whoever sent you.";
-    if (error && error.status === 429 || /rate limit/i.test(m)) return "Too many links sent. Give it an hour.";
-    const wait = m.match(/after (\d+) seconds?/i);
-    if (wait) { startCooldown(+wait[1]); return "Easy. Try again in " + wait[1] + " seconds."; }
-    if (/fetch|network/i.test(m)) return "No connection. Try again.";
-    return m || "That didn't go through. Try again.";
-  }
-
-  // A shortcut straight to the inbox, for the providers most people use.
-  const INBOX = [
-    [/^(gmail|googlemail)\.com$/, "Open Gmail", "https://mail.google.com/mail/u/0/#inbox"],
-    [/^(outlook|hotmail|live|msn)\.[a-z.]+$/, "Open Outlook", "https://outlook.live.com/mail/"],
-    [/^(icloud|me|mac)\.com$/, "Open iCloud Mail", "https://www.icloud.com/mail"],
-    [/^(proton\.me|protonmail\.com|pm\.me)$/, "Open Proton Mail", "https://mail.proton.me/"],
-    [/^yahoo\.[a-z.]+$/, "Open Yahoo Mail", "https://mail.yahoo.com/"],
-    [/^fastmail\.[a-z.]+$/, "Open Fastmail", "https://app.fastmail.com/"],
-  ];
-  function inboxFor(email) {
-    const domain = email.split("@")[1].toLowerCase();
-    return INBOX.find(([re]) => re.test(domain));
-  }
-
-  function startCooldown(seconds) {
-    cooldown = seconds;
-    clearInterval(timer);
-    const r = $("resend");
-    const tick = () => {
-      if (cooldown <= 0) { clearInterval(timer); r.disabled = false; r.textContent = "Resend link"; return; }
-      r.disabled = true;
-      r.textContent = "Resend in " + cooldown--;
-    };
-    tick();
-    timer = setInterval(tick, 1000);
-  }
-
-  async function sendLink(email) {
-    sending = true;
-    form.setAttribute("aria-busy", "true");
-    input.readOnly = true;
-    btn.innerHTML = '<span class="dots">Sending</span>';
-    const { error } = await sb.auth.signInWithOtp({
-      email,
-      options: { emailRedirectTo: location.origin + location.pathname },
+  googleBtn.onclick = async () => {
+    googleBtn.disabled = true;
+    googleBtn.innerHTML = '<span class="dots">One moment</span>';
+    const { error } = await sb.auth.signInWithOAuth({
+      provider: "google",
+      options: { redirectTo: location.origin + location.pathname },
     });
-    sending = false;
-    form.removeAttribute("aria-busy");
-    input.readOnly = false;
-    btn.textContent = "Send link";
-    return error;
-  }
-
-  form.onsubmit = async (e) => {
-    e.preventDefault();
-    if (sending) return;
-    const email = input.value.trim();
-    if (!EMAIL.test(email)) {
-      setHint(email ? "✕ That doesn't look like an email." : "✕ An email, please.", true);
-      shake(field);
-      input.focus();
-      return;
+    if (error) {
+      resetGoogle();
+      setHint("✕ " + (/fetch|network/i.test(error.message) ? "No connection. Try again." : "Google sign-in didn't start. Try again."), true);
     }
-    const error = await sendLink(email);
-    if (error) { setHint("✕ " + humanError(error), true); shake(field); input.focus(); return; }
-
-    store.set("bodega:email", email);
-    setHint(HINT, false);
-    $("sent-to").textContent = email;
-    const inbox = inboxFor(email);
-    const open = $("open-mail");
-    open.hidden = !inbox;
-    if (inbox) { open.textContent = inbox[1]; open.href = inbox[2]; }
-    startCooldown(60);
-    swap(form, $("sent"), $("sent"));
   };
+  // Coming back with the browser's back button restores the page as it was; re-enable the button.
+  addEventListener("pageshow", resetGoogle);
 
-  $("resend").onclick = async () => {
-    const r = $("resend");
-    r.disabled = true;
-    r.innerHTML = '<span class="dots">Sending</span>';
-    const error = await sendLink($("sent-to").textContent);
-    if (error) { r.disabled = false; r.textContent = "Resend link"; return say("✕ " + humanError(error)); }
-    say("Sent again.");
-    startCooldown(60);
-  };
-
-  $("change").onclick = () => {
-    clearInterval(timer);
-    say("");
-    swap($("sent"), form, input);
-    input.select();
-  };
-
-  // An expired or reused link comes back with an error in the URL hash. Anyone can craft such a
-  // link, so never show its text: map known codes to our own words.
-  const LINK_ERRORS = {
-    otp_expired: "That link has expired or was already used.",
-    access_denied: "That link didn't work.",
-  };
-  const back = new URLSearchParams(location.hash.slice(1));
+  // A failed sign-in comes back with an error in the query string or the hash. Anyone can craft
+  // such a URL, so never show its text: only use it to pick one of our own messages.
+  const back = new URLSearchParams(location.search.slice(1) + "&" + location.hash.slice(1));
   if (back.has("error") || back.has("error_code")) {
-    setHint("✕ " + (LINK_ERRORS[back.get("error_code")] || LINK_ERRORS.access_denied) + " Send a new one.", true);
+    const desc = back.get("error_description") || "";
+    const msg = /database error|not on the list/i.test(desc) ? "Not on the list. Ask whoever sent you."
+      : back.get("error") === "access_denied" ? "Sign-in was cancelled."
+      : "That didn't work. Try again.";
+    setHint("✕ " + msg, true);
     history.replaceState(null, "", location.pathname);
   }
 
@@ -405,7 +290,16 @@
       : "Only you can see this row.";
   }
 
-  // Only re-render when who is signed in actually changes, so a token refresh never resets the sent view.
+  // Signed in but not (or no longer) on the list: sign them straight back out. The database and the
+  // ask function refuse them anyway; this just keeps them off the signed-in screen.
+  async function guardList(session) {
+    const { data, error } = await sb.from("allowed_emails").select("email").maybeSingle();
+    if (error || data) return;   // on a network error, leave it to the server-side checks
+    await sb.auth.signOut();
+    setHint("✕ Not on the list. Ask whoever sent you.", true);
+  }
+
+  // Only re-render when who is signed in actually changes, so a token refresh never resets the page.
   let current = null, rendered = false;
   function render(session) {
     const id = session ? session.user.id : null;
@@ -416,13 +310,10 @@
     $("signed-out").hidden = !!session;
     $("signed-in").hidden = !session;
     if (session) {
-      clearInterval(timer);
+      guardList(session);
       $("who").textContent = "● " + (session.user.email || "OPEN");
       loadValue();
       loadQuota();
-    } else {
-      $("sent").hidden = true;
-      form.hidden = false;
     }
   }
 

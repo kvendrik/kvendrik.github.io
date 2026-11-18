@@ -54,3 +54,9 @@ alter policy "notes_update_own" on public.notes
   with check (user_id = (select auth.uid()) and (select private.is_allowed()));
 alter policy "notes_delete_own" on public.notes
   using (user_id = (select auth.uid()) and (select private.is_allowed()));
+
+-- Applied as migration allowlist_select_own: a signed-in person can see their own row only,
+-- so the page can sign out anyone who isn't on the list.
+create policy "allowed_emails_select_own" on public.allowed_emails
+  for select to authenticated
+  using (email = lower(coalesce((select auth.jwt()) ->> 'email', '')));
