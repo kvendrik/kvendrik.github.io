@@ -1,83 +1,97 @@
 ---
 name: bodega
-description: Build a static web page where people sign in with an emailed magic link and read their own row from a Supabase database, hosted free on GitHub Pages. Use when someone wants sign-in plus per-user data on a static site, with no server and no paid developer accounts.
+description: Build a static web page where friends sign in with an emailed magic link, read and write their own rows in a Supabase database, and optionally ask an AI model through OpenRouter without exposing the key. Hosted free on GitHub Pages. Use when someone wants sign-in plus per-user data (and maybe AI) on a static site, with no server of their own and no paid developer accounts.
 ---
 
-# Bodega: magic-link sign-in, one value from the database
+# Bodega: magic-link sign-in, your own row, friends only
 
-A single static HTML page. A visitor types their email, clicks the link Supabase sends them,
-and lands back on the page signed in, looking at a value from the database that only they can
-see. There is no server: Supabase handles auth and data, and GitHub Pages serves the file.
-Nothing here costs money or needs a paid developer account.
+A single static HTML page. A visitor types their email, clicks the link Supabase sends them, and
+lands back on the page signed in, looking at a value from the database that only they can see.
+Only addresses on an allow-list can get in. Optionally, they can ask an AI model a question; the
+API key stays on the server. There is no server of your own: Supabase handles auth, data and the
+one server function, and GitHub Pages serves the file. Nothing here needs a paid account.
 
 - Live reference: https://kvendrik.com/bodega/
-- Full source (one file, copy it): https://raw.githubusercontent.com/kvendrik/kvendrik.github.io/main/public/bodega/index.html
-- Schema: https://raw.githubusercontent.com/kvendrik/kvendrik.github.io/main/bodega/supabase/schema.sql
+- Full page source (one file): https://raw.githubusercontent.com/kvendrik/kvendrik.github.io/main/public/bodega/index.html
+- SQL: https://raw.githubusercontent.com/kvendrik/kvendrik.github.io/main/bodega/supabase/schema.sql,
+  [`allowlist.sql`](https://raw.githubusercontent.com/kvendrik/kvendrik.github.io/main/bodega/supabase/allowlist.sql),
+  [`ai_usage.sql`](https://raw.githubusercontent.com/kvendrik/kvendrik.github.io/main/bodega/supabase/ai_usage.sql)
+- Edge Function: https://raw.githubusercontent.com/kvendrik/kvendrik.github.io/main/bodega/supabase/functions/ask/index.ts
 
 ```
-browser (static page on GitHub Pages)
-  │  supabase-js, publishable key
-  ├─► Supabase Auth: signInWithOtp(email) ──► email with a link
+browser (static page on GitHub Pages, supabase-js served from the same site)
+  │  publishable key + the user's session
+  ├─► Supabase Auth: signInWithOtp(email) ──► allow-list trigger ──► email with a link
   │      link ──► Supabase verifies ──► redirect to the page, session in the URL hash
-  └─► Supabase Postgres (row level security: each user reads only their own rows)
+  ├─► Supabase Postgres (RLS: your own rows only, and only if you're on the list)
+  └─► Edge Function "ask" (optional) ──(secret key)──► OpenRouter
 ```
+
+## How to work with the person
+
+These cost the first build the most round trips:
+
+- **Act, don't ask.** Once they've said to build or deploy, keep going: apply, deploy, push to the
+  branch that publishes. Ask only when something is truly theirs to decide (a schema change they
+  haven't approved, a cost, which option they prefer) or when you're blocked.
+- **Give links, not menu paths.** Every dashboard step starts with a direct link that includes
+  their project or workspace ID, then the exact values: field, value, button. See "Links to give
+  the human".
+- **Say what you couldn't do, in the same message.** If a tool fails or a step needs their login,
+  say so and give the link right there. Never claim a step you couldn't do.
+- **Say what you couldn't test.** Sandboxes often can't reach the live site, Supabase Functions or
+  OpenRouter. Say what was stubbed, and give them the exact steps to check it live.
+- **Don't guess URLs.** Use links you've verified or that they gave you. When you can't open a
+  third party's docs, say the menu names may differ.
+- **Keep a durable record.** You won't remember the next session, so the repo is the memory: this
+  file, plus the SQL and function source next to it.
 
 ## Mistakes made on the first build, so you don't repeat them
 
-Each of these cost the person a round trip. Read them before you start.
-
 1. **Gave menu paths instead of links.** "Go to Authentication -> URL Configuration" made the person
-   hunt and ask for links. Always send the direct dashboard link with their project ID, then the
-   exact values. See "Links to give the human" below.
+   ask for links. Send the direct link with their project ID, then the values.
 2. **Built for the wrong URL.** Planned around `<user>.github.io/<repo>/`, but the account had a
    custom domain (`CNAME`), so the real URL was `https://<domain>/<repo>/`. Check for a `CNAME`
-   before you hand out any redirect URL.
+   before handing out any redirect URL.
 3. **Started with Sign in with Apple.** It needs the paid Apple Developer Program and a secret that
-   expires every 6 months; the person didn't want that. Start with magic links (free, nothing to
-   register), and offer OAuth providers only if asked.
-4. **Asked "should I push?" again and again.** Once the person has said to deploy, keep pushing to the
-   branch that deploys. Ask once per session, not once per change.
-5. **Assumed the connector could do everything.** The Supabase connector can't set auth URLs, and its
-   secret form was paused, so the key had to be set by hand. Say up front which steps need the human
-   and send their links in the same message.
-6. **Guessed a URL I couldn't check.** I wrote an OpenRouter keys link from memory; the real one was
-   different. Use links you have verified or the person gave you, and say when you couldn't check one.
-7. **Broke `.gitignore` by appending.** The file had no trailing newline, so the new rule was glued
-   onto the last one and silently stopped ignoring build output. Check for a final newline, then run
-   `git status` after the build.
-8. **Broke the phone layout with a later CSS override.** A desktop rule declared after a `@media`
-   block overrode it. Put breakpoint overrides after the rules they change, and screenshot at 390px
-   wide, checking for horizontal overflow.
-9. **Shipped "done" without a real end-to-end test.** The sandbox couldn't reach the live site,
-   Supabase functions or OpenRouter, so testing used stubbed responses. Say plainly what was and
-   wasn't tested, and give the person the exact steps to check it live.
-10. **Ran into Supabase's email limit on the first test.** The built-in mailer sends **2 emails
-    per hour for the whole project**. A signup confirmation plus one magic link used it up, and every
-    later attempt failed with `over_email_send_rate_limit` (check under auth logs). Tell the person
-    before they test. For more than a quick try, set up custom SMTP first (see the SMTP link below),
-    then raise the email limit on the rate limits page.
-11. **Rule, not a mistake (keep it that way): no API keys in the page.** Any key in a static page is
-    public. Keys belong in Edge Function secrets, typed in by the person, never pasted into chat.
+   expires every 6 months. Start with magic links; offer OAuth only if asked.
+4. **Asked "should I push?" after every change.** Ask once; after a yes, keep deploying.
+5. **Assumed the connector could do everything.** The Supabase connector can't set auth URLs or SMTP,
+   and its secret form was paused, so those steps were manual. Say so up front, with links.
+6. **Guessed a URL.** An OpenRouter keys link written from memory was wrong; the person's was
+   `https://openrouter.ai/workspaces/default/keys`.
+7. **Broke `.gitignore` by appending** to a file without a trailing newline: the new rule was glued
+   onto the last one. Check for the newline, then `git status` after the build.
+8. **Broke the phone layout** with a desktop rule declared after a `@media` block. Put breakpoint
+   overrides last, and screenshot at 390px wide checking for horizontal overflow.
+9. **Called it done without an end-to-end test.** Everything was tested against stubs. Say so, and
+   hand over the live checklist.
+10. **Hit Supabase's email limit on the very first test.** The built-in mailer sends **2 emails per
+    hour for the whole project**. Warn before they test. See "Email".
+11. **Left sign-ups open on an app for friends.** Anyone with an email could create an account,
+    store rows and use the AI quota. For anything friends-only, build the allow-list from the start.
+12. **Loaded supabase-js from a CDN with a floating version (`@2`).** A compromised package or CDN
+    would run on the page and could steal sessions. Serve an exact build from the site.
+13. **Echoed `error_description` from the URL.** Anyone can craft a link that puts their own text
+    on your page. Show fixed messages only.
+14. **Suggested an email provider that needs domain verification.** The person didn't want to add
+    their domain anywhere. Lead with options that need no domain (see "Email").
 
 ## Links to give the human
 
-Whenever the person has to do something in a dashboard, lead your message with a **direct link**
-that includes their project or workspace ID. Never send a menu path ("Authentication -> URL
-Configuration"). Put the exact values on the next lines: the field name, the value (or where to get
-it), and the button. Add one line on why, and where to look if it fails. If a tool that was
-supposed to do it for them fails (a form is paused, say), give the link in that same reply. Don't
-guess URLs you can't check; when the person gives you a link, use theirs.
-
-Replace `<ref>` with the Supabase project ref.
+Lead with the link, then the exact values on the next lines. Replace `<ref>` with the Supabase
+project ref.
 
 | Task | Link | What to enter |
 | --- | --- | --- |
 | Auth URL configuration | `https://supabase.com/dashboard/project/<ref>/auth/url-configuration` | Site URL: the final page URL. Redirect URLs: Add URL, the same address. Save both. |
+| Add a friend | `https://supabase.com/dashboard/project/<ref>/sql/new` | `insert into public.allowed_emails (email, note) values ('friend@example.com', 'Sam');` then Run. Lowercase. |
 | Edge Function secrets | `https://supabase.com/dashboard/project/<ref>/functions/secrets` | Name `OPENROUTER_API_KEY`, value the OpenRouter key, Save. Optional: `OPENROUTER_MODELS`. |
-| OpenRouter keys | `https://openrouter.ai/workspaces/default/keys` | Create a key (it starts with `sk-or-`) and give it a credit limit. |
+| OpenRouter keys | `https://openrouter.ai/workspaces/default/keys` | Create a key (starts with `sk-or-`) and give it a credit limit. |
 | Function logs | `https://supabase.com/dashboard/project/<ref>/functions/ask/logs` | Where OpenRouter errors show up. |
-| SMTP (before real traffic) | `https://supabase.com/dashboard/project/<ref>/auth/smtp` | Any email provider's SMTP details. |
+| SMTP | `https://supabase.com/dashboard/project/<ref>/auth/smtp` | Only if they want more than 2 emails an hour. See "Email". |
 | Email rate limit | `https://supabase.com/dashboard/project/<ref>/auth/rate-limits` | Raise "emails sent per hour" (only possible once custom SMTP is on). |
+| Gmail app password | `https://myaccount.google.com/apppasswords` | For sending through Gmail. Needs 2-Step Verification. |
 | Deploy runs | `https://github.com/<owner>/<repo>/actions` | Check the Pages deploy finished. |
 
 ### The reference install
@@ -85,46 +99,46 @@ Replace `<ref>` with the Supabase project ref.
 | | |
 | --- | --- |
 | Live page | https://kvendrik.com/bodega/ (from `public/bodega/` in `kvendrik/kvendrik.github.io`; `kvendrik.github.io/bodega/` redirects here because of the account's `CNAME`) |
-| Supabase project | `Bodega`, ref `ukxogodszvwxzlfxlgtv`, eu-central-1 |
+| Supabase project | `Bodega`, ref `ukxogodszvwxzlfxlgtv`, eu-central-1, free plan |
 | Migrations | `create_notes_with_rls`, `notes_rls_select_auth_uid`, `ai_usage_quota`, `notes_per_user_cap`, `friends_allowlist`, `allowlist_private_schema` |
-| Schema files | `bodega/supabase/schema.sql`, `bodega/supabase/ai_usage.sql` |
+| SQL in the repo | `bodega/supabase/schema.sql` (notes and cap), `allowlist.sql`, `ai_usage.sql` |
 | Edge Function | `ask` (verify_jwt on), source in `bodega/supabase/functions/ask/index.ts` |
-| AI limits | 20 questions per person per UTC day, 500 for the whole site |
+| supabase-js | 2.118.0, served from `public/bodega/vendor/` with its MIT license |
+| Limits | 100 rows per person; 20 AI questions per person per UTC day, 500 for the whole site |
 | URL configuration | https://supabase.com/dashboard/project/ukxogodszvwxzlfxlgtv/auth/url-configuration (Site URL and Redirect URL: `https://kvendrik.com/bodega/`) |
+| Add a friend | https://supabase.com/dashboard/project/ukxogodszvwxzlfxlgtv/sql/new |
 | Edge Function secrets | https://supabase.com/dashboard/project/ukxogodszvwxzlfxlgtv/functions/secrets |
 | Function logs | https://supabase.com/dashboard/project/ukxogodszvwxzlfxlgtv/functions/ask/logs |
 | OpenRouter keys | https://openrouter.ai/workspaces/default/keys |
 
 ## 0. Before you start
 
-Ask for, or look up, these three things:
-1. **The Supabase project.** Use `list_projects` and confirm the project ref with the person. People
-   often have several projects. Never touch the others, and check every call's `project_id`.
-2. **Where it will be hosted, and the final URL.** See step 3. The final URL is needed in step 4,
-   and getting it wrong is the most common reason sign-in breaks.
-3. **What you can and can't do in this session.** Find out early and tell the person up front:
+Look up or ask:
+1. **The Supabase project.** Use `list_projects` and confirm the ref. People often have several
+   projects. Never touch the others, and check every call's `project_id`.
+2. **The final URL.** Check for a `CNAME` (step 3). Sign-in breaks if this is wrong.
+3. **Who it's for.** Friends only (build the allow-list) or anyone?
+4. **What you can and can't do in this session**, and tell them up front:
 
 | Step | Agent with Supabase and GitHub connectors | Needs the human |
 | --- | --- | --- |
-| Create the project, table and RLS | yes (`apply_migration`) | approving cost, for a new project |
-| Run the advisors | yes (`get_advisors`) | |
-| Write the page and push it | yes, to repos the session can reach | permission to push to `main` |
-| Create a new GitHub repo | often not: sessions are commonly scoped to existing repos | creating the empty repo |
+| Tables, RLS, triggers, allow-list | yes (`apply_migration`) | approving schema changes |
+| Run the advisors, read logs | yes (`get_advisors`, `query_logs`) | |
+| Write the page and push it | yes, to repos the session can reach | one yes to deploy |
+| Create a new GitHub repo | often not: sessions are scoped to existing repos | creating the empty repo |
 | Turn on GitHub Pages | not through the GitHub MCP tools | Settings -> Pages |
-| Auth URL configuration | **no:** the Supabase MCP connector has no auth-config tool | Supabase dashboard, one screen |
+| Auth URL configuration, SMTP, rate limits | **no:** the connector has no auth-config tool | dashboard, links below |
 | Third-party sign-in (Apple, Google, GitHub) | no | their developer consoles |
-| AI: deploy the Edge Function, create the quota table | yes (`deploy_edge_function`, `apply_migration`) | |
-| AI: store the OpenRouter key | **sometimes:** `create_edge_function_secret` opens a form for the human, and Supabase can pause it | Edge Functions -> Secrets |
-| AI: spending limit on the key | no | openrouter.ai |
-
-Never say you did a step you couldn't do. When you're blocked, give the exact link and the exact
-values to enter (see step 4).
+| Deploy the Edge Function | yes (`deploy_edge_function`) | |
+| Store the OpenRouter key | **sometimes:** `create_edge_function_secret` opens a form for the human, and Supabase can pause it | Edge Functions secrets page |
+| Spending limit on the key | no | openrouter.ai |
 
 ## 1. Database
 
-Apply this as a migration (for example `create_notes_with_rls`). Wrap `auth.uid()` in
-`(select ...)` so Postgres evaluates it once per query instead of once per row. The bare form
-triggers the performance advisor's `auth_rls_initplan` warning.
+Apply each block as a migration and keep a copy in the repo. After every migration, run the
+**security** and **performance** advisors and report each finding with its remediation link.
+
+### Rows
 
 ```sql
 create table if not exists public.notes (
@@ -133,54 +147,124 @@ create table if not exists public.notes (
   body       text not null check (char_length(body) between 1 and 2000),
   created_at timestamptz not null default now()
 );
-
 create index if not exists notes_user_created_idx on public.notes (user_id, created_at desc);
-
 alter table public.notes enable row level security;
-
-create policy "notes_select_own" on public.notes
-  for select to authenticated using (user_id = (select auth.uid()));
-create policy "notes_insert_own" on public.notes
-  for insert to authenticated with check (user_id = (select auth.uid()));
-create policy "notes_update_own" on public.notes
-  for update to authenticated using (user_id = (select auth.uid())) with check (user_id = (select auth.uid()));
-create policy "notes_delete_own" on public.notes
-  for delete to authenticated using (user_id = (select auth.uid()));
 ```
 
 - `user_id` defaults to `auth.uid()`, so the page inserts `{ body }` only and can't forge an owner.
-- Run the **security** and **performance** advisors afterwards and report every finding, with
-  its remediation link.
-- Expect one INFO finding: `unused_index` on `notes_user_created_idx`. It shows up on an empty
-  table. Keep the index; the page's query uses it.
-- To fix existing policies, use `alter policy ... using (...) with check (...)`, not drop and
-  create. Then there is no moment without a policy. Check the result with
-  `select policyname, qual, with_check from pg_policies where tablename = 'notes'`.
-- Apply no schema changes the person didn't ask for. Report advisor findings and offer fixes.
-- Keep a copy of the SQL in the repo (`supabase/schema.sql`) and update it when a migration
-  changes the database.
+- Wrap `auth.uid()` in `(select ...)` in policies so it runs once per query, not once per row (the
+  performance advisor flags the bare form as `auth_rls_initplan`).
+
+### Friends only: the allow-list
+
+RLS alone isn't enough: anyone can still create an account and get emails. Stop the account from
+being created at all:
+
+```sql
+create table if not exists public.allowed_emails (
+  email    text primary key check (email = lower(email)),
+  note     text,
+  added_at timestamptz not null default now()
+);
+alter table public.allowed_emails enable row level security;   -- no policies: browsers can't see it
+
+insert into public.allowed_emails (email, note)                 -- don't lock out existing accounts
+select lower(email), 'existing account' from auth.users where email is not null
+on conflict (email) do nothing;
+
+-- "Am I on the list?" for the caller only. In a schema the API doesn't serve, so there's no
+-- /rpc endpoint (in public, the advisor flags it as callable by signed-in users).
+create schema if not exists private;
+revoke all on schema private from public, anon;
+grant usage on schema private to authenticated, service_role;
+create or replace function private.is_allowed()
+returns boolean language sql stable security definer set search_path = '' as $$
+  select exists (select 1 from public.allowed_emails
+                 where email = lower(coalesce((select auth.jwt()) ->> 'email', '')));
+$$;
+revoke all on function private.is_allowed() from public, anon;
+grant execute on function private.is_allowed() to authenticated, service_role;
+
+-- No account, and so no email, for unlisted addresses.
+create or replace function public.guard_signup()
+returns trigger language plpgsql security definer set search_path = '' as $$
+begin
+  if new.email is null or not exists (select 1 from public.allowed_emails where email = lower(new.email)) then
+    raise exception 'Not on the list.' using errcode = 'P0001';
+  end if;
+  return new;
+end; $$;
+revoke all on function public.guard_signup() from public, anon, authenticated;
+create trigger guard_signup before insert on auth.users
+  for each row execute function public.guard_signup();
+```
+
+### Policies
+
+```sql
+create policy "notes_select_own" on public.notes for select to authenticated
+  using (user_id = (select auth.uid()) and (select private.is_allowed()));
+create policy "notes_insert_own" on public.notes for insert to authenticated
+  with check (user_id = (select auth.uid()) and (select private.is_allowed()));
+create policy "notes_update_own" on public.notes for update to authenticated
+  using (user_id = (select auth.uid()) and (select private.is_allowed()))
+  with check (user_id = (select auth.uid()) and (select private.is_allowed()));
+create policy "notes_delete_own" on public.notes for delete to authenticated
+  using (user_id = (select auth.uid()) and (select private.is_allowed()));
+```
+
+To change existing policies, use `alter policy ... using (...) with check (...)`, never drop and
+create, so there's no moment without one.
+
+### A cap per person
+
+Without it, one account can fill a free database.
+
+```sql
+create or replace function public.notes_enforce_cap()
+returns trigger language plpgsql security invoker set search_path = '' as $$
+begin
+  perform pg_advisory_xact_lock(hashtextextended(new.user_id::text, 0));   -- no racing past it
+  if (select count(*) from public.notes where user_id = new.user_id) >= 100 then
+    raise exception 'The shelf is full. Throw something out first.' using errcode = 'P0001';
+  end if;
+  return new;
+end; $$;
+create trigger notes_enforce_cap before insert on public.notes
+  for each row execute function public.notes_enforce_cap();
+revoke all on function public.notes_enforce_cap() from public, anon, authenticated;
+```
+
+### What the advisors will say afterwards
+
+- `rls_enabled_no_policy` (INFO) on `allowed_emails`: intended. No policies means no browser access.
+- `unused_index` (INFO) on a new table: expected until there's data. Keep the index.
+- `auth_leaked_password_protection` (WARN): not relevant, since there are no passwords.
+- Anything else: report it and offer a fix.
 
 ## 2. The page
 
 One HTML file, with no build step. Copy the reference source and change only the URL, the key and
-the copy. These parts matter:
+the copy.
 
 ### Client
 
 ```html
-<!-- Serve an exact supabase-js build from your own site (vendor/), not a CDN. -->
+<!-- An exact supabase-js build served from your own site, not a CDN. -->
 <script src="vendor/supabase-js-2.118.0.js"></script>
 <script>
   const sb = supabase.createClient("https://<ref>.supabase.co", "sb_publishable_...");
 </script>
 ```
 
-- Use the **publishable** key (`sb_publishable_...`, or the legacy `anon` key), which
-  `get_publishable_keys` returns. It is meant to ship in the browser; row level security is what
-  protects the data. Never put the `service_role` or secret key in a page.
-- Keep the default (implicit) auth flow. The link then works even when it opens in a different
-  browser from the one that asked for it, for example a phone's mail app. `flowType: "pkce"`
-  breaks that.
+- To vendor it: `npm pack @supabase/supabase-js@<version>` (pick one that's been out for at least
+  two weeks), copy `package/dist/umd/supabase.js` to `vendor/supabase-js-<version>.js`, and keep
+  its MIT `LICENSE` next to it.
+- Use the **publishable** key (`sb_publishable_...` or the legacy `anon` key; `get_publishable_keys`
+  returns it). It's meant to ship; RLS protects the data. Never put a `service_role` or secret key
+  in a page.
+- Keep the default (implicit) auth flow, so a link opened in another browser (a phone's mail app,
+  say) still works. `flowType: "pkce"` breaks that.
 
 ### Sign in
 
@@ -191,17 +275,17 @@ const { error } = await sb.auth.signInWithOtp({
 });
 ```
 
-- `emailRedirectTo` must match an entry in Supabase's Redirect URLs exactly, trailing slash
-  included (step 4).
-- Links that fail come back as `#error=...&error_code=...&error_description=...`. **Never show
-  `error_description`**: anyone can craft a link that puts their own text on your page. Map the
-  known `error_code` values to your own words (`otp_expired`: "That link has expired or was already
-  used."; anything else: "That link didn't work."), add "Send a new one.", then clear the hash with
-  `history.replaceState`.
-- Map errors into plain words:
-  - Status 429, or a message containing "rate limit": "Too many links sent. Give it an hour."
+- `emailRedirectTo` must match a Redirect URL exactly, trailing slash included (step 4).
+- Map errors into your own words:
+  - "Database error saving new user": the allow-list trigger. Show "Not on the list. Ask whoever
+    sent you."
+  - Status 429 or "rate limit": "Too many links sent. Give it an hour."
   - "...after N seconds": "Try again in N seconds", and start a countdown.
   - "fetch" or "network": "No connection. Try again."
+- Links that fail come back as `#error=...&error_code=...&error_description=...`. **Never show
+  `error_description`.** Map `error_code` (`otp_expired`: "That link has expired or was already
+  used."; anything else: "That link didn't work."), add "Send a new one.", then clear the hash with
+  `history.replaceState`.
 
 ### Read and write
 
@@ -209,11 +293,12 @@ const { error } = await sb.auth.signInWithOtp({
 // RLS returns only this user's rows, so no user filter is needed.
 const { data, error } = await sb.from("notes").select("id, body, created_at")
   .order("created_at", { ascending: false }).limit(1).maybeSingle();
-
 await sb.from("notes").insert({ body });   // user_id fills itself in
 ```
 
-Set text with `textContent`, never `innerHTML`: the value is user input.
+- Set text with `textContent`, never `innerHTML`: the value is user input.
+- An RLS error ("violates row-level security") for a signed-in user means they're not on the
+  list: show "Not on the list."
 
 ### Session handling
 
@@ -234,34 +319,26 @@ document.addEventListener("visibilitychange", () => {
 });
 ```
 
-Without the guard, `onAuthStateChange` firing again (on a token refresh, say) would throw the
-person off the "check your inbox" screen.
-
 ### The form: make it feel good
-
-This is what makes the reference feel finished. Keep it.
 
 - **Labels and attributes:** a visible label, then `type="email" inputmode="email"
   autocomplete="email" autocapitalize="off" autocorrect="off" spellcheck="false"
-  enterkeyhint="send" required`. Put `novalidate` on the form so your own messages replace the
-  browser's bubbles.
-- **Font size:** input text at 18px. Anything under 16px makes iOS zoom in on focus.
-- **One block:** the input and button share one border and one hard shadow. `:focus-within`
-  lifts the block (`translate(-3px,-3px)`, larger shadow). `:has(.btn:active)` presses it in
-  (`translate(3px,3px)`, no shadow, 40ms).
+  enterkeyhint="send" required`, and `novalidate` on the form so your messages replace the
+  browser's.
+- **Font size:** input text at 18px. Under 16px, iOS zooms in on focus.
+- **One block:** input and button share one border and one hard shadow. `:focus-within` lifts it
+  (`translate(-3px,-3px)`, bigger shadow); `:has(.btn:active)` presses it in (`translate(3px,3px)`,
+  no shadow, 40ms).
 - **Ready state:** the button stays outlined until the value matches
-  `/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/`, then fills solid. Don't disable it: pressing it early should
-  explain what's wrong.
-- **Errors:** inline, in the hint line under the field (`aria-describedby`, `aria-invalid`). The
-  border goes dashed, and the block shakes once (240ms, using the `translate` property so it
-  doesn't fight the `transform` lift). The error clears when the person types.
-- **Sending:** lock the input (`readOnly`), set `aria-busy`, and show "Sending" with three dots
-  stepped in by `steps(4)`. Give the button a `min-width` so the label change doesn't make it
-  jump.
-- **Sent:** swap the form for a receipt showing the address (monospace, `overflow-wrap:anywhere`
-  for long addresses), an "Open Gmail" style shortcut, "Resend in 60" counting down (tabular
-  numbers), and "Use another email". Move focus to the receipt.
-- **Inbox shortcuts:** match on the email's domain.
+  `/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/`, then fills. Don't disable it: pressing early should explain.
+- **Errors:** inline under the field (`aria-describedby`, `aria-invalid`), dashed border, one
+  240ms shake (on the `translate` property, so it doesn't fight `transform`). Clear on typing.
+- **Sending:** `readOnly` input, `aria-busy`, "Sending" with three dots stepped in by `steps(4)`,
+  and a `min-width` on the button so it doesn't jump.
+- **Sent:** swap the form for a receipt with the address (monospace, `overflow-wrap:anywhere`), an
+  "Open Gmail" style shortcut, "Resend in 60" counting down (tabular numbers) and "Use another
+  email". Move focus to it.
+- **Inbox shortcuts** by domain:
 
   | Domain | Button | Link |
   | --- | --- | --- |
@@ -272,114 +349,94 @@ This is what makes the reference feel finished. Keep it.
   | yahoo | Open Yahoo Mail | https://mail.yahoo.com/ |
   | fastmail | Open Fastmail | https://app.fastmail.com/ |
 
-- **Remember the address:** save the last-used email in `localStorage` and prefill it. Wrap every
-  storage call in try/catch, because private modes throw.
-- **Motion:**
-  - Easing: `cubic-bezier(0.23, 1, 0.32, 1)` everywhere.
-  - Presses: 120ms, and 40ms while held.
-  - Exits faster than entrances: the old view leaves in 90ms (opacity 0, scale .98), and the new
-    one rises in over 300ms (from translateY 8px, scale .97, never from scale 0). Stagger its
-    children by 40ms.
-  - Animate `transform` and `box-shadow` only, never `transition: all`.
-  - Wrap hover effects in `@media (hover:hover)`. Set `-webkit-tap-highlight-color: transparent`
-    and `touch-action: manipulation` on buttons.
-  - Turn all of it off under `prefers-reduced-motion: reduce`.
-- **Phone layout:** under 420px, the button stacks under the input. Use
-  `viewport-fit=cover` with `env(safe-area-inset-*)` padding.
+- **Remember the address** in `localStorage` (inside try/catch, since private modes throw) and
+  prefill it.
+- **Motion:** one curve, `cubic-bezier(0.23, 1, 0.32, 1)`. Presses 120ms, 40ms while held. Exits
+  90ms (opacity 0, scale .98); entrances 300ms (from 8px and scale .97, never from 0), children 40ms
+  apart. Animate `transform` and `box-shadow` only. Hover only under `@media (hover:hover)`;
+  `-webkit-tap-highlight-color: transparent` and `touch-action: manipulation` on buttons. All of it
+  off under `prefers-reduced-motion`.
+- **Phone:** under 420px the button stacks under the input; `viewport-fit=cover` with
+  `env(safe-area-inset-*)` padding.
 
 ## 3. Hosting on GitHub Pages
 
-Choose one:
-- **A new public repo** (`<user>/<repo>`). It must be public for free Pages. Turn on Pages from
-  `main` at the root. The URL is `https://<user>.github.io/<repo>/`. If the session can't create
-  repos, ask the person to create an empty one, then attach it.
-- **A folder in an existing Pages site.** This works when you can't create repos. Before you do it:
-  - Read the site's build script. Check that it doesn't delete or overwrite your folder. Some
-    builds remove every `.html` file in the output directory.
-  - Read `.gitignore`. Output folders often ignore `**/*.html`, so add a negation such as
-    `!public/bodega/index.html`. When you append to the file, make sure it ends with a newline
-    first, or your line gets joined onto the last rule and silently breaks it. Run
-    `git check-ignore -v <file>` and `git status` after the build.
-  - Keep notes and schema files out of the published folder unless they should be public.
+- **A new public repo** (`<user>/<repo>`). It must be public for free Pages. Pages from `main`, root.
+  If the session can't create repos, have the person create an empty one, then attach it.
+- **A folder in an existing Pages site.** This works when you can't create repos. First:
+  - Read the build script: some builds delete every `.html` in the output folder.
+  - Read `.gitignore`: output folders often ignore `**/*.html`, so add a negation such as
+    `!public/bodega/index.html`. Make sure the file ends in a newline before you append. Then run
+    `git check-ignore -v <file>` and `git status` after a build.
+  - Keep SQL and notes out of the published folder unless they should be public.
 
-**Custom domains:** if the account's `<user>.github.io` repo has a `CNAME` file, every Pages site on
-that account is served from that domain, and `<user>.github.io/<repo>/` redirects there. The final
-URL is then `https://<custom-domain>/<repo-or-folder>/`. Use that address in step 4.
+**Custom domains:** if the account's `<user>.github.io` repo has a `CNAME`, every Pages site on the
+account is served from that domain, and `<user>.github.io/<repo>/` redirects there. Use the final
+URL everywhere.
 
-Push to the working branch first. Push to `main`, which deploys, only once the person says so.
-Then check that the deploy succeeded: list the Pages workflow runs, or the `pages-build-deployment`
-run.
+Ask once whether to deploy. After that, push to the publishing branch and check the Pages workflow
+run finished.
 
 ## 4. Supabase Auth URL configuration (human)
 
-Give the person the direct link and the exact values:
-
 - Link: `https://supabase.com/dashboard/project/<ref>/auth/url-configuration`
-  (or Authentication -> URL Configuration)
-- **Site URL:** replace `http://localhost:3000` with the final page URL, e.g.
-  `https://kvendrik.com/bodega/`, then Save.
-- **Redirect URLs:** Add URL, enter the same address, then Save.
+- **Site URL:** replace `http://localhost:3000` with the final page URL (e.g.
+  `https://kvendrik.com/bodega/`), then Save.
+- **Redirect URLs:** Add URL, the same address, then Save.
 
-Keep the trailing slash in both. If the redirect URL doesn't match, Supabase quietly falls back to
-the Site URL, so the link in the email opens `localhost:3000`. That's the classic symptom.
+Keep the trailing slash. If the redirect doesn't match, Supabase falls back to the Site URL, so the
+email link opens `localhost:3000`: the classic symptom.
 
-The email provider is on by default with "Confirm email" enabled, so nothing else needs switching
-on. A new address gets "Confirm your signup" rather than the magic-link email, and either one
-signs the person in.
+The email provider and "Confirm email" are on by default. A new address gets "Confirm your signup"
+rather than the magic-link email; either one signs them in.
 
-## 5. Testing
+## 5. Email
 
-**Before deploy, without sending real email:** use Playwright with the file opened directly.
-Don't start a background server. Stub the network:
+Supabase's built-in mailer sends **2 emails per hour for the whole project**. A signup confirmation
+plus one magic link uses it up; after that, every request fails with `over_email_send_rate_limit`
+(`query_logs` on `auth_logs` shows it). Warn the person before their first test.
 
-```js
-// If the CDN is blocked, serve supabase-js from the npm package:
-//   npm pack @supabase/supabase-js@2 && tar xzf supabase-supabase-js-*.tgz
-// supabase-js is vendored, so no CDN stub is needed.
-await page.route("https://fonts.googleapis.com/**", r => r.abort());   // optional
-await page.route("**/auth/v1/otp**", r =>                               // fake a slow send
-  setTimeout(() => r.fulfill({ status: 200, contentType: "application/json", body: "{}" }), 1200));
-```
+Options, least work first. Lead with the ones that need no domain:
 
-Then click Send with the field empty (expect the error and shake), type a valid address (the
-button fills), and submit. Check the sending state, then the receipt with "Open Gmail" and
-"Resend in 59". Screenshot each one. The only console error should be the request you aborted.
-Test long addresses too.
+1. **Leave it.** With the allow-list, strangers can't use up the quota, and sessions persist, so
+   each friend needs an email about once per device. Fine for a handful of friends.
+2. **Send through Gmail (no domain needed).** Create an app password at
+   `https://myaccount.google.com/apppasswords` (needs 2-Step Verification). Then at
+   `https://supabase.com/dashboard/project/<ref>/auth/smtp` turn on custom SMTP: sender = their
+   Gmail address, host `smtp.gmail.com`, port `465`, username = their Gmail address, password = the
+   app password. Then raise the limit at `https://supabase.com/dashboard/project/<ref>/auth/rate-limits`.
+3. **A transactional email service** (Resend, Postmark and the like). Better deliverability, but
+   they want the domain verified with DNS records. Some people don't want that; ask first.
+4. **No email at all:** GitHub or Google sign-in. No email limit, and the allow-list still works on
+   the account's email. Needs an OAuth app and a secret pasted into Supabase.
 
-**After deploy (human, or an agent with a real browser):**
-1. The page loads and shows the signed-out panel with no console errors.
-2. Send a link to a real address. The email arrives.
-3. The link lands back on the page signed in, not on `localhost`.
-4. Store a value. It shows with its row number.
-5. Sign out, then sign in as someone else. The first person's value must not be visible.
+Other email gotchas:
+- **Links work once and expire after 1 hour.** Corporate scanners can open a link before the person
+  does; the page then shows the expired message. Fix: add `{{ .Token }}` to the template and ask for
+  the 6-digit code with `verifyOtp({ email, token, type: "email" })`.
+- **Resend cooldown:** about 60 seconds per address. Show a countdown.
 
 ## 6. Optional: AI through OpenRouter, without leaking the key
 
-**The rule: an API key in a static page is a public key.** Anyone can open the source, copy it
-and spend your credit. So the page never holds the OpenRouter key. A Supabase Edge Function holds
-it, and the page talks only to that function.
+**An API key in a static page is a public key.** So a Supabase Edge Function holds it, and the page
+only talks to that function.
 
 ```
-page ──(signed-in user's session token)──► Edge Function "ask" ──(secret key)──► OpenRouter
-                                                 │
-                                                 └─ ai_take_quota(): one request off today's count
+page ──(session token)──► Edge Function "ask" ──(secret key)──► OpenRouter
+                              ├─ on the allow-list?
+                              └─ ai_take_quota(): one request off today's count
 ```
-
-Every layer has its own guard:
 
 | Layer | Guard |
 | --- | --- |
-| Key | Stored as an Edge Function secret (`OPENROUTER_API_KEY`). Never in the page, the repo or the chat. |
-| Who | `verify_jwt: true`, and the function resolves the user from the session token. Signed-out callers get 401. |
-| Where | The function only answers requests whose `Origin` is the site (`https://kvendrik.com`). |
-| What | The server picks the model (a short fallback list), caps `max_tokens` (400) and the prompt (1000 characters), and sets the system prompt. The page sends only `{ prompt }`. |
-| How much | 20 requests per user per UTC day, and 500 for the whole site per day, counted atomically in Postgres. A failed model call refunds the request. |
-| Worst case | A credit limit on the OpenRouter key itself. This is the real backstop: anyone can make accounts, so per-user limits slow abuse but don't stop it. |
+| Key | Edge Function secret `OPENROUTER_API_KEY`. Never in the page, the repo or the chat. |
+| Who | `verify_jwt: true`; the function resolves the user from the token (401 if none) and checks `allowed_emails` (403 "Not on the list."). |
+| Where | Only answers `Origin: https://<site>`. A script can fake this; it only stops other websites. |
+| What | The server picks the models (a fallback list), caps `max_tokens` (400) and the prompt (1000 characters), and owns the system prompt. The page sends `{ prompt }` only. |
+| How much | 20 per person per UTC day, 500 for the whole site, counted atomically. Failed calls are refunded. |
+| Worst case | A credit limit on the OpenRouter key. This is the real backstop. |
 
-### The quota table
-
-Clients can read their own count. They can't write it: there are no insert, update or delete
-policies, and the quota functions are executable by `service_role` only.
+### The quota
 
 ```sql
 create table if not exists public.ai_usage (
@@ -390,9 +447,9 @@ create table if not exists public.ai_usage (
 );
 alter table public.ai_usage enable row level security;
 create policy "ai_usage_select_own" on public.ai_usage
-  for select to authenticated using (user_id = (select auth.uid()));
+  for select to authenticated using (user_id = (select auth.uid()));   -- read own count; no writes
 
--- New count, null when this user is over p_limit, -1 when the whole site is over p_global_limit.
+-- New count; null when this user is at p_limit; -1 when the whole site is at p_global_limit.
 create or replace function public.ai_take_quota(p_user uuid, p_limit integer, p_global_limit integer)
 returns integer language plpgsql security definer set search_path = '' as $$
 declare v_today date := (now() at time zone 'utc')::date; v_count integer;
@@ -418,42 +475,42 @@ grant execute on function public.ai_take_quota(uuid, integer, integer) to servic
 grant execute on function public.ai_refund_quota(uuid) to service_role;
 ```
 
-`on conflict ... do update ... where u.requests < p_limit` is what makes the limit hold under
-parallel requests: when the row is already at the limit, the update doesn't happen and
-`returning` gives null.
+`on conflict ... do update ... where u.requests < p_limit` is what holds under parallel requests:
+at the limit the update doesn't happen, and `returning` gives null.
 
-### The Edge Function
+### The function
 
-Deploy with `verify_jwt: true`. Full source: https://raw.githubusercontent.com/kvendrik/kvendrik.github.io/main/bodega/supabase/functions/ask/index.ts. The shape is:
+Deploy with `verify_jwt: true`. Full source is linked at the top. The shape:
 
 ```ts
 import { createClient } from "jsr:@supabase/supabase-js@2";
-const ORIGINS = ["https://kvendrik.com"];
+const ORIGINS = ["https://<site>"];
 const MODELS = (Deno.env.get("OPENROUTER_MODELS") ?? "openai/gpt-4o-mini,google/gemini-2.0-flash-001")
   .split(",").map((m) => m.trim()).filter(Boolean).slice(0, 3);
 
 Deno.serve(async (req) => {
   // 1. CORS preflight; reject anything not POST or not from ORIGINS.
-  // 2. No OPENROUTER_API_KEY secret yet? 503 "We're closed."
-  // 3. admin = createClient(SUPABASE_URL, SUPABASE_SERVICE_ROLE_KEY)   (both are set automatically)
+  // 2. No OPENROUTER_API_KEY secret? 503 "We're closed."
+  // 3. admin = createClient(SUPABASE_URL, SUPABASE_SERVICE_ROLE_KEY)   (both set automatically)
   //    user = (await admin.auth.getUser(bearerToken)).data.user         otherwise 401
-  // 4. prompt: a non-empty string of at most 1000 characters            otherwise 400 or 413
-  // 5. used = await admin.rpc("ai_take_quota", { p_user: user.id, p_limit: 20, p_global_limit: 500 })
+  // 4. allowed_emails has lower(user.email)?                             otherwise 403
+  // 5. prompt: non-empty, at most 1000 characters                        otherwise 400 / 413
+  // 6. used = await admin.rpc("ai_take_quota", { p_user: user.id, p_limit: 20, p_global_limit: 500 })
   //    null -> 429 "That's enough for today."   -1 -> 429 "We're closed for the day."
-  // 6. POST https://openrouter.ai/api/v1/chat/completions with
-  //    { models: MODELS, max_tokens: 400, messages: [system, user] }, a 30s timeout,
-  //    and headers Authorization: Bearer <key>, HTTP-Referer: <site>, X-Title: Bodega
-  // 7. Failure or empty answer: admin.rpc("ai_refund_quota"), then 502 or 504.
-  // 8. 200 { answer, model, used, limit }
+  // 7. POST https://openrouter.ai/api/v1/chat/completions
+  //    { models: MODELS, max_tokens: 400, messages: [system, user] }, 30s timeout,
+  //    headers Authorization: Bearer <key>, HTTP-Referer: <site>, X-Title: <name>
+  // 8. Failure or empty answer: admin.rpc("ai_refund_quota"), then 502 / 504.
+  // 9. 200 { answer, model, used, limit }
 });
 ```
 
-- `models` (plural) is OpenRouter's fallback routing: if the first model is unavailable it tries the
-  next. Model IDs change over time, so make the list overridable with an `OPENROUTER_MODELS` secret
-  rather than hard-coding a single ID.
-- CORS must allow the headers supabase-js sends: `authorization, x-client-info, apikey, content-type`.
-- Log OpenRouter errors with `console.error` (visible under Edge Functions -> Logs), but never send
-  them to the browser, since they can describe your account.
+- `models` (plural) is OpenRouter's fallback list. Model IDs go stale, and a sandbox often can't
+  check OpenRouter's list, so make it overridable with an `OPENROUTER_MODELS` secret and tell the
+  person the default list is unverified.
+- CORS must allow `authorization, x-client-info, apikey, content-type` (what supabase-js sends).
+- Log OpenRouter errors with `console.error` (they show in the function's logs); never send them
+  to the browser.
 
 ### The page
 
@@ -465,78 +522,103 @@ if (error) {
 } else {
   answerEl.textContent = data.answer;   // model output is untrusted: textContent, never innerHTML
 }
-// Remaining today (the browser may read its own row):
-const { data: row } = await sb.from("ai_usage").select("requests")
+const { data: row } = await sb.from("ai_usage").select("requests")   // remaining today
   .eq("day", new Date().toISOString().slice(0, 10)).maybeSingle();
 ```
 
-Treat the answer exactly like user input. A model can be talked into producing `<script>` or a fake
-link, and `textContent` makes that harmless.
-
 ### Storing the key (human)
 
-- Direct link: `https://supabase.com/dashboard/project/<ref>/functions/secrets`
-- Name: `OPENROUTER_API_KEY`. Value: the key from https://openrouter.ai/workspaces/default/keys (starts
-  with `sk-or-`). Save. The function reads it on every request, so no redeploy is needed.
-- On openrouter.ai, give that key a **credit limit**.
-- `create_edge_function_secret` shows the person a secure form instead. If it comes back
-  `declined` (Supabase can pause it), give them the link and values above. Never ask for the key
-  in chat.
+- `https://supabase.com/dashboard/project/<ref>/functions/secrets`: name `OPENROUTER_API_KEY`, value
+  from `https://openrouter.ai/workspaces/default/keys`, then Save. No redeploy needed.
+- Put a **credit limit** on that key at OpenRouter.
+- `create_edge_function_secret` shows a secure form instead. If it comes back `declined` (Supabase
+  can pause it), give the link above in the same message. Never take a key in chat.
 
-### Testing it
+## 7. Testing
 
-- Without a key, the function answers 503 "We're closed.", which proves the route and CORS work.
-- With the key: ask a question, and check that the count goes down and the answer appears.
-- Signed out: calling the function directly must give 401.
-- From another origin: 403.
-- Quota: set `p_limit` to 1 temporarily, or check that the second request after the limit gets 429.
+### The database, without real users
 
-## Gotchas
+Pretend to be a signed-in user inside a transaction, then roll it all back. This is how every policy
+and trigger here was verified:
 
-- **Anyone can lock everyone out of signing in** while the built-in mailer is on: requesting links
-  for random addresses uses up the project's 2 emails an hour. Custom SMTP, a higher email limit and
-  CAPTCHA (Authentication -> Attack Protection) fix it.
-- **Email limit:** Supabase's built-in mailer sends only a few emails per hour per project and is
-  meant for testing. Before real traffic, add custom SMTP under Authentication -> Emails -> SMTP
-  settings.
-- **Links work once and expire** after 1 hour by default. Corporate email scanners can open the
-  link before the person does, and the page then shows "Email link is invalid or has expired".
-  The fix: add `{{ .Token }}` to the email template and ask for the 6-digit code with
-  `verifyOtp({ email, token, type: "email" })`.
-- **Resend cooldown:** Supabase refuses another link to the same address for about 60 seconds.
-  Show a countdown instead of letting the request fail.
-- **Sign in with Apple on the web needs the paid Apple Developer Program** ($99 a year), plus a
-  client secret JWT that expires within 6 months. Google and GitHub sign-in are free, but each
-  needs an OAuth app and a secret pasted into Supabase. Magic links need none of that, which is
-  why this guide uses them.
-- **An empty result while signed in** is normal for a new user. An RLS error on insert means
-  `user_id` doesn't match `auth.uid()`; let the column default fill it in.
-- **Don't load supabase-js from a CDN with a floating version** (`@2`). If the package or CDN is
-  compromised, that code runs on your page and can steal sessions and spend AI quota. Vendor an
-  exact build: `npm pack @supabase/supabase-js@<version>` (one that's been out at least two weeks),
-  copy `package/dist/umd/supabase.js` to `vendor/supabase-js-<version>.js`, and keep its MIT
-  `LICENSE` next to it.
-- **Friends only? Use an allow-list, not just RLS.** RLS alone still lets any email create an account
-  and receive emails (and use up the email limit). A `before insert` trigger on `auth.users` that
-  raises for unlisted addresses stops the account, and the email, from ever being created. Supabase
-  reports it to the page as "Database error saving new user", so map that to "Not on the list.".
-  Add the same check to the RLS policies (`private.is_allowed()`, which reads the caller's email from
-  the JWT; keep it in a schema the API doesn't serve, or the advisor flags it as callable) and to the Edge Function. Seed the list with existing accounts so the owner isn't locked
-  out. See `bodega/supabase/allowlist.sql`. To add someone, give the owner the SQL editor link
-  (`https://supabase.com/dashboard/project/<ref>/sql/new`) and a ready-to-run `insert`.
-- **Cap rows per user.** Without a cap, one account can fill a free database. A `before insert`
-  trigger that counts the user's rows (with a per-user advisory lock against races) and raises
-  "The shelf is full." is enough. See `bodega/supabase/schema.sql`.
+```sql
+begin;
+create temp table results (test text, outcome text) on commit drop;
+grant all on results to authenticated;
+set local role authenticated;
+set local request.jwt.claims = '{"sub":"<a real user id>","role":"authenticated","email":"<their email>"}';
+insert into public.notes (body) values ('test');                       -- listed user: should work
+insert into results values ('listed insert', 'ok');
+set local request.jwt.claims = '{"sub":"11111111-1111-4111-8111-111111111111","role":"authenticated","email":"stranger@example.com"}';
+do $$ begin
+  begin insert into public.notes (user_id, body) values ('11111111-1111-4111-8111-111111111111', 'x');
+        insert into results values ('stranger insert', 'ALLOWED (bad)');
+  exception when others then insert into results values ('stranger insert', 'blocked'); end;
+end $$;
+reset role;
+select * from results;
+rollback;
+```
+
+The same pattern covers: the 101st row being refused, an `insert into auth.users` for an unlisted
+address failing with "Not on the list.", and a listed one (mixed case) succeeding. Afterwards,
+check that no test rows were left behind.
+
+### The page, without sending email
+
+Playwright on the file directly (no background server). Stub the network:
+
+```js
+await page.route("https://fonts.googleapis.com/**", r => r.abort());   // optional
+await page.route("**/auth/v1/otp**", r =>                               // fake a slow send
+  setTimeout(() => r.fulfill({ status: 200, contentType: "application/json", body: "{}" }), 1200));
+```
+
+- Signed out: send with the field empty (error and shake), type an address (button fills), submit
+  (sending, then the receipt with "Open Gmail" and "Resend in 59").
+- Signed in: put a fake session in `localStorage` under `sb-<ref>-auth-token` with `addInitScript`,
+  and stub `**/rest/v1/notes**`, `**/rest/v1/ai_usage**` and `**/functions/v1/ask`, including a
+  429 answer.
+- Crafted links: open `#error=access_denied&error_code=otp_expired&error_description=<your text>` on
+  a fresh page and check that your text never appears.
+- Screenshot at 390px and desktop, and check `scrollWidth - innerWidth` is 0.
+
+### Live (human, or an agent that can reach the site)
+
+1. The page loads, with no console errors.
+2. A listed address gets a link; an unlisted one sees "Not on the list." and gets no email.
+3. The link lands back signed in, not on `localhost`.
+4. Store a value; it shows with its row number.
+5. A second listed account can't see the first one's value.
+6. Ask a question: an answer appears and the count drops by one.
+
+## Security checklist for a small app among friends
+
+- [ ] Allow-list on, sign-up trigger in place, existing accounts seeded.
+- [ ] RLS on every table; policies check ownership and the allow-list.
+- [ ] Row cap per person.
+- [ ] No secret keys in the page; the OpenRouter key is an Edge Function secret with a credit limit.
+- [ ] Quota functions executable by `service_role` only.
+- [ ] supabase-js served from the site at an exact version.
+- [ ] No text from the URL or from the model is ever rendered as HTML, or shown at all for
+      `error_description`.
+- [ ] Advisors run and every finding explained.
+
+Known and accepted at this scale (tell the person):
+- **Shared origin.** If the page lives on a bigger site, every page on that domain can read the
+  session in `localStorage`. A subdomain fixes it.
+- **Google Fonts** sees visitors' IP addresses. Serve the fonts yourself to avoid it.
+- **The owner can read everything** in the dashboard. Tell friends.
+- **Free Supabase projects pause** after about a week without activity; resume them in the
+  dashboard.
 
 ## Done means
 
-- The table and RLS are applied, the advisors have been run, and every finding is reported.
+- Tables, policies, allow-list and cap applied; advisors run; every finding reported.
 - The page is live at its final URL, and the deploy run succeeded.
-- The person has the dashboard link and the exact Site URL and Redirect URL values, or has
-  confirmed they're set.
-- They know what isn't verified (for example, if you couldn't load the live page) and how to
-  check it: the five steps under "After deploy".
-- Nothing was done to other projects, and no schema changes were made beyond what was asked.
-- If AI was added: no API key appears in the page, the repo or the chat. The function is deployed
-  with `verify_jwt: true`, the quota functions are `service_role` only, and the person knows to set
-  a credit limit on the key.
+- The person has the direct links and exact values for every manual step, or has confirmed them.
+- The person knows how to add a friend (link and ready-to-run SQL).
+- What wasn't tested live is stated, with the live checklist.
+- Nothing was done to other projects; no schema changes beyond what was asked.
+- If AI was added: no key in the page, repo or chat; `verify_jwt: true`; quota functions
+  `service_role` only; credit limit set on the key.
