@@ -51,7 +51,12 @@ Each of these cost the person a round trip. Read them before you start.
 9. **Shipped "done" without a real end-to-end test.** The sandbox couldn't reach the live site,
    Supabase functions or OpenRouter, so testing used stubbed responses. Say plainly what was and
    wasn't tested, and give the person the exact steps to check it live.
-10. **Rule, not a mistake (keep it that way): no API keys in the page.** Any key in a static page is
+10. **Ran into Supabase's email limit on the first test.** The built-in mailer sends **2 emails
+    per hour for the whole project**. A signup confirmation plus one magic link used it up, and every
+    later attempt failed with `over_email_send_rate_limit` (check under auth logs). Tell the person
+    before they test. For more than a quick try, set up custom SMTP first (see the SMTP link below),
+    then raise the email limit on the rate limits page.
+11. **Rule, not a mistake (keep it that way): no API keys in the page.** Any key in a static page is
     public. Keys belong in Edge Function secrets, typed in by the person, never pasted into chat.
 
 ## Links to give the human
@@ -72,6 +77,7 @@ Replace `<ref>` with the Supabase project ref.
 | OpenRouter keys | `https://openrouter.ai/workspaces/default/keys` | Create a key (it starts with `sk-or-`) and give it a credit limit. |
 | Function logs | `https://supabase.com/dashboard/project/<ref>/functions/ask/logs` | Where OpenRouter errors show up. |
 | SMTP (before real traffic) | `https://supabase.com/dashboard/project/<ref>/auth/smtp` | Any email provider's SMTP details. |
+| Email rate limit | `https://supabase.com/dashboard/project/<ref>/auth/rate-limits` | Raise "emails sent per hour" (only possible once custom SMTP is on). |
 | Deploy runs | `https://github.com/<owner>/<repo>/actions` | Check the Pages deploy finished. |
 
 ### The reference install
