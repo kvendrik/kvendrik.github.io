@@ -5,7 +5,7 @@ Sign in with an emailed magic link, then see your own value from the database.
 - Live page: https://kvendrik.com/bodega/ (served from `public/bodega/`; `kvendrik.github.io/bodega/` redirects here)
 - Build guide for models: https://kvendrik.com/bodega/llms.md
 - Supabase project: `Bodega` (`ukxogodszvwxzlfxlgtv`, eu-central-1)
-- Schema: `bodega/supabase/schema.sql`, applied as migration `create_notes_with_rls`
+- Schema: `bodega/supabase/schema.sql`, applied as migrations `create_notes_with_rls` and `notes_rls_select_auth_uid`
 
 ## The one manual step
 Supabase -> Authentication -> URL Configuration:

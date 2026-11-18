@@ -12,14 +12,15 @@ create index if not exists notes_user_created_idx on public.notes (user_id, crea
 alter table public.notes enable row level security;
 
 -- Each signed-in user can only see and change their own rows.
+-- (select auth.uid()) runs once per query, not once per row.
 create policy "notes_select_own" on public.notes
-  for select to authenticated using (user_id = auth.uid());
+  for select to authenticated using (user_id = (select auth.uid()));
 
 create policy "notes_insert_own" on public.notes
-  for insert to authenticated with check (user_id = auth.uid());
+  for insert to authenticated with check (user_id = (select auth.uid()));
 
 create policy "notes_update_own" on public.notes
-  for update to authenticated using (user_id = auth.uid()) with check (user_id = auth.uid());
+  for update to authenticated using (user_id = (select auth.uid())) with check (user_id = (select auth.uid()));
 
 create policy "notes_delete_own" on public.notes
-  for delete to authenticated using (user_id = auth.uid());
+  for delete to authenticated using (user_id = (select auth.uid()));
