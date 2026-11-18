@@ -3,7 +3,8 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<meta name="color-scheme" content="light dark">
+<meta name="color-scheme" content="dark">
+<meta name="theme-color" content="#000000">
 <title>Bodega</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -14,11 +15,12 @@
 
   :root {
     --black:#000; --white:#fff;
-    --surface-100:#fff; --surface-200:#f2f2f2;
-    --ink:#000; --ink-muted:#595959; --line:#000; --line-soft:#767676;
-    --fill:#000; --on-fill:#fff; --field:#fff; --focus:#000;
-    --shadow-hard:6px 6px 0 0 #000; --shadow-hard-sm:3px 3px 0 0 #000;
-    --shadow-frame:0 0 0 3px #fff, 0 0 0 4px #000;
+    color-scheme:dark;
+    --surface-100:#000; --surface-200:#141414;
+    --ink:#fff; --ink-muted:#a6a6a6; --line:#fff; --line-soft:#8a8a8a;
+    --fill:#fff; --on-fill:#000; --field:#000; --focus:#fff;
+    --shadow-hard:6px 6px 0 0 #fff; --shadow-hard-sm:3px 3px 0 0 #fff;
+    --shadow-frame:0 0 0 3px #000, 0 0 0 4px #fff;
     --font-display:"Instrument Serif","Bodoni Moda",Didot,"Bodoni 72",Georgia,serif;
     --font-sans:"Allo",system-ui,-apple-system,"Segoe UI",sans-serif;
     --font-mono:"Space Mono",ui-monospace,Menlo,Consolas,monospace;
@@ -27,15 +29,6 @@
     /* Motion: one strong ease-out, quick presses, exits faster than entrances. */
     --ease-out:cubic-bezier(0.23, 1, 0.32, 1);
     --t-press:120ms; --t-in:300ms; --t-out:90ms;
-  }
-  @media (prefers-color-scheme: dark) {
-    :root {
-      --surface-100:#000; --surface-200:#141414;
-      --ink:#fff; --ink-muted:#a6a6a6; --line:#fff; --line-soft:#8a8a8a;
-      --fill:#fff; --on-fill:#000; --field:#000; --focus:#fff;
-      --shadow-hard:6px 6px 0 0 #fff; --shadow-hard-sm:3px 3px 0 0 #fff;
-      --shadow-frame:0 0 0 3px #000, 0 0 0 4px #fff;
-    }
   }
 
   * { box-sizing:border-box; }

@@ -155,7 +155,7 @@ signs the user in.
 
 ## Bodega look and voice (if you reuse the brand)
 
-- Strictly black and white. No accent colour. Dark mode swaps them.
+- Strictly black and white. No accent colour. Dark (white on black) is the default.
 - Instrument Serif for display, Allo for text, Space Mono for small receipts.
 - Square corners, 3px borders, hard drop shadows (`6px 6px 0 0`), and a striped awning on top.
 - Sentence case for text. ALL CAPS tracked labels for buttons.
