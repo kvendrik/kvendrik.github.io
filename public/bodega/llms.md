@@ -85,7 +85,6 @@ Replace `<ref>` with the Supabase project ref.
 | | |
 | --- | --- |
 | Live page | https://kvendrik.com/bodega/ (from `public/bodega/` in `kvendrik/kvendrik.github.io`; `kvendrik.github.io/bodega/` redirects here because of the account's `CNAME`) |
-| Brand guide | https://kvendrik.com/bodega/brand/ |
 | Supabase project | `Bodega`, ref `ukxogodszvwxzlfxlgtv`, eu-central-1 |
 | Migrations | `create_notes_with_rls`, `notes_rls_select_auth_uid`, `ai_usage_quota` |
 | Schema files | `bodega/supabase/schema.sql`, `bodega/supabase/ai_usage.sql` |
@@ -95,7 +94,6 @@ Replace `<ref>` with the Supabase project ref.
 | Edge Function secrets | https://supabase.com/dashboard/project/ukxogodszvwxzlfxlgtv/functions/secrets |
 | Function logs | https://supabase.com/dashboard/project/ukxogodszvwxzlfxlgtv/functions/ask/logs |
 | OpenRouter keys | https://openrouter.ai/workspaces/default/keys |
-| Fonts | Allo, Instrument Serif and Space Mono, served from `public/bodega/fonts/`, copied from the Bodega brand guide |
 
 ## 0. Before you start
 
@@ -522,14 +520,3 @@ link, and `textContent` makes that harmless.
 - If AI was added: no API key appears in the page, the repo or the chat. The function is deployed
   with `verify_jwt: true`, the quota functions are `service_role` only, and the person knows to set
   a credit limit on the key.
-
-## Bodega look and voice (if you reuse the brand)
-
-- Strictly black and white, with no accent colour. Dark (white on black) is the default:
-  `color-scheme: dark` and `<meta name="theme-color" content="#000000">`.
-- Instrument Serif for display, Allo for text, Space Mono for small receipts and hints.
-- Square corners, 3px borders, hard drop shadows (`3px 3px 0 0`, and `6px 6px 0 0` when lifted)
-  and a double-rule frame on panels. No header: the panel is the page. The footer fades in after 1s.
-- Sentence case for text. ALL CAPS tracked labels (`letter-spacing: .18em`) for buttons and labels.
-- No emoji and no exclamation marks. Deadpan: "Who sent you?", "Send link", "Done.",
-  "Nothing on the shelf.", "Too many links sent. Give it an hour."
