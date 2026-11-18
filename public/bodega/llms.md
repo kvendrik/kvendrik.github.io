@@ -40,6 +40,9 @@ Ask for, or look up, these three things:
 | Turn on GitHub Pages | not through the GitHub MCP tools | Settings -> Pages |
 | Auth URL configuration | **no:** the Supabase MCP connector has no auth-config tool | Supabase dashboard, one screen |
 | Third-party sign-in (Apple, Google, GitHub) | no | their developer consoles |
+| AI: deploy the Edge Function, create the quota table | yes (`deploy_edge_function`, `apply_migration`) | |
+| AI: store the OpenRouter key | **sometimes:** `create_edge_function_secret` opens a form for the human, and Supabase can pause it | Edge Functions -> Secrets |
+| AI: spending limit on the key | no | openrouter.ai |
 
 Never say you did a step you couldn't do. When you're blocked, give the exact link and the exact
 values to enter (see step 4).
@@ -274,6 +277,144 @@ Test long addresses too.
 4. Store a value. It shows with its row number.
 5. Sign out, then sign in as someone else. The first person's value must not be visible.
 
+## 6. Optional: AI through OpenRouter, without leaking the key
+
+**The rule: an API key in a static page is a public key.** Anyone can open the source, copy it
+and spend your credit. So the page never holds the OpenRouter key. A Supabase Edge Function holds
+it, and the page talks only to that function.
+
+```
+page ──(signed-in user's session token)──► Edge Function "ask" ──(secret key)──► OpenRouter
+                                                 │
+                                                 └─ ai_take_quota(): one request off today's count
+```
+
+Every layer has its own guard:
+
+| Layer | Guard |
+| --- | --- |
+| Key | Stored as an Edge Function secret (`OPENROUTER_API_KEY`). Never in the page, the repo or the chat. |
+| Who | `verify_jwt: true`, and the function resolves the user from the session token. Signed-out callers get 401. |
+| Where | The function only answers requests whose `Origin` is the site (`https://kvendrik.com`). |
+| What | The server picks the model (a short fallback list), caps `max_tokens` (400) and the prompt (1000 characters), and sets the system prompt. The page sends only `{ prompt }`. |
+| How much | 20 requests per user per UTC day, and 500 for the whole site per day, counted atomically in Postgres. A failed model call refunds the request. |
+| Worst case | A credit limit on the OpenRouter key itself. This is the real backstop: anyone can make accounts, so per-user limits slow abuse but don't stop it. |
+
+### The quota table
+
+Clients can read their own count. They can't write it: there are no insert, update or delete
+policies, and the quota functions are executable by `service_role` only.
+
+```sql
+create table if not exists public.ai_usage (
+  user_id  uuid not null references auth.users (id) on delete cascade,
+  day      date not null default ((now() at time zone 'utc')::date),
+  requests integer not null default 0 check (requests >= 0),
+  primary key (user_id, day)
+);
+alter table public.ai_usage enable row level security;
+create policy "ai_usage_select_own" on public.ai_usage
+  for select to authenticated using (user_id = (select auth.uid()));
+
+-- New count, null when this user is over p_limit, -1 when the whole site is over p_global_limit.
+create or replace function public.ai_take_quota(p_user uuid, p_limit integer, p_global_limit integer)
+returns integer language plpgsql security definer set search_path = '' as $$
+declare v_today date := (now() at time zone 'utc')::date; v_count integer;
+begin
+  if (select coalesce(sum(requests), 0) from public.ai_usage where day = v_today) >= p_global_limit then
+    return -1;
+  end if;
+  insert into public.ai_usage as u (user_id, day, requests) values (p_user, v_today, 1)
+  on conflict (user_id, day) do update set requests = u.requests + 1 where u.requests < p_limit
+  returning u.requests into v_count;
+  return v_count;
+end; $$;
+
+create or replace function public.ai_refund_quota(p_user uuid)
+returns void language sql security definer set search_path = '' as $$
+  update public.ai_usage set requests = greatest(requests - 1, 0)
+   where user_id = p_user and day = (now() at time zone 'utc')::date;
+$$;
+
+revoke all on function public.ai_take_quota(uuid, integer, integer) from public, anon, authenticated;
+revoke all on function public.ai_refund_quota(uuid) from public, anon, authenticated;
+grant execute on function public.ai_take_quota(uuid, integer, integer) to service_role;
+grant execute on function public.ai_refund_quota(uuid) to service_role;
+```
+
+`on conflict ... do update ... where u.requests < p_limit` is what makes the limit hold under
+parallel requests: when the row is already at the limit, the update doesn't happen and
+`returning` gives null.
+
+### The Edge Function
+
+Deploy with `verify_jwt: true`. Full source: https://raw.githubusercontent.com/kvendrik/kvendrik.github.io/main/bodega/supabase/functions/ask/index.ts. The shape is:
+
+```ts
+import { createClient } from "jsr:@supabase/supabase-js@2";
+const ORIGINS = ["https://kvendrik.com"];
+const MODELS = (Deno.env.get("OPENROUTER_MODELS") ?? "openai/gpt-4o-mini,google/gemini-2.0-flash-001")
+  .split(",").map((m) => m.trim()).filter(Boolean).slice(0, 3);
+
+Deno.serve(async (req) => {
+  // 1. CORS preflight; reject anything not POST or not from ORIGINS.
+  // 2. No OPENROUTER_API_KEY secret yet? 503 "We're closed."
+  // 3. admin = createClient(SUPABASE_URL, SUPABASE_SERVICE_ROLE_KEY)   (both are set automatically)
+  //    user = (await admin.auth.getUser(bearerToken)).data.user         otherwise 401
+  // 4. prompt: a non-empty string of at most 1000 characters            otherwise 400 or 413
+  // 5. used = await admin.rpc("ai_take_quota", { p_user: user.id, p_limit: 20, p_global_limit: 500 })
+  //    null -> 429 "That's enough for today."   -1 -> 429 "We're closed for the day."
+  // 6. POST https://openrouter.ai/api/v1/chat/completions with
+  //    { models: MODELS, max_tokens: 400, messages: [system, user] }, a 30s timeout,
+  //    and headers Authorization: Bearer <key>, HTTP-Referer: <site>, X-Title: Bodega
+  // 7. Failure or empty answer: admin.rpc("ai_refund_quota"), then 502 or 504.
+  // 8. 200 { answer, model, used, limit }
+});
+```
+
+- `models` (plural) is OpenRouter's fallback routing: if the first model is unavailable it tries the
+  next. Model IDs change over time, so make the list overridable with an `OPENROUTER_MODELS` secret
+  rather than hard-coding a single ID.
+- CORS must allow the headers supabase-js sends: `authorization, x-client-info, apikey, content-type`.
+- Log OpenRouter errors with `console.error` (visible under Edge Functions -> Logs), but never send
+  them to the browser, since they can describe your account.
+
+### The page
+
+```js
+const { data, error } = await sb.functions.invoke("ask", { body: { prompt } });   // adds the session
+if (error) {
+  const body = await error.context.json().catch(() => null);   // { error, used?, limit? }
+  // show "✕ " + body.error
+} else {
+  answerEl.textContent = data.answer;   // model output is untrusted: textContent, never innerHTML
+}
+// Remaining today (the browser may read its own row):
+const { data: row } = await sb.from("ai_usage").select("requests")
+  .eq("day", new Date().toISOString().slice(0, 10)).maybeSingle();
+```
+
+Treat the answer exactly like user input. A model can be talked into producing `<script>` or a fake
+link, and `textContent` makes that harmless.
+
+### Storing the key (human)
+
+- Direct link: `https://supabase.com/dashboard/project/<ref>/functions/secrets`
+- Name: `OPENROUTER_API_KEY`. Value: the key from https://openrouter.ai/settings/keys (starts
+  with `sk-or-`). Save. The function reads it on every request, so no redeploy is needed.
+- On openrouter.ai, give that key a **credit limit**.
+- `create_edge_function_secret` shows the person a secure form instead. If it comes back
+  `declined` (Supabase can pause it), give them the link and values above. Never ask for the key
+  in chat.
+
+### Testing it
+
+- Without a key, the function answers 503 "We're closed.", which proves the route and CORS work.
+- With the key: ask a question, and check that the count goes down and the answer appears.
+- Signed out: calling the function directly must give 401.
+- From another origin: 403.
+- Quota: set `p_limit` to 1 temporarily, or check that the second request after the limit gets 429.
+
 ## Gotchas
 
 - **Email limit:** Supabase's built-in mailer sends only a few emails per hour per project and is
@@ -303,6 +444,9 @@ Test long addresses too.
 - They know what isn't verified (for example, if you couldn't load the live page) and how to
   check it: the five steps under "After deploy".
 - Nothing was done to other projects, and no schema changes were made beyond what was asked.
+- If AI was added: no API key appears in the page, the repo or the chat. The function is deployed
+  with `verify_jwt: true`, the quota functions are `service_role` only, and the person knows to set
+  a credit limit on the key.
 
 ## Bodega look and voice (if you reuse the brand)
 

@@ -120,6 +120,11 @@
   .foot a { color:var(--ink); text-underline-offset:3px; }
   .foot a:focus-visible { outline:3px solid var(--focus); outline-offset:3px; }
 
+  /* Ask the shop */
+  .ask { margin-top:var(--space-8); }
+  .answer { margin-top:var(--space-6); }
+  .answer__text { margin:0 0 var(--space-3); font:italic 400 26px/34px var(--font-display); white-space:pre-wrap; overflow-wrap:anywhere; }
+
   .status { margin-top:var(--space-4); min-height:24px; font:700 14px/20px var(--font-sans); }
   .step { animation:step 120ms steps(4,end) both; }
   @keyframes step { from { opacity:0; transform:translateY(6px); } to { opacity:1; transform:none; } }
@@ -187,6 +192,23 @@
           <button class="btn" id="body-btn" type="submit">Store it</button>
         </div>
       </form>
+
+      <div class="panel ask">
+        <h2 class="label muted" style="margin:0 0 var(--space-4)">Ask the shop</h2>
+        <form id="ask-form" novalidate>
+          <label class="sr-only" for="ask">Your question</label>
+          <div class="field" id="ask-field">
+            <input class="field__input" id="ask" name="ask" placeholder="Ask anything" maxlength="1000"
+              autocomplete="off" enterkeyhint="send" aria-describedby="ask-hint">
+            <button class="btn" id="ask-btn" type="submit">Ask</button>
+          </div>
+          <p class="hint" id="ask-hint">Answers come from a model, not a person.</p>
+        </form>
+        <div class="answer" id="answer" hidden>
+          <p class="answer__text" id="answer-text"></p>
+          <p class="receipt" id="answer-meta"></p>
+        </div>
+      </div>
     </section>
 
     <p class="status" id="status" role="status" aria-live="polite"></p>
@@ -386,6 +408,7 @@
       clearInterval(timer);
       $("who").textContent = "● " + (session.user.email || "OPEN");
       loadValue();
+      loadQuota();
     } else {
       $("sent").hidden = true;
       form.hidden = false;
@@ -408,6 +431,77 @@
     bodyField.classList.remove("is-ready");
     say("Done.");
     loadValue();
+  };
+
+  // ---------- Ask the shop ----------
+  // The page never sees the OpenRouter key. It calls the "ask" Edge Function with the user's
+  // session; the function checks the quota, calls the model and sends back plain text.
+
+  const LIMIT = 20;
+  const askForm = $("ask-form"), askField = $("ask-field"), askInput = $("ask"), askBtn = $("ask-btn"), askHint = $("ask-hint");
+  const ASK_HINT = askHint.textContent;
+  let asking = false;
+
+  function setLeft(used, limit) {
+    const left = Math.max((limit || LIMIT) - (used || 0), 0);
+    askHint.classList.remove("is-error");
+    askHint.textContent = left > 0
+      ? left + " left today. " + ASK_HINT
+      : "That's enough for today. Come back tomorrow.";
+  }
+
+  async function loadQuota() {
+    const today = new Date().toISOString().slice(0, 10);   // the server counts in UTC days
+    const { data } = await sb.from("ai_usage").select("requests").eq("day", today).maybeSingle();
+    setLeft(data ? data.requests : 0);
+  }
+
+  askInput.addEventListener("input", () => {
+    askField.classList.toggle("is-ready", askInput.value.trim().length > 0);
+    if (askHint.classList.contains("is-error")) { askHint.classList.remove("is-error"); askField.classList.remove("is-invalid"); }
+  });
+  askField.addEventListener("animationend", () => askField.classList.remove("is-shaking"));
+
+  askForm.onsubmit = async (e) => {
+    e.preventDefault();
+    if (asking) return;
+    const prompt = askInput.value.trim();
+    if (!prompt) { shake(askField); askInput.focus(); return; }
+
+    asking = true;
+    askForm.setAttribute("aria-busy", "true");
+    askInput.readOnly = true;
+    askBtn.innerHTML = '<span class="dots">One moment</span>';
+
+    const { data, error } = await sb.functions.invoke("ask", { body: { prompt } });
+
+    asking = false;
+    askForm.removeAttribute("aria-busy");
+    askInput.readOnly = false;
+    askBtn.textContent = "Ask";
+
+    if (error) {
+      let body = null;
+      try { body = await error.context.json(); } catch {}
+      askHint.textContent = "✕ " + ((body && body.error) || "Can't reach the counter. Try again.");
+      askHint.classList.add("is-error");
+      askField.classList.add("is-invalid");
+      shake(askField);
+      if (body && body.used != null) setLeft(body.used, body.limit);
+      return;
+    }
+
+    // Model output is untrusted text: set it with textContent, never innerHTML.
+    $("answer-text").textContent = data.answer;
+    $("answer-meta").textContent = (data.model ? data.model.toUpperCase() + " · " : "") + data.used + " OF " + data.limit + " TODAY";
+    setLeft(data.used, data.limit);
+    askInput.value = "";
+    askField.classList.remove("is-ready");
+    const answer = $("answer");
+    answer.hidden = false;
+    answer.classList.remove("is-entering");
+    void answer.offsetWidth;
+    if (!reduced()) answer.classList.add("is-entering");
   };
 
   // The link usually opens in a new tab. When this tab comes back into view, pick up that session.
