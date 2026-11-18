@@ -400,7 +400,7 @@ link, and `textContent` makes that harmless.
 ### Storing the key (human)
 
 - Direct link: `https://supabase.com/dashboard/project/<ref>/functions/secrets`
-- Name: `OPENROUTER_API_KEY`. Value: the key from https://openrouter.ai/settings/keys (starts
+- Name: `OPENROUTER_API_KEY`. Value: the key from https://openrouter.ai/workspaces/default/keys (starts
   with `sk-or-`). Save. The function reads it on every request, so no redeploy is needed.
 - On openrouter.ai, give that key a **credit limit**.
 - `create_edge_function_secret` shows the person a secure form instead. If it comes back
