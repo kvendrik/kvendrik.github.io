@@ -27,6 +27,80 @@ browser (static page on GitHub Pages, supabase-js served from the same site)
   └─► Edge Function "ask" (optional) ──(secret key)──► OpenRouter
 ```
 
+## Runbook: set it up from zero
+
+Follow these in order. **(you)** = you, the agent. **(human)** = the person, in a browser, with the
+link and exact values you give them. Don't move on until the check passes. Everything below this
+section is reference detail for these steps.
+
+**Never reuse the reference install's values** (`kvendrik.com`, project `ukxogodszvwxzlfxlgtv`, its
+publishable key). They belong to someone else. Everything gets the person's own values.
+
+### Placeholders, collected first
+
+| Placeholder | What it is | Where it comes from |
+| --- | --- | --- |
+| `<ref>` | Supabase project ref | `list_projects` or `create_project` (Supabase connector), or the project URL in their dashboard |
+| `<publishable-key>` | Supabase publishable key (`sb_publishable_...`) | `get_publishable_keys`, or Project Settings -> API keys |
+| `<site-origin>` | Where the page is served, no path, e.g. `https://example.com` | Their GitHub Pages site; check for a `CNAME` (step 3) |
+| `<page-url>` | The page itself, with trailing slash, e.g. `https://example.com/bodega/` | `<site-origin>` plus the folder |
+| `<owner-email>` | The Google account the owner will sign in with, in lowercase | Ask them |
+| `<repo>` | The GitHub repo that publishes the site | Ask, or the one attached to the session |
+
+### Steps
+
+1. **(you) Find out what you can do.** Check for a Supabase connector (`list_projects`), GitHub
+   access to `<repo>`, and whether you can reach the internet. No Supabase connector? Then the
+   human pastes each SQL block into `https://supabase.com/dashboard/project/<ref>/sql/new` and
+   clicks Run, and you deploy the Edge Function with the Supabase CLI or have them paste it into the
+   dashboard's function editor. Tell them up front which steps will be theirs.
+2. **(you, with the human's yes) Supabase project.** Use their existing one (confirm the ref) or
+   `create_project` (free plan; they approve any cost). Never touch their other projects.
+   Check: you have `<ref>` and `<publishable-key>`.
+3. **(you) Database.** Apply, in order: the rows table (1. Database, "Rows"), the allow-list ("Friends
+   only"), the policies, the per-person cap, and then **seed the owner**:
+   `insert into public.allowed_emails (email, note) values ('<owner-email>', 'owner');`
+   In a new project there are no accounts yet, so the "existing accounts" seed adds nobody. Without
+   this line the owner is locked out. Check: the advisors show only the expected findings (see
+   "What the advisors will say"), and the rolled-back tests in "7. Testing" pass.
+4. **(you) The page.** Copy into `<repo>`, in the folder that becomes `<page-url>`:
+   - `index.html` from the reference. Replace `SUPABASE_URL` with `https://<ref>.supabase.co` and
+     `SUPABASE_KEY` with `<publishable-key>`. Change the `<title>` and copy if they want.
+   - `vendor/supabase-js-<version>.js` plus its license (see "Client" for how to fetch it).
+   - `fonts/` if they want the reference look. Without it the page falls back to system fonts.
+   - Optional: this `llms.md`.
+   If it's a folder inside an existing Pages site, read the build script and `.gitignore` first
+   (step 3. Hosting). Check: the page renders locally with no errors (7. Testing).
+5. **(human) Google sign-in.** Give them "Google setup" with `<site-origin>` and
+   `https://<ref>.supabase.co/auth/v1/callback` filled in, then the providers link:
+   `https://supabase.com/dashboard/project/<ref>/auth/providers`. Check: they confirm it's saved.
+6. **(human) URL configuration.** `https://supabase.com/dashboard/project/<ref>/auth/url-configuration`:
+   Site URL `<page-url>`, Redirect URL `<page-url>`. Check: they confirm.
+7. **(you) Deploy.** Ask once, then push to the publishing branch and check the Pages run finished.
+8. **(human) First sign-in.** They open `<page-url>`, click Continue with Google, and pick the account
+   `<owner-email>`. Check: signed in, they can store a value, and it shows with its row number. If
+   it fails, see the error table in "Troubleshooting".
+9. **(optional, you + human) AI.** Apply the quota SQL. Copy `functions/ask/index.ts` and replace
+   `ORIGINS` with `["<site-origin>"]`, `HTTP-Referer` with `<page-url>` and `X-Title` with the app's
+   name, and adjust the system prompt. Deploy it with `verify_jwt: true`. The human stores
+   `OPENROUTER_API_KEY` (secrets link) and sets a credit limit on the key. Check: one real question
+   gets an answer and the count drops by one.
+10. **(you) Hand over.** Tell them how to add friends ("Managing users"), what was and wasn't tested
+    live, and the accepted risks ("Security checklist").
+
+### Troubleshooting
+
+| Symptom | Cause | Fix |
+| --- | --- | --- |
+| Lands on `localhost:3000` after sign-in | Redirect URL missing or different (trailing slash) | Step 6, exact `<page-url>` |
+| Google says `redirect_uri_mismatch` | Wrong redirect URI in the Google client | `https://<ref>.supabase.co/auth/v1/callback` |
+| "Not on the list." for the owner | Owner's address not seeded, or a different Google account | Step 3 seed line; check `select * from public.allowed_emails;` |
+| "Not on the list." for a friend | Not added, or they picked another Google account | "Managing users" |
+| Page says "Can't find it." / store fails | RLS or a typo in `SUPABASE_URL` / key | Check the browser console and step 4 |
+| Ask: "We're closed." | No `OPENROUTER_API_KEY` secret | Secrets link |
+| Ask: "The kitchen's slow." | OpenRouter refused (model, credit, key) | Function logs: `https://supabase.com/dashboard/project/<ref>/functions/ask/logs` |
+| Ask: "Not on the list." for someone listed | `ORIGINS` doesn't match `<site-origin>` exactly | Step 9 |
+
 ## How to work with the person
 
 These cost the first build the most round trips:
@@ -126,7 +200,7 @@ project ref.
 | Task | Link | What to enter |
 | --- | --- | --- |
 | Auth URL configuration | `https://supabase.com/dashboard/project/<ref>/auth/url-configuration` | Site URL: the final page URL. Redirect URLs: Add URL, the same address. Save both. |
-| Add a friend | `https://supabase.com/dashboard/project/<ref>/sql/new` | `insert into public.allowed_emails (email, note) values ('friend@example.com', 'Sam');` then Run. Lowercase. They then sign in themselves. Remove, list and no-SQL options under "Managing the list". |
+| Add a friend | `https://supabase.com/dashboard/project/<ref>/sql/new` | `insert into public.allowed_emails (email, note) values ('friend@example.com', 'Sam');` then Run. Lowercase. They then sign in themselves. Remove, list, delete and usage under "Managing users". |
 | Edge Function secrets | `https://supabase.com/dashboard/project/<ref>/functions/secrets` | Name `OPENROUTER_API_KEY`, value the OpenRouter key, Save. Optional: `OPENROUTER_MODELS`. |
 | OpenRouter keys | `https://openrouter.ai/workspaces/default/keys` | Create a key (starts with `sk-or-`) and give it a credit limit. |
 | Function logs | `https://supabase.com/dashboard/project/<ref>/functions/ask/logs` | Where OpenRouter errors show up. |
@@ -138,6 +212,9 @@ project ref.
 | Deploy runs | `https://github.com/<owner>/<repo>/actions` | Check the Pages deploy finished. |
 
 ### The reference install
+
+**Example values only.** They belong to the original builder's project. Never use them for someone
+else's setup; follow the Runbook with the person's own values.
 
 | | |
 | --- | --- |
@@ -256,24 +333,6 @@ Three layers keep it friends-only:
 OAuth sign-ins for an address that already has an account (from email sign-in, say) are linked to
 that account, so the trigger doesn't fire and nobody is locked out.
 
-#### Managing the list (give the owner this, with their real links)
-
-The owner only adds an address. The friend still creates their own account by signing in on the
-page; until they're added, they see "Not on the list." and get no email.
-
-- **Add:** open `https://supabase.com/dashboard/project/<ref>/sql/new`, paste, Run:
-  `insert into public.allowed_emails (email, note) values ('friend@example.com', 'Sam');`
-  The address must be lowercase (the table rejects capitals; sign-in matches either way). The note
-  is optional.
-- **Without SQL:** `https://supabase.com/dashboard/project/<ref>/editor`, pick `allowed_emails`, then
-  Insert -> Insert row, type the email, Save.
-- **Remove:** `delete from public.allowed_emails where email = 'friend@example.com';` They're
-  locked out at once (RLS and the function check the list); their account stays.
-- **See the list:** `select * from public.allowed_emails;`
-- Then send the friend the page link. With Google sign-in, add the address of their **Google
-  account**; if they pick a different Google account they'll see "Not on the list.". With email
-  sign-in instead, this only works once custom SMTP is set up (see "Email").
-
 ### Policies
 
 ```sql
@@ -315,6 +374,69 @@ revoke all on function public.notes_enforce_cap() from public, anon, authenticat
 - `unused_index` (INFO) on a new table: expected until there's data. Keep the index.
 - `auth_leaked_password_protection` (WARN): not relevant, since there are no passwords.
 - Anything else: report it and offer a fix.
+
+## Managing users
+
+Give the owner this section with their real `<ref>` filled in. Everything runs in the SQL editor,
+`https://supabase.com/dashboard/project/<ref>/sql/new`: paste, then click **Run**. An agent with
+the Supabase connector can run the same SQL with `execute_sql`, but only when the owner asks.
+
+**How it works:** the owner puts an address on the list; the friend creates their own account by
+signing in on the page. Nobody creates accounts for anyone. Until they're on the list, they see
+"Not on the list." and nothing is created.
+
+**Add a friend**
+```sql
+insert into public.allowed_emails (email, note) values ('friend@example.com', 'Sam');
+```
+- Lowercase only (the table rejects capitals; sign-in matches either way). `note` is optional.
+- With Google sign-in, use the address of their **Google account**. If they pick another Google
+  account on the Google screen, they'll see "Not on the list.".
+- Then send them `<page-url>`.
+- Without SQL: `https://supabase.com/dashboard/project/<ref>/editor`, table `allowed_emails`,
+  Insert -> Insert row, type the email, Save.
+
+**See who's on the list, and who has signed in**
+```sql
+select a.email, a.note, a.added_at, u.created_at as joined, u.last_sign_in_at
+from public.allowed_emails a
+left join auth.users u on lower(u.email) = a.email
+order by a.added_at;
+```
+A blank `joined` means they're on the list but haven't signed in yet.
+
+**Remove a friend (they lose access, their data stays)**
+```sql
+delete from public.allowed_emails where email = 'friend@example.com';
+```
+Takes effect at once: the page signs them out, and the database and AI refuse them. Add them back
+later and everything is still there.
+
+**Delete a friend completely (account and everything they stored)**
+1. Remove them from the list (above).
+2. `https://supabase.com/dashboard/project/<ref>/auth/users`: find them, then Delete user. Their rows
+   and AI usage are deleted with the account (`on delete cascade`).
+This can't be undone.
+
+**How much AI each person used today**
+```sql
+select u.email, a.requests from public.ai_usage a join auth.users u on u.id = a.user_id
+where a.day = (now() at time zone 'utc')::date order by a.requests desc;
+```
+
+**Give someone their AI questions back for today**
+```sql
+delete from public.ai_usage
+where day = (now() at time zone 'utc')::date
+  and user_id = (select id from auth.users where lower(email) = 'friend@example.com');
+```
+
+**Change someone's address** (they switched Google accounts): add the new address, remove the old
+one. Their stored data belongs to the old account. To keep it, the agent can move the rows to the
+new account's `user_id` after they've signed in once with it; ask the owner first.
+
+**Change the limits:** the row cap is `100` in `public.notes_enforce_cap()`. The AI limits are
+`PER_USER_PER_DAY` and `SHOP_PER_DAY` at the top of the Edge Function (redeploy after changing).
 
 ## 2. The page
 
