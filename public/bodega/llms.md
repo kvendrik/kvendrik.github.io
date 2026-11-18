@@ -22,6 +22,75 @@ browser (static page on GitHub Pages)
   └─► Supabase Postgres (row level security: each user reads only their own rows)
 ```
 
+## Mistakes made on the first build, so you don't repeat them
+
+Each of these cost the person a round trip. Read them before you start.
+
+1. **Gave menu paths instead of links.** "Go to Authentication -> URL Configuration" made the person
+   hunt and ask for links. Always send the direct dashboard link with their project ID, then the
+   exact values. See "Links to give the human" below.
+2. **Built for the wrong URL.** Planned around `<user>.github.io/<repo>/`, but the account had a
+   custom domain (`CNAME`), so the real URL was `https://<domain>/<repo>/`. Check for a `CNAME`
+   before you hand out any redirect URL.
+3. **Started with Sign in with Apple.** It needs the paid Apple Developer Program and a secret that
+   expires every 6 months; the person didn't want that. Start with magic links (free, nothing to
+   register), and offer OAuth providers only if asked.
+4. **Asked "should I push?" again and again.** Once the person has said to deploy, keep pushing to the
+   branch that deploys. Ask once per session, not once per change.
+5. **Assumed the connector could do everything.** The Supabase connector can't set auth URLs, and its
+   secret form was paused, so the key had to be set by hand. Say up front which steps need the human
+   and send their links in the same message.
+6. **Guessed a URL I couldn't check.** I wrote an OpenRouter keys link from memory; the real one was
+   different. Use links you have verified or the person gave you, and say when you couldn't check one.
+7. **Broke `.gitignore` by appending.** The file had no trailing newline, so the new rule was glued
+   onto the last one and silently stopped ignoring build output. Check for a final newline, then run
+   `git status` after the build.
+8. **Broke the phone layout with a later CSS override.** A desktop rule declared after a `@media`
+   block overrode it. Put breakpoint overrides after the rules they change, and screenshot at 390px
+   wide, checking for horizontal overflow.
+9. **Shipped "done" without a real end-to-end test.** The sandbox couldn't reach the live site,
+   Supabase functions or OpenRouter, so testing used stubbed responses. Say plainly what was and
+   wasn't tested, and give the person the exact steps to check it live.
+10. **Rule, not a mistake (keep it that way): no API keys in the page.** Any key in a static page is
+    public. Keys belong in Edge Function secrets, typed in by the person, never pasted into chat.
+
+## Links to give the human
+
+Whenever the person has to do something in a dashboard, lead your message with a **direct link**
+that includes their project or workspace ID. Never send a menu path ("Authentication -> URL
+Configuration"). Put the exact values on the next lines: the field name, the value (or where to get
+it), and the button. Add one line on why, and where to look if it fails. If a tool that was
+supposed to do it for them fails (a form is paused, say), give the link in that same reply. Don't
+guess URLs you can't check; when the person gives you a link, use theirs.
+
+Replace `<ref>` with the Supabase project ref.
+
+| Task | Link | What to enter |
+| --- | --- | --- |
+| Auth URL configuration | `https://supabase.com/dashboard/project/<ref>/auth/url-configuration` | Site URL: the final page URL. Redirect URLs: Add URL, the same address. Save both. |
+| Edge Function secrets | `https://supabase.com/dashboard/project/<ref>/functions/secrets` | Name `OPENROUTER_API_KEY`, value the OpenRouter key, Save. Optional: `OPENROUTER_MODELS`. |
+| OpenRouter keys | `https://openrouter.ai/workspaces/default/keys` | Create a key (it starts with `sk-or-`) and give it a credit limit. |
+| Function logs | `https://supabase.com/dashboard/project/<ref>/functions/ask/logs` | Where OpenRouter errors show up. |
+| SMTP (before real traffic) | `https://supabase.com/dashboard/project/<ref>/auth/smtp` | Any email provider's SMTP details. |
+| Deploy runs | `https://github.com/<owner>/<repo>/actions` | Check the Pages deploy finished. |
+
+### The reference install
+
+| | |
+| --- | --- |
+| Live page | https://kvendrik.com/bodega/ (from `public/bodega/` in `kvendrik/kvendrik.github.io`; `kvendrik.github.io/bodega/` redirects here because of the account's `CNAME`) |
+| Brand guide | https://kvendrik.com/bodega/brand/ |
+| Supabase project | `Bodega`, ref `ukxogodszvwxzlfxlgtv`, eu-central-1 |
+| Migrations | `create_notes_with_rls`, `notes_rls_select_auth_uid`, `ai_usage_quota` |
+| Schema files | `bodega/supabase/schema.sql`, `bodega/supabase/ai_usage.sql` |
+| Edge Function | `ask` (verify_jwt on), source in `bodega/supabase/functions/ask/index.ts` |
+| AI limits | 20 questions per person per UTC day, 500 for the whole site |
+| URL configuration | https://supabase.com/dashboard/project/ukxogodszvwxzlfxlgtv/auth/url-configuration (Site URL and Redirect URL: `https://kvendrik.com/bodega/`) |
+| Edge Function secrets | https://supabase.com/dashboard/project/ukxogodszvwxzlfxlgtv/functions/secrets |
+| Function logs | https://supabase.com/dashboard/project/ukxogodszvwxzlfxlgtv/functions/ask/logs |
+| OpenRouter keys | https://openrouter.ai/workspaces/default/keys |
+| Fonts | Allo, Instrument Serif and Space Mono, served from `public/bodega/fonts/`, copied from the Bodega brand guide |
+
 ## 0. Before you start
 
 Ask for, or look up, these three things:
