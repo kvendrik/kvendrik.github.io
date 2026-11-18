@@ -270,8 +270,9 @@ page; until they're added, they see "Not on the list." and get no email.
 - **Remove:** `delete from public.allowed_emails where email = 'friend@example.com';` They're
   locked out at once (RLS and the function check the list); their account stays.
 - **See the list:** `select * from public.allowed_emails;`
-- Then send the friend the page link. **This only works once custom SMTP is set up**: Supabase's
-  built-in mailer doesn't send to anyone outside the Supabase organization (see "Email").
+- Then send the friend the page link. With Google sign-in, add the address of their **Google
+  account**; if they pick a different Google account they'll see "Not on the list.". With email
+  sign-in instead, this only works once custom SMTP is set up (see "Email").
 
 ### Policies
 
@@ -412,9 +413,15 @@ document.addEventListener("visibilitychange", () => {
 });
 ```
 
-### The form: make it feel good
+### The fields: make them feel good
 
-- **Labels and attributes:** a visible label, then `type="email" inputmode="email"
+These apply to every input on the page (the value and the AI question). The email-specific parts
+(attributes, sending, sent, inbox shortcuts, remembering the address) only matter if you use email
+sign-in.
+
+- **Google button:** full width, the same hard-shadow button as the rest; while redirecting it shows
+  "One moment" with stepped dots and is disabled, then it's re-enabled on `pageshow`.
+- **Labels and attributes (email):** a visible label, then `type="email" inputmode="email"
   autocomplete="email" autocapitalize="off" autocorrect="off" spellcheck="false"
   enterkeyhint="send" required`, and `novalidate` on the form so your messages replace the
   browser's.
@@ -477,11 +484,15 @@ run finished.
   `https://kvendrik.com/bodega/`), then Save.
 - **Redirect URLs:** Add URL, the same address, then Save.
 
-Keep the trailing slash. If the redirect doesn't match, Supabase falls back to the Site URL, so the
-email link opens `localhost:3000`: the classic symptom.
+Keep the trailing slash. This is the `redirectTo` for Google sign-in and email links alike. If it
+doesn't match, Supabase falls back to the Site URL, so people land on `localhost:3000`: the classic
+symptom.
 
-The email provider and "Confirm email" are on by default. A new address gets "Confirm your signup"
-rather than the magic-link email; either one signs them in.
+For Google there's a second redirect, in the Google Cloud client: `https://<ref>.supabase.co/auth/v1/callback`.
+If it's wrong, Google shows `redirect_uri_mismatch`.
+
+(Email sign-in only: the email provider and "Confirm email" are on by default, and a new address
+gets "Confirm your signup" rather than the magic-link email; either one signs them in.)
 
 ## 5. Email
 
@@ -674,18 +685,21 @@ The same pattern covers: the 101st row being refused, an `insert into auth.users
 address failing with "Not on the list.", and a listed one (mixed case) succeeding. Afterwards,
 check that no test rows were left behind.
 
-### The page, without sending email
+### The page, with Supabase stubbed
 
-Playwright on the file directly (no background server). Stub the network:
+Playwright on the file directly (no background server), with the network stubbed. Nothing reaches
+Google or Supabase:
 
 ```js
 await page.route("https://fonts.googleapis.com/**", r => r.abort());   // optional
-await page.route("**/auth/v1/otp**", r =>                               // fake a slow send
-  setTimeout(() => r.fulfill({ status: 200, contentType: "application/json", body: "{}" }), 1200));
+await page.route("**/auth/v1/authorize**", r => {                       // Google sign-in start
+  console.log(new URL(r.request().url()).searchParams.get("provider"));  // expect "google"
+  r.fulfill({ status: 200, body: "stub" });
+});
 ```
 
-- Signed out: send with the field empty (error and shake), type an address (button fills), submit
-  (sending, then the receipt with "Open Gmail" and "Resend in 59").
+- Email sign-in only: stub `**/auth/v1/otp**`, send with the field empty (error and shake), type an
+  address (button fills), and submit (sending, then the receipt with "Resend in 59").
 - Signed in: put a fake session in `localStorage` under `sb-<ref>-auth-token` with `addInitScript`,
   and stub `**/rest/v1/notes**`, `**/rest/v1/ai_usage**` and `**/functions/v1/ask`, including a
   429 answer.
@@ -708,7 +722,9 @@ await page.route("**/auth/v1/otp**", r =>                               // fake 
 
 ## Security checklist for a small app among friends
 
-- [ ] Allow-list on, sign-up trigger in place, existing accounts seeded.
+- [ ] Sign-in that sends no email for a friends app (Google or another OAuth provider), or custom SMTP.
+- [ ] Allow-list on: sign-up trigger in place, existing accounts seeded, and the page signs out anyone
+      who isn't listed.
 - [ ] RLS on every table; policies check ownership and the allow-list.
 - [ ] Row cap per person.
 - [ ] No secret keys in the page; the OpenRouter key is an Edge Function secret with a credit limit.
@@ -728,6 +744,7 @@ Known and accepted at this scale (tell the person):
 
 ## Done means
 
+- Sign-in works for a friend, not just the owner (Google set up, or custom SMTP for email).
 - Tables, policies, allow-list and cap applied; advisors run; every finding reported.
 - The page is live at its final URL, and the deploy run succeeded.
 - The person has the direct links and exact values for every manual step, or has confirmed them.
