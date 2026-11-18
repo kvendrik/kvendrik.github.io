@@ -76,10 +76,11 @@
   .chip { display:inline-flex; align-items:center; gap:var(--space-2); padding:var(--space-1) var(--space-3); border:var(--border-thick) solid var(--line); border-radius:999px; box-shadow:var(--shadow-hard-sm); background:var(--fill); color:var(--on-fill); max-width:60%; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
   form { display:flex; gap:var(--space-3); margin:var(--space-6) 0; }
 
-  ul { list-style:none; margin:0; padding:0; }
-  li { display:flex; justify-content:space-between; align-items:center; gap:var(--space-4); padding:var(--space-3) 0; border-top:1px dashed var(--line-soft); }
-  li:first-child { border-top:0; }
-  li span { overflow-wrap:anywhere; }
+  .value { margin:0 0 var(--space-3); font:400 44px/46px var(--font-display); overflow-wrap:anywhere; }
+  .receipt { margin:0; padding-top:var(--space-3); border-top:1px dashed var(--line-soft); font:400 12px/16px var(--font-mono); color:var(--ink-muted); }
+  .foot { margin-top:var(--space-8); text-align:center; }
+  .foot a { color:var(--ink); }
+  .foot a:focus-visible { outline:3px solid var(--focus); outline-offset:3px; }
 
   .status { margin-top:var(--space-4); min-height:24px; font:700 14px/20px var(--font-sans); }
   .step { animation:step 120ms steps(4,end) both; }
@@ -111,20 +112,24 @@
         <button class="btn btn--quiet" id="signout-btn" type="button">Sign out</button>
       </div>
 
-      <form id="add-form">
-        <input class="input" id="body" placeholder="Put something on the shelf" maxlength="2000" required autocomplete="off" aria-label="New note">
-        <button class="btn" type="submit">Get it done</button>
-      </form>
-
       <div class="panel">
-        <h2 class="panel__title">The shelf</h2>
-        <ul id="list"></ul>
-        <p id="empty" class="muted" style="margin:0" hidden>Nothing on the shelf.</p>
+        <p class="label muted" style="margin:0 0 var(--space-3)">From the database</p>
+        <p class="value" id="value">Nothing on the shelf.</p>
+        <p class="receipt" id="receipt">Only you can see this row.</p>
       </div>
+
+      <form id="add-form">
+        <input class="input" id="body" placeholder="Put something on the shelf" maxlength="2000" required autocomplete="off" aria-label="New value">
+        <button class="btn" type="submit">Store it</button>
+      </form>
     </section>
 
     <p class="status" id="status" role="status" aria-live="polite"></p>
   </main>
+
+  <footer class="foot">
+    <p class="muted" style="margin:0">Building one? Hand your model <a href="llms.md">llms.md</a>.</p>
+  </footer>
 </div>
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
@@ -138,29 +143,15 @@
   const say = (msg) => { $("status").textContent = msg || ""; };
   const fail = (e) => say("✕ " + ((e && e.message) || "Can't find it."));
 
-  async function loadNotes() {
-    const { data, error } = await sb.from("notes").select("id, body").order("created_at", { ascending: false });
+  // The demo: read the newest row this user owns. Row level security does the filtering.
+  async function loadValue() {
+    const { data, error } = await sb.from("notes").select("id, body, created_at")
+      .order("created_at", { ascending: false }).limit(1).maybeSingle();
     if (error) return fail(error);
-    const list = $("list");
-    list.replaceChildren();
-    for (const n of data) {
-      const li = document.createElement("li");
-      const text = document.createElement("span");
-      text.textContent = n.body;
-      const del = document.createElement("button");
-      del.type = "button";
-      del.className = "btn btn--danger";
-      del.textContent = "Throw it out";
-      del.onclick = async () => {
-        const { error } = await sb.from("notes").delete().eq("id", n.id);
-        if (error) return fail(error);
-        say("Gone for good.");
-        loadNotes();
-      };
-      li.append(text, del);
-      list.append(li);
-    }
-    $("empty").hidden = data.length > 0;
+    $("value").textContent = data ? data.body : "Nothing on the shelf.";
+    $("receipt").textContent = data
+      ? "ROW " + data.id + " · " + new Date(data.created_at).toLocaleString(undefined, { dateStyle: "medium", timeStyle: "short" }) + " · Only you can see this row."
+      : "Only you can see this row.";
   }
 
   function render(session) {
@@ -170,7 +161,7 @@
     if (session) {
       const u = session.user;
       $("who").textContent = "● " + (u.email || "OPEN");
-      loadNotes();
+      loadValue();
     }
   }
 
@@ -193,7 +184,7 @@
     if (error) return fail(error);
     $("body").value = "";
     say("Done.");
-    loadNotes();
+    loadValue();
   };
 
   sb.auth.onAuthStateChange((_event, session) => render(session));
