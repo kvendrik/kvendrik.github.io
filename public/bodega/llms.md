@@ -1,13 +1,14 @@
 ---
 name: bodega
-description: Build a static web page where people sign in with Apple and read their own row from a Supabase database, hosted free on GitHub Pages. Use when someone wants "Sign in with Apple" plus per-user data on a static site with no server of their own.
+description: Build a static web page where people sign in with an emailed magic link and read their own row from a Supabase database, hosted free on GitHub Pages. Use when someone wants sign-in plus per-user data on a static site, with no server and no paid developer accounts.
 ---
 
-# Bodega: Sign in with Apple, one value from the database
+# Bodega: magic-link sign-in, one value from the database
 
-A single static HTML page. A visitor signs in with their Apple ID, and the page shows them a value
-from the database that only they can see. There is no server: Supabase handles auth and data,
-GitHub Pages serves the file.
+A single static HTML page. A visitor types their email, clicks the link Supabase sends them,
+and lands back on the page signed in, looking at a value from the database that only they can
+see. There is no server: Supabase handles auth and data, GitHub Pages serves the file.
+Nothing here costs money or needs a third-party developer account.
 
 Reference implementation: https://kvendrik.com/bodega/ (view source; it is one file).
 
@@ -16,31 +17,25 @@ Reference implementation: https://kvendrik.com/bodega/ (view source; it is one f
 ```
 browser (static page on GitHub Pages)
   │  supabase-js, publishable key
-  ├─► Supabase Auth ──► Apple ──► back to Supabase callback ──► back to the page with a session
+  ├─► Supabase Auth: signInWithOtp(email) ──► email with a link
+  │      link ──► Supabase verifies ──► redirect to the page with a session in the URL hash
   └─► Supabase Postgres (table with row level security: each user reads only their own rows)
 ```
 
-- **Supabase:** a project, one table, row level security, the Apple provider.
-- **Apple Developer** (paid program): an App ID, a Services ID, a Sign in with Apple key.
-- **GitHub Pages:** serves `index.html`. No build step needed.
-
 ## Who can do which step
 
-Agents can usually do the database, the page and the deploy. Some steps need a human's
-dashboard login. Say which ones up front, and don't claim you did them.
-
-| Step | Agent with a Supabase/GitHub connector | Needs the human |
+| Step | Agent with Supabase and GitHub connectors | Needs the human |
 | --- | --- | --- |
-| Create project, table, RLS | yes (migration) | |
-| Write and deploy the page | yes | turning on Pages, if no API access |
-| Auth URL configuration | usually not: MCP connectors expose no auth-config tool | Supabase dashboard |
-| Apple Services ID, key | no | Apple Developer account |
-| Apple provider + client secret | no | Supabase dashboard |
+| Create the project, table and RLS | yes (migration) | |
+| Write and deploy the page | yes | turning on Pages, if there's no API access |
+| Auth URL configuration | usually not: MCP connectors have no auth-config tool | Supabase dashboard, one screen |
+
+Say up front which steps the human has to do, and never claim you did them.
 
 ## 1. Database
 
 Run as a migration (for example `create_notes_with_rls`). Wrap `auth.uid()` in `(select ...)` so
-Postgres evaluates it once per query instead of once per row; the Supabase performance advisor
+Postgres evaluates it once per query instead of once per row. The Supabase performance advisor
 flags the bare form (`auth_rls_initplan`).
 
 ```sql
@@ -71,7 +66,7 @@ Afterwards, run the security and performance advisors and report every finding.
 
 Load supabase-js from a CDN and create a client with the project URL and the **publishable**
 key (`sb_publishable_...`, or the legacy `anon` key). That key is meant to ship in the browser:
-row level security is what protects the data. Never put the `service_role` / secret key in a page.
+row level security is what protects the data. Never put the `service_role` or secret key in a page.
 
 The core of it:
 
@@ -80,11 +75,19 @@ The core of it:
 <script>
   const sb = supabase.createClient("https://<ref>.supabase.co", "sb_publishable_...");
 
-  // Sign in: Apple redirects back to wherever the page was loaded from.
-  signInButton.onclick = () => sb.auth.signInWithOAuth({
-    provider: "apple",
-    options: { redirectTo: location.origin + location.pathname },
-  });
+  // Sign in: email a link that returns to wherever this page was loaded from.
+  emailForm.onsubmit = async (e) => {
+    e.preventDefault();
+    const { error } = await sb.auth.signInWithOtp({
+      email: emailInput.value.trim(),
+      options: { emailRedirectTo: location.origin + location.pathname },
+    });
+    // on success: "Check your inbox."
+  };
+
+  // A bad or expired link comes back as #error=...&error_description=...
+  const back = new URLSearchParams(location.hash.slice(1));
+  if (back.get("error_description")) { /* show it, then clear the hash */ }
 
   // Read: no user filter needed, RLS returns only this user's rows.
   async function loadValue() {
@@ -96,12 +99,13 @@ The core of it:
   // Write: user_id defaults to auth.uid() in the table.
   await sb.from("notes").insert({ body });
 
+  // supabase-js picks the session up from the URL on load.
   sb.auth.onAuthStateChange((_e, session) => render(session));
   sb.auth.getSession().then(({ data }) => render(data.session));
 </script>
 ```
 
-Render three states: loading, signed out (the Apple button), signed in (the value, a field to
+Show three states: loading, signed out (the email form), and signed in (the value, a field to
 store a new one, sign out). Set text with `textContent`, never `innerHTML`, since the value
 is user input.
 
@@ -109,49 +113,43 @@ is user input.
 
 - A project repo (`<user>/<repo>`) must be **public** for free Pages. Turn on Pages from `main`,
   root, or deploy with a Pages workflow.
-- It can also live in a folder of an existing Pages site (`public/bodega/` here). Check the site's
-  build doesn't wipe the folder, and that `.gitignore` doesn't ignore the HTML.
-- **Custom domains:** if the user's `<user>.github.io` repo has a `CNAME`, every Pages site of
-  that account is served from that domain, and `<user>.github.io/<repo>/` redirects there. Use the
-  final address (here `https://kvendrik.com/bodega/`) everywhere below, or sign-in will bounce.
+- It can also live in a folder of an existing Pages site (`public/bodega/` here). Check that the
+  site's build doesn't wipe the folder and that `.gitignore` doesn't ignore the HTML.
+- **Custom domains:** if the user's `<user>.github.io` repo has a `CNAME`, every Pages site on that
+  account is served from that domain, and `<user>.github.io/<repo>/` redirects there. Use the
+  final address (here `https://kvendrik.com/bodega/`) in step 4, or the link will bounce.
 - Load the live URL in a browser: the signed-out panel must appear, with no console errors.
 
-## 4. Supabase Auth URL configuration (human)
+## 4. Supabase Auth URL configuration (human, one screen)
 
 Authentication -> URL Configuration:
 - Site URL: the live page URL, e.g. `https://kvendrik.com/bodega/`
-- Redirect URLs: add the same URL. `redirectTo` must match an entry here exactly.
+- Redirect URLs: add the same URL.
 
-## 5. Apple Developer (human, paid program)
+`emailRedirectTo` must match a Redirect URL entry. If it doesn't, Supabase quietly sends the user
+to the Site URL instead, which defaults to `http://localhost:3000`. That's the usual
+"the link opens localhost" bug.
 
-1. Identifiers -> App IDs: create one with Sign in with Apple enabled.
-2. Identifiers -> Services IDs: create one, e.g. `com.example.bodega.web`. This is the **client ID**.
-   Turn on Sign in with Apple, then Configure:
-   - Primary App ID: the one above
-   - Domains: `<ref>.supabase.co`
-   - Return URLs: `https://<ref>.supabase.co/auth/v1/callback`
-3. Keys: create a key with Sign in with Apple, download the `.p8` (once only), note the Key ID
-   and the Team ID.
-
-The return URL is Supabase's callback, not the page. Apple hands the user to Supabase, and
-Supabase sends them on to the page.
-
-## 6. Connect Apple to Supabase (human)
-
-Authentication -> Providers -> Apple: enable it, set Client IDs to the Services ID, and paste a
-client secret: a JWT signed with the `.p8` (Team ID, Key ID, Services ID). Supabase's Apple auth
-docs have a generator.
-
-**The secret expires after at most 6 months.** Sign-in stops working when it does. Offer to set
-a calendar reminder a couple of weeks before.
+The email provider is on by default in new projects, with "Confirm email" on. A first-time
+address gets a "Confirm your signup" email instead of the magic-link email. Clicking either one
+signs the user in.
 
 ## Gotchas
 
-- Apple sends the name and email only on the **first** sign-in. Store them then if you need them.
-- "Hide My Email" gives an `@privaterelay.appleid.com` address. Show it as is.
-- A sign-in that returns to the page with `?error=` in the URL usually means the redirect URL
-  isn't in Supabase's list, or the Apple return URL or domain doesn't match.
-- Empty results while signed in are normal for a new user. An RLS policy failure on insert means
+- **Email rate limit:** Supabase's built-in mailer sends only a few emails per hour per project
+  and is meant for testing. Before real traffic, add custom SMTP (Authentication -> Emails ->
+  SMTP settings) with any email provider.
+- **Links work once and expire** (1 hour by default). Email scanners that prefetch links can use
+  them up before the person clicks; the page then shows "Email link is invalid or has expired".
+  Changing the email template to include `{{ .Token }}` and asking for the 6-digit code with
+  `verifyOtp({ email, token, type: "email" })` avoids that.
+- **Other browsers:** with the default (implicit) flow, the link works even when it opens in a
+  different browser than the one that asked for it. If you switch to `flowType: "pkce"`, it must
+  open in the same browser.
+- **Other providers:** Sign in with Apple on the web needs the paid Apple Developer Program.
+  GitHub and Google sign-in are free but each needs an OAuth app and a secret pasted into Supabase.
+  Magic links need none of that.
+- Empty results while signed in are normal for a new user. An RLS failure on insert means
   `user_id` doesn't match `auth.uid()`; let the column default fill it in.
 - Never apply schema changes the person didn't ask for. Report advisor findings instead.
 
@@ -159,6 +157,6 @@ a calendar reminder a couple of weeks before.
 
 - Strictly black and white. No accent colour. Dark mode swaps them.
 - Instrument Serif for display, Allo for text, Space Mono for small receipts.
-- Square corners, 3px borders, hard drop shadows (`6px 6px 0 0`), a striped awning on top.
+- Square corners, 3px borders, hard drop shadows (`6px 6px 0 0`), and a striped awning on top.
 - Sentence case for text. ALL CAPS tracked labels for buttons.
-- No emoji, no exclamation marks. Deadpan: "Done.", "Nothing on the shelf.", "Who sent you?"
+- No emoji and no exclamation marks. Deadpan: "Done.", "Nothing on the shelf.", "Who sent you?"
