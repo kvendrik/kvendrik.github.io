@@ -7,36 +7,48 @@ description: Build a static web page where people sign in with an emailed magic 
 
 A single static HTML page. A visitor types their email, clicks the link Supabase sends them,
 and lands back on the page signed in, looking at a value from the database that only they can
-see. There is no server: Supabase handles auth and data, GitHub Pages serves the file.
-Nothing here costs money or needs a third-party developer account.
+see. There is no server: Supabase handles auth and data, and GitHub Pages serves the file.
+Nothing here costs money or needs a paid developer account.
 
-Reference implementation: https://kvendrik.com/bodega/ (view source; it is one file).
-
-## What you are building
+- Live reference: https://kvendrik.com/bodega/
+- Full source (one file, copy it): https://raw.githubusercontent.com/kvendrik/kvendrik.github.io/main/public/bodega/index.html
+- Schema: https://raw.githubusercontent.com/kvendrik/kvendrik.github.io/main/bodega/supabase/schema.sql
 
 ```
 browser (static page on GitHub Pages)
   │  supabase-js, publishable key
   ├─► Supabase Auth: signInWithOtp(email) ──► email with a link
-  │      link ──► Supabase verifies ──► redirect to the page with a session in the URL hash
-  └─► Supabase Postgres (table with row level security: each user reads only their own rows)
+  │      link ──► Supabase verifies ──► redirect to the page, session in the URL hash
+  └─► Supabase Postgres (row level security: each user reads only their own rows)
 ```
 
-## Who can do which step
+## 0. Before you start
+
+Ask for, or look up, these three things:
+1. **The Supabase project.** Use `list_projects` and confirm the project ref with the person. People
+   often have several projects. Never touch the others, and check every call's `project_id`.
+2. **Where it will be hosted, and the final URL.** See step 3. The final URL is needed in step 4,
+   and getting it wrong is the most common reason sign-in breaks.
+3. **What you can and can't do in this session.** Find out early and tell the person up front:
 
 | Step | Agent with Supabase and GitHub connectors | Needs the human |
 | --- | --- | --- |
-| Create the project, table and RLS | yes (migration) | |
-| Write and deploy the page | yes | turning on Pages, if there's no API access |
-| Auth URL configuration | usually not: MCP connectors have no auth-config tool | Supabase dashboard, one screen |
+| Create the project, table and RLS | yes (`apply_migration`) | approving cost, for a new project |
+| Run the advisors | yes (`get_advisors`) | |
+| Write the page and push it | yes, to repos the session can reach | permission to push to `main` |
+| Create a new GitHub repo | often not: sessions are commonly scoped to existing repos | creating the empty repo |
+| Turn on GitHub Pages | not through the GitHub MCP tools | Settings -> Pages |
+| Auth URL configuration | **no:** the Supabase MCP connector has no auth-config tool | Supabase dashboard, one screen |
+| Third-party sign-in (Apple, Google, GitHub) | no | their developer consoles |
 
-Say up front which steps the human has to do, and never claim you did them.
+Never say you did a step you couldn't do. When you're blocked, give the exact link and the exact
+values to enter (see step 4).
 
 ## 1. Database
 
-Run as a migration (for example `create_notes_with_rls`). Wrap `auth.uid()` in `(select ...)` so
-Postgres evaluates it once per query instead of once per row. The Supabase performance advisor
-flags the bare form (`auth_rls_initplan`).
+Apply this as a migration (for example `create_notes_with_rls`). Wrap `auth.uid()` in
+`(select ...)` so Postgres evaluates it once per query instead of once per row. The bare form
+triggers the performance advisor's `auth_rls_initplan` warning.
 
 ```sql
 create table if not exists public.notes (
@@ -60,103 +72,245 @@ create policy "notes_delete_own" on public.notes
   for delete to authenticated using (user_id = (select auth.uid()));
 ```
 
-Afterwards, run the security and performance advisors and report every finding.
+- `user_id` defaults to `auth.uid()`, so the page inserts `{ body }` only and can't forge an owner.
+- Run the **security** and **performance** advisors afterwards and report every finding, with
+  its remediation link.
+- Expect one INFO finding: `unused_index` on `notes_user_created_idx`. It shows up on an empty
+  table. Keep the index; the page's query uses it.
+- To fix existing policies, use `alter policy ... using (...) with check (...)`, not drop and
+  create. Then there is no moment without a policy. Check the result with
+  `select policyname, qual, with_check from pg_policies where tablename = 'notes'`.
+- Apply no schema changes the person didn't ask for. Report advisor findings and offer fixes.
+- Keep a copy of the SQL in the repo (`supabase/schema.sql`) and update it when a migration
+  changes the database.
 
 ## 2. The page
 
-Load supabase-js from a CDN and create a client with the project URL and the **publishable**
-key (`sb_publishable_...`, or the legacy `anon` key). That key is meant to ship in the browser:
-row level security is what protects the data. Never put the `service_role` or secret key in a page.
+One HTML file, with no build step. Copy the reference source and change only the URL, the key and
+the copy. These parts matter:
 
-The core of it:
+### Client
 
 ```html
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script>
   const sb = supabase.createClient("https://<ref>.supabase.co", "sb_publishable_...");
-
-  // Sign in: email a link that returns to wherever this page was loaded from.
-  emailForm.onsubmit = async (e) => {
-    e.preventDefault();
-    const { error } = await sb.auth.signInWithOtp({
-      email: emailInput.value.trim(),
-      options: { emailRedirectTo: location.origin + location.pathname },
-    });
-    // on success: "Check your inbox."
-  };
-
-  // A bad or expired link comes back as #error=...&error_description=...
-  const back = new URLSearchParams(location.hash.slice(1));
-  if (back.get("error_description")) { /* show it, then clear the hash */ }
-
-  // Read: no user filter needed, RLS returns only this user's rows.
-  async function loadValue() {
-    const { data, error } = await sb.from("notes").select("id, body, created_at")
-      .order("created_at", { ascending: false }).limit(1).maybeSingle();
-    // show data.body, or an empty state
-  }
-
-  // Write: user_id defaults to auth.uid() in the table.
-  await sb.from("notes").insert({ body });
-
-  // supabase-js picks the session up from the URL on load.
-  sb.auth.onAuthStateChange((_e, session) => render(session));
-  sb.auth.getSession().then(({ data }) => render(data.session));
 </script>
 ```
 
-Show three states: loading, signed out (the email form), and signed in (the value, a field to
-store a new one, sign out). Set text with `textContent`, never `innerHTML`, since the value
-is user input.
+- Use the **publishable** key (`sb_publishable_...`, or the legacy `anon` key), which
+  `get_publishable_keys` returns. It is meant to ship in the browser; row level security is what
+  protects the data. Never put the `service_role` or secret key in a page.
+- Keep the default (implicit) auth flow. The link then works even when it opens in a different
+  browser from the one that asked for it, for example a phone's mail app. `flowType: "pkce"`
+  breaks that.
 
-## 3. Deploy to GitHub Pages
+### Sign in
 
-- A project repo (`<user>/<repo>`) must be **public** for free Pages. Turn on Pages from `main`,
-  root, or deploy with a Pages workflow.
-- It can also live in a folder of an existing Pages site (`public/bodega/` here). Check that the
-  site's build doesn't wipe the folder and that `.gitignore` doesn't ignore the HTML.
-- **Custom domains:** if the user's `<user>.github.io` repo has a `CNAME`, every Pages site on that
-  account is served from that domain, and `<user>.github.io/<repo>/` redirects there. Use the
-  final address (here `https://kvendrik.com/bodega/`) in step 4, or the link will bounce.
-- Load the live URL in a browser: the signed-out panel must appear, with no console errors.
+```js
+const { error } = await sb.auth.signInWithOtp({
+  email,
+  options: { emailRedirectTo: location.origin + location.pathname },
+});
+```
 
-## 4. Supabase Auth URL configuration (human, one screen)
+- `emailRedirectTo` must match an entry in Supabase's Redirect URLs exactly, trailing slash
+  included (step 4).
+- Links that fail come back as `#error=...&error_description=...`. Read the hash, show the
+  reason with "Send a new one.", then clear it with `history.replaceState`.
+- Map errors into plain words:
+  - Status 429, or a message containing "rate limit": "Too many links sent. Give it an hour."
+  - "...after N seconds": "Try again in N seconds", and start a countdown.
+  - "fetch" or "network": "No connection. Try again."
 
-Authentication -> URL Configuration:
-- Site URL: the live page URL, e.g. `https://kvendrik.com/bodega/`
-- Redirect URLs: add the same URL.
+### Read and write
 
-`emailRedirectTo` must match a Redirect URL entry. If it doesn't, Supabase quietly sends the user
-to the Site URL instead, which defaults to `http://localhost:3000`. That's the usual
-"the link opens localhost" bug.
+```js
+// RLS returns only this user's rows, so no user filter is needed.
+const { data, error } = await sb.from("notes").select("id, body, created_at")
+  .order("created_at", { ascending: false }).limit(1).maybeSingle();
 
-The email provider is on by default in new projects, with "Confirm email" on. A first-time
-address gets a "Confirm your signup" email instead of the magic-link email. Clicking either one
-signs the user in.
+await sb.from("notes").insert({ body });   // user_id fills itself in
+```
+
+Set text with `textContent`, never `innerHTML`: the value is user input.
+
+### Session handling
+
+```js
+let current = null, rendered = false;
+function render(session) {
+  const id = session ? session.user.id : null;
+  if (rendered && id === current) return;   // a token refresh must not reset the UI
+  rendered = true; current = id;
+  // show the loading, signed-out or signed-in state
+}
+sb.auth.onAuthStateChange((_e, s) => render(s));
+sb.auth.getSession().then(({ data }) => render(data.session));
+// The link usually opens in a new tab. Pick that session up when this tab comes back into view.
+document.addEventListener("visibilitychange", () => {
+  if (document.visibilityState === "visible" && !current)
+    sb.auth.getSession().then(({ data }) => data.session && render(data.session));
+});
+```
+
+Without the guard, `onAuthStateChange` firing again (on a token refresh, say) would throw the
+person off the "check your inbox" screen.
+
+### The form: make it feel good
+
+This is what makes the reference feel finished. Keep it.
+
+- **Labels and attributes:** a visible label, then `type="email" inputmode="email"
+  autocomplete="email" autocapitalize="off" autocorrect="off" spellcheck="false"
+  enterkeyhint="send" required`. Put `novalidate` on the form so your own messages replace the
+  browser's bubbles.
+- **Font size:** input text at 18px. Anything under 16px makes iOS zoom in on focus.
+- **One block:** the input and button share one border and one hard shadow. `:focus-within`
+  lifts the block (`translate(-3px,-3px)`, larger shadow). `:has(.btn:active)` presses it in
+  (`translate(3px,3px)`, no shadow, 40ms).
+- **Ready state:** the button stays outlined until the value matches
+  `/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/`, then fills solid. Don't disable it: pressing it early should
+  explain what's wrong.
+- **Errors:** inline, in the hint line under the field (`aria-describedby`, `aria-invalid`). The
+  border goes dashed, and the block shakes once (240ms, using the `translate` property so it
+  doesn't fight the `transform` lift). The error clears when the person types.
+- **Sending:** lock the input (`readOnly`), set `aria-busy`, and show "Sending" with three dots
+  stepped in by `steps(4)`. Give the button a `min-width` so the label change doesn't make it
+  jump.
+- **Sent:** swap the form for a receipt showing the address (monospace, `overflow-wrap:anywhere`
+  for long addresses), an "Open Gmail" style shortcut, "Resend in 60" counting down (tabular
+  numbers), and "Use another email". Move focus to the receipt.
+- **Inbox shortcuts:** match on the email's domain.
+
+  | Domain | Button | Link |
+  | --- | --- | --- |
+  | gmail.com, googlemail.com | Open Gmail | https://mail.google.com/mail/u/0/#inbox |
+  | outlook, hotmail, live, msn | Open Outlook | https://outlook.live.com/mail/ |
+  | icloud.com, me.com, mac.com | Open iCloud Mail | https://www.icloud.com/mail |
+  | proton.me, protonmail.com, pm.me | Open Proton Mail | https://mail.proton.me/ |
+  | yahoo | Open Yahoo Mail | https://mail.yahoo.com/ |
+  | fastmail | Open Fastmail | https://app.fastmail.com/ |
+
+- **Remember the address:** save the last-used email in `localStorage` and prefill it. Wrap every
+  storage call in try/catch, because private modes throw.
+- **Motion:**
+  - Easing: `cubic-bezier(0.23, 1, 0.32, 1)` everywhere.
+  - Presses: 120ms, and 40ms while held.
+  - Exits faster than entrances: the old view leaves in 90ms (opacity 0, scale .98), and the new
+    one rises in over 300ms (from translateY 8px, scale .97, never from scale 0). Stagger its
+    children by 40ms.
+  - Animate `transform` and `box-shadow` only, never `transition: all`.
+  - Wrap hover effects in `@media (hover:hover)`. Set `-webkit-tap-highlight-color: transparent`
+    and `touch-action: manipulation` on buttons.
+  - Turn all of it off under `prefers-reduced-motion: reduce`.
+- **Phone layout:** under 420px, the button stacks under the input. Use
+  `viewport-fit=cover` with `env(safe-area-inset-*)` padding.
+
+## 3. Hosting on GitHub Pages
+
+Choose one:
+- **A new public repo** (`<user>/<repo>`). It must be public for free Pages. Turn on Pages from
+  `main` at the root. The URL is `https://<user>.github.io/<repo>/`. If the session can't create
+  repos, ask the person to create an empty one, then attach it.
+- **A folder in an existing Pages site.** This works when you can't create repos. Before you do it:
+  - Read the site's build script. Check that it doesn't delete or overwrite your folder. Some
+    builds remove every `.html` file in the output directory.
+  - Read `.gitignore`. Output folders often ignore `**/*.html`, so add a negation such as
+    `!public/bodega/index.html`. When you append to the file, make sure it ends with a newline
+    first, or your line gets joined onto the last rule and silently breaks it. Run
+    `git check-ignore -v <file>` and `git status` after the build.
+  - Keep notes and schema files out of the published folder unless they should be public.
+
+**Custom domains:** if the account's `<user>.github.io` repo has a `CNAME` file, every Pages site on
+that account is served from that domain, and `<user>.github.io/<repo>/` redirects there. The final
+URL is then `https://<custom-domain>/<repo-or-folder>/`. Use that address in step 4.
+
+Push to the working branch first. Push to `main`, which deploys, only once the person says so.
+Then check that the deploy succeeded: list the Pages workflow runs, or the `pages-build-deployment`
+run.
+
+## 4. Supabase Auth URL configuration (human)
+
+Give the person the direct link and the exact values:
+
+- Link: `https://supabase.com/dashboard/project/<ref>/auth/url-configuration`
+  (or Authentication -> URL Configuration)
+- **Site URL:** replace `http://localhost:3000` with the final page URL, e.g.
+  `https://kvendrik.com/bodega/`, then Save.
+- **Redirect URLs:** Add URL, enter the same address, then Save.
+
+Keep the trailing slash in both. If the redirect URL doesn't match, Supabase quietly falls back to
+the Site URL, so the link in the email opens `localhost:3000`. That's the classic symptom.
+
+The email provider is on by default with "Confirm email" enabled, so nothing else needs switching
+on. A new address gets "Confirm your signup" rather than the magic-link email, and either one
+signs the person in.
+
+## 5. Testing
+
+**Before deploy, without sending real email:** use Playwright with the file opened directly.
+Don't start a background server. Stub the network:
+
+```js
+// If the CDN is blocked, serve supabase-js from the npm package:
+//   npm pack @supabase/supabase-js@2 && tar xzf supabase-supabase-js-*.tgz
+await page.route("https://cdn.jsdelivr.net/**", r =>
+  r.fulfill({ path: "package/dist/umd/supabase.js", contentType: "text/javascript" }));
+await page.route("https://fonts.googleapis.com/**", r => r.abort());   // optional
+await page.route("**/auth/v1/otp**", r =>                               // fake a slow send
+  setTimeout(() => r.fulfill({ status: 200, contentType: "application/json", body: "{}" }), 1200));
+```
+
+Then click Send with the field empty (expect the error and shake), type a valid address (the
+button fills), and submit. Check the sending state, then the receipt with "Open Gmail" and
+"Resend in 59". Screenshot each one. The only console error should be the request you aborted.
+Test long addresses too.
+
+**After deploy (human, or an agent with a real browser):**
+1. The page loads and shows the signed-out panel with no console errors.
+2. Send a link to a real address. The email arrives.
+3. The link lands back on the page signed in, not on `localhost`.
+4. Store a value. It shows with its row number.
+5. Sign out, then sign in as someone else. The first person's value must not be visible.
 
 ## Gotchas
 
-- **Email rate limit:** Supabase's built-in mailer sends only a few emails per hour per project
-  and is meant for testing. Before real traffic, add custom SMTP (Authentication -> Emails ->
-  SMTP settings) with any email provider.
-- **Links work once and expire** (1 hour by default). Email scanners that prefetch links can use
-  them up before the person clicks; the page then shows "Email link is invalid or has expired".
-  Changing the email template to include `{{ .Token }}` and asking for the 6-digit code with
-  `verifyOtp({ email, token, type: "email" })` avoids that.
-- **Other browsers:** with the default (implicit) flow, the link works even when it opens in a
-  different browser than the one that asked for it. If you switch to `flowType: "pkce"`, it must
-  open in the same browser.
-- **Other providers:** Sign in with Apple on the web needs the paid Apple Developer Program.
-  GitHub and Google sign-in are free but each needs an OAuth app and a secret pasted into Supabase.
-  Magic links need none of that.
-- Empty results while signed in are normal for a new user. An RLS failure on insert means
+- **Email limit:** Supabase's built-in mailer sends only a few emails per hour per project and is
+  meant for testing. Before real traffic, add custom SMTP under Authentication -> Emails -> SMTP
+  settings.
+- **Links work once and expire** after 1 hour by default. Corporate email scanners can open the
+  link before the person does, and the page then shows "Email link is invalid or has expired".
+  The fix: add `{{ .Token }}` to the email template and ask for the 6-digit code with
+  `verifyOtp({ email, token, type: "email" })`.
+- **Resend cooldown:** Supabase refuses another link to the same address for about 60 seconds.
+  Show a countdown instead of letting the request fail.
+- **Sign in with Apple on the web needs the paid Apple Developer Program** ($99 a year), plus a
+  client secret JWT that expires within 6 months. Google and GitHub sign-in are free, but each
+  needs an OAuth app and a secret pasted into Supabase. Magic links need none of that, which is
+  why this guide uses them.
+- **An empty result while signed in** is normal for a new user. An RLS error on insert means
   `user_id` doesn't match `auth.uid()`; let the column default fill it in.
-- Never apply schema changes the person didn't ask for. Report advisor findings instead.
+- **The `supabase-js@2` CDN URL** follows the latest 2.x release. For a page that must never
+  change underneath you, pin an exact version.
+
+## Done means
+
+- The table and RLS are applied, the advisors have been run, and every finding is reported.
+- The page is live at its final URL, and the deploy run succeeded.
+- The person has the dashboard link and the exact Site URL and Redirect URL values, or has
+  confirmed they're set.
+- They know what isn't verified (for example, if you couldn't load the live page) and how to
+  check it: the five steps under "After deploy".
+- Nothing was done to other projects, and no schema changes were made beyond what was asked.
 
 ## Bodega look and voice (if you reuse the brand)
 
-- Strictly black and white. No accent colour. Dark (white on black) is the default.
-- Instrument Serif for display, Allo for text, Space Mono for small receipts.
-- Square corners, 3px borders, hard drop shadows (`6px 6px 0 0`), and a striped awning on top.
-- Sentence case for text. ALL CAPS tracked labels for buttons.
-- No emoji and no exclamation marks. Deadpan: "Done.", "Nothing on the shelf.", "Who sent you?"
+- Strictly black and white, with no accent colour. Dark (white on black) is the default:
+  `color-scheme: dark` and `<meta name="theme-color" content="#000000">`.
+- Instrument Serif for display, Allo for text, Space Mono for small receipts and hints.
+- Square corners, 3px borders, hard drop shadows (`3px 3px 0 0`, and `6px 6px 0 0` when lifted)
+  and a double-rule frame on panels. No header: the panel is the page. The footer fades in after 1s.
+- Sentence case for text. ALL CAPS tracked labels (`letter-spacing: .18em`) for buttons and labels.
+- No emoji and no exclamation marks. Deadpan: "Who sent you?", "Send link", "Done.",
+  "Nothing on the shelf.", "Too many links sent. Give it an hour."
