@@ -29,6 +29,8 @@
       ['.meta', 'Date line'],
       ['figure.code', 'Code block'],
       ['figure:has(.canvas-stage)', 'Canvas'],
+      ['.logo-option', 'Logo option'],
+      ['.underline', 'Underline'],
       ['.swatch', 'Colour'],
       ['.swatches', 'Colours'],
       ['.specimen', 'Type sample'],
