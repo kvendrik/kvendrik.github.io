@@ -38,7 +38,7 @@ untouched.
 | `next/writing/<slug>.html` | One page per article (`what-kitt-taught-me.html`). |
 | `next/controls.js` / `controls.css` | Figma-style controls, always on in the preview: click a `.layer`, tune padding, margin, font size and weight in a native-looking inspector card (DialKit underneath), double-click to edit text. Tracks every change in `window.pageEdits`. |
 | `next/send.js` / `send.css` | The Send to Claude pill: appears once something has changed. |
-| `next/brand.html` | The brand book: colours, type, motion curves, spacing and every component, all selectable with the controls. Only linked from home inside the preview (`.brand-link`). Add new components here too. Sections: Logo (five K options, not chosen yet), Colour, Type, Underlines (every hand-drawn stroke, shown large and in use), Motion, Space, Components. |
+| `next/brand.html` | The brand book: colours, type, motion curves, spacing and every component, all selectable with the controls. Only linked from home inside the preview (`.brand-link`). Add new components here too. Sections: Logo (five K options built from OFL typefaces — Fraunces, Instrument Serif, Allo — not chosen yet; hand-built strokes and pixel Ks were rejected as "suck"), Colour, Type, Underlines (every hand-drawn stroke, shown large and in use), Motion, Space, Components. |
 | `next/components.css` | Brand tokens (`--cream`, `--ink`, `--muted`, `--black`, `--blue`, `--blue-tint`, `--surface`, `--canvas`, easings, `--mono`, `--system`) and the shared components: hand-drawn links (`.ink-link`, `data-stroke`), the Writing list, `figure.media` (image, video, `.code`, canvas) and `.win95`. Loaded after each page's inline styles, so it wins on equal selectors. |
 | `next/canvas.js` | Pan-and-zoom canvas for diagrams (`.canvas-stage` > `.canvas-world` with `[data-node]` cards and `<path data-from data-to>` edges), whiteboard style in greyscale: a pill to start, boxes, a diamond, sticky notes, right-angle connectors with rounded bends (`data-out`/`data-in`/`data-via`) and pill labels. Drag pans with momentum, pinch or Ctrl/⌘-scroll zooms, it can't be thrown out of view. |
 | `next/sounds.js` | UI sounds for the controls, synthesized with Web Audio: `window.uiSound(name)`. |
@@ -92,6 +92,9 @@ untouched.
   font in `next/fonts/w95fa.woff2`), with the scanner GIF and a line. It drags by its title bar
   and closes on OK, X or Esc. Elements that do something get `data-live` so the controls let
   clicks through, like real links.
+- **1990s type (article, preview only):** a switch at the top right (Now · Times · Courier ·
+  Win95) sets `data-era` on `<html>`: same colours and layout, only the type changes (Tinos,
+  Courier Prime from Google Fonts, W95fa). `#1996` opens it in Times.
 - **Code blocks are small:** 12.5px system mono, 11px line numbers, like beautifului.dev
   (14px was "way too large"). Set `font: inherit` on `code`, or Chrome falls back to its own
   monospace.
