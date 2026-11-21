@@ -217,6 +217,82 @@ svg.wires{position:absolute;inset:0;z-index:0;pointer-events:none;overflow:visib
 @media (max-width:820px){.bag{grid-template-columns:1fr}}
 @media (max-width:480px){.kv{grid-template-columns:repeat(2,1fr)}.kv>div:nth-child(3n){border-right:1px solid var(--line)}.kv>div:nth-child(2n){border-right:0}}
 @media (max-width:820px){.inspector{grid-template-columns:1fr}}
+/* phone: bigger type, 44px touch targets, swipeable examples */
+@media (max-width:640px){
+  body{font-size:16px}
+  .wrap{padding-block:24px 48px}
+  section{padding-block:28px}
+  .top{gap:12px;padding-bottom:24px}
+  .top h1{font-size:32px;line-height:1.1}
+  .top .lede{font-size:17px}
+  .sh{margin-bottom:12px;gap:4px 8px}
+  .sh h2{font-size:18px}
+  .sh p{font-size:15px;color:var(--ink-2)}
+  .tag{height:28px;font-size:13px;padding:0 10px}
+  .col-label .sub{font-size:13px}
+  .cols{height:920px}
+  .node{padding:11px 12px}
+  .node .t{font-size:15.5px}
+  .node .c{font-size:13px}
+  .node .c code{font-size:12px}
+  .wl{font-size:13px;padding:2px 7px}
+  .vp-hint{font-size:13px;height:34px}
+  .zoombar{padding:4px;gap:4px}
+  .zoombar button{height:40px;min-width:40px;font-size:16px}
+  .zoombar .pct{font-size:13px;min-width:46px}
+  .panel{padding:16px}
+  .panel h4{font-size:12.5px}
+  .insp-title h3{font-size:20px}
+  .insp-desc{font-size:16px}
+  .rel li{font-size:15px;flex-wrap:wrap;gap:2px 8px}
+  .chip{height:32px;font-size:14px;padding:0 10px}
+  .empty,.hint{font-size:14.5px}
+  .form{padding:16px;gap:16px}
+  .flabel{font-size:14.5px}
+  .flabel small{font-size:13px}
+  .bag textarea,.bag select,.bag input{font-size:16px}
+  .bag select,.bag input{height:46px;padding:0 12px}
+  .bag textarea{min-height:150px;padding:12px 14px}
+  .seg{padding:4px}
+  .seg button{height:40px;line-height:40px;font-size:15px}
+  .sbtn{height:36px;font-size:14px;padding:0 12px}
+  .ask .sbtn{height:40px}
+  .res-h{padding:16px;gap:12px}
+  .res-h h3{font-size:18px}
+  .rchip{height:32px;font-size:14px}
+  .rchip .conf{font-size:12.5px}
+  .why{font-size:14px}
+  .ask p{font-size:15px}
+  .kv>div{padding:14px 16px}
+  .kv .l{font-size:13px}
+  .kv .v{font-size:19px}
+  .kv .s{font-size:13px}
+  .steps{padding:8px 16px}
+  .step{font-size:15px;grid-template-columns:54px 1fr auto;padding:10px 0}
+  .step .tm,.step .g{font-size:14px}
+  .tips{padding:12px 16px 16px}
+  .tips h4{font-size:12.5px}
+  .tip{font-size:15px;flex-direction:column;gap:2px;padding:6px 0}
+  .tip b{min-width:0}
+  .ex-h{margin:28px 0 12px}
+  .ex-h h3{font-size:18px}
+  .ex-h p{font-size:14.5px;color:var(--ink-2)}
+  .ex-h::after{content:"Swipe for more →";font-size:13px;color:var(--ink-3)}
+  .examples{display:flex;overflow-x:auto;scroll-snap-type:x mandatory;gap:12px;padding-bottom:12px;
+    margin-left:calc(-1 * max(16px,env(safe-area-inset-left,0px)));margin-right:calc(-1 * max(16px,env(safe-area-inset-right,0px)));
+    padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));
+    scroll-padding-left:max(16px,env(safe-area-inset-left,0px));scrollbar-width:none;-webkit-overflow-scrolling:touch}
+  .examples::-webkit-scrollbar{display:none}
+  .ex{flex:0 0 86%;scroll-snap-align:start;padding:16px;gap:12px}
+  .ex-top h4{font-size:16.5px}
+  .ex q{font-size:14.5px;padding:10px 12px}
+  .ex .rchip{height:30px;font-size:13.5px}
+  .ex-nums .l{font-size:12.5px}
+  .ex-nums .v{font-size:16px}
+  .ex-nums div{padding:9px 10px}
+  .ex .note2{font-size:14px}
+  .agents{font-size:13.5px;padding-top:16px}
+}
 @media (prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
 </style>
 </head>
@@ -386,7 +462,7 @@ function zoomAt(f,cx,cy){const ns=Math.min(2,Math.max(.25,S*f)),k=ns/S;TX=cx-(cx
 function animate(){board.classList.add('anim');setTimeout(()=>board.classList.remove('anim'),380)}
 function fit(){const w=vp.clientWidth,h=vp.clientHeight,bw=board.offsetWidth,bh=board.offsetHeight;S=Math.min(1,(w-16)/bw,(h-16)/bh);TX=(w-bw*S)/2;TY=(h-bh*S)/2;apply()}
 function sizeVp(){if(isMobile())vp.style.height=Math.round(Math.min(innerHeight*.72,640))+'px';else{const s=Math.min(1,(vp.clientWidth-16)/board.offsetWidth);vp.style.height=Math.round(board.offsetHeight*s+16)+'px'}}
-function initView(){sizeVp();if(isMobile()){S=.72;TX=8;TY=8;clampPan();apply()}else fit()}
+function initView(){sizeVp();if(isMobile()){S=.84;TX=8;TY=52;clampPan();apply()}else fit()}
 function focusNode(id,force){const r=nodeEls[id].getBoundingClientRect(),v=vp.getBoundingClientRect();
   if(!force&&r.left>=v.left+8&&r.right<=v.right-8&&r.top>=v.top+8&&r.bottom<=v.bottom-48)return;
   TX+=(v.left+v.width/2)-(r.left+r.width/2);TY+=(v.top+v.height/2)-(r.top+r.height/2);clampPan();animate();apply()}
