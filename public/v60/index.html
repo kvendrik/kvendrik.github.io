@@ -230,12 +230,18 @@ svg.wires{position:absolute;inset:0;z-index:0;pointer-events:none;overflow:visib
   .sh p{font-size:15px;color:var(--ink-2)}
   .tag{height:28px;font-size:13px;padding:0 10px}
   .col-label .sub{font-size:13px}
-  .cols{height:920px}
-  .node{padding:11px 12px}
-  .node .t{font-size:15.5px}
-  .node .c{font-size:13px}
-  .node .c code{font-size:12px}
-  .wl{font-size:13px;padding:2px 7px}
+  .board{width:1360px;padding:24px 28px 96px}
+  .cols{height:1000px;column-gap:96px}
+  .col{padding-top:48px}
+  .col-label{height:30px;gap:8px}
+  .col-label .tag{height:30px;font-size:15px;padding:0 11px}
+  .col-label .sub{font-size:15px}
+  .node{padding:12px 14px;gap:12px;border-radius:18px}
+  .node .ic{width:38px;height:38px}
+  .node .t{font-size:18px}
+  .node .c{font-size:15px;margin-top:3px}
+  .node .c code{font-size:13.5px}
+  .wl{font-size:15px;padding:2px 8px;border-radius:6px}
   .vp-hint{font-size:13px;height:34px}
   .zoombar{padding:4px;gap:4px}
   .zoombar button{height:40px;min-width:40px;font-size:16px}
@@ -461,8 +467,8 @@ function clampPan(){const w=vp.clientWidth,h=vp.clientHeight,bw=board.offsetWidt
 function zoomAt(f,cx,cy){const ns=Math.min(2,Math.max(.25,S*f)),k=ns/S;TX=cx-(cx-TX)*k;TY=cy-(cy-TY)*k;S=ns;clampPan();apply()}
 function animate(){board.classList.add('anim');setTimeout(()=>board.classList.remove('anim'),380)}
 function fit(){const w=vp.clientWidth,h=vp.clientHeight,bw=board.offsetWidth,bh=board.offsetHeight;S=Math.min(1,(w-16)/bw,(h-16)/bh);TX=(w-bw*S)/2;TY=(h-bh*S)/2;apply()}
-function sizeVp(){if(isMobile())vp.style.height=Math.round(Math.min(innerHeight*.72,640))+'px';else{const s=Math.min(1,(vp.clientWidth-16)/board.offsetWidth);vp.style.height=Math.round(board.offsetHeight*s+16)+'px'}}
-function initView(){sizeVp();if(isMobile()){S=.84;TX=8;TY=52;clampPan();apply()}else fit()}
+function sizeVp(){if(isMobile())vp.style.height=Math.round(Math.min(innerHeight*.76,640))+'px';else{const s=Math.min(1,(vp.clientWidth-16)/board.offsetWidth);vp.style.height=Math.round(board.offsetHeight*s+16)+'px'}}
+function initView(){sizeVp();if(isMobile()){S=.9;TX=8;TY=52;clampPan();apply()}else fit()}
 function focusNode(id,force){const r=nodeEls[id].getBoundingClientRect(),v=vp.getBoundingClientRect();
   if(!force&&r.left>=v.left+8&&r.right<=v.right-8&&r.top>=v.top+8&&r.bottom<=v.bottom-48)return;
   TX+=(v.left+v.width/2)-(r.left+r.width/2);TY+=(v.top+v.height/2)-(r.top+r.height/2);clampPan();animate();apply()}
@@ -708,7 +714,7 @@ function recipe(st){
     Object.assign(out,{dose,water:W+' g',waterSub:dose+' × '+ratio,ratio:'1:'+ratio,ratioSub:light?'light, filter':r<=3?'medium':'darker',
       steps:[['0:00','Bloom, swirl, wait 45 s',bloom],['0:45','Pour to '+mid+' g by 1:15',mid],['1:15','Pour to '+W+' g by 1:45, then swirl',W],[light?'2:45':'3:00','Drawdown done by '+(light?'2:45–3:15':'3:00–3:30'),null]]});
   }else if(method==='46'){
-    const W=dose*15,A=Math.round(W*.4),B=W-A,T=taste/12,p1=Math.round(A*(1-T)),p2=A-p1,each=Math.round(B/str);
+    const W=dose*15,A=Math.round(W*.4),B=W-A,p1=Math.round(A*(12-taste)/12),p2=A-p1,each=Math.round(B/str);
     const pours=[p1,p2];for(let i=0;i<str;i++)pours.push(i===str-1?B-each*(str-1):each);
     let cum=0;const steps=pours.map((x,i)=>{cum+=x;return[mmss(i*45),(i===0?'Pour ':'Pour ')+x+' g'+(i<2?(i===0?' (taste)':' (taste)'):' (strength)')+', let it drain',cum]});
     const lift=mmss(45*(2+str));steps.push([lift,'Lift the dripper',null]);
