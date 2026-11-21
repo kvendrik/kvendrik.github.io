@@ -1,0 +1,465 @@
+# How pour over coffee works
+
+> How the things you know about a coffee and your gear determine every number on a brewing recipe: dose, water, ratio, temperature, grind, pour schedule, brew time, whether the beans are ready, and what to change after tasting. Eight inputs go through five reference tables and three formulas to nine outputs, plus one feedback loop. Everything here is deterministic: tables and arithmetic, no judgement calls except where sources disagree (listed at the end with defaults).
+
+Live page: https://kvendrik.com/v60/ · This file: https://kvendrik.com/v60/llms.txt
+
+Units are metric: grams (g), degrees Celsius (°C), microns (µm), seconds or m:ss. Ratios are coffee:water by weight (1:16 means 16 g water per 1 g coffee). For espresso, ratio means coffee in : liquid out.
+
+## Model overview
+
+Inputs (what you know before brewing):
+- method: brew method. V60 / pour over, Hario Switch (hybrid), AeroPress, French press, Chemex, espresso (pump), manual lever espresso, moka pot, cold brew, iced V60 (Japanese iced coffee).
+- roast: roast level, 6 steps: very light, light, medium light, medium dark, dark, very dark (step index 0 to 5).
+- process: processing, 6 steps: washed, washed + ferment, yellow honey, red honey, natural, natural + ferment (step index 0 to 5).
+- rest: days since the roast date on the bag.
+- grinder: grinder model (e.g. 1Zpresso K-Ultra, Comandante C40, Niche Zero, Fellow Ode Gen 2, Baratza Encore).
+- dose: grams of coffee, or espresso basket size.
+- pref: taste target. Brighter vs sweeter, lighter vs stronger (used by the 4:6 method).
+- taste: result of the last cup. Sour, bitter, weak, strong, or sour and bitter together.
+
+Lookups (reference tables):
+- profile: method profile. One row per recipe: grind range in µm, base pour schedule, target time.
+- tempgrid: temperature rule. Roast x process grid for pour over; roast-only bands for espresso and levers.
+- ratiotable: ratio table. Method sets the band; roast picks the point for espresso.
+- restwindow: rest window. Days off roast when the coffee is ready, by roast and method.
+- fixladder: fix ladder. Which single variable to change next, from the symptom.
+
+Calculators (formulas):
+- grindtarget: grind target. Method range, nudged toward the fine end for light roasts, then converted to a setting with a per-grinder chart.
+- scale: scale to dose. water = dose x ratio; every pour and cumulative weight scales with it.
+- split46: 4:6 splitter. Tetsu Kasuya's 4:6 method: first 40% of water sets taste, last 60% sets strength.
+
+Outputs (the recipe card):
+- o_temp: water temperature (°C)
+- o_grind: grind setting (µm range and grinder setting)
+- o_ratio: ratio (1:x)
+- o_dose: dose (g)
+- o_water: water (g), or target yield for espresso, or hot water + ice split for iced V60
+- o_steps: pour schedule (time, pour, running total)
+- o_time: target time (total brew or drawdown; a diagnostic, not a goal)
+- o_ready: brew now or wait (days left to the rest window)
+- o_next: next change (one variable, with a step size)
+
+## Edges (source -> target: what flows)
+
+- method -> profile: selects the recipe row
+- method -> tempgrid: pour-over grid vs espresso band
+- method -> ratiotable: method ratio band
+- method -> restwindow: filter vs espresso window
+- method -> fixladder: pour-over table vs espresso compass
+- roast -> tempgrid: -1 °C per step darker
+- roast -> ratiotable: espresso 1:2 (dark) / 1:2.5 (medium) / 1:3 (light)
+- roast -> restwindow: light roasts rest longer
+- roast -> grindtarget: light roasts go to the finer end of the range
+- process -> tempgrid: -1 °C per step toward natural / ferment
+- rest -> restwindow: days compared to the window
+- grinder -> grindtarget: setting chart per grinder model
+- dose -> scale: multiplied by ratio
+- pref -> split46: taste share T and strength pours S
+- taste -> fixladder: symptom
+- profile -> grindtarget: µm range
+- profile -> scale: base schedule
+- profile -> o_time: target time
+- ratiotable -> scale: ratio
+- ratiotable -> o_ratio: 1:x
+- tempgrid -> o_temp: °C
+- grindtarget -> o_grind: setting
+- scale -> o_dose, o_water, o_steps: grams and scaled pours
+- split46 -> o_steps: 4:6 pour sizes
+- split46 -> o_time: lift the dripper at 2:15 / 3:00 / 3:45
+- restwindow -> o_ready: yes, or wait n days
+- fixladder -> o_next: one change
+- Feedback loop: o_next -> taste. Brew again, change one thing, taste again.
+
+## Driver matrix (input x output)
+
+"sets" = determines the value. "shifts" = nudges it or picks the variant.
+
+| Input | Sets | Shifts |
+|---|---|---|
+| Brew method | water, ratio, temperature, grind, pour schedule, target time | dose (basket or moka fill), ready (filter vs espresso window), next change (which table) |
+| Roast level | ratio (espresso), temperature, ready | grind, pour schedule (e.g. turbo or blooming shot), next change |
+| Processing | temperature | - |
+| Days off roast | ready | - |
+| Grinder | grind setting | - |
+| Dose or basket | dose, water, pour schedule | target time |
+| Taste target | pour schedule (4:6) | target time |
+| Last cup | next change | grind, ratio, temperature (on the next brew) |
+
+What does NOT change the numbers: origin, variety, altitude and flavour/aroma descriptors tell you what to expect in the cup. Brew by roast and process; use origin to know what you are tasting for.
+
+## Rule: temperature
+
+Pour over: temp = 96 °C - roastStep - processStep (Simon Gautherin / Pull & Pour grid).
+
+| Roast \ Process | Washed | Washed + ferment | Yellow honey | Red honey | Natural | Natural + ferment |
+|---|---|---|---|---|---|---|
+| Very light | 96 | 95 | 94 | 93 | 92 | 91 |
+| Light | 95 | 94 | 93 | 92 | 91 | 90 |
+| Medium light | 94 | 93 | 92 | 91 | 90 | 89 |
+| Medium dark | 93 | 92 | 91 | 90 | 89 | 88 |
+| Dark | 92 | 91 | 90 | 89 | 88 | 87 |
+| Very dark | 91 | 90 | 89 | 88 | 87 | 86 |
+
+Espresso (pump): 90-92 °C dark, 93-94 °C medium, 94-96 °C light.
+Manual lever: 93-96 °C light, 92-94 °C medium, about 90 °C dark (water cools in the cylinder; preheat).
+Moka pot: water just off the boil in the base.
+Cold brew: cold water, 16-20 h in the fridge or 12-16 h at room temperature.
+Iced V60: 90-93 °C water onto ice.
+
+## Rule: ratio
+
+| Method | Ratio |
+|---|---|
+| V60 / pour over | 1:15 to 1:17 (light roasts 1:16 to 1:17) |
+| 4:6 method | 1:15 (fixed) |
+| Espresso, dark / medium / light | 1:2 / 1:2.5 / 1:3 |
+| Turbo shot (light roast espresso) | 1:3 in 12-20 s at about 6 bar, coarser grind |
+| Ristretto / lungo / allongé | 1:1-1:1.5 / 1:2.5-1:3 / 1:4-1:5 |
+| Moka pot | 1:7 to 1:10 (fill the basket level, no tamp) |
+| Iced V60 | total liquid 14:1 to 15:1 vs coffee, split 70% hot water / 30% ice |
+| Cold brew, ready to drink | 1:10 |
+| Cold brew, concentrate | 1:6 to 1:7 |
+| French press | about 1:16.7 (30 g : 500 g) |
+| AeroPress | 1:13 to 1:18 typical (e.g. 11 g : 200 g) |
+| Cupping | about 1:18 (8.25 g : 150 ml) |
+
+## Rule: grind target
+
+Method ranges (particle size):
+
+| Method | Range |
+|---|---|
+| Turkish | 40-220 µm |
+| Espresso | 180-380 µm |
+| Moka pot | 360-660 µm |
+| AeroPress | 320-960 µm |
+| V60 | 400-700 µm |
+| Pour over (general) | 410-930 µm |
+| Siphon | 375-800 µm |
+| Cupping | 470-850 µm |
+| French press | 690-1300 µm |
+| Cold brew | 800-1400 µm |
+
+Light roasts go toward the fine end. Then use a setting chart for the grinder (community starting points, verify by taste):
+- 1Zpresso K-Ultra: espresso 2.4-5.0; moka 4.8-8.6; AeroPress 5.5-7.0 typical; V60 7.0-8.5 typical (light roasts 7.0-7.8); French press 9.1-17.0 (numbers on the dial; 10 numbers per rotation, 20 µm per click).
+- 1Zpresso K-Plus / K-Pro / K-Max: V60 4.9-8.4; moka 4.4-7.9; espresso about 2.0-4.0.
+- Comandante C40: espresso 7-12 clicks, moka 12-16, AeroPress 14-22, V60 20-28 (light 20-25), French press 30-35.
+- Timemore C2 / C3: moka 8-11 clicks, V60 15-20, French press 22-26.
+- Kingrinder K6: espresso 30-60, V60 80-110, French press 120+.
+- Niche Zero: espresso 10-20, V60 40-50, French press 50+.
+- Baratza Encore: V60 13-18, French press 28+ (not for espresso).
+- Fellow Ode Gen 2: pour over 4-7, French press 9-11 (no espresso).
+
+Note: clicks x µm-per-click measures burr travel from zero, not particle size. Do not convert a µm range to a setting by arithmetic; use the chart.
+
+## Rule: rest window
+
+| Coffee | Ready window (days off roast) |
+|---|---|
+| Medium roast, any method | 7-30 |
+| Light roast, filter | 14-28 |
+| Light roast, espresso | 21-42 |
+
+Output is "brew now" or "wait n days". Too fresh shows as a gassy, bubbling bloom and a muted, sour cup.
+
+## Rule: 4:6 splitter (Tetsu Kasuya, V60)
+
+Inputs: dose C (10-60 g), taste T, strength S.
+1. W = C x 15. Temperature 92-93 °C (go hotter, 94-96 °C, for light roasts).
+2. A = round(W x 0.4) (taste half). B = W - A (strength half).
+3. T is the share of A in pour 2: 5/12 brighter, 6/12 balanced (default), 7/12 sweeter. pour1 = round(A x (1 - T)), pour2 = A - pour1. Bigger first pour = brighter; smaller first pour = sweeter.
+4. S = number of pours splitting B: 1 light, 2 medium, 3 strong (default). Each = round(B / S); the last takes the remainder.
+5. Pour every 45 s from 0:00. Remove the dripper at 2:15 (S=1), 3:00 (S=2) or 3:45 (S=3).
+6. Round half up.
+
+Worked examples, S = 3:
+- 15 g / 225 g: brighter 53, 37, 45, 45, 45; balanced 45 x 5; sweeter 38, 52, 45, 45, 45
+- 20 g / 300 g: brighter 70, 50, 60, 60, 60; balanced 60 x 5; sweeter 50, 70, 60, 60, 60
+- 30 g / 450 g: brighter 105, 75, 90, 90, 90; balanced 90 x 5; sweeter 75, 105, 90, 90, 90
+
+## Rule: fix ladder
+
+Change one variable at a time, in this order:
+1. Grind (biggest lever)
+2. Ratio (strength)
+3. Temperature (only after the first two)
+4. Technique (agitation, pouring, puck prep)
+
+Pour over symptoms:
+| Symptom | Cause | Fix |
+|---|---|---|
+| Sour, thin, short finish | under-extraction | finer, hotter, a bit more agitation, longer ratio |
+| Bitter, dry, astringent | over-extraction or fines | coarser, less agitation |
+| Sour and bitter together | uneven extraction / channeling | gentler pours, better swirl, better grinder (fix technique before grind) |
+| Weak but balanced | too much water | lower ratio (e.g. 1:17 -> 1:15) |
+| Too strong, heavy | too little water | higher ratio |
+| Very slow drawdown (>4:30) | too fine, fines, stalled filter | coarser, gentler pours |
+| Fast drawdown (<2:30), sour | too coarse | finer |
+
+Espresso adjustment compass (grind sets strength, yield sets sour vs bitter):
+| | Watery | Strength fine | Muddy |
+|---|---|---|---|
+| Too sour | finer + more yield | more yield | coarser + more yield |
+| Balanced | finer | dialled in | coarser |
+| Too bitter | finer + less yield | less yield | coarser + less yield |
+
+Espresso also: sour and bitter together means channeling; improve puck prep (WDT, level tamp), use preinfusion or lower pressure. Bitter light-roast shots: drop temperature 1-2 °C first.
+
+Step sizes (defaults): grind 2-3 clicks on a K-Ultra (about 40-60 µm) or the equivalent on other grinders; ratio ±0.5; temperature ±1-2 °C; espresso yield ±4 g.
+
+## Method profiles (base recipes)
+
+- V60, Hoffmann (2 cups): 30 g, 500 g, just off the boil, medium fine. Bloom 60 g + vigorous swirl, 45 s; to 300 g by 1:15; to 500 g by 1:45; stir once each way; swirl. Done about 3:30.
+- V60, Hoffmann 1 cup: 15 g, 250 g, slightly finer. Five 50 g pours (0:00 bloom with swirl, then about 0:45, 1:10, 1:30, 1:50); swirl. About 3:00.
+- V60, light roast clarity: 15 g, 250 g, 96-100 °C, fine side of V60. Bloom 45 g, swirl, 45 s; to 150 g by 1:15; to 250 g by 1:45; swirl. Target 2:45-3:15.
+- V60, La Sosta five equal pours: 15 g, 250 g, about 93 °C. Bloom 50 g at 0:00-0:10, swirl, wait to 0:45; to 100 g at 0:45; 150 g at 1:10; 200 g at 1:30; 250 g at 1:50; swirl. About 3:00.
+- Osmotic Flow (Cafec): 15 g, 225-250 g, 90-93 °C, medium. Bloom 30 g, 30 s; pour gently in a coin-sized circle to half the water, then slowly widening circles, never on the paper.
+- Kasuya Hybrid (Hario Switch): 20 g, 280 g (1:14), medium fine. 0:00 open, 60 g at 90-93 °C; 0:30 open, 60 g; 1:00 close, 160 g at 70 °C; open about 1:25; done about 3:00.
+- Kasuya New Hybrid (Switch): 20 g, 300 g, 90 °C then 70-80 °C. 0:00 closed 40-50 g; 0:40 open to 120 g; 1:30 open 80 g cooler to 200 g; 2:10 close, to 300 g; 2:45 open. About 3:30.
+- Iced V60 (La Sosta): 16 g, 150 g water at 90-93 °C + 70 g ice in the carafe. Bloom 40 g to 0:40; to 100 g; at about 1:10 to 150 g. Done 2:00-2:10. Swirl until ice melts, serve over fresh ice.
+- Cold brew: 1:10 ready to drink or 1:6-1:7 concentrate, coarse grind, 16-20 h fridge or 12-16 h room temperature, strain through paper. Drink within 3-4 days. Concentrate: 1:1-2 water, 1:2 milk, or 1:2-3 tonic.
+- AeroPress, Hoffmann: 11 g, 200 g just off the boil, fine. Add all water, cap, 2 min, swirl, 30 s, press slowly.
+- French press, Hoffmann: 30 g, 500 g just off the boil, medium coarse. 4 min, break crust, skim, wait 5-8 min, plunge to the surface, pour gently.
+- Chemex: 30 g, 500 g, coarser than V60, 4:00-4:30.
+- Espresso (pump): dose to basket (e.g. 18 g), 1:2 to start, 25-35 s, 9 bar. Adjust grind for time, then ratio by taste, then temperature.
+- Lever espresso (Flair, Robot): preheat; 8-15 s preinfusion at 1-2 bar; ramp to 6-9 bar; decline in the last third; stop on yield. 35-45 s total is normal.
+- Moka pot: grind like fine table salt (360-660 µm); fill basket level, no tamping; hot water in the base below the valve; medium-low heat, lid open; remove when the stream turns pale and starts to sputter; cool the base.
+
+## Worked example
+
+Inputs: V60, light roast, washed, 21 days off roast, 1Zpresso K-Ultra, 15 g, balanced.
+- Temperature: 96 - 1 (light) - 0 (washed) = 95 °C
+- Ratio: light filter, 1:16.7
+- Water: 15 x 16.7 = 250 g
+- Grind: K-Ultra V60 light roast, 7.0-7.8
+- Ready: 21 days is inside the 14-28 day light filter window, brew now
+- Schedule: 0:00 bloom 45 g, swirl, wait 45 s; 0:45 pour to 150 g by 1:15; 1:15 pour to 250 g by 1:45, swirl
+- Target time: drawdown done 2:45-3:15
+- If sour: 2-3 clicks finer (about 40-60 µm), change nothing else
+
+## Reading a coffee bag
+
+This is the exact procedure the "Paste your bag" tool on this page runs. It always produces a recipe. Only two things on a bag change the numbers: roast level and process. Everything else on the bag (origin, variety, tasting notes, product name) is evidence for those two. The person supplies brew method, grinder and dose; the roast date, if printed, feeds the rest window.
+
+Scales used throughout:
+- Roast step: 0 very light, 1 light, 2 medium light, 2.5 medium, 3 medium dark, 4 dark, 5 very dark. Inferred values are rounded to the nearest 0.5.
+- Process step: 0 washed, 1 washed + ferment (incl. anaerobic washed), 2 honey / pulped natural / semi-washed / wet hulled, 3 red or black honey, 4 natural, 5 anaerobic / carbonic / co-fermented / infused.
+
+Text is lowercased first. Curly apostrophes become straight ones.
+
+### Step 1: words that state the roast (checked in this order; first match wins)
+
+| Pattern (regular expression, lowercase text) | Roast step | Label |
+|---|---|---|
+| `\bvery\s+light\b\|\bnordic\b\|\bultra[-\s]?light\b` | 0 (very light) | very light |
+| `\bmedium[-\s]+light\b\|\blight[-\s]+medium\b` | 2 (medium light) | medium light |
+| `\bmedium[-\s]+dark\b` | 3 (medium dark) | medium dark |
+| `\bvery\s+dark\b\|\bfrench\s+roast\b\|\bitalian\s+roast\b` | 5 (very dark) | very dark |
+| `\bespresso\s+roast\b` | 3 (medium dark) | espresso roast |
+| `\bfilter\s+roast\b` | 1 (light) | filter roast |
+| `\bomni[-\s]?roast\b` | 2.5 (medium) | omni roast |
+| `\blight(ly)?\s+roast(ed)?\b\|\broast(\s+level)?\s*[:\-]?\s*light\b` | 1 (light) | light roast |
+| `\bmedium\s+roast(ed)?\b\|\broast(\s+level)?\s*[:\-]?\s*medium\b` | 2.5 (medium) | medium roast |
+| `\bdark\s+roast(ed)?\b\|\broast(\s+level)?\s*[:\-]?\s*dark\b` | 4 (dark) | dark roast |
+| `\blichte?\s+branding\b\|\blicht\s+gebrand\b\|\bfilterbranding\b` | 1 (light) | lichte branding |
+| `\bmedium\s+branding\b\|\bmedium\s+gebrand\b` | 2.5 (medium) | medium branding |
+| `\bdonkere?\s+branding\b\|\bdonker\s+gebrand\b` | 4 (dark) | donkere branding |
+| `\bespressobranding\b` | 3 (medium dark) | espressobranding |
+
+### Step 1b: words that state the process
+
+Every rule is checked; matched text is removed before the next rule so "pulped natural" is not also "natural". One match = that process. Two or more = a blend: the average of their steps, rounded, labelled "<a> + <b> blend". The anaerobic rule also consumes a following natural / washed / honey, so "anaerobic natural" is one process. If "washed" appears anywhere in an anaerobic description the step is 1, else 5.
+
+| Pattern | Process step | Label |
+|---|---|---|
+| `\b(anaerobic\|carbonic(\s+maceration)?\|co[-\s]?ferment\w*\|infused\|thermal\s+shock\|yeast)(\s+(natural\|washed\|honey))?\b` | 1 if "washed" also appears, else 5 | anaerobic / fermented |
+| `\bextended\s+ferment\w*\|\bwashed\s*\+\s*ferment\w*` | 1 (washed + ferment) | washed + ferment |
+| `\b(black\|red)\s+honey\b` | 3 (red honey) | red / black honey |
+| `\b(yellow\|white)\s+honey\b\|\bpulped\s+natural\b\|\bhoney\s+process(ed)?\b\|\bprocess\w*\s*[:\-]?\s*honey\b\|\bsemi[-\s]washed\b` | 2 (honey) | honey |
+| `\bnatural(\s+process(ed)?)?\b(?!\s+sweet)\|\bdry[-\s]process(ed)?\b\|\bsun[-\s]dried\b` | 4 (natural) | natural |
+| `\bwet[-\s]hulled\b\|\bgiling\s+basah\b` | 2 (honey) | wet hulled |
+| `\b(fully\s+\|double\s+)?washed\b\|\bwet[-\s]process(ed)?\b\|\bgewassen\b` | 0 (washed) | washed |
+| `\bnatuurlijk(e)?\s+(proces\|verwerking)\|\bnaturel\b` | 4 (natural) | natural |
+
+### Step 2: vote words (tasting notes, origins, intended use; English and Dutch)
+
+Matching is whole-word, case-insensitive, longest phrase first; each matched phrase is removed so it is not counted again inside a longer one (e.g. "dark chocolate" is not also "chocolate", "roasted almond" is not also "almond"). Each term counts once. Roast votes are keyed by roast step (light = 1, medium = 2.5, dark = 4); process votes by process step.
+
+| Roast votes | Process votes | Terms |
+|---|---|---|
+| light 0.6 | - | 74110, burundi, ethiopia, ethiopian, guji, heirloom, kenya, kenyan, rwanda, sidama, sidamo, sl28, sl34, yirgachefe, yirgacheffe |
+| light 1 | washed 1 | black tea, camomile, chamomile, earl grey, elderflower, honeysuckle, jasmine, lemongrass, orange blossom, white grape |
+| light 1 | washed 0.8 | bergamot, bloemen, bloemig, citroen, jasmijn, limoen, thee, vlierbloesem, zwarte thee |
+| light 1 | washed 0.6 | bright, citric, citrus, clean, crisp, floral, grapefruit, green apple, green tea, hibiscus, honeydew, lavender, lemon, lemon peel, lemon verbena, lemonade, lime, melon, oolong, rose, tea, white tea, yuzu |
+| light 0.8, medium 0.2 | washed 0.3 | abrikoos, apricot, blackcurrant, cassis, kiwi, mandarijn, mandarin, nectarine, peach, peer, perzik, rhubarb, steenfruit, stone fruit, stonefruit, tangerine, white peach |
+| light 0.6, medium 0.4 | natural 1 | aardbei, berries, berry, blackberry, blauwe bes, blueberry, bosbes, bosvruchten, braam, framboos, jam, jammy, raspberry, red fruit, rood fruit, strawberry |
+| light 0.4, medium 0.6 | natural 1 | dried fruit, fruity, heavy body, prune, red wine, wine, winey |
+| medium 1 | natural 0.5 | cherry, cranberry, dadel, dates, fig, gedroogd fruit, kers, plum, pruim, raisin, rozijn, vijg, wijn |
+| light 0.5, medium 0.5 | anaerobic / ferment 1 | ananas, boozy, brandy, bubblegum, cognac, fermented, funky, kombucha, likeur, liqueur, mango, passievrucht, rum, tropisch, whiskey, whisky, yogurt |
+| light 0.6, medium 0.4 | natural 0.4, anaerobic / ferment 0.8 | banana, guava, lychee, papaya, passion fruit, passionfruit, pineapple, tropical |
+| dark 0.4, medium 0.6 | anaerobic / ferment 0.5 | cinnamon |
+| medium 1 | - | almond, amandel, appel, apple, brown sugar, bruine suiker, butterscotch, cacao, caramel, chocolade, chocolate, cocoa, hazelnoot, hazelnut, honing, karamel, maple, marsepein, melkchocolade, milk chocolate, nootachtig, noten, nougat, orange, panela, praline, red apple, sinaasappel, toffee, vanilla, vanille |
+| light 0.2, medium 0.8 | honey 0.3 | honey |
+| dark 0.6, medium 0.4 | - | bittersweet, clove, dark chocolate, malt, molasses, roasted almond, roasted cacao, roasted hazelnut, roasted nut, roasted nuts, roasted peanut, spice, spicy, walnut |
+| dark 1 | - | black pepper, burnt sugar, cedar, dark roasted, earthy, leather, licorice, liquorice, pipe tobacco, roasty, smoke, smoky, toast, toasted, tobacco |
+| light 0.8 | washed 0.5 | geisha, gesha |
+| light 0.2, medium 0.3 | - | bolivia, colombia, costa rica, ecuador, el salvador, guatemala, honduras, mexico, nicaragua, panama, peru |
+| dark 0.3, medium 0.4 | - | brazil, india, java, robusta, sulawesi, uganda, vietnam |
+| dark 0.5, medium 0.3 | honey 0.8 | sumatra, sumatran |
+| light 0.3, medium 0.7 | - | maple syrup, marzipan, pear, root beer, syrupy |
+| dark 0.3, medium 0.7 | - | cacao nibs, cocoa nibs |
+| light 2 | - | filter |
+| dark 0.8, medium 1.2 | - | espresso |
+| dark 1.2, medium 1 | - | espresso blend |
+| dark 0.7, medium 0.3 | - | aards, donkere chocolade, geroosterd, kruidig, pure chocolade, rokerig, specerijen, tabak |
+
+### Grinder setting charts (V60 range on the dial)
+
+| Grinder | V60 range | One step finer (for "sour") |
+|---|---|---|
+| 1Zpresso K-Ultra (numbers) | 7 to 8.5 | 0.2–0.3 finer |
+| 1Zpresso K-Plus / K-Pro / K-Max (numbers) | 5 to 8.4 | 0.2–0.3 finer |
+| Comandante C40 (clicks) | 20 to 28 | 2 clicks finer |
+| Timemore C2 / C3 (clicks) | 15 to 20 | 1 click finer |
+| Kingrinder K6 (clicks) | 80 to 110 | 4–5 clicks finer |
+| Niche Zero | 40 to 50 | 2 steps finer |
+| Baratza Encore | 13 to 18 | 1–2 steps finer |
+| Fellow Ode Gen 2 | 4 to 7 | 1 step finer |
+| Other / unknown | 400 to 700 µm (particle size) | about 50 µm finer |
+
+### Step 3: combine votes into a reading
+
+- Roast (ordinal): weighted mean of the roast votes. Example: blueberry, dark chocolate, red wine = 2.3, which rounds to 2.5 (medium).
+- Process (categorical): the step with the largest total vote. Never average categories (washed + natural would wrongly become honey).
+- Confidence = (largest vote / total votes) x min(1, total votes / 2.2). Few clues lower it even when they agree.
+- Stated values (step 1 / 1b) have confidence 1 and are labelled "stated".
+- No votes at all: guess roast 2 (medium light) and process 0 (washed), the most common specialty coffee, labelled "guess".
+- Special label: process step 2 with "wet hulled", "giling basah", "sumatra" or "sumatran" is shown as "Wet hulled".
+
+### Step 4: optional questions (the recipe is already made from the guess)
+
+- Roast confidence below 60% and not stated: "Best guess: <roast>, and the recipe uses it. If the beans look different, pick one:" Light brown, dry = 1. Medium brown = 2.5. Dark, oily sheen = 4.
+- Process confidence below 50% and not stated: "If the cup leans differently, pick one:" Clean, tea-like = 0. Jammy, berry, winey = 4. Boozy, tropical = 5.
+- An answer replaces the inferred value; a value stated on the bag is never overridden.
+
+### Step 5: roast date
+
+- Look first in the text after "roast", "roasted", "roast date", "gebrand", "brand" or "branddatum"; fall back to the whole text.
+- Dutch month names are translated first (mrt, mei, okt, maart, januari, februari, juni, juli, augustus, oktober).
+- Formats, tried in order: 2026-11-02; 2 Nov 2026 (also "2nd Nov, 26"); Nov 2, 2026; 02/11/2026, 02.11.26, 02-11-2026 (day first; if the second number is above 12, month first). Two-digit years are 20xx.
+- Days off roast = today - roast date, in whole days. Ignored if negative or over 400.
+
+### Step 6: recipe from roast step r and process step p
+
+Temperature
+- V60 and 4:6: round(96 - r - p), clamped to 86-96 °C.
+- Iced V60: the same, clamped to 90-93 °C.
+
+V60
+- Ratio: 1:16.7 if r <= 1.5 (water = dose x 50/3, i.e. 60 g/L), 1:16 if r <= 3, else 1:15.
+- Bloom with 3 x dose and wait 45 s. At 0:45 pour to 60% of the water by 1:15. At 1:15 pour to 100% by 1:45, then swirl.
+- Drawdown done by 2:45-3:15 for r <= 1.5, otherwise 3:00-3:30.
+
+4:6 method
+- W = dose x 15, A = round(0.4 W), B = W - A.
+- Taste T is 5/12 (brighter), 6/12 (balanced) or 7/12 (sweeter). pour1 = round(A (1 - T)) and pour2 = A - pour1.
+- Strength S is 1, 2 or 3 pours. Each strength pour is round(B / S); the last one takes the remainder.
+- Pour every 45 s, letting each pour drain. Lift the dripper at 45 x (2 + S) s.
+
+Iced V60
+- Total liquid = round(dose x 14). Hot water = round(0.7 x total). Ice = the rest, placed in the carafe.
+- Bloom with round(0.27 x hot) and wait to 0:40. At 0:40 pour to round(0.67 x hot). At 1:10 pour to the full hot amount.
+- Done by 2:00-2:10. Swirl until the ice melts.
+
+Grind
+- Position f = clamp((r - 0.5) / 4, 0, 1). Shift: 0 for V60, +0.45 for 4:6 (coarser), -0.08 for iced (finer).
+- Centre = min + span x ((f + shift) x 0.85 + 0.08). Half-width = max(0.14 x span, 0.3 for decimal dials or 1 click).
+- The shown range is clamped to [min - 0.1 span, max + 0.6 span] of the grinder's V60 range.
+- The same formula on 400-700 µm gives the particle-size range.
+- 4:6 and iced positions and the less common grinders are scaled estimates, not published settings.
+
+Brew now or wait
+- Window: 14-28 days if r <= 1.5, otherwise 7-30 days.
+- Before the window: "Wait n days". After it: "Past peak, expect less aroma". Inside it: "Yes".
+
+Next cup (change one thing)
+- Sour, thin: one grinder step finer (see the chart), then +1 °C.
+- Bitter, dry: the same step coarser, then -1 °C.
+- Weak: ratio down 0.5 (more coffee).
+- Too strong: ratio up 0.5.
+- Sour and bitter together: pour more gently and swirl to flatten the bed.
+
+### Bag examples (15 g, V60, 1Zpresso K-Ultra, computed by the page)
+
+| Example | Bag text | Read as | Temp | Ratio | Water | K-Ultra | Optional question |
+|---|---|---|---|---|---|---|---|
+| Stooker, Motto (photographed bag) | Origin: 75% Minas Gerais, Brazil; 25% Tolima, Colombia. Variety: Yellow Catuai, Caturra, Colombia & Castillo. Process: Tree dried natural & Washed. Tasting notes: Roasted almond, maple syrup & milk chocolate. | medium (67% sure), natural + washed blend (stated) | 92 °C | 1:16 | 240 g | 7.5–8.1 | none |
+| FIL, Bogalech (photographed bag) | Stonefruit, Blueberry, Orange blossom. Natural. Roasted 09/11/25 | light (80% sure), natural (stated) | 91 °C | 1:16.7 | 250 g | 7.1–7.7 | none · roast date 2025-11-09 |
+| Washed Ethiopian | Ethiopia Guji, Hambela. Washed heirloom. Jasmine, bergamot, peach. | light (96% sure), washed (stated) | 95 °C | 1:16.7 | 250 g | 7.0–7.6 | none |
+| Kenyan, filter roast | Kenya Nyeri AA, SL28 / SL34. Washed. Blackcurrant, grapefruit, black tea. Filter roast. | light (stated), washed (stated) | 95 °C | 1:16.7 | 250 g | 7.0–7.6 | none |
+| Tasting notes only | Blueberry, dark chocolate, red wine | medium (47% sure), natural (91% sure) | 90 °C | 1:16 | 240 g | 7.5–8.1 | roast (bean look) |
+| Anaerobic Colombian | Colombia, Huila. Anaerobic natural. Rum, passion fruit, mango. | light (51% sure), anaerobic / ferment (stated) | 90 °C | 1:16.7 | 250 g | 7.1–7.7 | roast (bean look) |
+| Brazil, medium roast | Brazil Cerrado. Natural. Milk chocolate, hazelnut, caramel. Medium roast. | medium (stated), natural (stated) | 90 °C | 1:16 | 240 g | 7.5–8.1 | none |
+| Sumatra | Sumatra Gayo. Earthy, cedar, dark chocolate, tobacco. | dark (85% sure), wet hulled (36% sure) | 90 °C | 1:15 | 225 g | 7.9–8.5 | process (cup character) |
+| Stooker, Motto (as the shop names it) | Espresso blend - Motto. Roasted almond, maple syrup, milk chocolate | medium dark (60% sure), washed (guess) | 93 °C | 1:16 | 240 g | 7.6–8.2 | roast (bean look), process (cup character) |
+| Friedhats, Suke Quto Filter | Friedhats Suke Quto Filter. Ethiopia. Washed. Peach, black tea, toffee. | light (79% sure), washed (stated) | 95 °C | 1:16.7 | 250 g | 7.1–7.7 | none |
+| Friedhats, Bombe | Friedhats Bombe. Natural. Strawberry, blueberry jam, lemon verbena. | light (70% sure), natural (stated) | 91 °C | 1:16.7 | 250 g | 7.1–7.7 | none |
+| Friedhats, Nyabirongo | Nyabirongo, Uganda. Washed. Root beer, lemon peel, oolong. | light (62% sure), washed (stated) | 95 °C | 1:16.7 | 250 g | 7.1–7.7 | none |
+| Stooker, Ecotripper | Ecotripper. Organic. Cacao nibs, plum, dried fig. Dark roast. | dark (stated), natural (45% sure) | 88 °C | 1:15 | 225 g | 7.9–8.5 | process (cup character) |
+| Five Ways, Five Points (Dutch) | Five Points Blend. Brazil natural, Colombia gewassen. Framboos, karamel, melkchocolade. Espressobranding. Gebrand op 12-11-2026 | medium dark (stated), natural + washed blend (stated) | 91 °C | 1:16 | 240 g | 7.6–8.2 | none · roast date 2026-11-12 |
+| No useful clues | Kalita bag, 250 g | medium light (guess), washed (guess) | 94 °C | 1:16 | 240 g | 7.3–7.9 | roast (bean look), process (cup character) |
+
+Notes on these examples:
+- If the "Tasting notes only" beans look light brown and dry, the read becomes light natural: 91 °C, 1:16.7, 250 g.
+- Stooker sells Motto as "Espresso blend - Motto, dark roast". The bag itself says neither, so from the bag alone the reader lands on medium (90-92 °C). The shop's product name moves it to medium dark. This is why the bean-look question exists.
+- The FIL date is printed as 09/11/25 (read as 9 Nov 2025). At that age the tool reports "Past peak".
+
+### How Amsterdam roasters label their coffee (research notes)
+
+Gathered from web search of retailer listings and the roasters' product pages; the roasters' own sites could not be loaded directly.
+- **Stooker** (stookerspecialtycoffee.com, Amsterdam): blends and single origins, with a "Dark Roast" collection.
+  - The bag gives Origin, Producers, Variety, Process and Tasting notes, and can describe a blend ("75% Minas Gerais - Brazil, 25% Tolima - Colombia"; "Tree dried natural & Washed").
+  - Roast level and intended use are often only in the product name ("Espresso blend - Motto, dark roast"), not on the bag.
+  - Single origins can suit both methods: for Guatemala Jesus Pablo Pablo, choose filter for lemonade and blackberry or espresso for sweeter and rounder.
+  - Examples: Haven blend (chocolate, caramel), Ecotripper (organic, dark roast, cacao nibs, plum, dried fig).
+- **Friedhats** (friedhats.com, Amsterdam; FUKU is their café): a light, Nordic-style roaster focused on clarity, sweetness and acidity, avoiding underdeveloped "green" and smoky notes.
+  - The product name often carries the use ("Suke Quto Filter").
+  - Notes are short and specific: root beer, lemon peel, oolong; blackberry, tangerine, lemongrass; apricot, rhubarb, brown sugar; strawberry, blueberry jam, lemon verbena.
+  - Treat Friedhats coffees as light even when sold for espresso.
+- **Five Ways** (fivewayscoffee.com, Amsterdam; Dutch and English site): espresso, filter and sugarcane decaf, roasted to order.
+  - Five Points Blend is a Brazilian natural with a Colombian washed (raspberry, caramel, milk chocolate).
+  - Filter coffees include a washed Colombian (lemon, caramel, orange blossom) and "Anaerobic Washed" lots.
+  - Dutch labels can use: gewassen (washed), natuurlijk / naturel (natural), branding / gebrand (roast / roasted), licht (light), donker (dark), espressobranding / filterbranding, and "gebrand op" (roasted on).
+- **Decaf** labels name a method (sugarcane / EA, Swiss Water, CO2, Mountain Water). The method doesn't change the recipe; read roast and process as usual.
+
+## Where the guidance disagrees (with defaults)
+
+- Light roast filter temperature: the roast x process grid gives 95 °C for light washed; general light-roast advice says 96-100 °C. Default: start from the grid, go up 1 °C each time the cup tastes sour and thin.
+- Grinder clicks are not particle size: µm per click measures burr travel from zero. Default: use the grinder's setting chart for each method and roast, not arithmetic.
+- How big a change to make: advice usually gives a direction only. Default: ratio ±0.5, temperature ±1-2 °C, espresso yield ±4 g, grind per grinder (2-3 clicks on a K-Ultra).
+- Moka pot spitting: some sources blame a coarse grind, others a fine or tamped one. Default: read the flow. A fast pale rush = too coarse or underfilled. Bursts with a loud hiss = too fine, tamped or clogged. Spitting only at the very end = normal, take it off the heat. Lower the heat before judging grind.
+- Light roast espresso temperature: experienced home baristas report anything from 85 °C to straight off the boil. Default: 94 °C, step 1-2 °C, and drop it first when the shot is bitter.
+
+## Background facts
+
+- Extraction order: acids first, then sugars, then bitter and astringent compounds. Under-extracted = sour, thin, salty. Over-extracted = bitter, dry, hollow.
+- Strength (TDS) is set mainly by ratio; extraction yield (EY) by grind, time, temperature and agitation. EY = beverage weight x TDS / dose.
+- Filter targets (SCA brew control chart): TDS 1.15-1.35%, EY 18-22%. Espresso: TDS about 8-12%, EY 18-22% (light roasts often 20-24%). A map, not a verdict.
+- Water: aim for general hardness about 50-100 ppm as CaCO3 and alkalinity about 30-50 ppm. Hard, alkaline water flattens acidity; distilled water alone tastes flat and sour.
+
+## Sources
+
+- James Hoffmann, YouTube: https://www.youtube.com/@jameshoffmann
+- European Coffee Trip, V60 recipes: https://europeancoffeetrip.com/hario-v60-recipes/
+- 4:6 method calculator: https://aeyoll.github.io/4-6-method/
+- Tetsu Kasuya Hybrid Method: https://honestcoffeeguide.com/brew-recipes/tetsu-kasuya-hybrid-method/
+- Simon Gautherin / Pull & Pour (roast x process temperature grid): https://www.pullandpour.com/
+- 1Zpresso grind settings: https://1zpresso.coffee/grind-setting/
+- Honest Coffee Guide: https://honestcoffeeguide.com/
+- La Sosta Specialty Coffee brewing guides: https://lasosta.coffee/
+- Flair Espresso guide: https://flairespresso.com/blogs/espresso-guide
+- SCA standards: https://sca.coffee/research/coffee-standards
+- Communities: https://www.reddit.com/r/V60/, https://www.reddit.com/r/espresso/, https://www.reddit.com/r/mokapot, https://www.reddit.com/r/FlairEspresso/
+- Roaster label research (search results, retrieved 2026-11-21): https://stookerspecialtycoffee.com/products/motto-espresso-blend, https://stookerspecialtycoffee.com/products/haven-filter-blend, https://stookerspecialtycoffee.com/products/ecotripper-1, https://stookerspecialtycoffee.com/products/guatemala-jesus-pablo-pablo-2026, https://stookerspecialtycoffee.com/collections/dark-roast, https://www.thebeangeek.com/roastery/stooker, https://eightouncecoffee.com/products/friedhats-suke-quto-filter, https://eightouncecoffee.com/products/friedhats-nyabirongo, https://eightouncecoffee.com/products/friedhats-bombe, https://eightouncecoffee.com/products/friedhats-kamuchege, https://eightouncecoffee.com/products/friedhats-gicherori, https://www.coffeeinsurrection.com/roasters/netherlands/amsterdam/friedhats-coffee/, https://fivewayscoffee.com/pages/specialty-coffee-amsterdam, https://kafeiin.com/en/roasters/five-ways, https://grachtenbeans.nl/en/koffiebrander/five-ways-coffee/
