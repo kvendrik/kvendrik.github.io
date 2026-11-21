@@ -1,0 +1,731 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="color-scheme" content="dark">
+<meta name="theme-color" content="#2a2b2f">
+<title>How pour over coffee works</title>
+<link rel="icon" type="image/svg+xml" href="favicon.svg">
+<link rel="canonical" href="https://kvendrik.com/v60/">
+<meta property="og:title" content="How pour over coffee works">
+<meta property="og:description" content="What you know about your beans and gear, traced to every number on the recipe.">
+<meta property="og:url" content="https://kvendrik.com/v60/">
+<meta property="og:type" content="website">
+<link rel="preload" href="fonts/Allo.woff2" as="font" type="font/woff2" crossorigin>
+<style>:root{padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}body{margin:0;font-size:14px}img{max-width:100%}[hidden]{display:none!important}</style>
+<link rel="alternate" type="text/plain" href="llms.txt" title="llms.txt">
+<meta name="description" content="How brew method, roast, processing, rest, grinder, dose and taste determine dose, water, ratio, temperature, grind, pour schedule and brew time for coffee.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500&display=swap">
+<style>
+/* Allo by Josh Puckett, SIL OFL 1.1, Latin subset */
+@font-face{font-family:"Allo";font-style:normal;font-weight:100 900;font-display:swap;src:url("fonts/Allo.woff2") format("woff2")}
+/* Layout: Beautiful UI showcase. Hairline sections on a page ground, one dotted canvas holding the flow, rule cards below. */
+:root{
+  --page:oklch(98.5% .001 286.376);--canvas:oklch(96.1% .002 247.84);--surface:oklch(100% 0 0);--inset:oklch(97.9% .002 247.839);
+  --hover:oklch(97% .002 247.839);--hover-2:oklch(93.3% .003 247.86);--field:oklch(96.1% .001 286.375);
+  --ink:oklch(24.7% .006 258.361);--ink-2:oklch(50.6% .01 264.477);--ink-3:oklch(69.5% .009 264.505);
+  --line:oklch(94.6% .003 264.542);--line-strong:oklch(91.2% .005 258.326);--edge:oklch(84% .006 258.326);
+  --accent:oklch(62.6% .205 254.947);--accent-ink:oklch(55.6% .187 255.617);--accent-tint:oklch(96% .019 252.878);
+  --green:oklch(60.3% .155 150.883);--orange:oklch(68.9% .179 49.902);--red:oklch(62.1% .192 23.042);
+  --violet:#9a5cff;--amber:#f09a2f;--teal:oklch(62% .11 195);
+  --shadow-xs:0 0 4px 0 #0000000a;
+  --shadow-sm:0 18px 47px 0 #00000008,0 7.5px 19px 0 #00000005,0 4px 10.5px 0 #00000005,0 2.3px 5.8px 0 #00000003,0 1.2px 3.1px 0 #00000003;
+  --shadow-md:0 17.54px 23.39px 0 #0000000a,0 9.4px 12.5px 0 #00000008,0 5.25px 7px 0 #00000005,0 1.16px 1.5px 0 #00000003;
+  --shadow-hairline:0 0 0 1px var(--line);
+  --shadow-btn:0 0 0 1px var(--line-strong),var(--shadow-xs);
+  --shadow-card:0 0 0 1px var(--line),var(--shadow-sm);
+  --shadow-raised:0 0 0 1px var(--line),var(--shadow-md);
+  --font-sans:"Allo","Inter",ui-sans-serif,system-ui,-apple-system,"Segoe UI",sans-serif;
+  --font-mono:"JetBrains Mono",ui-monospace,"SF Mono",Menlo,monospace;
+  --r-chip:6px;--r-control:8px;--r-card:10px;--r-window:14px;--r-node:16px;
+  --ease:cubic-bezier(.23,1,.32,1);
+}
+/* Dark only: these override the light defaults above on every viewer. */
+:root,:root[data-theme="light"],:root[data-theme="dark"]{
+  --page:oklch(20.9% .004 264.477);--canvas:oklch(23.1% .004 264.487);--surface:oklch(26% .006 271.191);--inset:oklch(24.3% .004 264.492);
+  --hover:oklch(28.9% .006 271.22);--hover-2:oklch(31.8% .007 274.747);--field:oklch(29.3% .006 271.223);
+  --ink:oklch(96.4% .002 247.839);--ink-2:oklch(73.1% .008 260.731);--ink-3:oklch(54.1% .01 264.484);
+  --line:oklch(30.8% .006 258.354);--line-strong:oklch(35.6% .007 264.474);--edge:oklch(42% .008 264.474);
+  --accent:oklch(68% .173 253.301);--accent-ink:oklch(78.8% .113 248.33);--accent-tint:oklch(68% .173 253.301/.16);
+  --green:oklch(70.5% .154 153.814);--orange:oklch(74.6% .156 55.642);--red:oklch(66.6% .18 21.433);
+  --violet:#b48aff;--amber:#f5ad55;--teal:oklch(72% .1 195);
+  --shadow-btn:0 0 0 1px oklch(100% 0 0/.1),0 1px 2px oklch(0% 0 0/.3);
+  --shadow-card:0 0 0 1px oklch(100% 0 0/.11),0 1px 2px oklch(0% 0 0/.2),0 2px 6px oklch(0% 0 0/.2);
+  --shadow-raised:0 0 0 1px oklch(100% 0 0/.13),0 2px 10px oklch(0% 0 0/.22);
+  color-scheme:dark}
+
+*{box-sizing:border-box}
+body{background:var(--page);color:var(--ink);font-family:var(--font-sans);font-size:14px;line-height:1.5;-webkit-font-smoothing:antialiased;font-optical-sizing:auto}
+.wrap{max-width:1160px;margin:0 auto;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));padding-block:40px 64px}
+.mono{font-family:var(--font-mono)}
+h1,h2,h3{margin:0;text-wrap:balance}
+p{margin:0}
+
+/* header */
+.top{display:flex;flex-direction:column;gap:14px;padding-bottom:32px;border-bottom:1px dashed var(--line-strong)}
+.brand{display:flex;align-items:center;gap:8px;font-size:12.5px;color:var(--ink-2)}
+.brand .mark{width:44px;height:44px;border-radius:12px;display:grid;place-items:center;background:var(--surface);box-shadow:var(--shadow-btn);color:var(--ink)}
+.top h1{font-size:clamp(24px,3.4vw,34px);font-weight:600;letter-spacing:-.025em;line-height:1.15;max-width:22ch}
+.top .lede{font-size:15px;color:var(--ink-2);max-width:64ch;text-wrap:pretty}
+.stats{display:flex;flex-wrap:wrap;gap:8px;margin-top:4px}
+.pill{display:inline-flex;align-items:center;gap:6px;height:26px;padding:0 9px;border-radius:var(--r-chip);background:var(--surface);box-shadow:var(--shadow-btn);font-size:12px;font-weight:500;color:var(--ink)}
+.pill .dot{width:6px;height:6px;border-radius:50%}
+.pill b{font-family:var(--font-mono);font-weight:500;font-variant-numeric:tabular-nums}
+
+/* sections */
+section{padding-block:36px;border-bottom:1px dashed var(--line-strong)}
+section:last-of-type{border-bottom:0}
+.sh{display:flex;align-items:baseline;gap:8px;flex-wrap:wrap;margin-bottom:16px}
+.sh .no{font-family:var(--font-mono);font-size:11px;color:var(--ink-3);font-variant-numeric:tabular-nums}
+.sh h2{font-size:13px;font-weight:600}
+.sh p{font-size:12.5px;color:var(--ink-3);text-wrap:pretty}
+
+/* demo surface + dotted canvas */
+.surface{border-radius:var(--r-window);background:var(--canvas);padding:12px;box-shadow:var(--shadow-hairline)}
+.viewport{position:relative;overflow:hidden;height:640px;border-radius:var(--r-card);background-color:var(--page);background-image:radial-gradient(var(--line-strong) 1px,transparent 1.25px);background-size:22px 22px;box-shadow:var(--shadow-hairline);touch-action:none;overscroll-behavior:contain;cursor:grab;user-select:none;-webkit-user-select:none;-webkit-touch-callout:none}
+.viewport.grabbing{cursor:grabbing}
+.board{position:absolute;left:0;top:0;width:1060px;transform-origin:0 0;padding:20px 24px 84px;will-change:transform}
+.board.anim{transition:transform .35s var(--ease)}
+.zoombar{position:absolute;right:10px;bottom:10px;z-index:5;display:flex;align-items:center;gap:2px;padding:3px;border-radius:10px;background:var(--surface);box-shadow:var(--shadow-card);cursor:default}
+.zoombar button{all:unset;box-sizing:border-box;cursor:pointer;height:30px;min-width:30px;padding:0 8px;display:grid;place-items:center;border-radius:7px;font-size:12px;font-weight:500;color:var(--ink-2)}
+.zoombar button:hover{background:var(--hover-2);color:var(--ink)}
+.zoombar button:focus-visible{box-shadow:0 0 0 1.5px var(--accent)}
+.zoombar .pct{font-family:var(--font-mono);font-size:11px;color:var(--ink-3);min-width:42px;text-align:center;font-variant-numeric:tabular-nums}
+.vp-hint{position:absolute;left:10px;bottom:10px;z-index:5;display:inline-flex;align-items:center;gap:6px;height:28px;padding:0 10px;border-radius:8px;background:var(--surface);box-shadow:var(--shadow-card);font-size:11.5px;color:var(--ink-2);pointer-events:none}
+@media (max-width:520px){.vp-hint{bottom:auto;top:10px}}
+.cols{position:relative;z-index:1;display:grid;grid-template-columns:repeat(4,1fr);column-gap:72px;height:780px}
+.col{position:relative;display:flex;flex-direction:column;justify-content:space-around;gap:10px;min-width:0;padding-top:40px}
+.col-head{position:absolute;top:-2px}
+.tag{display:inline-flex;align-items:center;height:24px;padding:0 8px;border-radius:var(--r-chip);font-size:11.5px;font-weight:500;background:color-mix(in srgb,var(--h) 14%,var(--page));color:color-mix(in srgb,var(--h) 80%,var(--ink))}
+.col-label{position:absolute;top:0;left:0;height:24px;display:flex;align-items:center;gap:6px}
+.col-label .sub{font-size:11.5px;color:var(--ink-3)}
+svg.wires{position:absolute;inset:0;z-index:0;pointer-events:none;overflow:visible}
+.wire{fill:none;stroke:var(--edge);stroke-width:1.25;transition:stroke .15s,opacity .2s,stroke-width .15s}
+.wire.on{stroke:var(--accent);stroke-width:1.75}
+.wire.dim{opacity:.28}
+.wire.loop{stroke:var(--red);stroke-dasharray:4 4;stroke-width:1.5}
+.wire.loop.dim{opacity:.35}
+.ah{fill:var(--edge)} .ah-on{fill:var(--accent)} .ah-loop{fill:var(--red)}
+.labels{position:absolute;inset:0;z-index:2;pointer-events:none}
+.wl{position:absolute;transform:translate(-50%,-50%);white-space:nowrap;font-size:11px;font-weight:500;color:var(--accent-ink);background:var(--surface);box-shadow:0 0 0 1px color-mix(in srgb,var(--accent) 30%,var(--line));border-radius:5px;padding:1px 6px;opacity:0;transition:opacity .15s}
+.wl.show{opacity:1}
+.wl.loop{color:var(--red);box-shadow:0 0 0 1px color-mix(in srgb,var(--red) 30%,var(--line));opacity:1}
+
+.node{all:unset;box-sizing:border-box;display:flex;align-items:center;gap:10px;width:100%;padding:9px 10px;border-radius:var(--r-node);background:var(--surface);box-shadow:var(--shadow-card);cursor:pointer;transition:box-shadow .15s,opacity .2s,transform .2s var(--ease)}
+.node:hover{box-shadow:var(--shadow-raised)}
+.node:focus-visible{box-shadow:0 0 0 1.5px var(--accent),var(--shadow-card)}
+.node.sel{box-shadow:0 0 0 1.5px var(--accent),var(--shadow-raised)}
+.node.dim{opacity:.4}
+.node .ic{flex:none;width:32px;height:32px;border-radius:var(--r-control);display:grid;place-items:center;background:color-mix(in srgb,var(--h) 12%,var(--surface));color:var(--h);box-shadow:0 0 0 1px color-mix(in srgb,var(--h) 22%,var(--surface))}
+.node .tx{min-width:0;display:flex;flex-direction:column}
+.node .t{font-size:13px;font-weight:600;line-height:1.25;color:var(--ink)}
+.node .c{margin-top:2px;font-size:11.5px;line-height:1.35;color:var(--ink-2)}
+.node .c code{font-family:var(--font-mono);font-size:10.5px}
+
+/* inspector */
+.inspector{margin-top:12px;display:grid;grid-template-columns:minmax(0,1.1fr) minmax(0,1fr) minmax(0,1fr);gap:12px}
+.panel{background:var(--surface);border-radius:var(--r-card);box-shadow:var(--shadow-card);padding:14px 16px;min-width:0}
+.panel h4{margin:0 0 8px;font-size:11px;font-weight:500;letter-spacing:.04em;text-transform:uppercase;color:var(--ink-3)}
+.insp-title{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.insp-title h3{font-size:16px;font-weight:600;letter-spacing:-.01em}
+.insp-desc{margin-top:6px;font-size:13px;color:var(--ink-2);text-wrap:pretty}
+.rel{display:flex;flex-direction:column;gap:6px;margin:0;padding:0;list-style:none}
+.rel li{display:flex;gap:8px;align-items:baseline;font-size:12.5px;min-width:0}
+.rel .to{font-weight:500;color:var(--ink);white-space:nowrap}
+.rel .via{color:var(--ink-2);min-width:0}
+.chips{display:flex;flex-wrap:wrap;gap:6px}
+.chip{display:inline-flex;align-items:center;gap:5px;height:24px;padding:0 7px;border-radius:var(--r-chip);background:var(--field);font-size:12px;font-weight:500;color:var(--ink)}
+.chip .dot{width:6px;height:6px;border-radius:50%;background:var(--h)}
+.empty{font-size:12.5px;color:var(--ink-3)}
+.hint{margin-top:10px;font-size:12px;color:var(--ink-3)}
+
+.agents{padding-top:8px;font-size:11.5px;color:var(--ink-3)}
+.agents a{color:var(--ink-3);text-decoration-color:var(--line-strong);text-underline-offset:2px}
+.agents a:hover{color:var(--ink-2)}
+/* bag reader */
+[hidden]{display:none!important}
+.bag{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.25fr);gap:12px;align-items:start}
+.form,.result{background:var(--surface);border-radius:var(--r-window);box-shadow:var(--shadow-card);min-width:0}
+.form{padding:16px;display:flex;flex-direction:column;gap:14px}
+.field{display:flex;flex-direction:column;gap:6px;min-width:0}
+.flabel{font-size:12px;font-weight:500;color:var(--ink-2)}
+.flabel small{font-weight:400;color:var(--ink-3)}
+.bag textarea,.bag select,.bag input{font:inherit;color:var(--ink);background:var(--field);border:0;border-radius:var(--r-control);box-shadow:inset 0 0 0 1px var(--line);min-width:0;width:100%}
+.bag textarea{font-size:13.5px;line-height:1.5;padding:10px 12px;min-height:132px;resize:vertical}
+.bag select,.bag input{font-size:13px;height:34px;padding:0 10px}
+.bag textarea:focus,.bag select:focus,.bag input:focus{outline:none;box-shadow:inset 0 0 0 1px var(--accent),0 0 0 3px var(--accent-tint)}
+.bag textarea::placeholder{color:var(--ink-3)}
+.two{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.seg{display:flex;gap:2px;padding:3px;background:var(--field);border-radius:10px;box-shadow:inset 0 0 0 1px var(--line)}
+.seg button{all:unset;box-sizing:border-box;flex:1;text-align:center;height:30px;line-height:30px;border-radius:7px;font-size:12.5px;font-weight:500;color:var(--ink-2);cursor:pointer;white-space:nowrap;padding:0 6px}
+.seg button[aria-pressed="true"]{background:var(--surface);color:var(--ink);box-shadow:var(--shadow-btn)}
+.seg button:focus-visible{box-shadow:0 0 0 1.5px var(--accent)}
+.samples{display:flex;flex-wrap:wrap;gap:6px;align-items:center}
+.samples span{font-size:11.5px;color:var(--ink-3)}
+.sbtn{all:unset;cursor:pointer;height:26px;padding:0 9px;border-radius:var(--r-chip);background:var(--surface);box-shadow:var(--shadow-btn);font-size:11.5px;font-weight:500;color:var(--ink-2)}
+.sbtn:hover{color:var(--ink)}
+.sbtn:focus-visible{box-shadow:0 0 0 1.5px var(--accent)}
+.sbtn[aria-pressed="true"]{color:var(--accent-ink);box-shadow:0 0 0 1.5px var(--accent)}
+.result{overflow:hidden}
+.res-h{padding:14px 16px;border-bottom:1px solid var(--line);display:flex;flex-direction:column;gap:10px}
+.res-h h3{font-size:14px;font-weight:600}
+.read{display:flex;flex-wrap:wrap;gap:6px}
+.rchip{display:inline-flex;align-items:center;gap:6px;height:26px;padding:0 9px;border-radius:var(--r-chip);background:var(--field);font-size:12px;font-weight:500;color:var(--ink)}
+.rchip .dot{width:6px;height:6px;border-radius:50%;background:var(--h)}
+.rchip .conf{font-family:var(--font-mono);font-size:10.5px;color:var(--ink-3);font-variant-numeric:tabular-nums}
+.why{font-size:12px;color:var(--ink-3);text-wrap:pretty}
+.why b{color:var(--ink-2);font-weight:500}
+.ask{background:color-mix(in srgb,var(--amber) 9%,var(--surface));box-shadow:0 0 0 1px color-mix(in srgb,var(--amber) 28%,var(--line));border-radius:var(--r-control);padding:10px 12px;display:flex;flex-direction:column;gap:8px}
+.ask p{font-size:12.5px;font-weight:500}
+.ask .opts{display:flex;flex-wrap:wrap;gap:6px}
+.kv{display:grid;grid-template-columns:repeat(3,1fr)}
+.kv>div{padding:12px 16px;border-right:1px solid var(--line);border-bottom:1px solid var(--line);min-width:0}
+.kv>div:nth-child(3n){border-right:0}
+.kv .l{font-size:11px;color:var(--ink-3)}
+.kv .v{font-family:var(--font-mono);font-size:15px;font-weight:500;margin-top:2px;font-variant-numeric:tabular-nums;overflow-wrap:anywhere}
+.kv .s{font-size:11px;color:var(--ink-2);margin-top:1px}
+.kv .v.ok{color:var(--green)} .kv .v.wait{color:var(--amber)}
+.steps{padding:10px 16px 4px;display:flex;flex-direction:column}
+.step{display:grid;grid-template-columns:52px 1fr auto;gap:10px;font-size:12.5px;padding:7px 0;border-bottom:1px dashed var(--line)}
+.step:last-child{border-bottom:0}
+.step .tm{font-family:var(--font-mono);color:var(--ink-3);font-variant-numeric:tabular-nums}
+.step .g{font-family:var(--font-mono);font-variant-numeric:tabular-nums}
+.tips{padding:10px 16px 14px;border-top:1px solid var(--line);display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:4px 16px}
+.tips h4{grid-column:1/-1;margin:0 0 4px;font-size:11px;font-weight:500;letter-spacing:.04em;text-transform:uppercase;color:var(--ink-3)}
+.tip{display:flex;gap:8px;font-size:12px;padding:3px 0}
+.tip b{font-weight:500;min-width:72px;color:var(--ink)}
+.tip span{color:var(--ink-2)}
+.ex-h{display:flex;align-items:baseline;gap:8px;flex-wrap:wrap;margin:28px 0 12px}
+.ex-h h3{font-size:13px;font-weight:600}
+.ex-h p{font-size:12.5px;color:var(--ink-3)}
+.examples{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:12px}
+.ex{background:var(--surface);border-radius:var(--r-window);box-shadow:var(--shadow-card);padding:14px;display:flex;flex-direction:column;gap:10px;min-width:0}
+.ex-top{display:flex;justify-content:space-between;align-items:center;gap:8px}
+.ex-top h4{margin:0;font-size:13px;font-weight:600}
+.ex q{display:block;font-size:12.5px;line-height:1.45;color:var(--ink-2);background:var(--inset);box-shadow:var(--shadow-hairline);border-radius:var(--r-control);padding:8px 10px;quotes:none;text-wrap:pretty}
+.ex .read{gap:5px}
+.ex .rchip{height:24px;font-size:11.5px}
+.ex-nums{display:grid;grid-template-columns:repeat(2,1fr);gap:1px;background:var(--line);border-radius:var(--r-control);overflow:hidden;box-shadow:var(--shadow-hairline)}
+.ex-nums div{background:var(--surface);padding:7px 8px;min-width:0}
+.ex-nums .l{font-size:10.5px;color:var(--ink-3)}
+.ex-nums .v{font-family:var(--font-mono);font-size:12.5px;font-weight:500;font-variant-numeric:tabular-nums;white-space:nowrap}
+.ex .note2{font-size:11.5px;color:var(--ink-3)}
+.ex .note2 b{color:var(--amber);font-weight:500}
+@media (max-width:820px){.bag{grid-template-columns:1fr}}
+@media (max-width:480px){.kv{grid-template-columns:repeat(2,1fr)}.kv>div:nth-child(3n){border-right:1px solid var(--line)}.kv>div:nth-child(2n){border-right:0}}
+@media (max-width:820px){.inspector{grid-template-columns:1fr}}
+@media (prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header class="top">
+    <div class="brand"><span class="mark" aria-hidden="true"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M17 8h1a4 4 0 1 1 0 8h-1"/><path d="M3 8h14v9a4 4 0 0 1-4 4H7a4 4 0 0 1-4-4Z"/><path d="M6 2v2M10 2v2M14 2v2"/></svg></span></div>
+    <h1>How pour over coffee works</h1>
+    <p class="lede">What you know about your beans and gear, traced to every number on the recipe.</p>
+  </header>
+
+  <section id="flow">
+    <div class="sh"><h2>Flowchart</h2><p>Select any card to trace what feeds it and what it changes.</p></div>
+    <div class="surface">
+      <div class="viewport" id="vp">
+        <div class="board" id="board">
+          <svg class="wires" id="wires" aria-hidden="true">
+            <defs>
+              <marker id="ah" viewBox="0 0 8 8" refX="7" refY="4" markerWidth="7" markerHeight="7" orient="auto"><path class="ah" d="M0 0.8 7 4 0 7.2Z"/></marker>
+              <marker id="ah-on" viewBox="0 0 8 8" refX="7" refY="4" markerWidth="7" markerHeight="7" orient="auto"><path class="ah-on" d="M0 0.8 7 4 0 7.2Z"/></marker>
+              <marker id="ah-loop" viewBox="0 0 8 8" refX="7" refY="4" markerWidth="7" markerHeight="7" orient="auto"><path class="ah-loop" d="M0 0.8 7 4 0 7.2Z"/></marker>
+            </defs>
+            <g id="wireg"></g>
+          </svg>
+          <div class="cols" id="cols" role="group" aria-label="Recipe flowchart: inputs feed lookup tables and calculators, which produce the recipe outputs. Last-cup feedback loops back through the fix ladder."></div>
+          <div class="labels" id="labels"></div>
+        </div>
+        <span class="vp-hint" id="vphint">Drag to move · ⌘ + scroll to zoom</span>
+        <div class="zoombar" role="group" aria-label="Canvas zoom">
+          <button type="button" id="zout" aria-label="Zoom out">−</button>
+          <span class="pct" id="zpct">100%</span>
+          <button type="button" id="zin" aria-label="Zoom in">+</button>
+          <button type="button" id="zfit">Fit</button>
+        </div>
+      </div>
+      <div class="inspector" id="inspector" aria-live="polite"></div>
+    </div>
+  </section>
+
+  <section id="bag">
+    <div class="sh"><h2>Paste your bag</h2><p>Copy what's printed on the bag. Tasting notes alone are enough.</p></div>
+    <div class="bag">
+      <form class="form" id="bagform" autocomplete="off">
+        <div class="field">
+          <label class="flabel" for="bagtext">Bag text <small>· example filled in</small></label>
+          <textarea id="bagtext" spellcheck="false" placeholder="e.g. Ethiopia Guji. Washed. Jasmine, bergamot, peach. Roasted 2 Nov 2026"></textarea>
+        </div>
+        <div class="field">
+          <span class="flabel" id="mlabel">Recipe</span>
+          <div class="seg" role="group" aria-labelledby="mlabel" id="mseg">
+            <button type="button" data-m="v60" aria-pressed="true">V60</button>
+            <button type="button" data-m="46" aria-pressed="false">4:6 method</button>
+            <button type="button" data-m="iced" aria-pressed="false">Iced V60</button>
+          </div>
+        </div>
+        <div class="field" id="prefs" hidden>
+          <div class="two">
+            <div class="field"><label class="flabel" for="ptaste">Taste</label><select id="ptaste"><option value="5">Brighter</option><option value="6" selected>Balanced</option><option value="7">Sweeter</option></select></div>
+            <div class="field"><label class="flabel" for="pstr">Strength</label><select id="pstr"><option value="1">Lighter</option><option value="2">Medium</option><option value="3" selected>Stronger</option></select></div>
+          </div>
+        </div>
+        <div class="two">
+          <div class="field"><label class="flabel" for="grinder">Grinder</label>
+            <select id="grinder">
+              <option value="kultra">1Zpresso K-Ultra</option>
+              <option value="kplus">1Zpresso K-Plus / Pro / Max</option>
+              <option value="c40">Comandante C40</option>
+              <option value="timemore">Timemore C2 / C3</option>
+              <option value="k6">Kingrinder K6</option>
+              <option value="niche">Niche Zero</option>
+              <option value="encore">Baratza Encore</option>
+              <option value="ode">Fellow Ode Gen 2</option>
+              <option value="other">Other</option>
+            </select></div>
+          <div class="field"><label class="flabel" for="dose">Dose <small>g</small></label><input id="dose" type="number" inputmode="decimal" min="8" max="60" step="1" value="15"></div>
+        </div>
+        <div class="field"><label class="flabel" for="rdate">Roast date <small>· read from the text if it's there</small></label><input id="rdate" type="date"></div>
+      </form>
+      <div class="result" id="result" aria-live="polite"></div>
+    </div>
+    <div class="ex-h"><h3>Examples</h3><p>Real bag wording, read the same way. 15 g, V60, 1Zpresso K-Ultra.</p></div>
+    <div class="examples" id="examples"></div>
+  </section>
+
+  <p class="agents">Agents: the full rules are in <a href="llms.txt">llms.txt</a></p>
+</div>
+
+<script>
+(function(){
+const COLS=[
+ {key:'in',label:'Input',sub:'what you know',h:'var(--violet)'},
+ {key:'lk',label:'Lookup',sub:'reference tables',h:'var(--amber)'},
+ {key:'calc',label:'Calculator',sub:'formulas',h:'var(--teal)'},
+ {key:'out',label:'Output',sub:'the recipe card',h:'var(--green)'}];
+const ICON={
+ in:'<path d="M4 21v-7M4 10V3M12 21v-9M12 8V3M20 21v-5M20 12V3M1 14h6M9 8h6M17 16h6"/>',
+ lk:'<rect x="3" y="4" width="18" height="16" rx="2"/><path d="M3 10h18M9 10v10"/>',
+ calc:'<rect x="4" y="3" width="16" height="18" rx="2"/><path d="M8 7h8M8 12h1M12 12h1M16 12h0M8 16h1M12 16h1M16 16h0"/>',
+ out:'<path d="M17 8h1a4 4 0 1 1 0 8h-1"/><path d="M3 8h14v9a4 4 0 0 1-4 4H7a4 4 0 0 1-4-4Z"/>'};
+const N=[
+ ['method','in','Brew method','V60, Switch, espresso, lever, moka, cold brew, iced V60','Picks which recipe family, tables and troubleshooting path apply. The single widest driver.'],
+ ['roast','in','Roast level','Very light → very dark, 6 steps','Moves temperature, espresso ratio, grind bias and how long the beans must rest.'],
+ ['process','in','Processing','Washed → natural + ferment, 6 steps','Only touches temperature: each step toward ferment takes 1 °C off.'],
+ ['rest','in','Days off roast','From the roast date on the bag','Compared against the rest window for this roast and method.'],
+ ['grinder','in','Grinder','K-Ultra, C40, Niche, Ode, Encore…','Turns a target grind into a dial setting. Changes nothing about the recipe itself.'],
+ ['dose','in','Dose or basket','15 g, or an 18 g basket','Everything in grams scales from this.'],
+ ['pref','in','Taste target','Brighter ↔ sweeter, lighter ↔ stronger','Feeds the 4:6 splitter: first two pours set sweetness vs acidity, the rest set strength.'],
+ ['taste','in','Last cup','Sour, bitter, weak, strong, both','Feedback from the previous brew. Enters through the fix ladder.'],
+ ['profile','lk','Method profile','µm range, base schedule, target time','One row per recipe: Hoffmann, 4:6, Osmotic, Hybrid, La Sosta, moka, cold brew…'],
+ ['tempgrid','lk','Temperature rule','<code>96 − roast − process</code>','Roast × process grid for pour over; roast-only bands for espresso and levers.'],
+ ['ratiotable','lk','Ratio table','Filter 1:15–1:17, espresso by roast','Method sets the band; roast picks the point inside it for espresso.'],
+ ['restwindow','lk','Rest window','Light 14–28 d filter, 21–42 d shots','Medium 7–30 d. Returns “brew now” or how many days to wait.'],
+ ['fixladder','lk','Fix ladder','Grind → ratio → temp → technique','Pour-over symptom table, or the espresso compass. Always one change at a time.'],
+ ['grindtarget','calc','Grind target','Range, nudged finer for light','Method range, light roasts toward the fine end, then the per-grinder setting table.'],
+ ['scale','calc','Scale to dose','<code>water = dose × ratio</code>','Scales the base schedule so every pour and cumulative weight matches the dose.'],
+ ['split46','calc','4:6 splitter','40% taste, 60% strength','Kasuya’s 4:6 calculator. Only runs for the 4:6 recipe.'],
+ ['o_temp','out','Water temperature','°C','Single value, adjusted later by the fix ladder.'],
+ ['o_grind','out','Grind setting','µm and clicks','Described range plus the dial setting for the user’s grinder.'],
+ ['o_ratio','out','Ratio','1 : x','Brew ratio, or yield ratio for espresso.'],
+ ['o_dose','out','Dose','g','Usually the input, rounded to the basket for espresso.'],
+ ['o_water','out','Water','g','Or target yield for espresso, ice split for iced V60.'],
+ ['o_steps','out','Pour schedule','Time, pour, running total','The timestamped steps on the card.'],
+ ['o_time','out','Target time','Total brew or drawdown','A diagnostic, not the goal.'],
+ ['o_ready','out','Brew now or wait','Days left to the window','Flags beans that are too fresh to judge.'],
+ ['o_next','out','Next change','One variable, with a step','What to change on the next brew, and by how much.']
+];
+const E=[
+ ['method','profile','selects the recipe row'],['method','tempgrid','grid vs espresso band'],['method','ratiotable','method ratio band'],['method','restwindow','filter vs espresso window'],['method','fixladder','table vs compass'],
+ ['roast','tempgrid','−1 °C per step darker'],['roast','ratiotable','espresso 1:2 · 2.5 · 3'],['roast','restwindow','light rests longer'],['roast','grindtarget','light → finer end'],
+ ['process','tempgrid','−1 °C per step to ferment'],['rest','restwindow','days vs window'],['grinder','grindtarget','setting table per model'],
+ ['dose','scale','× ratio'],['pref','split46','T and S'],['taste','fixladder','symptom'],
+ ['profile','grindtarget','µm range'],['profile','scale','base schedule'],['profile','o_time','target time'],
+ ['ratiotable','scale','ratio'],['ratiotable','o_ratio','1 : x'],['tempgrid','o_temp','°C'],
+ ['grindtarget','o_grind','setting'],['scale','o_dose','g'],['scale','o_water','g'],['scale','o_steps','scaled pours'],
+ ['split46','o_steps','4:6 pour sizes'],['split46','o_time','lift at 2:15 / 3:00 / 3:45'],
+ ['restwindow','o_ready','yes / wait n days'],['fixladder','o_next','one change']
+];
+const LOOP=['o_next','taste','brew again, change one thing'];
+const byId={};N.forEach(n=>byId[n[0]]={id:n[0],col:n[1],title:n[2],cap:n[3],desc:n[4]});
+const colOf=k=>COLS.find(c=>c.key===k);
+
+const colsEl=document.getElementById('cols'),wireg=document.getElementById('wireg'),labels=document.getElementById('labels'),svg=document.getElementById('wires'),board=document.getElementById('board');
+const nodeEls={};
+COLS.forEach(c=>{
+  const col=document.createElement('div');col.className='col';
+  const head=document.createElement('div');head.className='col-label';
+  head.innerHTML=`<span class="tag" style="--h:${c.h}">${c.label}</span><span class="sub">${c.sub}</span>`;
+  col.appendChild(head);
+  N.filter(n=>n[1]===c.key).forEach(n=>{
+    const b=document.createElement('button');b.type='button';b.className='node';b.style.setProperty('--h',c.h);b.dataset.id=n[0];
+    b.innerHTML=`<span class="ic"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">${ICON[c.key]}</svg></span><span class="tx"><span class="t">${n[2]}</span><span class="c">${n[3]}</span></span>`;
+    b.setAttribute('aria-label',n[2]+'. '+n[4]);
+    b.addEventListener('click',()=>select(n[0]));
+    b.addEventListener('focus',()=>{if(b.matches(':focus-visible'))focusNode(n[0])});
+    col.appendChild(b);nodeEls[n[0]]=b;
+  });
+  colsEl.appendChild(col);
+});
+
+/* pan + zoom */
+const vp=document.getElementById('vp'),zpct=document.getElementById('zpct');
+let S=1,TX=0,TY=0;
+const isMobile=()=>innerWidth<820;
+function apply(){board.style.transform=`translate(${TX}px,${TY}px) scale(${S})`;vp.style.backgroundSize=`${22*S}px ${22*S}px`;vp.style.backgroundPosition=`${TX}px ${TY}px`;zpct.textContent=Math.round(S*100)+'%'}
+function clampPan(){const w=vp.clientWidth,h=vp.clientHeight,bw=board.offsetWidth*S,bh=board.offsetHeight*S,m=96;TX=Math.min(w-m,Math.max(m-bw,TX));TY=Math.min(h-m,Math.max(m-bh,TY))}
+function zoomAt(f,cx,cy){const ns=Math.min(2,Math.max(.25,S*f)),k=ns/S;TX=cx-(cx-TX)*k;TY=cy-(cy-TY)*k;S=ns;clampPan();apply()}
+function animate(){board.classList.add('anim');setTimeout(()=>board.classList.remove('anim'),380)}
+function fit(){const w=vp.clientWidth,h=vp.clientHeight,bw=board.offsetWidth,bh=board.offsetHeight;S=Math.min(1,(w-16)/bw,(h-16)/bh);TX=(w-bw*S)/2;TY=(h-bh*S)/2;apply()}
+function sizeVp(){if(isMobile())vp.style.height=Math.round(Math.min(innerHeight*.72,640))+'px';else{const s=Math.min(1,(vp.clientWidth-16)/board.offsetWidth);vp.style.height=Math.round(board.offsetHeight*s+16)+'px'}}
+function initView(){sizeVp();if(isMobile()){S=.72;TX=8;TY=8;clampPan();apply()}else fit()}
+function focusNode(id,force){const r=nodeEls[id].getBoundingClientRect(),v=vp.getBoundingClientRect();
+  if(!force&&r.left>=v.left+8&&r.right<=v.right-8&&r.top>=v.top+8&&r.bottom<=v.bottom-48)return;
+  TX+=(v.left+v.width/2)-(r.left+r.width/2);TY+=(v.top+v.height/2)-(r.top+r.height/2);clampPan();animate();apply()}
+const pts=new Map();let moved=0,pinchD=0;
+vp.addEventListener('pointerdown',e=>{if(e.target.closest('.zoombar'))return;pts.set(e.pointerId,{x:e.clientX,y:e.clientY});if(pts.size===1)moved=0;
+  if(pts.size===2){const[a,c]=[...pts.values()];pinchD=Math.hypot(a.x-c.x,a.y-c.y);pts.forEach((_,id)=>{try{vp.setPointerCapture(id)}catch(_){}})}});
+vp.addEventListener('pointermove',e=>{const p=pts.get(e.pointerId);if(!p)return;const dx=e.clientX-p.x,dy=e.clientY-p.y;p.x=e.clientX;p.y=e.clientY;
+  if(pts.size===1){TX+=dx;TY+=dy;moved+=Math.abs(dx)+Math.abs(dy);if(moved>6&&!vp.hasPointerCapture(e.pointerId)){try{vp.setPointerCapture(e.pointerId)}catch(_){}vp.classList.add('grabbing')}}
+  else if(pts.size===2){const[a,c]=[...pts.values()],d=Math.hypot(a.x-c.x,a.y-c.y),v=vp.getBoundingClientRect();TX+=dx/2;TY+=dy/2;if(pinchD)zoomAt(d/pinchD,(a.x+c.x)/2-v.left,(a.y+c.y)/2-v.top);pinchD=d;moved=99}
+  clampPan();apply()});
+const endPt=e=>{pts.delete(e.pointerId);if(pts.size<2)pinchD=0;if(!pts.size)vp.classList.remove('grabbing')};
+vp.addEventListener('pointerup',endPt);vp.addEventListener('pointercancel',endPt);
+vp.addEventListener('click',e=>{if(moved>6&&!e.target.closest('.zoombar')){e.stopPropagation();e.preventDefault()}},true);
+vp.addEventListener('wheel',e=>{const v=vp.getBoundingClientRect();
+  if(e.ctrlKey||e.metaKey){e.preventDefault();zoomAt(Math.exp(-e.deltaY*.01),e.clientX-v.left,e.clientY-v.top)}
+  else if(Math.abs(e.deltaX)>Math.abs(e.deltaY)){e.preventDefault();TX-=e.deltaX;clampPan();apply()}},{passive:false});
+const zc=f=>{animate();zoomAt(f,vp.clientWidth/2,vp.clientHeight/2)};
+document.getElementById('zin').addEventListener('click',()=>zc(1.25));
+document.getElementById('zout').addEventListener('click',()=>zc(.8));
+document.getElementById('zfit').addEventListener('click',()=>{animate();fit()});
+if(matchMedia('(pointer:coarse)').matches)document.getElementById('vphint').textContent='Drag to move · pinch to zoom';
+setTimeout(()=>{const hn=document.getElementById('vphint');hn.style.transition='opacity .4s';hn.style.opacity='0'},6000);
+
+const wires=[];
+function mk(tag,attrs){const el=document.createElementNS('http://www.w3.org/2000/svg',tag);for(const k in attrs)el.setAttribute(k,attrs[k]);return el}
+E.concat([LOOP]).forEach((e,i)=>{
+  const loop=i===E.length;
+  const p=mk('path',{class:'wire'+(loop?' loop':''),'marker-end':loop?'url(#ah-loop)':'url(#ah)'});
+  wireg.appendChild(p);
+  const l=document.createElement('span');l.className='wl'+(loop?' loop':'');l.textContent=e[2];labels.appendChild(l);
+  wires.push({from:e[0],to:e[1],label:e[2],loop,path:p,lab:l});
+});
+
+function layout(){
+  const b=board.getBoundingClientRect(),W=board.offsetWidth,H=board.offsetHeight;
+  svg.setAttribute('width',W);svg.setAttribute('height',H);
+  svg.setAttribute('viewBox',`0 0 ${W} ${H}`);
+  const R=id=>{const r=nodeEls[id].getBoundingClientRect(),f=v=>v/S;return{l:f(r.left-b.left),r:f(r.right-b.left),t:f(r.top-b.top),btm:f(r.bottom-b.top),cx:f((r.left+r.right)/2-b.left),cy:f((r.top+r.bottom)/2-b.top)}};
+  wires.forEach(w=>{
+    const s=R(w.from),t=R(w.to);let d,mx,my;
+    if(w.loop){
+      const y=H-34;
+      d=`M ${s.cx} ${s.btm} V ${y-12} Q ${s.cx} ${y} ${s.cx-12} ${y} H ${t.cx+12} Q ${t.cx} ${y} ${t.cx} ${y-12} V ${t.btm+3}`;
+      mx=(s.cx+t.cx)/2;my=y;
+    }else{
+      const sx=s.r,sy=s.cy,tx=t.l-3,ty=t.cy,dx=Math.max(40,(tx-sx)*.5);
+      d=`M ${sx} ${sy} C ${sx+dx} ${sy}, ${tx-dx} ${ty}, ${tx} ${ty}`;
+      mx=(sx+tx)/2;my=(sy+ty)/2;
+    }
+    w.path.setAttribute('d',d);
+    if(!w.loop){const L=w.path.getTotalLength(),pt=w.path.getPointAtLength(L*.5);mx=pt.x;my=pt.y}
+    w.lab.style.left=mx+'px';w.lab.style.top=my+'px';
+  });
+}
+
+const out={},inc={};
+E.forEach(([a,b,l])=>{(out[a]=out[a]||[]).push({id:b,l});(inc[b]=inc[b]||[]).push({id:a,l})});
+function closure(id,map){const seen=new Set([id]),st=[id];while(st.length){const x=st.pop();(map[x]||[]).forEach(n=>{if(!seen.has(n.id)){seen.add(n.id);st.push(n.id)}})}return seen}
+
+const insp=document.getElementById('inspector');
+function chip(id){const n=byId[id];return `<span class="chip" style="--h:${colOf(n.col).h}"><span class="dot"></span>${n.title}</span>`}
+function relList(arr,dir){
+  if(!arr||!arr.length)return `<p class="empty">${dir==='in'?'Nothing. You know this before you brew.':'Nothing. This lands on the recipe card.'}</p>`;
+  return `<ul class="rel">${arr.map(r=>`<li><span class="to">${byId[r.id].title}</span><span class="via">${r.l}</span></li>`).join('')}</ul>`;
+}
+function select(id){
+  const n=byId[id],c=colOf(n.col);
+  const up=closure(id,inc),down=closure(id,out),lit=new Set([...up,...down]);
+  Object.entries(nodeEls).forEach(([k,el])=>{el.classList.toggle('sel',k===id);el.classList.toggle('dim',!lit.has(k));el.setAttribute('aria-pressed',k===id)});
+  wires.forEach(w=>{
+    if(w.loop){const on=id==='taste'||id==='o_next'||id==='fixladder';w.path.classList.toggle('dim',!on);return}
+    const on=(down.has(w.from)&&down.has(w.to))||(up.has(w.from)&&up.has(w.to));
+    w.path.classList.toggle('on',on);w.path.classList.toggle('dim',!on);
+    w.path.setAttribute('marker-end',on?'url(#ah-on)':'url(#ah)');
+    w.lab.classList.toggle('show',on&&(w.from===id||w.to===id));
+  });
+  let reach;
+  if(n.col==='out'){const ins=[...up].filter(k=>byId[k].col==='in');reach=`<h4>Depends on inputs</h4><div class="chips">${ins.map(chip).join('')}</div>`}
+  else{const outs=[...down].filter(k=>byId[k].col==='out');reach=`<h4>Ends up changing</h4><div class="chips">${outs.length?outs.map(chip).join(''):'<span class="empty">—</span>'}</div>`}
+  if(id==='taste'||id==='fixladder'||id==='o_next')reach+=`<p class="hint">Loops: the next change feeds the following brew’s last cup.</p>`;
+  insp.innerHTML=`
+   <div class="panel"><div class="insp-title"><span class="tag" style="--h:${c.h}">${c.label}</span><h3>${n.title}</h3></div><p class="insp-desc">${n.desc}</p></div>
+   <div class="panel"><h4>Fed by</h4>${relList(inc[id],'in')}<div style="height:12px"></div><h4>Feeds</h4>${relList(out[id],'out')}</div>
+   <div class="panel">${reach}</div>`;
+}
+
+initView();
+select('roast');
+layout();
+if(document.fonts&&document.fonts.ready)document.fonts.ready.then(()=>{initView();layout()});
+if('ResizeObserver' in window)new ResizeObserver(layout).observe(board);
+let wasMobile=isMobile();
+window.addEventListener('resize',()=>{if(isMobile()!==wasMobile){wasMobile=isMobile();initView()}else{sizeVp();clampPan();apply()}layout()});
+})();
+</script>
+<script>
+(function(){
+const $=id=>document.getElementById(id);
+const DAY=864e5;
+/* ---------- lexicon: term -> roast votes {value:weight}, process votes {step:weight} ---------- */
+const L=1,M=2.5,D=4;
+const LEX={};
+const add=(terms,r,p)=>terms.split(',').forEach(t=>{t=t.trim();if(t)LEX[t]={r:r||{},p:p||{}}});
+add('jasmine,bergamot,earl grey,black tea,lemongrass,honeysuckle,orange blossom,elderflower,chamomile,camomile,white grape',{[L]:1},{0:1});
+add('floral,lemon,lime,grapefruit,citrus,citric,yuzu,green apple,tea,hibiscus,rose,lavender,clean,crisp,bright',{[L]:1},{0:.6});
+add('peach,white peach,apricot,nectarine,blackcurrant,cassis,rhubarb,kiwi,tangerine,mandarin,stone fruit,stonefruit',{[L]:.8,[M]:.2},{0:.3});
+add('strawberry,blueberry,raspberry,blackberry,berry,berries,red fruit,jam,jammy',{[L]:.6,[M]:.4},{4:1});
+add('wine,winey,red wine,dried fruit,prune,fruity,heavy body',{[L]:.4,[M]:.6},{4:1});
+add('raisin,fig,dates,cranberry,cherry,plum',{[M]:1},{4:.5});
+add('rum,whiskey,whisky,boozy,liqueur,brandy,cognac,fermented,funky,kombucha,yogurt,bubblegum',{[L]:.5,[M]:.5},{5:1});
+add('tropical,mango,passion fruit,passionfruit,pineapple,lychee,papaya,guava,banana',{[L]:.6,[M]:.4},{5:.8,4:.4});
+add('cinnamon',{[M]:.6,[D]:.4},{5:.5});
+add('caramel,brown sugar,toffee,butterscotch,panela,maple,praline,nougat,red apple,apple,orange,vanilla,milk chocolate,chocolate,cocoa,almond,hazelnut',{[M]:1});
+add('honey',{[M]:.8,[L]:.2},{2:.3});
+add('dark chocolate,bittersweet,molasses,walnut,malt,clove,spice,spicy',{[M]:.4,[D]:.6});
+add('smoke,smoky,roasty,dark roasted,toast,toasted,tobacco,pipe tobacco,cedar,earthy,licorice,liquorice,burnt sugar,leather,black pepper',{[D]:1});
+add('ethiopia,ethiopian,yirgacheffe,yirgachefe,guji,sidamo,sidama,kenya,kenyan,rwanda,burundi,heirloom,74110,sl28,sl34',{[L]:.6});
+add('gesha,geisha',{[L]:.8},{0:.5});
+add('colombia,guatemala,costa rica,honduras,el salvador,peru,ecuador,mexico,nicaragua,panama,bolivia',{[L]:.2,[M]:.3});
+add('brazil,uganda,india,vietnam,robusta,java,sulawesi',{[M]:.4,[D]:.3});
+add('sumatra,sumatran',{[M]:.3,[D]:.5},{2:.8});
+add('oolong,lemonade,lemon verbena,lemon peel,melon,honeydew,white tea,green tea',{[L]:1},{0:.6});
+add('pear,marzipan,root beer,maple syrup,syrupy',{[L]:.3,[M]:.7});
+add('cacao,cacao nibs,cocoa nibs',{[M]:.7,[D]:.3});
+add('roasted almond,roasted nuts,roasted hazelnut,roasted peanut,roasted cacao,roasted nut',{[M]:.4,[D]:.6});
+// intended use printed on the bag or in the product name
+add('filter',{[L]:2});
+add('espresso',{[M]:1.2,[D]:.8});
+add('espresso blend',{[M]:1,[D]:1.2});
+// Dutch tasting notes
+add('jasmijn,bloemig,bloemen,citroen,limoen,zwarte thee,thee,vlierbloesem,bergamot',{[L]:1},{0:.8});
+add('perzik,abrikoos,nectarine,mandarijn,peer,steenfruit',{[L]:.8,[M]:.2},{0:.3});
+add('aardbei,bosbes,blauwe bes,framboos,braam,bosvruchten,rood fruit,jam',{[L]:.6,[M]:.4},{4:1});
+add('wijn,rozijn,gedroogd fruit,vijg,pruim,kers,dadel',{[M]:1},{4:.5});
+add('tropisch,mango,ananas,passievrucht,rum,likeur',{[L]:.5,[M]:.5},{5:1});
+add('karamel,toffee,bruine suiker,honing,melkchocolade,chocolade,cacao,noten,nootachtig,hazelnoot,amandel,marsepein,appel,sinaasappel,vanille',{[M]:1});
+add('pure chocolade,donkere chocolade,specerijen,kruidig,rokerig,geroosterd,tabak,aards',{[M]:.3,[D]:.7});
+const TERMS=Object.keys(LEX).sort((a,b)=>b.length-a.length);
+const esc=s=>s.replace(/[.*+?^${}()|[\]\\]/g,'\\$&');
+
+/* ---------- explicit statements on the bag ---------- */
+const ROAST_RX=[
+ [/\bvery\s+light\b|\bnordic\b|\bultra[-\s]?light\b/,0,'very light'],
+ [/\bmedium[-\s]+light\b|\blight[-\s]+medium\b/,2,'medium light'],
+ [/\bmedium[-\s]+dark\b/,3,'medium dark'],
+ [/\bvery\s+dark\b|\bfrench\s+roast\b|\bitalian\s+roast\b/,5,'very dark'],
+ [/\bespresso\s+roast\b/,3,'espresso roast'],
+ [/\bfilter\s+roast\b/,1,'filter roast'],
+ [/\bomni[-\s]?roast\b/,2.5,'omni roast'],
+ [/\blight(ly)?\s+roast(ed)?\b|\broast(\s+level)?\s*[:\-]?\s*light\b/,1,'light roast'],
+ [/\bmedium\s+roast(ed)?\b|\broast(\s+level)?\s*[:\-]?\s*medium\b/,2.5,'medium roast'],
+ [/\bdark\s+roast(ed)?\b|\broast(\s+level)?\s*[:\-]?\s*dark\b/,4,'dark roast'],
+ [/\blichte?\s+branding\b|\blicht\s+gebrand\b|\bfilterbranding\b/,1,'lichte branding'],
+ [/\bmedium\s+branding\b|\bmedium\s+gebrand\b/,2.5,'medium branding'],
+ [/\bdonkere?\s+branding\b|\bdonker\s+gebrand\b/,4,'donkere branding'],
+ [/\bespressobranding\b/,3,'espressobranding']];
+const PROC_RX=[
+ [/\b(anaerobic|carbonic(\s+maceration)?|co[-\s]?ferment\w*|infused|thermal\s+shock|yeast)(\s+(natural|washed|honey))?\b/,t=>/\bwashed\b/.test(t)?1:5,'anaerobic / fermented'],
+ [/\bextended\s+ferment\w*|\bwashed\s*\+\s*ferment\w*/,1,'washed + ferment'],
+ [/\b(black|red)\s+honey\b/,3,'red / black honey'],
+ [/\b(yellow|white)\s+honey\b|\bpulped\s+natural\b|\bhoney\s+process(ed)?\b|\bprocess\w*\s*[:\-]?\s*honey\b|\bsemi[-\s]washed\b/,2,'honey'],
+ [/\bnatural(\s+process(ed)?)?\b(?!\s+sweet)|\bdry[-\s]process(ed)?\b|\bsun[-\s]dried\b/,4,'natural'],
+ [/\bwet[-\s]hulled\b|\bgiling\s+basah\b/,2,'wet hulled'],
+ [/\b(fully\s+|double\s+)?washed\b|\bwet[-\s]process(ed)?\b|\bgewassen\b/,0,'washed'],
+ [/\bnatuurlijk(e)?\s+(proces|verwerking)|\bnaturel\b/,4,'natural']];
+
+const ROAST_NAMES=[[0,'Very light'],[1,'Light'],[2,'Medium light'],[2.5,'Medium'],[3,'Medium dark'],[4,'Dark'],[5,'Very dark']];
+const PROC_NAMES=['Washed','Washed + ferment','Honey','Red honey','Natural','Anaerobic / ferment'];
+const roastName=v=>ROAST_NAMES.reduce((a,b)=>Math.abs(b[0]-v)<Math.abs(a[0]-v)?b:a)[1];
+
+function readBag(text){
+  const t=' '+text.toLowerCase().replace(/[’']/g,"'")+' ';
+  let roast=null,proc=null;
+  for(const [rx,v,label] of ROAST_RX)if(rx.test(t)){roast={v,conf:1,why:[label],stated:true};break}
+  { // every process named on the bag; two or more means a blend
+    let w=t;const found=[];
+    for(const [rx,v,label] of PROC_RX)if(rx.test(w)){found.push({v:typeof v==='function'?v(t):v,label});w=w.replace(new RegExp(rx.source,'g'),' ')}
+    if(found.length===1)proc={v:found[0].v,conf:1,why:[found[0].label],stated:true};
+    else if(found.length>1){const steps=found.map(f=>f.v),avg=steps.reduce((a,b)=>a+b,0)/steps.length,lab=found.map(f=>f.label).join(' + ');
+      proc={v:Math.round(avg),conf:1,why:[lab+' blend'],stated:true,name:lab.charAt(0).toUpperCase()+lab.slice(1)+' blend'}}
+  }
+  let s=t;const hits=[];const rv={},pv={};
+  for(const term of TERMS){const rx=new RegExp('(^|[^a-z0-9])'+esc(term)+'(?![a-z0-9])','g');
+    if(rx.test(s)){hits.push(term);s=s.replace(rx,'$1 ');const e=LEX[term];
+      for(const k in e.r)rv[k]=(rv[k]||0)+e.r[k];for(const k in e.p)pv[k]=(pv[k]||0)+e.p[k]}}
+  const infer=(votes,fallback,termsFor)=>{const tot=Object.values(votes).reduce((a,b)=>a+b,0);
+    if(!tot)return{v:fallback,conf:0,why:[],stated:false};
+    let mean=0,best=null;for(const k in votes){mean+=k*votes[k];if(!best||votes[k]>votes[best])best=k}
+    const share=votes[best]/tot;return{v:mean/tot,conf:share*Math.min(1,tot/2.2),why:termsFor,stated:false}};
+  if(!roast)roast=infer(rv,2,hits.filter(h=>Object.keys(LEX[h].r).length));
+  if(!proc){const pr=infer(pv,0,hits.filter(h=>Object.keys(LEX[h].p).length));
+    // process is a category: take the strongest vote, not the mean
+    if(pr.conf>0){let best=null;for(const k in pv)if(best==null||pv[k]>pv[best])best=k;pr.v=+best}else pr.v=0;proc=pr}
+  if(!proc.name&&proc.v===2&&(/\bwet[-\s]hulled\b|giling\s+basah/.test(t)||hits.includes('sumatra')||hits.includes('sumatran')))proc.name='Wet hulled';
+  return{roast,proc,hits,date:findDate(t)};
+}
+
+/* ---------- roast date ---------- */
+const MON='jan feb mar apr may jun jul aug sep oct nov dec'.split(' ');
+const NLMON={mrt:'mar',mei:'may',okt:'oct',maart:'mar',januari:'jan',februari:'feb',juni:'jun',juli:'jul',augustus:'aug',oktober:'oct'};
+function mk(y,m,d){if(y<100)y+=2000;if(m<1||m>12||d<1||d>31)return null;const dt=new Date(y,m-1,d);return dt.getMonth()===m-1?dt:null}
+function findDate(t){
+  for(const k in NLMON)t=t.replace(new RegExp('\\b'+k+'\\b','g'),NLMON[k]);
+  const i=t.search(/roast(ed)?\s*(on|date)?|gebrand|brand(datum)?/);const scope=i>=0?t.slice(i):t;
+  for(const src of i>=0?[scope,t]:[t]){
+    let m;
+    if((m=src.match(/(\d{4})-(\d{1,2})-(\d{1,2})/)))return mk(+m[1],+m[2],+m[3]);
+    if((m=src.match(/(\d{1,2})(?:st|nd|rd|th)?\s+(jan|feb|mar|apr|may|jun|jul|aug|sep|oct|nov|dec)[a-z]*\.?,?\s+(\d{2,4})/)))return mk(+m[3],MON.indexOf(m[2])+1,+m[1]);
+    if((m=src.match(/(jan|feb|mar|apr|may|jun|jul|aug|sep|oct|nov|dec)[a-z]*\.?\s+(\d{1,2})(?:st|nd|rd|th)?,?\s+(\d{2,4})/)))return mk(+m[3],MON.indexOf(m[1])+1,+m[2]);
+    if((m=src.match(/(\d{1,2})[./-](\d{1,2})[./-](\d{2,4})/))){let a=+m[1],b=+m[2];if(b>12&&a<=12)[a,b]=[b,a];return mk(+m[3],b,a)}
+  }
+  return null;
+}
+
+/* ---------- grinders: V60 range on the dial, decimals, one-step fix ---------- */
+const GR={
+ kultra:{unit:'',v60:[7.0,8.5],dec:1,step:'0.2–0.3 finer'},
+ kplus:{unit:'',v60:[5.0,8.4],dec:1,step:'0.2–0.3 finer'},
+ c40:{unit:' clicks',v60:[20,28],dec:0,step:'2 clicks finer'},
+ timemore:{unit:' clicks',v60:[15,20],dec:0,step:'1 click finer'},
+ k6:{unit:' clicks',v60:[80,110],dec:0,step:'4–5 clicks finer'},
+ niche:{unit:'',v60:[40,50],dec:0,step:'2 steps finer'},
+ encore:{unit:'',v60:[13,18],dec:0,step:'1–2 steps finer'},
+ ode:{unit:'',v60:[4,7],dec:1,step:'1 step finer'},
+ other:null};
+function grindFor(gk,r,method){
+  const f=Math.min(1,Math.max(0,(r-.5)/4));const shift=method==='46'?.45:method==='iced'?-.08:0;
+  const range=([a,b],dec,minW)=>{const span=b-a,c=a+span*(f+shift)*.85+span*.08,w=Math.max(span*.14,minW);
+    const lo=Math.max(a-span*.1,c-w),hi=Math.min(b+span*.6,c+w);const fx=x=>dec?x.toFixed(dec):String(Math.round(x));return fx(lo)+'–'+fx(hi)};
+  const um=range([400,700],0,40).split('–').map(x=>Math.round(x/10)*10).join('–')+' µm';
+  const g=GR[gk];return g?{set:range(g.v60,g.dec,g.dec?0.3:1)+g.unit,um,step:g.step}:{set:um,um:'',step:'about 50 µm finer'};
+}
+
+const mmss=s=>Math.floor(s/60)+':'+String(s%60).padStart(2,'0');
+function recipe(st){
+  const {r,p,method,dose,taste,str,gk,days}=st;
+  const light=r<=1.5;
+  let temp=Math.round(96-r-p);temp=Math.max(86,Math.min(96,temp));
+  const out={temp,tempSub:'96 − '+fmt(r)+' roast − '+p+' process'};
+  const g=grindFor(gk,r,method);out.grind=g;
+  if(method==='v60'){
+    const ratio=light?16.7:r<=3?16:15;const W=Math.round(dose*(light?50/3:ratio)),bloom=Math.round(dose*3),mid=Math.round(W*.6);
+    Object.assign(out,{dose,water:W+' g',waterSub:dose+' × '+ratio,ratio:'1:'+ratio,ratioSub:light?'light, filter':r<=3?'medium':'darker',
+      steps:[['0:00','Bloom, swirl, wait 45 s',bloom],['0:45','Pour to '+mid+' g by 1:15',mid],['1:15','Pour to '+W+' g by 1:45, then swirl',W],[light?'2:45':'3:00','Drawdown done by '+(light?'2:45–3:15':'3:00–3:30'),null]]});
+  }else if(method==='46'){
+    const W=dose*15,A=Math.round(W*.4),B=W-A,T=taste/12,p1=Math.round(A*(1-T)),p2=A-p1,each=Math.round(B/str);
+    const pours=[p1,p2];for(let i=0;i<str;i++)pours.push(i===str-1?B-each*(str-1):each);
+    let cum=0;const steps=pours.map((x,i)=>{cum+=x;return[mmss(i*45),(i===0?'Pour ':'Pour ')+x+' g'+(i<2?(i===0?' (taste)':' (taste)'):' (strength)')+', let it drain',cum]});
+    const lift=mmss(45*(2+str));steps.push([lift,'Lift the dripper',null]);
+    Object.assign(out,{dose,water:W+' g',waterSub:dose+' × 15',ratio:'1:15',ratioSub:'fixed for 4:6',steps,note:'Coarser than a normal V60 so each pour drains in time.'});
+  }else{
+    const total=Math.round(dose*14),hot=Math.round(total*.7),ice=total-hot,b=Math.round(hot*.27),m=Math.round(hot*.67);
+    out.temp=Math.max(90,Math.min(93,temp));out.tempSub='hot water onto ice';
+    Object.assign(out,{dose,water:hot+' g + '+ice+' g ice',waterSub:'70% hot, 30% ice',ratio:'1:14',ratioSub:'counting the ice',
+      steps:[['—','Put '+ice+' g ice in the carafe, tare',null],['0:00','Bloom with '+b+' g, wait to 0:40',b],['0:40','Pour to '+m+' g',m],['1:10','Pour to '+hot+' g',hot],['2:00','Done by 2:00–2:10, swirl to melt the ice',null]]});
+  }
+  const win=light?(method==='iced'?[14,28]:[14,28]):[7,30];
+  if(days==null)Object.assign(out,{ready:'—',readyCls:'',readySub:'best '+win[0]+'–'+win[1]+' days off roast'});
+  else if(days<win[0])Object.assign(out,{ready:'Wait '+(win[0]-days)+' d',readyCls:'wait',readySub:days+' days off roast'});
+  else if(days>win[1])Object.assign(out,{ready:'Past peak',readyCls:'wait',readySub:days+' days, expect less aroma'});
+  else Object.assign(out,{ready:'Yes',readyCls:'ok',readySub:days+' days, inside '+win[0]+'–'+win[1]});
+  out.tips=[['Sour, thin','Grind '+g.step+'. Then +1 °C.'],['Bitter, dry','Grind the same amount coarser. Then −1 °C.'],['Weak','More coffee: ratio down 0.5.'],['Too strong','Less coffee: ratio up 0.5.'],['Sour + bitter','Pour gentler and swirl to flatten the bed.']];
+  return out;
+}
+const fmt=v=>Number.isInteger(v)?String(v):v.toFixed(1);
+
+/* ---------- state + render ---------- */
+const st={method:'v60',lookR:null,lookP:null,dateTouched:false};
+const text=$('bagtext'),res=$('result');
+text.value='Ethiopia Guji, Hambela. Washed heirloom. Tasting notes: jasmine, bergamot, peach. Roasted 2 Nov 2026.';
+const H={r:'var(--violet)',p:'var(--teal)'};
+const pct=c=>Math.round(c*100)+'%';
+function render(){
+  const read=readBag(text.value);
+  if(!st.dateTouched){const d=read.date;$('rdate').value=d?`${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`:''}
+  let days=null;if($('rdate').value){const [y,m,d]=$('rdate').value.split('-').map(Number);const now=new Date();days=Math.floor((new Date(now.getFullYear(),now.getMonth(),now.getDate())-new Date(y,m-1,d))/DAY);if(days<0||days>400)days=null}
+  let R=read.roast,P=read.proc;
+  if(st.lookR!=null&&!R.stated)R={v:st.lookR,conf:1,why:['how the beans look'],stated:false,answered:true};
+  if(st.lookP!=null&&!P.stated)P={v:st.lookP,conf:1,why:['how it tastes'],stated:false,answered:true};
+  const r=Math.round(R.v*2)/2,p=Math.max(0,Math.min(5,P.v));
+  const dose=Math.max(8,Math.min(60,Math.round(+$('dose').value||15)));
+  const out=recipe({r,p,method:st.method,dose,taste:+$('ptaste').value,str:+$('pstr').value,gk:$('grinder').value,days});
+  const whyLine=(o,kind)=>o.stated?`<b>${kind}</b> stated on the bag`:o.answered?`<b>${kind}</b> from ${o.why[0]}`:o.why.length?`<b>${kind}</b> from ${o.why.slice(0,5).join(', ')}`:`<b>${kind}</b> no clues, guessed the most common`;
+  const askR=!R.stated&&!R.answered&&R.conf<.6, askP=!P.stated&&!P.answered&&P.conf<.5;
+  const ask=(q,key,opts)=>`<div class="ask"><p>${q}</p><div class="opts">${opts.map(([v,l])=>`<button type="button" class="sbtn" data-k="${key}" data-v="${v}">${l}</button>`).join('')}</div></div>`;
+  res.innerHTML=`
+   <div class="res-h">
+     <h3>Recipe</h3>
+     <div class="read">
+       <span class="rchip" style="--h:${H.r}"><span class="dot"></span>${roastName(r)} roast<span class="conf">${R.stated?'stated':R.answered?'you said':R.conf?pct(R.conf)+' sure':'guess'}</span></span>
+       <span class="rchip" style="--h:${H.p}"><span class="dot"></span>${P.name||PROC_NAMES[p]}<span class="conf">${P.stated?'stated':P.answered?'you said':P.conf?pct(P.conf)+' sure':'guess'}</span></span>
+     </div>
+     <p class="why">${whyLine(R,'Roast')} · ${whyLine(P,'Process')}</p>
+     ${askR?ask(`Best guess: ${roastName(r).toLowerCase()} roast, and the recipe uses it. If the beans look different, pick one:`,'r',[[1,'Light brown, dry'],[2.5,'Medium brown'],[4,'Dark, oily sheen']]):''}
+     ${askP?ask(`Best guess: ${(P.name||PROC_NAMES[p]).toLowerCase()}, and the recipe uses it. If the cup leans differently, pick one:`,'p',[[0,'Clean, tea-like'],[4,'Jammy, berry, winey'],[5,'Boozy, tropical']]):''}
+   </div>
+   <div class="kv">
+     <div><div class="l">Dose</div><div class="v">${out.dose} g</div><div class="s">${st.method==='46'?'4:6 method':st.method==='iced'?'iced V60':'V60'}</div></div>
+     <div><div class="l">Water</div><div class="v">${out.water}</div><div class="s">${out.waterSub}</div></div>
+     <div><div class="l">Ratio</div><div class="v">${out.ratio}</div><div class="s">${out.ratioSub}</div></div>
+     <div><div class="l">Temperature</div><div class="v">${out.temp} °C</div><div class="s">${out.tempSub}</div></div>
+     <div><div class="l">Grind</div><div class="v">${out.grind.set}</div><div class="s">${out.grind.um||$('grinder').selectedOptions[0].text}</div></div>
+     <div><div class="l">Brew now?</div><div class="v ${out.readyCls}">${out.ready}</div><div class="s">${out.readySub}</div></div>
+   </div>
+   <div class="steps">${out.steps.map(([tm,txt,g])=>`<div class="step"><span class="tm">${tm}</span><span>${txt}</span><span class="g">${g==null?'':g+' g'}</span></div>`).join('')}</div>
+   <div class="tips"><h4>Next cup, change one thing</h4>${out.tips.map(([a,b])=>`<div class="tip"><b>${a}</b><span>${b}</span></div>`).join('')}</div>`;
+  res.querySelectorAll('.ask .sbtn').forEach(b=>b.addEventListener('click',()=>{if(b.dataset.k==='r')st.lookR=+b.dataset.v;else st.lookP=+b.dataset.v;render()}));
+}
+let tmr;text.addEventListener('input',()=>{st.lookR=st.lookP=null;clearTimeout(tmr);tmr=setTimeout(render,120)});
+['grinder','dose','ptaste','pstr'].forEach(id=>$(id).addEventListener('input',render));
+$('rdate').addEventListener('input',()=>{st.dateTouched=!!$('rdate').value;render()});
+$('mseg').querySelectorAll('button').forEach(b=>b.addEventListener('click',()=>{st.method=b.dataset.m;$('mseg').querySelectorAll('button').forEach(x=>x.setAttribute('aria-pressed',x===b));$('prefs').hidden=st.method!=='46';render()}));
+/* worked examples, computed with the same rules */
+const EX=[
+ ['Stooker, Motto','Origin: 75% Minas Gerais, Brazil; 25% Tolima, Colombia. Variety: Yellow Catuai, Caturra, Colombia & Castillo. Process: Tree dried natural & Washed. Tasting notes: Roasted almond, maple syrup & milk chocolate.'],
+ ['FIL, Bogalech','Stonefruit, Blueberry, Orange blossom. Natural. Roasted 09/11/25'],
+ ['Five Ways, Five Points (Dutch)','Five Points Blend. Brazil natural, Colombia gewassen. Framboos, karamel, melkchocolade. Espressobranding.'],
+ ['Washed Ethiopian','Ethiopia Guji, Hambela. Washed heirloom. Jasmine, bergamot, peach.'],
+ ['Kenyan, filter roast','Kenya Nyeri AA, SL28 / SL34. Washed. Blackcurrant, grapefruit, black tea. Filter roast.'],
+ ['Tasting notes only','Blueberry, dark chocolate, red wine'],
+ ['Anaerobic Colombian','Colombia, Huila. Anaerobic natural. Rum, passion fruit, mango.'],
+ ['Brazil, medium roast','Brazil Cerrado. Natural. Milk chocolate, hazelnut, caramel. Medium roast.'],
+ ['Sumatra','Sumatra Gayo. Earthy, cedar, dark chocolate, tobacco.']];
+$('examples').innerHTML=EX.map(([title,bag],i)=>{
+  const rd=readBag(bag),R=rd.roast,P=rd.proc,r=Math.round(R.v*2)/2,pp=P.v;
+  const o=recipe({r,p:pp,method:'v60',dose:15,taste:6,str:3,gk:'kultra',days:null});
+  const unsure=[!R.stated&&R.conf<.6?'roast':null,!P.stated&&P.conf<.5?'process':null].filter(Boolean);
+  return `<article class="ex"><div class="ex-top"><h4>${title}</h4><button type="button" class="sbtn" data-ex="${i}">Open</button></div>
+   <q>${bag}</q>
+   <div class="read"><span class="rchip" style="--h:${H.r}"><span class="dot"></span>${roastName(r)}<span class="conf">${R.stated?'stated':R.conf?pct(R.conf)+' sure':'guess'}</span></span><span class="rchip" style="--h:${H.p}"><span class="dot"></span>${P.name||PROC_NAMES[pp]}<span class="conf">${P.stated?'stated':P.conf?pct(P.conf)+' sure':'guess'}</span></span></div>
+   <div class="ex-nums"><div><div class="l">Temp</div><div class="v">${o.temp} °C</div></div><div><div class="l">Ratio</div><div class="v">${o.ratio}</div></div><div><div class="l">Water</div><div class="v">${o.water}</div></div><div><div class="l">Grind</div><div class="v">${o.grind.set}</div></div></div>
+   <p class="note2">${unsure.length?`<b>Guessed ${unsure.join(' and ')}</b> from the notes. The recipe uses the guess; you can correct it by how the beans look or taste.`:'Enough on the bag for a confident read.'}</p></article>`}).join('');
+$('examples').querySelectorAll('[data-ex]').forEach(b=>b.addEventListener('click',()=>{text.value=EX[+b.dataset.ex][1];st.lookR=st.lookP=null;st.dateTouched=false;
+  $('grinder').value='kultra';$('dose').value=15;st.method='v60';$('mseg').querySelectorAll('button').forEach(x=>x.setAttribute('aria-pressed',x.dataset.m==='v60'));$('prefs').hidden=true;
+  render();document.getElementById('bag').scrollIntoView({behavior:matchMedia('(prefers-reduced-motion: reduce)').matches?'auto':'smooth',block:'start'})}));
+$('bagform').addEventListener('submit',e=>e.preventDefault());
+render();
+window.__readBag=readBag;window.__recipe=recipe;window.__bag={LEX,ROAST_RX,PROC_RX,GR};
+})();
+</script>
+</body>
+</html>
