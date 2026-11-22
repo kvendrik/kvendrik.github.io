@@ -50,7 +50,8 @@ function startArt(art){
 }
 if("ontouchstart" in window||navigator.maxTouchPoints>0) document.documentElement.classList.add("touch");
 if("IntersectionObserver" in window){
-  new IntersectionObserver(es=>{es.forEach(e=>{if(e.isIntersecting&&!cardSeen){cardSeen=true;startArt($("#card .slide:not(.peek) .art"));}});},{rootMargin:"0px 0px -12% 0px"}).observe($("#card"));
+  /* watch the drawing itself, so it starts when you can actually see it */
+  var artIO=new IntersectionObserver(es=>{es.forEach(e=>{if(e.isIntersecting&&!cardSeen){cardSeen=true;artIO.disconnect();startArt($("#card .slide:not(.peek) .art"));}});},{rootMargin:"0px 0px -10% 0px"});
 } else cardSeen=true;
 function topHTML(t){
   const i=T.indexOf(t);
@@ -76,7 +77,7 @@ function show(id,mode){
   const c=$("#card");
   const cls=mode==="still"?"still":mode?(mode>0?"from-r":"from-l"):"anim";
   c.innerHTML=topHTML(t)+slideHTML(t,cls);
-  const art=c.querySelector(".slide .art"); if(art){art.classList.add("wait"); if(cardSeen) startArt(art);}
+  const art=c.querySelector(".slide .art"); if(art){art.classList.add("wait"); if(cardSeen) startArt(art); else if(typeof artIO!=="undefined"){artIO.disconnect();artIO.observe(art);}}
   $("#cur").textContent=t.name;
   document.querySelectorAll(".pick").forEach(p=>p.setAttribute("aria-current",p.dataset.id===id));
   setURL(id);
