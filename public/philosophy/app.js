@@ -41,8 +41,16 @@ $("#groups").addEventListener("click",e=>{const b=e.target.closest("[data-id]");
   if(mq.matches){$("#browse").open=false;$("#browse").scrollIntoView({block:"start"});}else $("#card").scrollIntoView({block:"nearest"});});
 
 let cardSeen=false;
+/* the drawing starts only once its card is on screen; classes are added then, so every browser starts the animation fresh */
+function startArt(art){
+  if(!art||!art.classList.contains("wait"))return;
+  art.querySelectorAll(":scope > *").forEach((el,k)=>{ if(el.hasAttribute("stroke-dasharray")){el.classList.add("fd");return;}
+    el.setAttribute("pathLength","1"); el.classList.add("dr"); el.style.animationDelay=(0.15+k*0.12).toFixed(2)+"s"; });
+  void art.getBoundingClientRect(); art.classList.remove("wait");
+}
+if("ontouchstart" in window||navigator.maxTouchPoints>0) document.documentElement.classList.add("touch");
 if("IntersectionObserver" in window){
-  new IntersectionObserver(es=>{es.forEach(e=>{if(e.isIntersecting&&!cardSeen){cardSeen=true;const art=$("#card .slide:not(.peek) .art");if(art)art.classList.add("go");}});},{threshold:.15}).observe($("#card"));
+  new IntersectionObserver(es=>{es.forEach(e=>{if(e.isIntersecting&&!cardSeen){cardSeen=true;startArt($("#card .slide:not(.peek) .art"));}});},{rootMargin:"0px 0px -12% 0px"}).observe($("#card"));
 } else cardSeen=true;
 function topHTML(t){
   const i=T.indexOf(t);
@@ -68,9 +76,7 @@ function show(id,mode){
   const c=$("#card");
   const cls=mode==="still"?"still":mode?(mode>0?"from-r":"from-l"):"anim";
   c.innerHTML=topHTML(t)+slideHTML(t,cls);
-  c.querySelectorAll(".slide .art > *").forEach((el,k)=>{ if(el.hasAttribute("stroke-dasharray")){el.classList.add("fd");return;}
-    el.setAttribute("pathLength","1"); el.classList.add("dr"); el.style.animationDelay=(0.15+k*0.12).toFixed(2)+"s"; });
-  const art=c.querySelector(".slide .art"); if(art&&cardSeen) art.classList.add("go");
+  const art=c.querySelector(".slide .art"); if(art){art.classList.add("wait"); if(cardSeen) startArt(art);}
   $("#cur").textContent=t.name;
   document.querySelectorAll(".pick").forEach(p=>p.setAttribute("aria-current",p.dataset.id===id));
   if(location.hash!=="#t-"+id) history.replaceState(null,"","#t-"+id);

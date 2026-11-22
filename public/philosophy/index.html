@@ -151,8 +151,7 @@ select{width:100%;font:inherit;font-size:16px;padding:10px 12px;background:var(-
 .card{touch-action:pan-y;position:relative;overflow:clip;overflow-clip-margin:6px}
 .slide.peek{position:absolute;left:0;right:0;pointer-events:none}
 .slide{will-change:transform}
-.art:not(.go) .dr{animation-play-state:paused}
-.art:not(.go) .fd{animation-play-state:paused}
+.art.wait{opacity:0}
 .slide.peek .art{opacity:0}
 .card>.top{margin-bottom:28px}
 .card .art{margin-top:0}
@@ -160,7 +159,7 @@ select{width:100%;font:inherit;font-size:16px;padding:10px 12px;background:var(-
 @keyframes inR{from{opacity:0;transform:translate3d(48px,0,0)}}
 @keyframes inL{from{opacity:0;transform:translate3d(-48px,0,0)}}
 .slide.from-r{animation:inR .5s var(--ease) backwards}.slide.from-l{animation:inL .5s var(--ease) backwards}
-@media (hover:none) and (pointer:coarse){.swipe{display:inline}}
+.touch .swipe{display:inline}
 /* motion */
 @keyframes rise{from{opacity:0;transform:translateY(16px)}}
 @keyframes draw{from{stroke-dashoffset:1}}
@@ -206,8 +205,8 @@ select{width:100%;font:inherit;font-size:16px;padding:10px 12px;background:var(-
 
 <script src="d1.js"></script><script src="d2.js"></script><script src="d3.js"></script>
 <script src="d4.js"></script><script src="d5.js"></script><script src="d6.js"></script>
-<script src="d7.js"></script><script src="d8.js"></script><script src="d9.js"></script><script src="art.js"></script>
-<script src="app.js"></script>
+<script src="d7.js"></script><script src="d8.js"></script><script src="d9.js"></script><script src="art.js?v=3"></script>
+<script src="app.js?v=3"></script>
 
 </body>
 </html>
