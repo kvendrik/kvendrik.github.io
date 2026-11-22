@@ -132,11 +132,12 @@ select{width:100%;font:inherit;font-size:16px;padding:10px 12px;background:var(-
   .browse .groups{padding:4px 14px 16px}
   .card{margin-top:28px}
 }
-.card{touch-action:pan-y}
+.card{touch-action:pan-y;overflow-x:clip}
+.slide{will-change:transform}
 .swipe{display:none;margin-left:6px;color:var(--muted)}
-@keyframes inR{from{opacity:0;transform:translateX(36px)}}
-@keyframes inL{from{opacity:0;transform:translateX(-36px)}}
-.card.from-r{animation:inR .45s var(--ease)}.card.from-l{animation:inL .45s var(--ease)}
+@keyframes inR{from{opacity:0;transform:translate3d(48px,0,0)}}
+@keyframes inL{from{opacity:0;transform:translate3d(-48px,0,0)}}
+.slide.from-r{animation:inR .5s var(--ease) backwards}.slide.from-l{animation:inL .5s var(--ease) backwards}
 @media (hover:none) and (pointer:coarse){.swipe{display:inline}}
 /* motion */
 @keyframes rise{from{opacity:0;transform:translateY(16px)}}

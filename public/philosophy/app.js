@@ -43,8 +43,8 @@ $("#groups").addEventListener("click",e=>{const b=e.target.closest("[data-id]");
 function show(id,dir){
   const t=byId[id]; if(!t) return; current=id;
   const i=T.indexOf(t);
-  const c=$("#card"); c.style.transform=""; c.style.opacity=""; c.classList.remove("anim","from-r","from-l"); void c.offsetWidth; c.classList.add("anim"); if(dir) c.classList.add(dir>0?"from-r":"from-l");
-  c.innerHTML=`
+  const c=$("#card");
+  c.innerHTML=`<div class="slide ${dir?(dir>0?"from-r":"from-l"):"anim"}">
     <div class="top"><span class="mono" style="display:flex;gap:8px;align-items:center;color:var(--ink)">${GLYPH[FAM[t.grp]]}${i+1} / ${T.length}<span class="swipe">· swipe</span></span>
       <div class="nav"><button class="ib" data-step="-1" aria-label="Previous tradition">←</button><button class="ib" data-rand aria-label="Random tradition">⁂</button><button class="ib" data-step="1" aria-label="Next tradition">→</button></div></div>
     <svg class="art" viewBox="0 0 120 80" aria-hidden="true">${(window.ART||{})[t.id]||""}</svg>
@@ -56,7 +56,7 @@ function show(id,dir){
     <div class="voice"><p>${esc(t.voice)}</p><span class="mono">The inner voice · a paraphrase</span></div>
     <details><summary class="mono">More: the full reading, the goal, sources</summary><div class="more">
       <p>${esc(t.interp)}</p><p><b>The goal.</b> ${esc(t.aim)}</p><p><b>How it differs.</b> ${esc(t.diff)}</p><p>${t.deep}</p>
-      <ul>${t.refs.map(r=>`<li>${esc(r)}</li>`).join("")}</ul></div></details>`;
+      <ul>${t.refs.map(r=>`<li>${esc(r)}</li>`).join("")}</ul></div></details></div>`;
   c.querySelectorAll(".art > *").forEach((el,k)=>{ if(el.hasAttribute("stroke-dasharray")){el.classList.add("fd");return;}
     el.setAttribute("pathLength","1"); el.classList.add("dr"); el.style.animationDelay=(0.15+k*0.12).toFixed(2)+"s"; });
   $("#cur").textContent=t.name;
@@ -75,17 +75,29 @@ document.addEventListener("keydown",e=>{
 
 
 function step(d){const i=(T.indexOf(byId[current])+d+T.length)%T.length;show(T[i].id,d);}
-/* swipe between traditions */
+/* swipe between traditions: the content follows the finger, the card frame stays put */
 (function(){
-  const c=$("#card"); let x0=0,y0=0,dx=0,mode=null;
-  c.addEventListener("touchstart",e=>{if(e.touches.length!==1)return;x0=e.touches[0].clientX;y0=e.touches[0].clientY;dx=0;mode=null;c.style.transition="none";},{passive:true});
-  c.addEventListener("touchmove",e=>{if(mode==="v")return;const t=e.touches[0];dx=t.clientX-x0;const dy=t.clientY-y0;
-    if(!mode){if(Math.abs(dx)<8&&Math.abs(dy)<8)return;mode=Math.abs(dx)>Math.abs(dy)?"h":"v";if(mode==="v")return;}
-    c.style.transform=`translateX(${dx*.6}px)`;c.style.opacity=String(1-Math.min(Math.abs(dx)/500,.5));},{passive:true});
-  const end=()=>{if(mode!=="h"){mode=null;return;}mode=null;
-    if(Math.abs(dx)>60){c.style.transition="transform .18s ease-in,opacity .18s ease-in";c.style.transform=`translateX(${dx<0?-80:80}px)`;c.style.opacity="0";
-      const d=dx<0?1:-1;setTimeout(()=>{c.style.transition="";step(d);},170);}
-    else{c.style.transition="transform .35s var(--ease),opacity .35s var(--ease)";c.style.transform="";c.style.opacity="";}};
+  const c=$("#card"); let x0=0,y0=0,dx=0,mode=null,t0=0,lastX=0,lastT=0,vx=0,raf=0,busy=false;
+  const sl=()=>c.querySelector(".slide");
+  const W=()=>c.clientWidth||360;
+  const paint=()=>{raf=0;const s=sl();if(!s)return;const r=Math.abs(dx);
+    s.style.transform=`translate3d(${dx}px,0,0)`;s.style.opacity=String(1-Math.min(r/W(),1)*.55);};
+  c.addEventListener("touchstart",e=>{if(busy||e.touches.length!==1)return;const t=e.touches[0];
+    x0=lastX=t.clientX;y0=t.clientY;t0=lastT=performance.now();dx=0;vx=0;mode=null;const s=sl();if(s){s.style.transition="none";s.classList.remove("anim","from-r","from-l");}},{passive:true});
+  c.addEventListener("touchmove",e=>{if(busy||mode==="v")return;const t=e.touches[0];const ddx=t.clientX-x0,dy=t.clientY-y0;
+    if(!mode){if(Math.abs(ddx)<10&&Math.abs(dy)<10)return;mode=Math.abs(ddx)>Math.abs(dy)*1.2?"h":"v";if(mode==="v")return;x0=t.clientX;}
+    dx=t.clientX-x0;const now=performance.now();vx=.8*((t.clientX-lastX)/Math.max(1,now-lastT))+.2*vx;lastX=t.clientX;lastT=now;
+    if(!raf)raf=requestAnimationFrame(paint);},{passive:true});
+  const end=()=>{if(mode!=="h"){mode=null;return;}mode=null;const s=sl();if(!s)return;
+    const go=Math.abs(dx)>W()*.22||(Math.abs(vx)>.45&&Math.abs(dx)>16);
+    if(go){busy=true;const d=dx<0?1:-1;const dist=Math.max(W()*.5,Math.abs(dx)+60);
+      const ms=Math.max(120,Math.min(240,(dist-Math.abs(dx))/Math.max(Math.abs(vx),.8)));
+      s.style.transition=`transform ${ms}ms cubic-bezier(.2,.7,.3,1),opacity ${ms}ms linear`;
+      s.style.transform=`translate3d(${-d*dist}px,0,0)`;s.style.opacity="0";
+      try{navigator.vibrate&&navigator.vibrate(6)}catch(_){}
+      setTimeout(()=>{step(d);busy=false;const top=c.getBoundingClientRect().top;if(top<0)c.scrollIntoView({behavior:"smooth",block:"start"});},ms);}
+    else{s.style.transition="transform .45s cubic-bezier(.2,.9,.25,1.15),opacity .3s ease";s.style.transform="";s.style.opacity="";}
+    dx=0;};
   c.addEventListener("touchend",end);c.addEventListener("touchcancel",end);
 })();
 
