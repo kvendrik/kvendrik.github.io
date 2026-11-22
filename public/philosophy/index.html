@@ -132,7 +132,8 @@ select{width:100%;font:inherit;font-size:16px;padding:10px 12px;background:var(-
   .browse .groups{padding:4px 14px 16px}
   .card{margin-top:28px}
 }
-.card{touch-action:pan-y;overflow-x:clip}
+.card{touch-action:pan-y;position:relative;overflow:clip;overflow-clip-margin:6px}
+.slide.peek{position:absolute;left:0;right:0;pointer-events:none}
 .slide{will-change:transform}
 .swipe{display:none;margin-left:6px;color:var(--muted)}
 @keyframes inR{from{opacity:0;transform:translate3d(48px,0,0)}}
