@@ -40,11 +40,13 @@ syncBrowse(); mq.addEventListener("change",syncBrowse);
 $("#groups").addEventListener("click",e=>{const b=e.target.closest("[data-id]");if(!b)return;show(b.dataset.id);
   if(mq.matches){$("#browse").open=false;$("#browse").scrollIntoView({block:"start"});}else $("#card").scrollIntoView({block:"nearest"});});
 
-function slideHTML(t,cls){
+function topHTML(t){
   const i=T.indexOf(t);
+  return `<div class="top"><span class="mono count" style="display:flex;gap:8px;align-items:center;color:var(--ink)">${GLYPH[FAM[t.grp]]}${i+1} / ${T.length}<span class="swipe">· swipe</span></span>
+      <div class="nav"><button class="ib" data-step="-1" aria-label="Previous tradition">←</button><button class="ib" data-rand aria-label="Random tradition">⁂</button><button class="ib" data-step="1" aria-label="Next tradition">→</button></div></div>`;
+}
+function slideHTML(t,cls){
   return `<div class="slide ${cls}" data-id="${t.id}">
-    <div class="top"><span class="mono" style="display:flex;gap:8px;align-items:center;color:var(--ink)">${GLYPH[FAM[t.grp]]}${i+1} / ${T.length}<span class="swipe">· swipe</span></span>
-      <div class="nav"><button class="ib" data-step="-1" aria-label="Previous tradition">←</button><button class="ib" data-rand aria-label="Random tradition">⁂</button><button class="ib" data-step="1" aria-label="Next tradition">→</button></div></div>
     <svg class="art" viewBox="0 0 120 80" aria-hidden="true">${(window.ART||{})[t.id]||""}</svg>
     <h3 class="name">${esc(t.name)}</h3>
     <p class="who">${esc(t.who)}</p>
@@ -61,7 +63,7 @@ function show(id,mode){
   const t=byId[id]; if(!t) return; current=id;
   const c=$("#card");
   const cls=mode==="still"?"still":mode?(mode>0?"from-r":"from-l"):"anim";
-  c.innerHTML=slideHTML(t,cls);
+  c.innerHTML=topHTML(t)+slideHTML(t,cls);
   if(mode!=="still") c.querySelectorAll(".art > *").forEach((el,k)=>{ if(el.hasAttribute("stroke-dasharray")){el.classList.add("fd");return;}
     el.setAttribute("pathLength","1"); el.classList.add("dr"); el.style.animationDelay=(0.15+k*0.12).toFixed(2)+"s"; });
   $("#cur").textContent=t.name;
