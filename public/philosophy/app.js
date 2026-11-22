@@ -79,7 +79,7 @@ function show(id,mode){
   const art=c.querySelector(".slide .art"); if(art){art.classList.add("wait"); if(cardSeen) startArt(art);}
   $("#cur").textContent=t.name;
   document.querySelectorAll(".pick").forEach(p=>p.setAttribute("aria-current",p.dataset.id===id));
-  if(location.hash!=="#t-"+id) history.replaceState(null,"","#t-"+id);
+  setURL(id);
 }
 $("#card").addEventListener("click",e=>{
   const s=e.target.closest("[data-step]"); if(s){step(+s.dataset.step);return;}
@@ -138,9 +138,25 @@ function step(d){const i=(T.indexOf(byId[current])+d+T.length)%T.length;show(T[i
   c.addEventListener("touchend",end);c.addEventListener("touchcancel",end);
 })();
 
+/* URLs: each card has its own address. On the site: /philosophy/<slug>/ ; elsewhere: #<slug> */
+const SL=window.SLUG||{}; const BY_SLUG=Object.fromEntries(Object.entries(SL).map(([id,s])=>[s,id]));
+const ON_SITE=/^\/philosophy(\/|$)/.test(location.pathname);
+const BASE_TITLE="The Same Loss";
+function setURL(id){
+  const s=SL[id]||id; document.title=`${byId[id].name} · ${BASE_TITLE}`;
+  const want=ON_SITE?`/philosophy/${s}/`:`#${s}`;
+  const have=ON_SITE?location.pathname:location.hash;
+  if(have!==want){try{history.replaceState(null,"",ON_SITE?want:location.pathname+location.search+want)}catch(_){}}
+}
+function idFromURL(){
+  const m=location.pathname.match(/^\/philosophy\/([a-z0-9-]+)\/?$/); if(m&&BY_SLUG[m[1]])return BY_SLUG[m[1]];
+  const h=location.hash.replace(/^#(t-)?/,""); if(BY_SLUG[h])return BY_SLUG[h]; if(byId[h])return h;
+  return null;
+}
+
 /* boot */
-const h=location.hash.slice(3);
-show(byId[h]?h:"taoism");
-if(!byId[h]) history.replaceState(null,"",location.pathname+location.search);
-window.addEventListener("hashchange",()=>{const id=location.hash.slice(3);if(byId[id])show(id);});
+const first=idFromURL();
+show(first||"taoism");
+if(!first){ document.title=BASE_TITLE; try{history.replaceState(null,"",ON_SITE?"/philosophy/":location.pathname+location.search)}catch(_){} }
+window.addEventListener("hashchange",()=>{const id=idFromURL();if(id&&id!==current)show(id);});
 })();
