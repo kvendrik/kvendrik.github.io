@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="color-scheme" content="dark">
+<meta name="theme-color" content="#0F0E0D">
+<title>The Same Loss</title>
+<meta name="description" content="Someone loses their job. How 44 philosophies, religions and psychologies would read that same moment, one at a time.">
+<meta property="og:title" content="The Same Loss">
+<meta property="og:description" content="Someone loses their job. How 44 philosophies, religions and psychologies would read that same moment.">
+<link rel="preload" href="../bodega/fonts/AlloVariable.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Space+Mono:wght@400;700&display=swap">
+<style>
+@font-face{font-family:"Allo";src:url("../bodega/fonts/AlloVariable.woff2") format("woff2");font-weight:100 900;font-display:swap}
+:root{padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+body{margin:0}
+[hidden]{display:none!important}
+img{max-width:100%}
+/* Layout: one narrow column, dark only. The situation, then one tradition at a time. Bodega type. */
+:root{
+  --paper:#0F0E0D; --card:#191816; --ink:#F2EEE5; --ink-2:#CFCAC0; --muted:#8F8A80; --rule:#2E2B27; --hl:#211F1C;
+  --f-display:"Instrument Serif","Bodoni Moda",Didot,Georgia,serif;
+  --f-body:"Allo",system-ui,-apple-system,"Segoe UI",sans-serif;
+  --f-mono:"Space Mono",ui-monospace,Menlo,monospace;
+  --ease:cubic-bezier(0.23,1,0.32,1);
+  color-scheme:dark;
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth;scroll-padding-top:20px}
+body{background:var(--paper);color:var(--ink);font:400 17px/1.6 var(--f-body);font-variation-settings:"ROND" 0;-webkit-font-smoothing:antialiased;
+  padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+p,h1,h2,h3{margin:0}
+h1,h2,h3{font-family:var(--f-display);font-weight:400;line-height:1.05;text-wrap:balance}
+:focus-visible{outline:2px solid var(--ink);outline-offset:3px}
+.wrap{max-width:760px;margin:0 auto}
+.mono{font-family:var(--f-mono);font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--muted)}
+button{font:inherit;color:inherit}
+section{padding-block:56px 0}
+h2{font-size:clamp(40px,7vw,60px);margin:10px 0 24px}
+
+/* hero */
+.hero{padding-block:72px 8px}
+.sit{font-family:var(--f-display);font-size:clamp(28px,4.6vw,40px);line-height:1.2;color:var(--ink-2);max-width:none;text-wrap:pretty}
+.sit .ln:first-child{color:var(--ink)}
+.foot{margin:48px 0 72px;text-transform:none;letter-spacing:.02em}
+.hero h1{font-size:clamp(56px,12vw,112px)}
+#threads{width:100%;height:auto;margin-top:28px;display:block}
+.hint{margin-top:6px;text-align:right}
+
+/* picker */
+.groups{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:24px}
+.groups .mono{display:flex;align-items:center;gap:8px;margin-bottom:8px;color:var(--ink)}
+.groups ul{list-style:none;margin:0;padding:0;display:flex;flex-wrap:wrap;gap:2px 12px}
+.pick{all:unset;cursor:pointer;font-size:15px;line-height:1.7;color:var(--ink-2);border-bottom:1px solid transparent;transition:color .2s,border-color .2s}
+.pick:hover{color:var(--ink);border-bottom-color:var(--rule)}
+.pick[aria-current="true"]{color:var(--ink);border-bottom-color:var(--ink)}
+.pick:focus-visible{outline:2px solid var(--ink)}
+
+/* card */
+.card{margin-top:36px;border-top:1px solid var(--ink);padding-top:28px}
+.top{display:flex;justify-content:space-between;align-items:center;gap:12px}
+.nav{display:flex;gap:6px}
+.ib{all:unset;cursor:pointer;width:36px;height:36px;display:grid;place-items:center;border:1px solid var(--rule);border-radius:50%;transition:background .2s,border-color .2s}
+.ib:hover{border-color:var(--ink)}
+.ib:focus-visible{outline:2px solid var(--ink)}
+.art{display:block;width:168px;height:112px;margin-top:28px;fill:none;stroke:var(--ink);stroke-width:1.25;stroke-linecap:round;stroke-linejoin:round;overflow:visible}
+.art .dr{stroke-dasharray:1;animation:draw 1.3s var(--ease) backwards}
+.art .fd{opacity:.6;animation:fade 1.2s ease .9s backwards}
+@keyframes fade{from{opacity:0}}
+.name{font-size:clamp(44px,8vw,68px);margin-top:12px}
+.who{color:var(--muted);font-size:15px;margin-top:6px}
+.insight{font-family:var(--f-display);font-style:italic;font-size:clamp(28px,4.6vw,38px);line-height:1.18;margin-top:28px;text-wrap:balance}
+.two{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:32px;margin-top:32px}
+.two p,.two li{font-size:16px;color:var(--ink-2)}
+.two .mono{display:block;margin-bottom:8px}
+.two ul{margin:0;padding-left:18px;display:grid;gap:6px}
+.voice{margin-top:32px;padding:22px 24px;background:var(--card);border-radius:2px}
+.voice p{font-family:var(--f-display);font-size:24px;line-height:1.35}
+.voice .mono{display:block;margin-top:10px}
+details{margin-top:20px;border-top:1px solid var(--rule)}
+summary{cursor:pointer;list-style:none;padding:14px 0;display:flex;justify-content:space-between}
+summary::-webkit-details-marker{display:none}
+summary::after{content:"+";font-family:var(--f-mono)}
+details[open] summary::after{content:"–"}
+.more{display:grid;gap:14px;font-size:15px;color:var(--ink-2);padding-bottom:12px}
+.more b{font-weight:600;color:var(--ink)}
+.more ul{margin:0;padding-left:18px}
+
+/* compare */
+.vs{display:grid;grid-template-columns:minmax(0,1fr) auto minmax(0,1fr);gap:12px;align-items:center}
+select{width:100%;font:inherit;font-size:16px;padding:10px 12px;background:var(--card);color:var(--ink);border:1px solid var(--rule);border-radius:2px}
+.vs .x{font-family:var(--f-display);font-style:italic;font-size:26px}
+.crux{margin-top:28px;text-align:center;padding:24px 8px;border-block:1px solid var(--rule)}
+.crux .q{font-family:var(--f-display);font-size:clamp(26px,4.4vw,36px);line-height:1.15;margin-top:8px}
+.crux p.b{font-size:15px;color:var(--ink-2);max-width:60ch;margin:12px auto 0;text-align:left}
+.cols{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:0;margin-top:8px}
+.cols>div{padding:18px 0;border-bottom:1px solid var(--rule);min-width:0}
+.cols>div:nth-child(odd){padding-right:20px;border-right:1px solid var(--rule)}
+.cols>div:nth-child(even){padding-left:20px}
+.cols .mono{display:block;margin-bottom:6px}
+.cols .m{display:none}
+.cols .s{font-family:var(--f-display);font-size:22px;line-height:1.25}
+.cols p{font-size:15px;color:var(--ink-2)}
+.fights{list-style:none;margin:40px 0 0;padding:0}
+.fights li button{all:unset;cursor:pointer;display:grid;grid-template-columns:minmax(0,1fr) auto;gap:4px 16px;width:100%;padding:14px 0;border-top:1px solid var(--rule);transition:padding .3s var(--ease)}
+.fights li button:hover{padding-left:8px}
+.fights li button:focus-visible{outline:2px solid var(--ink)}
+.fights .t{font-family:var(--f-display);font-size:22px;line-height:1.2}
+.fights .c{grid-column:1;font-size:14px;color:var(--muted)}
+.fights .arr{grid-row:1/3;grid-column:2;align-self:center;font-family:var(--f-mono);font-size:12px}
+
+/* questions */
+.qs{display:grid;gap:0}
+.qs div{padding:18px 0;border-top:1px solid var(--rule)}
+.qs h3{font-size:25px;line-height:1.2}
+.qs p{font-size:15px;color:var(--ink-2);margin-top:6px}
+.end{padding-block:72px 80px}
+.end p{font-family:var(--f-display);font-size:clamp(26px,4.4vw,36px);line-height:1.25;text-wrap:balance}
+.end p+p{margin-top:20px}
+.end small{display:block;margin-top:40px;color:var(--muted);font-size:13px}
+
+/* motion */
+@keyframes rise{from{opacity:0;transform:translateY(16px)}}
+@keyframes draw{from{stroke-dashoffset:1}}
+@keyframes breathe{0%,100%{opacity:.2}50%{opacity:.8}}
+.sit .ln{display:inline;animation:rise 1s var(--ease) backwards}
+.sit .ln+.ln{animation-delay:.2s}.hint{animation:rise 1s var(--ease) 1.4s backwards}
+#threads .trunk{stroke-dasharray:1;animation:draw .9s var(--ease) backwards}
+#threads .th{stroke-dasharray:1;opacity:.45;animation:draw 1.6s var(--ease) backwards,breathe 7s ease-in-out infinite;transition:stroke-width .25s}
+#threads .th.on{stroke-width:2.4;opacity:1;animation:none}
+#threads .hit{stroke:transparent;stroke-width:10;fill:none;cursor:pointer}
+#thlabel{font-family:var(--f-display);font-style:italic;font-size:24px;fill:var(--ink);transition:opacity .25s}
+.anim>*{animation:rise .55s var(--ease) backwards}
+.anim>*:nth-child(2){animation-delay:.04s}.anim>*:nth-child(3){animation-delay:.08s}.anim>*:nth-child(4){animation-delay:.12s}.anim>*:nth-child(n+5){animation-delay:.16s}
+@media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}*{animation:none!important;transition:none!important}}
+
+@media (max-width:700px){
+  .groups,.two,.cols{grid-template-columns:1fr}
+  .groups{gap:18px}
+  .cols>div:nth-child(odd){padding-right:0;border-right:0}
+  .cols>div:nth-child(even){padding-left:0}
+  .cols .side{display:none}
+  .cols .m{display:inline;color:var(--ink)}
+  .vs{grid-template-columns:1fr}
+  .vs .x{text-align:center}
+}
+</style>
+
+</head>
+<body>
+<main class="wrap">
+  <div class="hero">
+    <p class="sit"><span class="ln">Someone loses their job.</span> <span class="ln">They liked the work, and it was part of who they were. Now there is fear about money, some shame, and a quiet question about what comes next.</span></p>
+    <svg id="threads" viewBox="0 0 600 300" role="img" aria-label="One line splitting into 44 threads, one per tradition"></svg>
+    <p class="mono hint">Forty-four ways to read it · hover a thread, tap to open</p>
+  </div>
+
+  <section id="traditions" aria-label="One tradition at a time">
+    <div class="groups" id="groups"></div>
+    <article class="card" id="card" aria-live="polite"></article>
+    <p class="mono foot">Inner voices are paraphrases, not quotations · psychology entries are clinical theories · sources under “More”</p>
+  </section>
+</main>
+
+<script src="d1.js"></script><script src="d2.js"></script><script src="d3.js"></script>
+<script src="d4.js"></script><script src="d5.js"></script><script src="d6.js"></script>
+<script src="d7.js"></script><script src="d8.js"></script><script src="d9.js"></script><script src="art.js"></script>
+<script src="app.js"></script>
+
+</body>
+</html>
