@@ -34,7 +34,11 @@ let current = "taoism";
 
 /* picker */
 $("#groups").innerHTML = FAMS.map(([f,l])=>`<div><div class="mono">${GLYPH[f]}${l}</div><ul>${T.filter(t=>FAM[t.grp]===f).map(t=>`<li><button class="pick" data-id="${t.id}">${esc(t.name.replace(/^Existentialism: /,""))}</button></li>`).join("")}</ul></div>`).join("");
-$("#groups").addEventListener("click",e=>{const b=e.target.closest("[data-id]");if(b){show(b.dataset.id);$("#card").scrollIntoView({block:"nearest"});}});
+const mq=matchMedia("(max-width:700px)");
+const syncBrowse=()=>{$("#browse").open=!mq.matches;};
+syncBrowse(); mq.addEventListener("change",syncBrowse);
+$("#groups").addEventListener("click",e=>{const b=e.target.closest("[data-id]");if(!b)return;show(b.dataset.id);
+  if(mq.matches){$("#browse").open=false;$("#browse").scrollIntoView({block:"start"});}else $("#card").scrollIntoView({block:"nearest"});});
 
 function show(id){
   const t=byId[id]; if(!t) return; current=id;
@@ -55,6 +59,7 @@ function show(id){
       <ul>${t.refs.map(r=>`<li>${esc(r)}</li>`).join("")}</ul></div></details>`;
   c.querySelectorAll(".art > *").forEach((el,k)=>{ if(el.hasAttribute("stroke-dasharray")){el.classList.add("fd");return;}
     el.setAttribute("pathLength","1"); el.classList.add("dr"); el.style.animationDelay=(0.15+k*0.12).toFixed(2)+"s"; });
+  $("#cur").textContent=t.name;
   document.querySelectorAll(".pick").forEach(p=>p.setAttribute("aria-current",p.dataset.id===id));
   if(location.hash!=="#t-"+id) history.replaceState(null,"","#t-"+id);
 }

@@ -121,6 +121,17 @@ select{width:100%;font:inherit;font-size:16px;padding:10px 12px;background:var(-
 .end p+p{margin-top:20px}
 .end small{display:block;margin-top:40px;color:var(--muted);font-size:13px}
 
+.browse>summary{display:none}
+@media (max-width:700px){
+  .browse{border:1px solid var(--rule);border-radius:2px;margin:0}
+  .browse>summary{display:flex;justify-content:space-between;align-items:center;gap:12px;padding:12px 14px;cursor:pointer}
+  .browse>summary::after{content:"+";font-family:var(--f-mono);color:var(--muted)}
+  .browse[open]>summary::after{content:"–"}
+  .browse .cur{margin-left:auto;font-family:var(--f-display);font-style:italic;font-size:20px;line-height:1}
+  .browse[open] .cur{display:none}
+  .browse .groups{padding:4px 14px 16px}
+  .card{margin-top:28px}
+}
 /* motion */
 @keyframes rise{from{opacity:0;transform:translateY(16px)}}
 @keyframes draw{from{stroke-dashoffset:1}}
@@ -158,7 +169,7 @@ select{width:100%;font:inherit;font-size:16px;padding:10px 12px;background:var(-
   </div>
 
   <section id="traditions" aria-label="One tradition at a time">
-    <div class="groups" id="groups"></div>
+    <details class="browse" id="browse"><summary><span class="mono">All 44 traditions</span><span class="cur" id="cur"></span></summary><div class="groups" id="groups"></div></details>
     <article class="card" id="card" aria-live="polite"></article>
     <p class="mono foot">Inner voices are paraphrases, not quotations · psychology entries are clinical theories · sources under “More”</p>
   </section>
