@@ -101,8 +101,8 @@ function step(d){const i=(T.indexOf(byId[current])+d+T.length)%T.length;show(T[i
   }
   function place(x,anim){
     const w=W()+GAP, p=Math.min(Math.abs(x)/w,1);
-    cur.style.transform=`translate3d(${x}px,0,0) scale(${1-p*.1})`; cur.style.opacity=String(1-p*.6);
-    if(peek){peek.style.transform=`translate3d(${x+side*w}px,0,0) scale(${.9+p*.1})`; peek.style.opacity=String(.4+p*.6);}
+    cur.style.transform=`translate3d(${x}px,0,0)`; cur.style.opacity=String(1-p*.6);
+    if(peek){peek.style.transform=`translate3d(${x+side*w}px,0,0)`; peek.style.opacity=String(.4+p*.6);}
   }
   const paint=()=>{raf=0; if(!cur)return; const d=dx<0?1:-1; if(dx!==0) ensurePeek(d); place(dx);};
   c.addEventListener("touchstart",e=>{if(busy||e.touches.length!==1)return;const t=e.touches[0];
