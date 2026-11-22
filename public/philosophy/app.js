@@ -40,12 +40,12 @@ syncBrowse(); mq.addEventListener("change",syncBrowse);
 $("#groups").addEventListener("click",e=>{const b=e.target.closest("[data-id]");if(!b)return;show(b.dataset.id);
   if(mq.matches){$("#browse").open=false;$("#browse").scrollIntoView({block:"start"});}else $("#card").scrollIntoView({block:"nearest"});});
 
-function show(id){
+function show(id,dir){
   const t=byId[id]; if(!t) return; current=id;
   const i=T.indexOf(t);
-  const c=$("#card"); c.classList.remove("anim"); void c.offsetWidth; c.classList.add("anim");
+  const c=$("#card"); c.style.transform=""; c.style.opacity=""; c.classList.remove("anim","from-r","from-l"); void c.offsetWidth; c.classList.add("anim"); if(dir) c.classList.add(dir>0?"from-r":"from-l");
   c.innerHTML=`
-    <div class="top"><span class="mono" style="display:flex;gap:8px;align-items:center;color:var(--ink)">${GLYPH[FAM[t.grp]]}${i+1} / ${T.length}</span>
+    <div class="top"><span class="mono" style="display:flex;gap:8px;align-items:center;color:var(--ink)">${GLYPH[FAM[t.grp]]}${i+1} / ${T.length}<span class="swipe">· swipe</span></span>
       <div class="nav"><button class="ib" data-step="-1" aria-label="Previous tradition">←</button><button class="ib" data-rand aria-label="Random tradition">⁂</button><button class="ib" data-step="1" aria-label="Next tradition">→</button></div></div>
     <svg class="art" viewBox="0 0 120 80" aria-hidden="true">${(window.ART||{})[t.id]||""}</svg>
     <h3 class="name">${esc(t.name)}</h3>
@@ -64,14 +64,30 @@ function show(id){
   if(location.hash!=="#t-"+id) history.replaceState(null,"","#t-"+id);
 }
 $("#card").addEventListener("click",e=>{
-  const s=e.target.closest("[data-step]"); if(s){const i=(T.indexOf(byId[current])+ +s.dataset.step+T.length)%T.length;show(T[i].id);return;}
+  const s=e.target.closest("[data-step]"); if(s){step(+s.dataset.step);return;}
   if(e.target.closest("[data-rand]")){let r;do{r=T[Math.floor(Math.random()*T.length)].id}while(r===current);show(r);}
 });
 document.addEventListener("keydown",e=>{
   if(/INPUT|SELECT|TEXTAREA/.test(document.activeElement.tagName))return;
   const r=$("#traditions").getBoundingClientRect(); if(r.top>innerHeight||r.bottom<0)return;
-  if(e.key==="ArrowRight"||e.key==="ArrowLeft"){const i=(T.indexOf(byId[current])+(e.key==="ArrowRight"?1:-1)+T.length)%T.length;show(T[i].id);}
+  if(e.key==="ArrowRight"||e.key==="ArrowLeft") step(e.key==="ArrowRight"?1:-1);
 });
+
+
+function step(d){const i=(T.indexOf(byId[current])+d+T.length)%T.length;show(T[i].id,d);}
+/* swipe between traditions */
+(function(){
+  const c=$("#card"); let x0=0,y0=0,dx=0,mode=null;
+  c.addEventListener("touchstart",e=>{if(e.touches.length!==1)return;x0=e.touches[0].clientX;y0=e.touches[0].clientY;dx=0;mode=null;c.style.transition="none";},{passive:true});
+  c.addEventListener("touchmove",e=>{if(mode==="v")return;const t=e.touches[0];dx=t.clientX-x0;const dy=t.clientY-y0;
+    if(!mode){if(Math.abs(dx)<8&&Math.abs(dy)<8)return;mode=Math.abs(dx)>Math.abs(dy)?"h":"v";if(mode==="v")return;}
+    c.style.transform=`translateX(${dx*.6}px)`;c.style.opacity=String(1-Math.min(Math.abs(dx)/500,.5));},{passive:true});
+  const end=()=>{if(mode!=="h"){mode=null;return;}mode=null;
+    if(Math.abs(dx)>60){c.style.transition="transform .18s ease-in,opacity .18s ease-in";c.style.transform=`translateX(${dx<0?-80:80}px)`;c.style.opacity="0";
+      const d=dx<0?1:-1;setTimeout(()=>{c.style.transition="";step(d);},170);}
+    else{c.style.transition="transform .35s var(--ease),opacity .35s var(--ease)";c.style.transform="";c.style.opacity="";}};
+  c.addEventListener("touchend",end);c.addEventListener("touchcancel",end);
+})();
 
 /* boot */
 const h=location.hash.slice(3);
