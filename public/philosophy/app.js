@@ -40,6 +40,10 @@ syncBrowse(); mq.addEventListener("change",syncBrowse);
 $("#groups").addEventListener("click",e=>{const b=e.target.closest("[data-id]");if(!b)return;show(b.dataset.id);
   if(mq.matches){$("#browse").open=false;$("#browse").scrollIntoView({block:"start"});}else $("#card").scrollIntoView({block:"nearest"});});
 
+let cardSeen=false;
+if("IntersectionObserver" in window){
+  new IntersectionObserver(es=>{es.forEach(e=>{if(e.isIntersecting&&!cardSeen){cardSeen=true;const art=$("#card .slide:not(.peek) .art");if(art)art.classList.add("go");}});},{threshold:.15}).observe($("#card"));
+} else cardSeen=true;
 function topHTML(t){
   const i=T.indexOf(t);
   return `<div class="top"><span class="mono count" style="display:flex;gap:8px;align-items:center;color:var(--ink)">${GLYPH[FAM[t.grp]]}${i+1} / ${T.length}<span class="swipe">· swipe</span></span>
@@ -64,8 +68,9 @@ function show(id,mode){
   const c=$("#card");
   const cls=mode==="still"?"still":mode?(mode>0?"from-r":"from-l"):"anim";
   c.innerHTML=topHTML(t)+slideHTML(t,cls);
-  if(mode!=="still") c.querySelectorAll(".art > *").forEach((el,k)=>{ if(el.hasAttribute("stroke-dasharray")){el.classList.add("fd");return;}
+  c.querySelectorAll(".slide .art > *").forEach((el,k)=>{ if(el.hasAttribute("stroke-dasharray")){el.classList.add("fd");return;}
     el.setAttribute("pathLength","1"); el.classList.add("dr"); el.style.animationDelay=(0.15+k*0.12).toFixed(2)+"s"; });
+  const art=c.querySelector(".slide .art"); if(art&&cardSeen) art.classList.add("go");
   $("#cur").textContent=t.name;
   document.querySelectorAll(".pick").forEach(p=>p.setAttribute("aria-current",p.dataset.id===id));
   if(location.hash!=="#t-"+id) history.replaceState(null,"","#t-"+id);
@@ -92,11 +97,12 @@ function step(d){const i=(T.indexOf(byId[current])+d+T.length)%T.length;show(T[i
     if(side===d&&peek)return; if(peek)peek.remove();
     side=d; c.insertAdjacentHTML("beforeend",slideHTML(neighbour(d),"peek"));
     peek=c.lastElementChild; peek.style.top=cur.offsetTop+"px";
+    peek.querySelectorAll(".art > *").forEach(el=>{if(!el.hasAttribute("stroke-dasharray"))el.setAttribute("pathLength","1");});
   }
   function place(x,anim){
     const w=W()+GAP, p=Math.min(Math.abs(x)/w,1);
-    cur.style.transform=`translate3d(${x}px,0,0)`; cur.style.opacity=String(1-p*.6);
-    if(peek){peek.style.transform=`translate3d(${x+side*w}px,0,0)`; peek.style.opacity=String(.4+p*.6);}
+    cur.style.transform=`translate3d(${x}px,0,0) scale(${1-p*.1})`; cur.style.opacity=String(1-p*.6);
+    if(peek){peek.style.transform=`translate3d(${x+side*w}px,0,0) scale(${.9+p*.1})`; peek.style.opacity=String(.4+p*.6);}
   }
   const paint=()=>{raf=0; if(!cur)return; const d=dx<0?1:-1; if(dx!==0) ensurePeek(d); place(dx);};
   c.addEventListener("touchstart",e=>{if(busy||e.touches.length!==1)return;const t=e.touches[0];

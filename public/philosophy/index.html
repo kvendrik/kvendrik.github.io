@@ -66,7 +66,8 @@ h2{font-size:clamp(40px,7vw,60px);margin:10px 0 24px}
 .ib:hover{border-color:var(--ink)}
 .ib:focus-visible{outline:2px solid var(--ink)}
 .art{display:block;width:168px;height:112px;margin-top:28px;fill:none;stroke:var(--ink);stroke-width:1.25;stroke-linecap:round;stroke-linejoin:round;overflow:visible}
-.art .dr{stroke-dasharray:1;animation:draw 1.3s var(--ease) backwards}
+@keyframes drawArt{0%{stroke-dashoffset:1;opacity:0}8%{opacity:1}}
+.art .dr{stroke-dasharray:1;animation:drawArt 1.3s var(--ease) backwards}
 .art .fd{opacity:.6;animation:fade 1.2s ease .9s backwards}
 @keyframes fade{from{opacity:0}}
 .name{font-size:clamp(44px,8vw,68px);margin-top:12px}
@@ -134,7 +135,10 @@ select{width:100%;font:inherit;font-size:16px;padding:10px 12px;background:var(-
 }
 .card{touch-action:pan-y;position:relative;overflow:clip;overflow-clip-margin:6px}
 .slide.peek{position:absolute;left:0;right:0;pointer-events:none}
-.slide{will-change:transform}
+.slide{will-change:transform;transform-origin:50% 160px}
+.art:not(.go) .dr{animation-play-state:paused}
+.art:not(.go) .fd{animation-play-state:paused}
+.slide.peek .art{opacity:0}
 .card>.top{margin-bottom:28px}
 .card .art{margin-top:0}
 .swipe{display:none;margin-left:6px;color:var(--muted)}
