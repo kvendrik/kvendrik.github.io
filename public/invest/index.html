@@ -26,13 +26,16 @@
   --f-display:"Instrument Serif","Bodoni Moda",Didot,Georgia,serif;
   --f-body:"Allo",system-ui,-apple-system,"Segoe UI",sans-serif;
   --f-mono:"Space Mono",ui-monospace,Menlo,monospace;
-  --ease:cubic-bezier(0.23,1,0.32,1);
+  --ease:cubic-bezier(0.23,1,0.32,1); --ease-io:cubic-bezier(0.77,0,0.175,1); --ease-drawer:cubic-bezier(0.32,0.72,0,1); --fill:#DDD3C1;
   --shadow:3px 3px 0 0 var(--ink); --shadow-lg:6px 6px 0 0 var(--ink);
   color-scheme:light;
 }
 *{box-sizing:border-box}
 [hidden]{display:none!important}
-html{scroll-behavior:smooth;scroll-padding-top:20px;-webkit-text-size-adjust:100%}
+html{scroll-behavior:smooth;scroll-padding-top:20px;-webkit-text-size-adjust:100%;-webkit-tap-highlight-color:transparent;interpolate-size:allow-keywords}
+/* Native-feel baseline: no 300ms wait, no text selection or callouts on controls. Content text stays selectable. */
+a,button,summary,.slider,.chart svg{touch-action:manipulation}
+button,summary,.seg,.slider,.chart svg,.grid100,.toc a{-webkit-user-select:none;user-select:none;-webkit-touch-callout:none}
 body{margin:0;background:var(--paper);color:var(--ink);font:400 17px/1.6 var(--f-body);font-variation-settings:"ROND" 0;-webkit-font-smoothing:antialiased;
   padding:env(safe-area-inset-top,0px) max(16px,env(safe-area-inset-right,0px)) env(safe-area-inset-bottom,0px) max(16px,env(safe-area-inset-left,0px))}
 p,h1,h2,h3,ul,ol{margin:0}
@@ -61,13 +64,19 @@ h2{font-size:clamp(40px,7vw,60px);margin:10px 0 24px}
 .quote .mono{display:block;margin-top:8px}
 .toc{display:flex;flex-wrap:wrap;gap:6px 22px;margin-top:28px}
 .toc a{font-family:var(--f-mono);font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--ink);text-decoration:none;border-bottom:1px solid var(--rule);padding-bottom:2px;transition:border-color .2s}
-.toc a:hover{border-bottom-color:var(--ink)}
+@media (hover:hover) and (pointer:fine){.toc a:hover{border-bottom-color:var(--ink)}}
 
 /* segmented control (bodega-ish) */
-.seg{display:inline-flex;border:2px solid var(--ink);background:var(--paper);box-shadow:var(--shadow)}
-.seg button{all:unset;cursor:pointer;padding:8px 14px;font:700 11px/16px var(--f-mono);letter-spacing:.1em;text-transform:uppercase;transition:background .15s var(--ease),color .15s var(--ease)}
+.seg{position:relative;isolation:isolate;display:inline-flex;border:2px solid var(--ink);background:var(--paper);box-shadow:var(--shadow)}
+.seg button{all:unset;position:relative;z-index:1;cursor:pointer;padding:8px 14px;font:700 11px/16px var(--f-mono);letter-spacing:.1em;text-transform:uppercase;text-align:center;transition:color .2s var(--ease),transform 160ms var(--ease)}
 .seg button+button{border-left:2px solid var(--ink)}
-.seg button[aria-pressed="true"]{background:var(--ink);color:var(--paper)}
+.seg button[aria-pressed="true"]{color:var(--paper)}
+.seg:not(.has-thumb) button[aria-pressed="true"]{background:var(--ink)}
+.seg button:active{transform:scale(.94)}
+/* the thumb glides to the chosen option; its position is written on the thumb itself */
+.seg-thumb{position:absolute;z-index:0;top:0;left:0;height:100%;width:0;background:var(--ink);pointer-events:none;transition:transform .38s var(--ease-drawer),width .38s var(--ease-drawer)}
+.seg-thumb.instant{transition:none}
+@media (pointer:coarse){.seg button{padding:14px 15px}}
 .seg button:focus-visible{outline:2px solid var(--ink);outline-offset:3px}
 .controls{display:flex;flex-wrap:wrap;justify-content:space-between;align-items:center;gap:12px;margin:28px 0 14px}
 
@@ -100,8 +109,12 @@ h2{font-size:clamp(40px,7vw,60px);margin:10px 0 24px}
 details{margin-top:28px;border-top:1px solid var(--rule)}
 summary{cursor:pointer;list-style:none;padding:14px 0;display:flex;justify-content:space-between}
 summary::-webkit-details-marker{display:none}
-summary::after{content:"+";font-family:var(--f-mono)}
-details[open] summary::after{content:"–"}
+summary{min-height:44px;align-items:center}
+summary::after{content:"+";font-family:var(--f-mono);font-size:16px;line-height:1;transition:transform .3s var(--ease)}
+details[open] summary::after{transform:rotate(45deg)}
+summary:active{opacity:.6}
+details::details-content{block-size:0;overflow:clip;transition:block-size .4s var(--ease-drawer),content-visibility .4s allow-discrete}
+details[open]::details-content{block-size:auto}
 .evlist{list-style:none;padding:0 0 12px;display:grid}
 .evlist li{display:grid;grid-template-columns:7.5em minmax(0,1fr) auto;gap:4px 16px;padding:10px 0;border-top:1px solid var(--rule);font-size:15px;color:var(--ink-2)}
 .evlist .yr{font-family:var(--f-mono);font-size:12px;color:var(--ink);padding-top:3px}
@@ -121,20 +134,28 @@ table.data th{color:var(--muted);font-weight:400}
 .hay{margin-top:48px;padding:24px;background:var(--card);border-radius:2px}
 .hay h3{font-size:clamp(28px,4.6vw,38px);line-height:1.1}
 .hay .row{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.1fr);gap:28px;align-items:start;margin-top:20px}
-.grid100{display:grid;grid-template-columns:repeat(10,1fr);gap:4px;max-width:300px}
-.grid100 i{aspect-ratio:1;border:1.5px solid var(--ink);border-radius:2px;transition:background .25s var(--ease),transform .25s var(--ease),border-color .25s}
-.grid100 i.win{background:var(--ink)}
-.grid100.picking i{border-color:var(--rule)}
-.grid100.picking i.win{background:var(--down);border-color:var(--down)}
-.grid100.picking i.pk{border-color:var(--ink);transform:scale(.82)}
-.grid100.picking i.pk.win{background:var(--ink);border-color:var(--ink)}
+.grid100{display:grid;grid-template-columns:repeat(10,1fr);gap:5px;max-width:320px}
+.grid100 button{all:unset;box-sizing:border-box;aspect-ratio:1;border:1.5px solid var(--ink);border-radius:3px;background:var(--paper);cursor:pointer;
+  transition:transform .32s var(--ease-drawer),background-color .16s var(--ease),border-color .16s var(--ease),box-shadow .16s var(--ease)}
+.grid100 button:active{transform:scale(.8);transition-duration:90ms}
+.grid100 button:focus-visible{outline:2px solid var(--ink);outline-offset:2px}
+.grid100 button.pk{background:var(--ink);transform:scale(.88)}
+.grid100.revealed button{border-color:var(--rule)}
+.grid100.revealed button.pk{background:transparent;border-color:var(--ink);box-shadow:inset 0 0 0 2px var(--ink);transform:scale(.88)}
+.grid100.revealed button.win{background:var(--down);border-color:var(--down);box-shadow:none;transform:none;animation:pop .5s var(--ease) backwards}
+.grid100.revealed button.win.pk{background:var(--ink);border-color:var(--ink)}
+@keyframes pop{0%{transform:scale(.5);opacity:0}60%{transform:scale(1.15);opacity:1}100%{transform:scale(1)}}
+.haykey{display:flex;flex-wrap:wrap;gap:6px 14px;margin-top:12px}
+.haykey span{display:inline-flex;align-items:center;gap:6px}
+.haykey i{display:inline-block;width:11px;height:11px;border-radius:2px}
 .hay .out{font-family:var(--f-display);font-size:26px;line-height:1.2;min-height:3.6em}
 .hay .tally{margin-top:10px}
 .btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;padding:12px 20px;background:var(--ink);color:var(--paper);border:2px solid var(--ink);border-radius:0;box-shadow:var(--shadow);
   font:700 12px/16px var(--f-mono);letter-spacing:.12em;text-transform:uppercase;cursor:pointer;-webkit-tap-highlight-color:transparent;touch-action:manipulation;user-select:none;
   transition:transform 120ms var(--ease),box-shadow 120ms var(--ease)}
-@media (hover:hover){.btn:hover{box-shadow:var(--shadow-lg);transform:translate(-3px,-3px)}}
+@media (hover:hover) and (pointer:fine){.btn:hover{box-shadow:var(--shadow-lg);transform:translate(-3px,-3px)}}
 .btn:active{box-shadow:none;transform:translate(3px,3px);transition-duration:40ms}
+@media (pointer:coarse){.btn{min-height:48px;padding:14px 20px}}
 .btn--quiet{background:var(--paper);color:var(--ink)}
 .btns{display:flex;flex-wrap:wrap;gap:12px;margin-top:20px}
 .fees{margin-top:48px;border-top:1px solid var(--ink);padding-top:18px}
@@ -162,8 +183,24 @@ table.data th{color:var(--muted);font-weight:400}
 .then h3{font-size:28px;margin:6px 0 8px}
 .then p{font-size:15px;color:var(--ink-2)}
 
-/* calculator: Bodega fields on cream */
-.calc{margin-top:32px;display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:20px 16px}
+/* calculator: drag sliders (relative drag, like iOS Control Center), tap the number to type */
+.calc{margin-top:32px;display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px 16px}
+.slider{position:relative;display:flex;align-items:center;justify-content:space-between;gap:12px;height:64px;padding:0 16px;border:2px solid var(--ink);background:var(--paper);box-shadow:var(--shadow);
+  overflow:hidden;cursor:ew-resize;touch-action:pan-y;transition:transform .45s var(--ease-drawer),box-shadow .16s var(--ease)}
+.slider.pressed{transform:translate(2px,2px);box-shadow:1px 1px 0 0 var(--ink);transition-duration:80ms}
+.slider.dragging{transition:none;box-shadow:1px 1px 0 0 var(--ink)}
+.slider:focus-within{transform:translate(-3px,-3px);box-shadow:var(--shadow-lg)}
+.slider-fill{position:absolute;inset:0;background:var(--fill);clip-path:inset(0 100% 0 0);pointer-events:none}
+.slider.dragging .slider-fill{background:#D3C8B4}
+.slider-grip{position:absolute;left:0;top:50%;width:3px;height:26px;margin:-13px 0 0 -9px;border-radius:2px;background:var(--ink);opacity:0;pointer-events:none;transition:opacity .16s var(--ease)}
+.slider.dragging .slider-grip{opacity:.8}
+.slider-label{position:relative;font:700 11px/16px var(--f-mono);letter-spacing:.12em;text-transform:uppercase;color:var(--ink);pointer-events:none;white-space:nowrap}
+.slider-val{position:relative;display:flex;align-items:baseline;gap:2px;font-family:var(--f-display);font-size:28px;line-height:1;cursor:text}
+.slider-val .cur,.slider-val .suf{font-size:20px;color:var(--ink-2)}
+.slider-val .suf{margin-left:4px}
+.slider input{width:calc(var(--ch,6) * 1ch + 4px);field-sizing:content;min-inline-size:1ch;min-width:0;margin:0;padding:6px 0;border:0;border-radius:0;outline:0;background:transparent;color:var(--ink);font:inherit;text-align:right;font-variant-numeric:tabular-nums;-webkit-appearance:none;appearance:none;cursor:text}
+@supports (field-sizing:content){.slider input{width:auto}}
+.slider input:focus{text-decoration:underline;text-decoration-thickness:1.5px;text-underline-offset:6px}
 .lab{display:block;margin-bottom:8px;font:700 11px/16px var(--f-mono);letter-spacing:.12em;text-transform:uppercase;color:var(--ink)}
 .field{display:flex;align-items:center;background:var(--paper);border:2px solid var(--ink);box-shadow:var(--shadow);transition:transform 150ms var(--ease),box-shadow 150ms var(--ease)}
 .field:focus-within{transform:translate(-3px,-3px);box-shadow:var(--shadow-lg)}
@@ -196,7 +233,10 @@ table.data th{color:var(--muted);font-weight:400}
 .reading .by{font-family:var(--f-display);font-style:italic;font-size:20px;color:var(--ink-2);margin-top:4px}
 .reading p:not(.by){font-size:15px;color:var(--ink-2);margin-top:10px}
 .reading a h3{text-decoration:underline;text-decoration-color:var(--rule);text-decoration-thickness:1px;text-underline-offset:5px;transition:text-decoration-color .2s}
-.reading a:hover h3{text-decoration-color:var(--ink)}
+.reading a{transition:transform 160ms var(--ease)}
+.reading a:active{transform:scale(.98)}
+.reading a:active h3{text-decoration-color:var(--ink)}
+@media (hover:hover) and (pointer:fine){.reading a:hover h3{text-decoration-color:var(--ink)}}
 .end{padding-block:88px 80px}
 .end .big{font-family:var(--f-display);font-size:clamp(44px,9vw,84px);line-height:1}
 .end small{display:block;margin-top:40px;color:var(--muted);font-size:13px;line-height:1.6;max-width:68ch}
@@ -213,10 +253,14 @@ table.data th{color:var(--muted);font-weight:400}
   .stats>div:nth-child(3),.outcomes>div:nth-child(3){padding-left:0;border-left:0}
   .stats>div:nth-child(n+3),.outcomes>div:nth-child(n+3){border-top:1px solid var(--rule)}
   .how,.then,.reading{grid-template-columns:1fr}
+  .toc{flex-wrap:nowrap;overflow-x:auto;overscroll-behavior-x:contain;scroll-snap-type:x proximity;scrollbar-width:none;margin-inline:-16px;padding:4px 16px 10px;gap:8px}
+  .toc::-webkit-scrollbar{display:none}
+  .toc a{flex:none;scroll-snap-align:start;scroll-margin-inline:16px;padding:13px 14px;border:1.5px solid var(--ink);background:var(--paper);box-shadow:2px 2px 0 0 var(--ink);transition:transform 120ms var(--ease),box-shadow 120ms var(--ease)}
+  .toc a:active{transform:translate(2px,2px);box-shadow:none}
   .how{gap:20px}
   .hay{padding:18px}
   .hay .row{grid-template-columns:1fr}
-  .calc{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .calc{grid-template-columns:1fr;gap:12px}
   .rows .r{grid-template-columns:minmax(0,1fr) 4em 6em;gap:4px 10px}
   .rows .t{grid-column:1/-1;grid-row:2}
   .evlist li{grid-template-columns:5.5em minmax(0,1fr)}
@@ -293,12 +337,15 @@ table.data th{color:var(--muted);font-weight:400}
       <span class="mono">Try it · 100 stocks, 4 of them winners</span>
       <h3>Pick 10 and see if you find the needles.</h3>
       <div class="row">
-        <div class="grid100" id="grid100" aria-hidden="true"></div>
         <div>
-          <p class="out" id="hayOut" aria-live="polite">The 4 dark squares are the companies that will make the money. You just don’t know that yet.</p>
+          <div class="grid100" id="grid100" role="group" aria-label="100 stocks. Pick 10."></div>
+          <div class="haykey mono" id="hayKey" hidden><span><i style="background:var(--ink)"></i>Winner you own</span><span><i style="background:var(--down)"></i>Winner you missed</span><span><i style="box-shadow:inset 0 0 0 2px var(--ink)"></i>Your pick</span></div>
+        </div>
+        <div>
+          <p class="out" id="hayOut" aria-live="polite">Four of these 100 companies will make all the money. Tap 10 to build your portfolio, or let chance pick.</p>
           <p class="mono tally" id="hayTally"></p>
           <div class="btns">
-            <button class="btn" type="button" id="pickBtn">Pick 10 at random</button>
+            <button class="btn" type="button" id="pickBtn">Pick for me</button>
             <button class="btn btn--quiet" type="button" id="pick1000">Try 1,000 times</button>
           </div>
         </div>
@@ -341,12 +388,13 @@ table.data th{color:var(--muted);font-weight:400}
     <h2 id="h-future">What your money could become</h2>
     <p class="lede">A calculator with one fixed return draws a smooth line that never happens. This one replays history: it runs 10,000 possible futures built from the world’s real stock market years, good and bad, in random order.</p>
 
-    <form class="calc" id="calc" novalidate onsubmit="return false">
-      <label><span class="lab">Start with</span><span class="field"><span class="pre cur">$</span><input id="cStart" type="text" inputmode="numeric" value="10,000"></span></label>
-      <label><span class="lab">Add each month</span><span class="field"><span class="pre cur">$</span><input id="cMonthly" type="text" inputmode="numeric" value="500"></span></label>
-      <label><span class="lab">For how long</span><span class="field"><input id="cYears" type="text" inputmode="numeric" value="30"><span class="suf">years</span></span></label>
-      <label><span class="lab">Yearly fee</span><span class="field"><input id="cFee" type="text" inputmode="decimal" value="0.2"><span class="suf">%</span></span></label>
-    </form>
+    <div class="calc" id="calc">
+      <div class="slider" data-key="cStart"><span class="slider-fill"></span><span class="slider-grip"></span><label class="slider-label" for="cStart">Start with</label><span class="slider-val"><span class="cur">$</span><input id="cStart" type="text" inputmode="numeric" enterkeyhint="done" autocomplete="off" value="10,000" style="--ch:7"></span></div>
+      <div class="slider" data-key="cMonthly"><span class="slider-fill"></span><span class="slider-grip"></span><label class="slider-label" for="cMonthly">Add each month</label><span class="slider-val"><span class="cur">$</span><input id="cMonthly" type="text" inputmode="numeric" enterkeyhint="done" autocomplete="off" value="500" style="--ch:5"></span></div>
+      <div class="slider" data-key="cYears"><span class="slider-fill"></span><span class="slider-grip"></span><label class="slider-label" for="cYears">For how long</label><span class="slider-val"><input id="cYears" type="text" inputmode="numeric" enterkeyhint="done" autocomplete="off" value="30" style="--ch:2"><span class="suf">years</span></span></div>
+      <div class="slider" data-key="cFee"><span class="slider-fill"></span><span class="slider-grip"></span><label class="slider-label" for="cFee">Yearly fee</label><span class="slider-val"><input id="cFee" type="text" inputmode="decimal" enterkeyhint="done" autocomplete="off" value="0.2" style="--ch:4"><span class="suf">%</span></span></div>
+    </div>
+    <p class="note" style="margin-top:12px">Drag a box sideways to change it, or tap the number to type.</p>
 
     <div class="calc-opts">
       <div class="seg" role="group" aria-label="How to build the futures">
@@ -409,7 +457,7 @@ table.data th{color:var(--muted);font-weight:400}
   </footer>
 </main>
 
-<script src="/invest/returns.js?v=3"></script>
-<script src="/invest/app.js?v=3"></script>
+<script src="/invest/returns.js?v=4"></script>
+<script src="/invest/app.js?v=5"></script>
 </body>
 </html>

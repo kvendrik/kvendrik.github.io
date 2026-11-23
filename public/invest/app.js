@@ -10,6 +10,31 @@ const store = {
   set: (k, v) => { try { localStorage.setItem(k, v); } catch {} },
 };
 
+/* ---------- haptics ----------
+   Android: the Vibration API. iOS Safari 18+: clicking a hidden switch control plays the system tick.
+   Touch screens only, and never more than one tick every 35ms so a fast drag doesn't buzz. */
+const COARSE = matchMedia("(pointer: coarse)").matches;
+const haptic = (() => {
+  let last = 0;
+  const tick = () => {
+    if (typeof navigator.vibrate === "function") return void navigator.vibrate(6);
+    const label = document.createElement("label"), input = document.createElement("input");
+    label.setAttribute("aria-hidden", "true"); label.style.display = "none";
+    input.type = "checkbox"; input.setAttribute("switch", "");
+    label.appendChild(input); document.head.appendChild(label); label.click(); label.remove();
+  };
+  return (strong) => {
+    if (!COARSE) return;
+    const now = performance.now();
+    if (now - last < 35) return;
+    last = now;
+    try {
+      if (strong && typeof navigator.vibrate === "function") navigator.vibrate(14);
+      else { tick(); if (strong) setTimeout(tick, 70); }
+    } catch {}
+  };
+})();
+
 /* ---------- data ---------- */
 const YEARS = W.real.map((_, i) => W.first + i);
 const R = W.real;
@@ -70,8 +95,14 @@ function ticksLin(min, max, n) {
   for (let v = Math.ceil(min / step) * step; v <= max + 1e-9; v += step) out.push(+v.toFixed(10));
   return out;
 }
-function placeTip(tip, box, x, y) {
+function placeTip(tip, box, x, y, touch) {
   const w = tip.offsetWidth, h = tip.offsetHeight, bw = box.clientWidth;
+  if (touch) {
+    // A finger covers whatever is under it, so the readout rides above the chart, centred on the year.
+    const left = Math.max(0, Math.min(x - w / 2, bw - w));
+    tip.style.transform = `translate(${left}px,${-h + 36}px)`;
+    return;
+  }
   let left = x + 14;
   if (left + w > bw) left = x - w - 14;
   left = Math.max(0, Math.min(left, bw - w));
@@ -214,6 +245,8 @@ function drawHistory() {
 }
 function select(i, fromPointer, py) {
   if (i < 0 || i >= N) return;
+  const touch = fromPointer && H.pt === "touch";
+  if (touch && i !== H.sel) haptic(eventsFor(YEARS[i]).length > 0); // a firmer tick on the years something happened
   H.sel = i;
   const { X, Y, step, m } = H.geo, cx = X(i) + step / 2;
   const cross = $("#histCross"), dot = $("#histDot"), tip = $("#histTip");
@@ -228,7 +261,7 @@ function select(i, fromPointer, py) {
     `<div class="m">$10,000 from ${W.first} → ${usd(CUM[i] * START)}</div>`;
   tip.classList.add("on");
   const ty = H.view === "bars" ? Math.min(Y(Math.max(R[i], 0)), Y(0)) : Y(CUM[i]);
-  placeTip(tip, $("#histChart"), cx, fromPointer && py != null ? Math.min(py, ty) : ty);
+  placeTip(tip, $("#histChart"), cx, fromPointer && py != null ? Math.min(py, ty) : ty, touch);
 }
 function clearSel() {
   H.sel = -1;
@@ -245,8 +278,8 @@ function bindHistory() {
     const r = svg.getBoundingClientRect(), x = e.clientX - r.left;
     return [Math.floor((x - H.geo.m.l) / H.geo.step), e.clientY - r.top];
   };
-  svg.addEventListener("pointermove", (e) => { const [i, y] = at(e); if (i >= 0 && i < N) select(i, true, y); });
-  svg.addEventListener("pointerdown", (e) => { const [i, y] = at(e); if (i >= 0 && i < N) select(i, true, y); });
+  svg.addEventListener("pointermove", (e) => { H.pt = e.pointerType; const [i, y] = at(e); if (i >= 0 && i < N) select(i, true, y); });
+  svg.addEventListener("pointerdown", (e) => { H.pt = e.pointerType; const [i, y] = at(e); if (i >= 0 && i < N) select(i, true, y); });
   svg.addEventListener("pointerleave", (e) => { if (e.pointerType === "mouse") clearSel(); });
   svg.addEventListener("keydown", (e) => {
     const k = { ArrowLeft: -1, ArrowRight: 1, ArrowDown: -10, ArrowUp: 10 }[e.key];
@@ -258,7 +291,7 @@ function bindHistory() {
   $$("[data-view]").forEach((b) => b.addEventListener("click", () => {
     H.view = b.dataset.view;
     $$("[data-view]").forEach((x) => x.setAttribute("aria-pressed", x === b));
-    $("#histHint").textContent = H.view === "bars" ? "After inflation · hover or tap a year" : "After inflation · log scale, so equal steps are equal % growth";
+    $("#histHint").textContent = H.view === "bars" ? (COARSE ? "After inflation · drag across the years" : "After inflation · hover or tap a year") : "After inflation · log scale, so equal steps are equal % growth";
     $("#histKey").hidden = H.view !== "bars";
     clearSel();
     drawHistory();
@@ -301,25 +334,77 @@ function historyText() {
 /* ---------- haystack ---------- */
 function haystack() {
   const WIN = [13, 38, 66, 87];
-  const g = $("#grid100");
-  g.innerHTML = Array.from({ length: 100 }, (_, i) => `<i class="${WIN.includes(i) ? "win" : ""}"></i>`).join("");
+  const g = $("#grid100"), out = $("#hayOut"), tally = $("#hayTally"), key = $("#hayKey");
+  g.innerHTML = Array.from({ length: 100 }, (_, i) => `<button type="button" aria-pressed="false" aria-label="Stock ${i + 1}"></button>`).join("");
   const cells = Array.from(g.children);
-  let tries = 0, missed = 0;
-  const pick10 = () => { const a = Array.from({ length: 100 }, (_, i) => i); for (let i = 0; i < 10; i++) { const j = i + Math.floor(Math.random() * (100 - i)); [a[i], a[j]] = [a[j], a[i]]; } return a.slice(0, 10); };
-  $("#pickBtn").addEventListener("click", () => {
-    const p = pick10(), hit = p.filter((i) => WIN.includes(i)).length;
-    g.classList.add("picking");
-    cells.forEach((c, i) => c.classList.toggle("pk", p.includes(i)));
+  const INTRO = out.textContent;
+  let picks = [], done = false, busy = false, tries = 0, missed = 0;
+  const count = () => { tally.textContent = done ? `${tries} ${tries === 1 ? "round" : "rounds"} · missed every winner ${missed} ${missed === 1 ? "time" : "times"}` : picks.length ? `${picks.length} of 10 picked` : ""; };
+  function clear() {
+    picks = []; done = false;
+    g.classList.remove("revealed"); key.hidden = true;
+    cells.forEach((c) => { c.className = ""; c.style.animationDelay = ""; c.setAttribute("aria-pressed", "false"); });
+    out.textContent = INTRO; count();
+  }
+  function reveal() {
+    done = true;
+    const hit = picks.filter((i) => WIN.includes(i)).length;
     tries++; if (!hit) missed++;
-    $("#hayOut").textContent = hit === 0 ? "You missed all four. Your ten stocks, together, would likely have done no better than cash."
-      : hit === 1 ? "You found one winner. Lucky, and it’s only one tenth of your money."
-      : `You found ${hit}. Very lucky. Try again and see if it lasts.`;
-    $("#hayTally").textContent = `${tries} ${tries === 1 ? "try" : "tries"} · missed every winner ${missed} ${missed === 1 ? "time" : "times"}`;
+    g.classList.add("revealed"); key.hidden = false;
+    WIN.forEach((w, k) => { cells[w].classList.add("win"); cells[w].style.animationDelay = `${k * 70}ms`; });
+    out.textContent = hit === 0 ? "You missed all four. Your ten stocks, together, would likely have done no better than cash."
+      : hit === 1 ? "You found one winner. Lucky, and it’s only a tenth of your money."
+      : `You found ${hit}. Very lucky. Tap a square to play again and see if it lasts.`;
+    setTimeout(() => haptic(hit > 0), 140);
+    count();
+  }
+  function add(i) {
+    picks.push(i);
+    cells[i].classList.add("pk"); cells[i].setAttribute("aria-pressed", "true");
+    haptic();
+    count();
+  }
+  g.addEventListener("click", (e) => {
+    const c = e.target.closest("button"); if (!c || busy) return;
+    if (done) clear();
+    const i = cells.indexOf(c);
+    if (picks.includes(i)) {
+      picks = picks.filter((p) => p !== i);
+      c.classList.remove("pk"); c.setAttribute("aria-pressed", "false"); haptic(); count();
+      return;
+    }
+    if (picks.length >= 10) return;
+    add(i);
+    if (picks.length === 10) { busy = true; setTimeout(() => { busy = false; reveal(); }, 280); }
+  });
+  $("#pickBtn").addEventListener("click", () => {
+    if (busy) return;
+    if (done) clear();
+    const pool = cells.map((_, i) => i).filter((i) => !picks.includes(i));
+    for (let k = pool.length - 1; k > 0; k--) { const j = Math.floor(Math.random() * (k + 1)); [pool[k], pool[j]] = [pool[j], pool[k]]; }
+    const todo = pool.slice(0, 10 - picks.length);
+    if (reduced) { todo.forEach(add); return reveal(); }
+    // fill the rest in a quick wave that speeds up, then reveal
+    busy = true;
+    let at = 0;
+    todo.forEach((i, k) => { at += 90 * 0.86 ** k; setTimeout(() => add(i), at); });
+    setTimeout(() => { busy = false; reveal(); }, at + 260);
   });
   $("#pick1000").addEventListener("click", () => {
+    if (busy) return;
     let none = 0, all = 0;
-    for (let k = 0; k < 1000; k++) { const h = pick10().filter((i) => WIN.includes(i)).length; if (!h) none++; if (h === 4) all++; }
-    $("#hayOut").textContent = `Out of 1,000 random portfolios, ${int(none)} missed every winner. ${all ? int(all) + " found all four." : "Not one found all four."} The index fund found all four, every time.`;
+    for (let k = 0; k < 1000; k++) {
+      const a = Array.from({ length: 100 }, (_, i) => i);
+      for (let i = 0; i < 10; i++) { const j = i + Math.floor(Math.random() * (100 - i)); [a[i], a[j]] = [a[j], a[i]]; }
+      const h = a.slice(0, 10).filter((i) => WIN.includes(i)).length;
+      if (!h) none++; if (h === 4) all++;
+    }
+    clear(); done = true;
+    g.classList.add("revealed"); key.hidden = false;
+    WIN.forEach((w, k) => { cells[w].classList.add("win"); cells[w].style.animationDelay = `${k * 70}ms`; });
+    haptic(true);
+    out.textContent = `Out of 1,000 random portfolios, ${int(none)} missed every winner. ${all ? int(all) + " found all four." : "Not one found all four."} The index fund found all four, every time.`;
+    tally.textContent = "";
   });
 }
 
@@ -361,14 +446,13 @@ function bindOwn() {
 }
 
 /* ---------- Monte Carlo ---------- */
-const SIMS = 10000;
 let MODE = "boot", EXP = "hist", MC = null;
 // "Cautious" shifts every year down by the same amount, so the compound average lands on 5%,
 // about what the Dimson-Marsh-Staunton data (which includes the markets that went to zero) shows.
 const SHIFT = () => (EXP === "cautious" ? Math.log(1.05) - MU : 0);
 const geoNow = () => Math.exp(MU + SHIFT()) - 1;
 function rng(seed) { return () => { seed |= 0; seed = (seed + 0x6d2b79f5) | 0; let t = Math.imul(seed ^ (seed >>> 15), 1 | seed); t = (t + Math.imul(t ^ (t >>> 7), 61 | t)) ^ t; return ((t ^ (t >>> 14)) >>> 0) / 4294967296; }; }
-function simulate() {
+function simulate(SIMS = 10000) {
   const start = Math.max(0, num($("#cStart"), 0));
   const monthly = Math.max(0, num($("#cMonthly"), 0));
   const Y = Math.round(Math.max(1, Math.min(60, num($("#cYears"), 30))));
@@ -420,7 +504,8 @@ function drawMC() {
     out += `<text x="${m.l - 6}" y="${(Yp(v) + 3.5).toFixed(1)}" text-anchor="end">${v === 0 ? 0 : money(v)}</text>`;
   });
   ticksLin(0, Y, narrow ? 4 : 6).filter((t) => t % 1 === 0).forEach((t) => {
-    out += `<text x="${X(t).toFixed(1)}" y="${h - 6}" text-anchor="middle">${t === 0 ? "Now" : "Year " + t}</text>`;
+    const anchor = t === 0 ? "start" : t === Y ? "end" : "middle";
+    out += `<text x="${X(t).toFixed(1)}" y="${h - 6}" text-anchor="${anchor}">${t === 0 ? "Now" : "Year " + t}</text>`;
   });
   out += `<g clip-path="url(#mcClip)">`;
   out += `<path d="${area(q[0], q[4])}" fill="var(--band)"/>`;
@@ -448,8 +533,11 @@ function drawMC() {
     : b < 0.01 ? `In fewer than 1 in 100 futures do you end up with less than you put in. Over ${Y} years, time does most of the work.`
     : `In ${Math.round(b * 100)} of 100 futures you end up with less than you put in, after inflation. ${Y < 15 ? "Over short stretches, stocks can and do lose. Time is what makes them safer." : "Rare, but it happens. That is the price of the higher return."}`;
 }
+let mcLast = -1, mcPt = "mouse";
 function mcTip(t, py) {
   if (!MC || !MC.geo) return;
+  if (mcPt === "touch" && t !== mcLast) haptic(t === 0 || t === MC.Y);
+  mcLast = t;
   const { X, Yp } = MC.geo, tip = $("#mcTip");
   t = Math.max(0, Math.min(MC.Y, t));
   const c = $("#mcCross"), d = $("#mcDot"), x = X(t);
@@ -458,14 +546,14 @@ function mcTip(t, py) {
   tip.innerHTML = `<div class="y">${t === 0 ? "Now" : "Year " + t}</div><div class="v">Middle ${money(MC.q[2][t])}</div>` +
     `<div class="e">8 in 10 futures between ${money(MC.q[0][t])} and ${money(MC.q[4][t])}</div><div class="m">Put in so far ${money(MC.paid[t])}</div>`;
   tip.classList.add("on");
-  placeTip(tip, $("#mcChart"), x, Math.min(py, Yp(MC.q[2][t])));
+  placeTip(tip, $("#mcChart"), x, Math.min(py, Yp(MC.q[2][t])), mcPt === "touch");
 }
 function bindMC() {
   const svg = $("#mcSvg");
   svg.setAttribute("tabindex", "0");
   let cur = -1;
   const at = (e) => { const r = svg.getBoundingClientRect(); return [Math.round((e.clientX - r.left - MC.geo.m.l) / MC.geo.iw * MC.Y), e.clientY - r.top]; };
-  const mv = (e) => { const [t, y] = at(e); cur = Math.max(0, Math.min(MC.Y, t)); mcTip(cur, y); };
+  const mv = (e) => { mcPt = e.pointerType; const [t, y] = at(e); cur = Math.max(0, Math.min(MC.Y, t)); mcTip(cur, y); };
   svg.addEventListener("pointermove", mv);
   svg.addEventListener("pointerdown", mv);
   const hide = () => { $("#mcTip").classList.remove("on"); const c = $("#mcCross"), d = $("#mcDot"); if (c) c.setAttribute("opacity", 0); if (d) d.setAttribute("opacity", 0); };
@@ -475,12 +563,14 @@ function bindMC() {
     const k = { ArrowLeft: -1, ArrowRight: 1 }[e.key]; if (k == null) return;
     e.preventDefault(); cur = Math.max(0, Math.min(MC.Y, (cur < 0 ? MC.Y : cur) + k)); mcTip(cur, MC.geo.Yp(MC.q[4][cur]));
   });
-  let t;
-  const run = () => { clearTimeout(t); t = setTimeout(() => { simulate(); drawMC(); }, 120); };
-  $$("#calc input").forEach((el) => {
-    el.addEventListener("input", run);
-    el.addEventListener("blur", () => { if (el.id === "cStart" || el.id === "cMonthly") el.value = int(num(el, 0)); });
-  });
+  // While a finger drags, run 2,000 futures once per frame; when it lets go, run all 10,000.
+  let raf = 0, timer = 0;
+  const update = (fast) => {
+    if (fast) { if (!raf) raf = requestAnimationFrame(() => { raf = 0; simulate(2000); drawMC(); }); return; }
+    clearTimeout(timer);
+    timer = setTimeout(() => { cancelAnimationFrame(raf); raf = 0; simulate(); drawMC(); }, fast === false ? 0 : 140);
+  };
+  bindSliders(update);
   $$("[data-mode]").forEach((b) => b.addEventListener("click", () => {
     MODE = b.dataset.mode;
     $$("[data-mode]").forEach((x) => x.setAttribute("aria-pressed", x === b));
@@ -493,6 +583,113 @@ function bindMC() {
   }));
   $("#expHist").textContent = "History · " + pctU(GEO);
 }
+/* Sliders: drag anywhere on the box, relative to where the finger lands (iOS Control Center style),
+   so a tap never makes the value jump. 1:1 tracking while down, rubber-band past the ends, a tick per step. */
+const snapTo = (v, s) => Math.round(v / s) * s;
+const SL = {
+  cStart: { to: (t) => { const v = 1e6 * t ** 3; return v < 1e4 ? snapTo(v, 500) : v < 1e5 ? snapTo(v, 1000) : snapTo(v, 10000); },
+    from: (v) => Math.cbrt(Math.min(v, 1e6) / 1e6), fmt: int, tick: (v) => (v < 1e4 ? 1000 : v < 1e5 ? 10000 : 50000), min: 0 },
+  cMonthly: { to: (t) => { const v = 1e4 * t ** 2; return v < 1000 ? snapTo(v, 25) : snapTo(v, 100); },
+    from: (v) => Math.sqrt(Math.min(v, 1e4) / 1e4), fmt: int, tick: (v) => (v < 1000 ? 100 : 500), min: 0 },
+  cYears: { to: (t) => Math.round(1 + 59 * t), from: (v) => (Math.min(Math.max(v, 1), 60) - 1) / 59, fmt: String, tick: () => 1, min: 1, max: 60 },
+  cFee: { to: (t) => Math.round(t * 40) / 20, from: (v) => Math.min(v, 2) / 2, fmt: (v) => String(+v.toFixed(2)), tick: () => 0.05, min: 0, max: 5 },
+};
+function bindSliders(update) {
+  const all = $$(".slider"), measure = document.createElement("canvas").getContext("2d");
+  all.forEach((el) => {
+    const input = el.querySelector("input"), cfg = SL[input.id];
+    const fill = el.querySelector(".slider-fill"), grip = el.querySelector(".slider-grip");
+    let t = 0, id = null, x0 = 0, t0 = 0, w = 1, dragging = false, bucket = null, edge = null, val = null;
+    const paint = () => {
+      fill.style.clipPath = `inset(0 ${((1 - t) * 100).toFixed(2)}% 0 0)`;
+      grip.style.transform = `translateX(${(t * w).toFixed(1)}px)`;
+    };
+    // Size the number to its text so the $ and "years" sit right against it (field-sizing does this where supported).
+    const fit = () => { if (CSS.supports("field-sizing", "content")) return; measure.font = getComputedStyle(input).font; input.style.width = Math.ceil(measure.measureText(input.value || "0").width) + 2 + "px"; };
+    const sync = () => { w = el.clientWidth; t = Math.max(0, Math.min(1, cfg.from(num(input, 0)))); paint(); fit(); };
+    el._sync = sync;
+    sync();
+    el.addEventListener("pointerdown", (e) => {
+      if (id !== null || e.button > 0 || e.target === input) return; // one finger at a time; the number itself is for typing
+      id = e.pointerId; x0 = e.clientX; t0 = t; w = el.clientWidth; dragging = false;
+      el.classList.add("pressed");
+    });
+    el.addEventListener("pointermove", (e) => {
+      if (e.pointerId !== id) return;
+      if (!dragging) {
+        if (Math.abs(e.clientX - x0) < 4) return;
+        dragging = true; x0 = e.clientX; // count from here, so the dead zone doesn't make the value jump
+        try { el.setPointerCapture(id); } catch {}
+        el.classList.remove("pressed"); el.classList.add("dragging");
+        if (document.activeElement === input) input.blur();
+        bucket = null; edge = null;
+      }
+      const raw = t0 + (e.clientX - x0) / w;
+      t = Math.max(0, Math.min(1, raw));
+      const over = raw - t, stretch = 0.05 * (1 - Math.exp(-Math.abs(over) * 5));
+      el.style.transformOrigin = over < 0 ? "right center" : "left center";
+      el.style.transform = `translate(2px,2px) scaleX(${(1 + stretch).toFixed(4)})`;
+      paint();
+      const v = cfg.to(t);
+      const b = Math.round(v / cfg.tick(v) * 1000) / 1000 | 0;
+      const atEdge = t === 0 ? 0 : t === 1 ? 1 : null;
+      if (atEdge !== null && atEdge !== edge) haptic(true);
+      else if (bucket !== null && b !== bucket) haptic();
+      bucket = b; edge = atEdge;
+      if (v !== val) { val = v; input.value = cfg.fmt(v); fit(); update(true); }
+    });
+    const end = (e) => {
+      if (e.pointerId !== id) return;
+      id = null;
+      el.classList.remove("pressed", "dragging");
+      el.style.transform = ""; // the CSS transition springs the stretch back
+      if (dragging) update(false);
+      else if (e.type === "pointerup") { input.focus(); input.select(); }
+      dragging = false;
+    };
+    el.addEventListener("pointerup", end);
+    el.addEventListener("pointercancel", end);
+    input.addEventListener("input", () => { sync(); update(); });
+    input.addEventListener("keydown", (e) => {
+      const d = { ArrowUp: 1, ArrowDown: -1 }[e.key]; if (!d) return;
+      e.preventDefault();
+      const v = num(input, 0), step = cfg.tick(v);
+      let nv = Math.round((v + d * step) / step) * step;
+      nv = Math.max(cfg.min, cfg.max != null ? Math.min(cfg.max, nv) : nv);
+      input.value = cfg.fmt(+nv.toFixed(2)); sync(); update(false);
+    });
+    input.addEventListener("blur", () => {
+      let v = num(input, cfg.min);
+      v = Math.max(cfg.min, cfg.max != null ? Math.min(cfg.max, v) : v);
+      input.value = input.id === "cYears" ? String(Math.round(v)) : cfg.fmt(v);
+      sync();
+    });
+  });
+  if ("ResizeObserver" in window) new ResizeObserver(() => all.forEach((el) => el._sync())).observe($("#calc"));
+  // web fonts change the measured widths, so measure again once they have loaded
+  if (document.fonts) document.fonts.ready.then(() => all.forEach((el) => el._sync()));
+}
+
+/* Segmented controls: a thumb glides to the chosen option. Its position is written on the thumb itself. */
+function segThumbs() {
+  $$(".seg").forEach((seg) => {
+    const thumb = document.createElement("span");
+    thumb.className = "seg-thumb instant"; thumb.setAttribute("aria-hidden", "true");
+    seg.prepend(thumb); seg.classList.add("has-thumb");
+    const place = () => {
+      const b = seg.querySelector('[aria-pressed="true"]'); if (!b) return;
+      const r = b.getBoundingClientRect(), sr = seg.getBoundingClientRect();
+      thumb.style.width = r.width + "px";
+      thumb.style.transform = `translateX(${r.left - sr.left - seg.clientLeft}px)`;
+    };
+    const jump = () => { thumb.classList.add("instant"); place(); requestAnimationFrame(() => requestAnimationFrame(() => thumb.classList.remove("instant"))); };
+    jump();
+    new MutationObserver(place).observe(seg, { subtree: true, attributes: true, attributeFilter: ["aria-pressed"] });
+    if ("ResizeObserver" in window) new ResizeObserver(jump).observe(seg);
+    seg.addEventListener("click", (e) => { const b = e.target.closest("button"); if (b && b.getAttribute("aria-pressed") !== "true") haptic(); }, true);
+  });
+}
+
 function modeNote() {
   const how = MODE === "boot"
     ? `Each future year is a real year from ${W.first}–${LAST}, picked at random. So 1931 or 2008 can happen to you, maybe twice, and so can the great years.`
@@ -514,7 +711,9 @@ $$("[data-cur]").forEach((b) => b.addEventListener("click", () => setCur(b.datas
 
 /* ---------- start ---------- */
 drawHero();
+segThumbs();
 historyText();
+if (COARSE) $("#histHint").textContent = "After inflation · drag across the years";
 bindHistory();
 haystack();
 bindOwn();
