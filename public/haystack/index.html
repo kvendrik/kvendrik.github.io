@@ -252,18 +252,28 @@ table.data :is(th,td):first-child{text-align:left}
 .pull figcaption{margin-top:10px}
 .pre{opacity:0;transform:translateY(14px)}
 .reveal{transition:opacity .7s var(--ease),transform .7s var(--ease)}
-.vids{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:48px 32px;margin-top:48px}
+.vids{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:48px 32px;margin-top:72px}
 .vid{margin:0;min-width:0}
-.vid-play,.vid iframe{display:block;width:100%;aspect-ratio:16/9;border:2px solid var(--ink);box-shadow:var(--shadow)}
-.vid-play{position:relative;padding:0;cursor:pointer;background:var(--card) var(--img) center/cover no-repeat;filter:grayscale(1) contrast(1.05);transition:filter .3s var(--ease),transform 120ms var(--ease),box-shadow 120ms var(--ease)}
-.vid-play:active{transform:translate(3px,3px);box-shadow:none;transition-duration:40ms}
-@media (hover:hover) and (pointer:fine){.vid-play:hover{filter:none}}
-.vid-play:focus-visible{outline:2px solid var(--ink);outline-offset:3px}
+.vid-frame{position:relative;aspect-ratio:16/9;overflow:hidden;border:2px solid var(--ink);box-shadow:var(--shadow);background:var(--ink);transition:transform 120ms var(--ease),box-shadow 120ms var(--ease)}
+.vid-frame:has(.vid-play:active){transform:translate(3px,3px);box-shadow:none;transition-duration:40ms}
+.vid-frame iframe{position:absolute;inset:0;width:100%;height:100%;border:0;opacity:0;transition:opacity .45s var(--ease)}
+.vid-frame.previewing.ready iframe,.vid-frame.playing iframe{opacity:1}
+.vid-play{position:absolute;inset:0;width:100%;height:100%;padding:0;border:0;cursor:pointer;background:var(--card) var(--img) center/cover no-repeat;filter:grayscale(1) contrast(1.05);transition:opacity .45s var(--ease),filter .3s var(--ease)}
+.vid-play:focus-visible{outline:3px solid var(--paper);outline-offset:-6px}
+.vid-frame.previewing.ready .vid-play{background-image:none;background-color:transparent;filter:none}
+.vid-frame.previewing.ready .vid-badge{opacity:0;transform:scale(.9)}
+.vid-badge{transition:opacity .25s var(--ease),transform .25s var(--ease)}
+.vid-sound{position:absolute;left:10px;bottom:10px;padding:5px 9px;background:var(--paper);color:var(--ink);opacity:0;transform:translateY(4px);transition:opacity .25s var(--ease),transform .25s var(--ease)}
+.vid-frame.previewing.ready .vid-sound{opacity:1;transform:none}
 .vid-badge{position:absolute;left:50%;top:50%;width:64px;height:64px;margin:-32px 0 0 -32px;border-radius:50%;background:var(--ink);box-shadow:0 0 0 3px var(--paper)}
 .vid-badge::after{content:"";position:absolute;left:26px;top:20px;border-style:solid;border-width:12px 0 12px 19px;border-color:transparent transparent transparent var(--paper)}
 .vid figcaption{margin-top:14px}
 .vid h3{font-size:26px;margin-top:4px}
 .vid p{font-size:17px;color:var(--ink-2);margin-top:6px}
+.mix{grid-template-columns:minmax(0,1fr);max-width:420px}
+.mix .slider-val .suf{margin-left:1px}
+.mix .slider-val .mix-rest{margin-left:10px;color:var(--muted)}
+.mix-chart{margin-top:48px}
 .verdict{margin-top:48px;font-family:var(--f-display);font-style:italic;font-size:clamp(22px,3.4vw,28px);line-height:1.3;text-wrap:pretty}
 
 /* rules + reading */
@@ -272,7 +282,7 @@ table.data :is(th,td):first-child{text-align:left}
 .rules .k{font-family:var(--f-mono);font-size:11px;color:var(--muted);padding-top:9px}
 .rules h3{font-size:30px;line-height:1.15}
 .rules p{font-size:17px;color:var(--ink-2);margin-top:6px}
-.reading{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:0 40px;margin-top:48px}
+.reading{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:0 40px;margin-top:88px}
 .reading>*{display:block;padding:24px 0 36px;border-top:1px solid var(--ink);color:inherit;text-decoration:none}
 .reading h3{font-size:30px;line-height:1.1;margin-top:10px}
 .reading .by{font-family:var(--f-display);font-style:italic;font-size:20px;color:var(--ink-2);margin-top:4px}
@@ -282,6 +292,52 @@ table.data :is(th,td):first-child{text-align:left}
 .reading a:active{transform:scale(.98)}
 .reading a:active h3{text-decoration-color:var(--ink)}
 @media (hover:hover) and (pointer:fine){.reading a:hover h3{text-decoration-color:var(--ink)}}
+/* books in 3D: a box of faces (front, spine, pages, back) that turns toward you */
+.book3d{position:relative;height:236px;display:flex;align-items:flex-end;padding-left:30px;margin-bottom:28px;perspective:1000px}
+.book3d::after{content:"";position:absolute;left:10px;bottom:-10px;width:190px;height:22px;background:radial-gradient(closest-side,rgba(20,19,18,.22),transparent);pointer-events:none}
+.book{--w:150px;--h:216px;--d:30px;position:relative;width:var(--w);height:var(--h);transform-style:preserve-3d;transform:rotateY(30deg);transition:transform .7s var(--ease-drawer)}
+.book.little{--w:124px;--h:180px;--d:22px}
+.book>div{position:absolute;top:0;left:0;backface-visibility:hidden}
+.b-front{width:100%;height:100%;transform:translateZ(calc(var(--d) / 2));display:flex;flex-direction:column;padding:14px 13px;overflow:hidden;box-shadow:inset 3px 0 0 rgba(255,255,255,.08),inset -1px 0 0 rgba(0,0,0,.25)}
+.b-back{width:100%;height:100%;transform:translateZ(calc(var(--d) / -2)) rotateY(180deg)}
+.b-spine{width:var(--d);height:100%;left:calc(var(--d) / -2)!important;transform:rotateY(-90deg);display:flex;align-items:center;justify-content:center}
+.b-spine span{writing-mode:vertical-rl;transform:rotate(180deg);font:700 8px/1 var(--f-mono);letter-spacing:.14em;text-transform:uppercase;white-space:nowrap}
+.b-pages{width:calc(var(--d) - 4px);height:calc(100% - 6px);top:3px!important;left:calc(var(--w) - (var(--d) - 4px) / 2)!important;transform:rotateY(90deg);
+  background:repeating-linear-gradient(90deg,#F8F4EB 0 1px,#E4DBC9 1px 2px)}
+.b-author{font:700 8px/1.3 var(--f-mono);letter-spacing:.14em;text-transform:uppercase}
+.b-title{margin-top:10px;font-family:var(--f-display);font-size:19px;line-height:1.05;text-wrap:balance}
+.little .b-front,.little .b-back,.little .b-spine{background:var(--ink);color:var(--paper)}
+.little .b-spine{background:#2A2825}
+.b-mark{width:44px;margin-top:auto;color:var(--paper)}
+.pillars .b-front,.pillars .b-back{background:#E3DACA;color:var(--ink)}
+.pillars .b-front{box-shadow:inset 0 0 0 6px #E3DACA,inset 0 0 0 7.5px var(--ink)}
+.pillars .b-spine{background:#D3C8B4;color:var(--ink)}
+.pillars .b-title{font-size:21px}
+.b-pillars{display:flex;justify-content:space-between;align-items:flex-end;gap:7px;margin-top:auto;height:62px;padding:0 4px;border-bottom:3px solid var(--ink)}
+.b-pillars i{flex:1;height:100%;background:var(--ink);border-radius:2px 2px 0 0}
+.book-card:hover .book{transition-duration:.45s}
+.book.open{transform:rotateY(4deg)}
+@media (hover:none){.book-card{cursor:pointer}}
+.cd3d,.tv3d{position:relative;height:236px;margin-bottom:28px}
+.sleeve{position:absolute;z-index:1;left:0;bottom:8px;width:176px;height:176px;padding:14px;display:flex;flex-direction:column;justify-content:space-between;background:var(--ink);color:var(--paper);box-shadow:var(--shadow)}
+.sleeve .mono{color:var(--paper);opacity:.65}
+.sleeve b{font-family:var(--f-display);font-weight:400;font-size:27px;line-height:1}
+.disc{position:absolute;left:10px;bottom:12px;width:168px;height:168px;transform:translateX(48px);transition:transform .7s var(--ease-drawer)}
+.disc .spin{position:absolute;inset:0;border-radius:50%;animation:spin 3.2s linear infinite paused;
+  background:radial-gradient(circle,var(--paper) 0 7%,rgba(20,19,18,.3) 7% 7.8%,transparent 7.8% 29%,rgba(20,19,18,.18) 29% 29.6%,transparent 29.6%),
+    conic-gradient(from 20deg,#D8D1C3,#F6F2EA,#BDB4A4,#EDE7DB,#CCC3B2,#F6F2EA,#B9B0A0,#E9E2D5,#D8D1C3);
+  box-shadow:inset 0 0 0 1px rgba(20,19,18,.3),0 6px 18px -8px rgba(20,19,18,.45)}
+.disc .spin span{position:absolute;left:50%;top:22%;transform:translateX(-50%);font:700 7px/1 var(--f-mono);letter-spacing:.16em;text-transform:uppercase;color:var(--ink);white-space:nowrap;opacity:.7}
+@keyframes spin{to{transform:rotate(360deg)}}
+.cd-card:hover .disc{transform:translateX(96px)}
+.cd-card:hover .disc .spin{animation-play-state:running}
+.tv3d{display:flex;align-items:flex-end;perspective:1000px;padding-bottom:20px}
+.tv{position:relative;width:232px;aspect-ratio:16/9;border:2px solid var(--ink);background:var(--card) var(--img) center/cover no-repeat;filter:grayscale(1) contrast(1.05);box-shadow:var(--shadow);
+  transform:rotateY(22deg) rotateX(3deg);transition:transform .7s var(--ease-drawer),filter .3s var(--ease)}
+.tv .vid-badge{width:44px;height:44px;margin:-22px 0 0 -22px}
+.tv .vid-badge::after{left:18px;top:13px;border-width:9px 0 9px 14px}
+.tv-card:hover .tv{transform:none;filter:none}
+@media (prefers-reduced-motion:reduce){.disc .spin{animation:none}}
 .end{padding-block:160px 120px}
 .end .big{font-family:var(--f-display);font-size:clamp(44px,9vw,84px);line-height:1}
 .end small{display:block;margin-top:40px;color:var(--muted);font-size:13px;line-height:1.6;max-width:68ch}
@@ -453,6 +509,27 @@ table.data :is(th,td):first-child{text-align:left}
     </div>
   </section>
 
+  <section id="risk" aria-labelledby="h-risk">
+    <span class="mono" data-t="riskEye">Risk</span>
+    <h2 id="h-risk" data-t="riskH">How much can you stomach?</h2>
+    <p class="lede" data-t="riskLede">Stocks grow your money; bonds steady it. How you split the two is the one big choice in this plan, and it’s about you, not about the market.</p>
+    <div class="calc mix" id="mixCalc">
+      <div class="slider"><span class="slider-fill"></span><span class="slider-grip"></span><label class="slider-label" for="mixStocks" data-t="sMix">Stocks</label><span class="slider-val"><input id="mixStocks" type="text" inputmode="numeric" enterkeyhint="done" autocomplete="off" value="60"><span class="suf">%</span><span class="suf mix-rest" id="mixRest"></span></span></div>
+    </div>
+    <div class="chart mix-chart" id="mixChart"><svg id="mixSvg" role="img" aria-describedby="mixDesc"></svg></div>
+    <div class="legend mono">
+      <span><i style="background:var(--ink);height:2.5px"></i><span id="mixKey"></span></span>
+      <span><i style="border-top:2px dashed var(--muted);height:0"></i><span data-t="mixKeyAll">100% stocks</span></span>
+    </div>
+    <p class="sr-only" id="mixDesc"></p>
+    <div class="stats" id="mixStats"></div>
+    <div class="prose">
+      <p data-t="riskP1">Bogle’s rule of thumb was to hold roughly your age in bonds: 30% at 30, 60% at 60. Ben Felix would add that age is only part of it. What counts is how much risk you can afford, how much you need to reach your goals, and how much you can sit through without selling. Money you’ll need within a few years doesn’t belong in stocks at all.</p>
+      <p data-t="riskP2"><b>Rebalancing</b> keeps your mix where you chose it. Once a year, or when it drifts more than about five percentage points, sell a little of what grew and buy what fell. It quietly makes you buy low and sell high, without having to predict anything.</p>
+    </div>
+    <p class="note" data-t="riskNote">After inflation, 1950–2020. Bonds are the government bonds of the same 16 countries, in US dollars (Jordà-Schularick-Taylor). From 1900 the picture is harsher for bonds: the inflation around the two world wars took about two thirds of their value. Bonds soften crashes; they don’t protect you from inflation. These are unhedged dollar bonds, which swing more than what you’d hold: for the bond half, pick bonds in your own currency or hedged to it.</p>
+  </section>
+
   <section id="future" aria-labelledby="h-future">
     <span class="mono" data-t="futEye">Compound interest, honestly</span>
     <h2 id="h-future" data-t="futH">What your money could become</h2>
@@ -493,35 +570,29 @@ table.data :is(th,td):first-child{text-align:left}
     <div class="rules">
       <div><span class="k">01</span><div data-t="rule1"><h3>Own the whole world.</h3><p>One total world index fund covers it. You don’t need a second one to “diversify” the first.</p></div></div>
       <div><span class="k">02</span><div data-t="rule2"><h3>Keep costs close to zero.</h3><p>Fees are the one part of your return you control. Every tenth of a percent compounds against you for decades.</p></div></div>
-      <div><span class="k">03</span><div data-t="rule3"><h3>Don’t time it.</h3><p>Invest when you have money, not when it feels right. Nobody reliably knows when the next crash or the next rally is coming.</p></div></div>
+      <div><span class="k">03</span><div data-t="rule3"><h3>Don’t time it.</h3><p>Invest when you have money, not when it feels right. Nobody reliably knows when the next crash or the next rally is coming. Bogle loved index funds but was wary of ETFs for one reason: you can trade them all day, and trading is what costs people money.</p></div></div>
       <div><span class="k">04</span><div data-t="rule4"><h3>Match the risk to your stomach.</h3><p>Stocks can fall by half and stay down for years. If you would sell in a crash, hold some bonds so you won’t. The best plan is the one you can stick to.</p></div></div>
       <div><span class="k">05</span><div data-t="rule5"><h3>Stay the course.</h3><p>Bogle’s phrase. The returns on the chart above went to the people who were still holding after the bad years, not to those who left.</p></div></div>
     </div>
     <figure class="pull"><blockquote data-t="qGraham">“The investor’s chief problem — and even his worst enemy — is likely to be himself.”</blockquote><figcaption class="mono" data-t="qGrahamBy">Benjamin Graham, The Intelligent Investor</figcaption></figure>
   </section>
 
-  <section id="voices" aria-labelledby="h-voices">
-    <span class="mono" data-t="vidEye">Watch and listen</span>
-    <h2 id="h-voices" data-t="vidH">In their own words</h2>
-    <p class="lede" data-t="vidLede">The people behind these ideas, in their own voices. The videos are in English and play right here.</p>
-    <div class="vids">
-      <figure class="vid"><button class="vid-play" type="button" data-yt="n_paK_p3_gs" data-title="Vanguard's John Bogle on Starting the First Index Fund" style="--img:url(/haystack/video/bogle-first-index-fund.jpg)" aria-label="Play: Vanguard's John Bogle on Starting the First Index Fund" data-ta="v1play@aria-label"><span class="vid-badge" aria-hidden="true"></span></button><figcaption><span class="mono">Investopedia</span><h3>John C. Bogle</h3><p data-t="v1">Why he started the first index fund for ordinary investors.</p></figcaption></figure>
-      <figure class="vid"><button class="vid-play" type="button" data-yt="-GrKhUdu-YE" data-title="Buffett: I would buy the S&P 500 in a second" style="--img:url(/haystack/video/buffett-sp500.jpg)" aria-label="Play: Buffett: I would buy the S&P 500 in a second" data-ta="v2play@aria-label"><span class="vid-badge" aria-hidden="true"></span></button><figcaption><span class="mono">CNBC</span><h3>Warren Buffett</h3><p data-t="v2">Why he would buy the index rather than pick stocks. He means America’s 500 biggest companies; the idea works the same for the whole world.</p></figcaption></figure>
-      <figure class="vid"><button class="vid-play" type="button" data-yt="yhldVcWhhc0" data-title="Why It's So Hard to Beat the Market P1" style="--img:url(/haystack/video/felix-beat-the-market.jpg)" aria-label="Play: Why It's So Hard to Beat the Market P1" data-ta="v3play@aria-label"><span class="vid-badge" aria-hidden="true"></span></button><figcaption><span class="mono">Ben Felix</span><h3>Ben Felix</h3><p data-t="v3">Why so few professionals beat the market, with the research on screen.</p></figcaption></figure>
-      <figure class="vid"><button class="vid-play" type="button" data-yt="L-QQ_XtZNNI" data-title="Legendary John Bogle Shares the Investment Lessons of a Lifetime" style="--img:url(/haystack/video/bogle-lessons.jpg)" aria-label="Play: Legendary John Bogle Shares the Investment Lessons of a Lifetime" data-ta="v4play@aria-label"><span class="vid-badge" aria-hidden="true"></span></button><figcaption><span class="mono">WEALTHTRACK</span><h3>John C. Bogle</h3><p data-t="v4">A long interview: what a lifetime in investing taught him.</p></figcaption></figure>
-    </div>
-  </section>
-
   <section id="reading" aria-labelledby="h-reading">
-    <span class="mono" data-t="readEye">Further reading</span>
+    <span class="mono" data-t="readEye">Watch, read, listen</span>
     <h2 id="h-reading" data-t="readH">From the people who said it first</h2>
-    <p class="lede" data-t="readLede">This page borrows almost all of its ideas. Here is where they come from, and where they are argued far better.</p>
+    <p class="lede" data-t="readLede">This page borrows almost all of its ideas. These are the people behind them, in their own words.</p>
     <figure class="pull"><blockquote data-t="qStatue">“If a statue is ever erected to honor the person who has done the most for American investors, the hands-down choice should be Jack Bogle.”</blockquote><figcaption class="mono" data-t="qStatueBy">Warren Buffett, letter to shareholders, 2016</figcaption></figure>
+    <div class="vids">
+      <figure class="vid"><div class="vid-frame"><button class="vid-play" type="button" data-yt="n_paK_p3_gs" data-title="Vanguard's John Bogle on Starting the First Index Fund" style="--img:url(/haystack/video/bogle-first-index-fund.jpg)" aria-label="Play: Vanguard's John Bogle on Starting the First Index Fund" data-ta="v1play@aria-label"><span class="vid-badge" aria-hidden="true"></span><span class="vid-sound mono" aria-hidden="true" data-t="vidSound">Click for sound</span></button></div><figcaption><span class="mono">Investopedia</span><h3>John C. Bogle</h3><p data-t="v1">Why he started the first index fund for ordinary investors.</p></figcaption></figure>
+      <figure class="vid"><div class="vid-frame"><button class="vid-play" type="button" data-yt="-GrKhUdu-YE" data-title="Buffett: I would buy the S&P 500 in a second" style="--img:url(/haystack/video/buffett-sp500.jpg)" aria-label="Play: Buffett: I would buy the S&P 500 in a second" data-ta="v2play@aria-label"><span class="vid-badge" aria-hidden="true"></span><span class="vid-sound mono" aria-hidden="true" data-t="vidSound">Click for sound</span></button></div><figcaption><span class="mono">CNBC</span><h3>Warren Buffett</h3><p data-t="v2">Why he would buy the index rather than pick stocks. He means America’s 500 biggest companies; the idea works the same for the whole world.</p></figcaption></figure>
+      <figure class="vid"><div class="vid-frame"><button class="vid-play" type="button" data-yt="yhldVcWhhc0" data-title="Why It's So Hard to Beat the Market P1" style="--img:url(/haystack/video/felix-beat-the-market.jpg)" aria-label="Play: Why It's So Hard to Beat the Market P1" data-ta="v3play@aria-label"><span class="vid-badge" aria-hidden="true"></span><span class="vid-sound mono" aria-hidden="true" data-t="vidSound">Click for sound</span></button></div><figcaption><span class="mono">Ben Felix</span><h3>Ben Felix</h3><p data-t="v3">Why so few professionals beat the market, with the research on screen.</p></figcaption></figure>
+      <figure class="vid"><div class="vid-frame"><button class="vid-play" type="button" data-yt="L-QQ_XtZNNI" data-title="Legendary John Bogle Shares the Investment Lessons of a Lifetime" style="--img:url(/haystack/video/bogle-lessons.jpg)" aria-label="Play: Legendary John Bogle Shares the Investment Lessons of a Lifetime" data-ta="v4play@aria-label"><span class="vid-badge" aria-hidden="true"></span><span class="vid-sound mono" aria-hidden="true" data-t="vidSound">Click for sound</span></button></div><figcaption><span class="mono">WEALTHTRACK</span><h3>John C. Bogle</h3><p data-t="v4">A long interview: what a lifetime in investing taught him.</p></figcaption></figure>
+    </div>
     <div class="reading">
-      <div data-t="read1"><span class="mono">Book · 2007, updated 2017</span><h3>The Little Book of Common Sense Investing</h3><p class="by">John C. Bogle</p><p>The case for index funds from the man who built the first one for ordinary investors. Short, plain and stubborn: own the market, keep costs low, stay the course.</p></div>
-      <div data-t="read2"><span class="mono">Book · 2002, 2nd edition 2023</span><h3>The Four Pillars of Investing</h3><p class="by">William J. Bernstein</p><p>Theory, history, psychology and business: the four things you need to understand to invest well. The history chapters on bubbles and crashes alone are worth it.</p></div>
-      <a href="https://www.youtube.com/@BenFelixCSI" rel="noopener" data-t="read3"><span class="mono">YouTube ↗</span><h3>Ben Felix, Common Sense Investing</h3><p class="by">Ben Felix</p><p>Short, well-sourced videos that take on one investing question at a time, with the research on screen. He goes a step further than Bogle and argues for leaning toward smaller and cheaper companies; this page sticks to the plain version.</p></a>
-      <a href="https://rationalreminder.ca/podcast" rel="noopener" data-t="read4"><span class="mono">Podcast ↗</span><h3>The Rational Reminder</h3><p class="by">Ben Felix, Cameron Passmore and guests</p><p>Long conversations about evidence-based investing and decisions about money, often with the academics whose papers the rest of the industry quotes.</p></a>
+      <div class="book-card"><div class="book3d" aria-hidden="true"><div class="book little"><div class="b-front"><span class="b-author">John C. Bogle</span><span class="b-title">The Little Book of Common Sense Investing</span><svg class="b-mark" viewBox="0 0 32 20"><g fill="currentColor"><rect x="1" y="12" width="2.6" height="8" rx="1.3"/><rect x="5.4" y="7.5" width="2.6" height="12.5" rx="1.3"/><rect x="9.8" y="4" width="2.6" height="16" rx="1.3"/><rect x="14.2" y="2" width="2.6" height="18" rx="1.3"/><rect x="18.6" y="4" width="2.6" height="16" rx="1.3"/><rect x="23" y="7.5" width="2.6" height="12.5" rx="1.3"/><rect x="27.4" y="12" width="2.6" height="8" rx="1.3"/></g></svg></div><div class="b-spine"><span>The Little Book</span></div><div class="b-pages"></div><div class="b-back"></div></div></div><div data-t="read1"><span class="mono">Book · 2007, updated 2017</span><h3>The Little Book of Common Sense Investing</h3><p class="by">John C. Bogle</p><p>The case for index funds from the man who built the first one for ordinary investors. Short, plain and stubborn: own the market, keep costs low, stay the course.</p></div></div>
+      <div class="book-card"><div class="book3d" aria-hidden="true"><div class="book pillars"><div class="b-front"><span class="b-author">William J. Bernstein</span><span class="b-title">The Four Pillars of Investing</span><span class="b-pillars"><i></i><i></i><i></i><i></i></span></div><div class="b-spine"><span>The Four Pillars</span></div><div class="b-pages"></div><div class="b-back"></div></div></div><div data-t="read2"><span class="mono">Book · 2002, 2nd edition 2023</span><h3>The Four Pillars of Investing</h3><p class="by">William J. Bernstein</p><p>Theory, history, psychology and business: the four things you need to understand to invest well. The history chapters on bubbles and crashes alone are worth it.</p></div></div>
+      <a class="obj-card tv-card" href="https://www.youtube.com/@BenFelixCSI" rel="noopener"><div class="tv3d" aria-hidden="true"><div class="tv" style="--img:url(/haystack/video/felix-beat-the-market.jpg)"><span class="vid-badge"></span></div></div><div data-t="read3"><span class="mono">YouTube ↗</span><h3>Ben Felix, Common Sense Investing</h3><p class="by">Ben Felix</p><p>Short, well-sourced videos that take on one investing question at a time, with the research on screen. He goes a step further than Bogle and argues for leaning toward smaller and cheaper companies; this page sticks to the plain version.</p></div></a>
+      <a class="obj-card cd-card" href="https://rationalreminder.ca/podcast" rel="noopener"><div class="cd3d" aria-hidden="true"><div class="disc"><div class="spin"><span>Rational Reminder</span></div></div><div class="sleeve"><span class="mono">Podcast</span><b>The Rational<br>Reminder</b></div></div><div data-t="read4"><span class="mono">Podcast ↗</span><h3>The Rational Reminder</h3><p class="by">Ben Felix, Cameron Passmore and guests</p><p>Long conversations about evidence-based investing and decisions about money, often with the academics whose papers the rest of the industry quotes.</p></div></a>
     </div>
   </section>
 
@@ -531,8 +602,8 @@ table.data :is(th,td):first-child{text-align:left}
   </footer>
 </main>
 
-<script src="/haystack/returns.js?v=1"></script>
-<script src="/haystack/i18n.js?v=7"></script>
-<script src="/haystack/app.js?v=9"></script>
+<script src="/haystack/returns.js?v=2"></script>
+<script src="/haystack/i18n.js?v=9"></script>
+<script src="/haystack/app.js?v=12"></script>
 </body>
 </html>

@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
-"""Builds public/haystack/returns.js: one real (after-inflation) world stock return per year since 1900.
+"""Builds public/haystack/returns.js: one real (after-inflation) world stock return per year since 1900,
+and world government bond returns built the same way for the years the JST data covers.
 
 1900 to the last JST year: the Jorda-Schularick-Taylor Macrohistory Database (macrohistory.net).
   For each country with stock returns, the equity total return in local currency is turned into US dollars with
@@ -81,9 +82,10 @@ def main(path):
     years = sorted({k[1] for k in by})
     us_cpi = {y: num(by.get(("USA", y), {}).get("cpi")) for y in years}
 
-    out, ever = [], set()
+    out, bonds, ever = [], [], set()
     for y in range(1900, years[-1] + 1):
         tot_w, acc, used = 0.0, 0.0, []
+        b_w, b_acc = 0.0, 0.0
         for iso in isos:
             cur, prev = by.get((iso, y)), by.get((iso, y - 1))
             if not cur or not prev or (iso, y) in EXCLUDE:
@@ -100,12 +102,17 @@ def main(path):
             tot_w += w
             used.append(iso)
             ever.add(iso)
+            btr = num(cur.get("bond_tr"))
+            if btr is not None:
+                b_acc += w * ((1 + btr) * (xr0 / xr) - 1)
+                b_w += w
         if not tot_w or not us_cpi.get(y) or not us_cpi.get(y - 1):
             continue
         nominal = acc / tot_w
         infl = us_cpi[y] / us_cpi[y - 1] - 1
         real = (1 + nominal) / (1 + infl) - 1
         out.append((y, real))
+        bonds.append((1 + b_acc / b_w) / (1 + infl) - 1)
 
     last = out[-1][0]
     for y in sorted(RECENT):
@@ -124,7 +131,8 @@ def main(path):
         g *= 1 + r
     sys.stderr.write(f"geometric real {g ** (1 / len(real)) - 1:.4f}, $1 -> {g:.1f}, min {min(real)}, max {max(real)}\n")
     print("/* Real (after US inflation) yearly return of a world stock portfolio in US dollars. Built by scripts/haystack-returns.py */")
-    print("window.WORLD = " + json.dumps({"first": first, "real": real}) + ";")
+    # bonds stop where the JST data stops (no global bond index is spliced on)
+    print("window.WORLD = " + json.dumps({"first": first, "real": real, "bonds": [round(b, 4) for b in bonds]}) + ";")
 
 
 if __name__ == "__main__":

@@ -609,6 +609,53 @@ function bindOwn() {
   amt.addEventListener("blur", () => { amt.value = int(num(amt, 0)); });
 }
 
+/* ---------- risk: a mix of stocks and bonds, 1950-2020 ---------- */
+const BONDS = W.bonds || [], MIX_FROM = 1950, M0 = MIX_FROM - FIRST, M1 = BONDS.length; // bonds end where the JST data ends
+function mixRun(w) {
+  let v = 1, peak = 1, fall = 0, worst = Infinity, wy = MIX_FROM, down = 0;
+  const path = [1];
+  for (let i = M0; i < M1; i++) {
+    const r = w * R[i] + (1 - w) * BONDS[i];
+    v *= 1 + r; path.push(v);
+    peak = Math.max(peak, v); fall = Math.min(fall, v / peak - 1);
+    if (r < worst) { worst = r; wy = YEARS[i]; }
+    if (r < 0) down++;
+  }
+  return { geo: v ** (1 / (M1 - M0)) - 1, worst, wy, fall, down, n: M1 - M0, path, end: v };
+}
+function drawMix() {
+  if (!BONDS.length) return;
+  const s = Math.round(clamp(num($("#mixStocks"), 60), 0, 100)), b = 100 - s, mix = mixRun(s / 100), all = mixRun(1);
+  $("#mixRest").textContent = t("mixRest", b);
+  $("#mixKey").textContent = t("mixKey", s, b);
+  const last = YEARS[M1 - 1];
+  $("#mixStats").innerHTML = [
+    [t("avg"), pct(mix.geo), t("mixAvgP", MIX_FROM, last)],
+    [t("worst"), pct(mix.worst, 0), String(mix.wy)],
+    [t("mixFall"), pct(mix.fall, 0), t("mixFallP")],
+    [t("mixDown"), t("upN", mix.down, mix.n), t("mixDownP")],
+  ].map(([k, v, p]) => `<div><span class="mono">${esc(k)}</span><div class="n tab">${esc(v)}</div><p>${esc(p)}</p></div>`).join("");
+  $("#mixDesc").textContent = t("mixDesc", s, b, pctU(mix.geo), pct(mix.worst, 0), pct(mix.fall, 0));
+  // the mix against all stocks: $10,000 put in at the start of 1950, on a log scale
+  const svg = $("#mixSvg"), w = $("#mixChart").clientWidth, h = w < 560 ? 200 : 240, n = mix.path.length - 1;
+  const m = { t: 16, r: 8, b: 22, l: 8 }, iw = w - m.l - m.r, ih = h - m.t - m.b;
+  const lo = Math.log(Math.min(...mix.path, ...all.path)), hi = Math.log(Math.max(...mix.path, ...all.path));
+  const X = (k) => m.l + k / n * iw, Y = (v) => m.t + (hi - Math.log(v)) / (hi - lo || 1) * ih;
+  const line = (p) => p.map((v, k) => (k ? "L" : "M") + X(k).toFixed(1) + " " + Y(v).toFixed(1)).join(" ");
+  svg.setAttribute("viewBox", `0 0 ${w} ${h}`);
+  svg.setAttribute("height", h);
+  let out = `<line x1="${m.l}" x2="${w - m.r}" y1="${Y(1).toFixed(1)}" y2="${Y(1).toFixed(1)}" stroke="var(--rule)"/>`;
+  for (let y = 1960; y <= last; y += 20) { const x = X(y - MIX_FROM + 1), end = w - m.r - x < 16; out += `<text x="${(end ? w - m.r : x).toFixed(1)}" y="${h - 4}" text-anchor="${end ? "end" : "middle"}">${y}</text>`; }
+  out += `<path d="${line(all.path)}" fill="none" stroke="var(--muted)" stroke-width="1.5" stroke-dasharray="5 4"/>`;
+  out += `<path d="${line(mix.path)}" fill="none" stroke="var(--ink)" stroke-width="2.25" stroke-linejoin="round"/>`;
+  const ex = X(n), ey = Y(mix.end);
+  out += `<circle cx="${ex.toFixed(1)}" cy="${ey.toFixed(1)}" r="4" fill="var(--ink)"/>`;
+  // one label says it all: where $10,000 from 1950 ended up
+  out += `<text class="lab" x="${(ex - 4).toFixed(1)}" y="${(ey < m.t + 30 ? ey + 24 : ey - 12).toFixed(1)}" text-anchor="end" paint-order="stroke" stroke="var(--paper)" stroke-width="5" stroke-linejoin="round">${esc(t("mixEnd", L().cur + int(START), usdBig(START * mix.end), last))}</text>`;
+  out += `<circle cx="${m.l}" cy="${Y(1).toFixed(1)}" r="3.5" fill="var(--ink)"/>`;
+  svg.innerHTML = out;
+}
+
 /* ---------- the future: 10,000 runs ---------- */
 let EXP = "plan", MC = null, mcAnimated = false;
 // "Plan" lowers every historical year by the same amount, so the compound average lands on 5%.
@@ -744,14 +791,16 @@ const SL = {
   cMonthly: { to: (x) => { const v = 1e4 * x ** 2; return v < 1000 ? snapTo(v, 25) : snapTo(v, 100); },
     from: (v) => Math.sqrt(Math.min(v, 1e4) / 1e4), fmt: (v) => int(v), tick: (v) => (v < 1000 ? 100 : 500), min: 0 },
   cYears: { to: (x) => Math.round(1 + 59 * x), from: (v) => (clamp(v, 1, 60) - 1) / 59, fmt: (v) => String(Math.round(v)), tick: () => 1, min: 1, max: 60 },
+  mixStocks: { to: (x) => Math.round(x * 10) * 10, from: (v) => clamp(v, 0, 100) / 100, fmt: (v) => String(Math.round(v)), tick: () => 10, min: 0, max: 100, update: () => drawMix() },
   cFee: { to: (x) => Math.round(x * 40) / 20, from: (v) => Math.min(v, 2) / 2, fmt: (v) => v.toLocaleString(L().locale, { maximumFractionDigits: 2 }), tick: () => 0.05, min: 0, max: 5 },
 };
 const SLIDERS = [];
-function bindSliders(update) {
+function bindSliders(onUpdate) {
   $$(".slider").forEach((el) => {
     const input = el.querySelector("input"), cfg = SL[input.id];
     const fill = el.querySelector(".slider-fill"), grip = el.querySelector(".slider-grip");
     let x = 0, id = null, x0 = 0, s0 = 0, w = 1, dragging = false, bucket = null, edge = null, val = null;
+    const update = cfg.update || onUpdate;
     const paint = () => {
       fill.style.clipPath = `inset(0 ${((1 - x) * 100).toFixed(2)}% 0 0)`;
       grip.style.transform = `translateX(${(x * w).toFixed(1)}px)`;
@@ -841,15 +890,67 @@ function segThumbs() {
 
 /* ---------- videos and quotes ---------- */
 function bindVideos() {
-  $$(".vid-play").forEach((btn) => btn.addEventListener("click", () => {
-    haptic();
-    const f = document.createElement("iframe");
-    f.src = `https://www.youtube-nocookie.com/embed/${encodeURIComponent(btn.dataset.yt)}?autoplay=1&rel=0&playsinline=1`;
-    f.title = btn.dataset.title;
-    f.allow = "autoplay; encrypted-media; picture-in-picture; fullscreen";
-    f.allowFullscreen = true;
-    btn.replaceWith(f);
-  }));
+  // On a computer, resting on a video starts it without sound; a click plays it with sound from about
+  // where the preview got to. Phones: tap to play. No previews with reduced motion or data saver on.
+  const preview = matchMedia("(hover: hover) and (pointer: fine)").matches && !reduced && !(navigator.connection && navigator.connection.saveData);
+  const send = (f, func) => { try { f.contentWindow.postMessage(JSON.stringify({ event: "command", func, args: [] }), "*"); } catch {} };
+  $$(".vid-play[data-yt]").forEach((btn) => {
+    const frame = btn.parentElement;
+    let f = null, timer = 0, since = 0, seen = 0;
+    const make = (sound, start = 0) => {
+      if (f) f.remove();
+      frame.classList.remove("ready");
+      f = document.createElement("iframe");
+      f.src = `https://www.youtube-nocookie.com/embed/${encodeURIComponent(btn.dataset.yt)}?autoplay=1&mute=${sound ? 0 : 1}&playsinline=1&rel=0&enablejsapi=1${start ? "&start=" + start : ""}`;
+      f.title = btn.dataset.title;
+      f.allow = "autoplay; encrypted-media; picture-in-picture; fullscreen";
+      f.allowFullscreen = true;
+      f.addEventListener("load", () => frame.classList.add("ready"));
+      frame.prepend(f);
+    };
+    if (preview) {
+      btn.addEventListener("pointerenter", () => {
+        clearTimeout(timer);
+        timer = setTimeout(() => {
+          if (!f) make(false); else send(f, "playVideo");
+          frame.classList.add("previewing");
+          since = performance.now();
+        }, 250);
+      });
+      btn.addEventListener("pointerleave", () => {
+        clearTimeout(timer);
+        if (!frame.classList.contains("previewing")) return;
+        seen += (performance.now() - since) / 1000;
+        if (f) send(f, "pauseVideo");
+        frame.classList.remove("previewing");
+      });
+    }
+    btn.addEventListener("click", () => {
+      clearTimeout(timer);
+      haptic();
+      if (frame.classList.contains("previewing")) seen += (performance.now() - since) / 1000;
+      // a fresh player with sound, from where the silent one got to (the click is what allows the sound)
+      make(true, Math.max(0, Math.floor(seen - 1)));
+      frame.classList.add("playing");
+      btn.remove();
+    });
+  });
+}
+// Books turn toward you: on a computer they follow the pointer, on a phone a tap turns one to face you.
+function bindBooks() {
+  const fine = matchMedia("(hover: hover) and (pointer: fine)").matches;
+  $$(".book-card").forEach((card) => {
+    const book = card.querySelector(".book");
+    if (fine) {
+      card.addEventListener("pointermove", (e) => {
+        const r = card.getBoundingClientRect(), x = (e.clientX - r.left) / r.width - 0.5, y = (e.clientY - r.top) / r.height - 0.5;
+        book.style.transform = `rotateY(${(14 - x * 26).toFixed(1)}deg) rotateX(${(-y * 10).toFixed(1)}deg)`;
+      });
+      card.addEventListener("pointerleave", () => { book.style.transform = ""; });
+    } else {
+      card.addEventListener("click", () => { book.classList.toggle("open"); haptic(); });
+    }
+  });
 }
 // Quotes further down rise in once as they come into view. They start visible; the script only
 // hides the ones below the fold, so the page is complete without it.
@@ -865,7 +966,7 @@ function revealQuotes() {
 }
 
 /* ---------- switching language ---------- */
-const FIELDS = ["cStart", "cMonthly", "cYears", "cFee", "ownAmt"];
+const FIELDS = ["cStart", "cMonthly", "cYears", "cFee", "ownAmt", "mixStocks"];
 const fmtField = (id, v) => (SL[id] ? SL[id].fmt(v) : int(v));
 function setLang(lang) {
   if (lang === LANG) return;
@@ -877,7 +978,7 @@ function setLang(lang) {
   FIELDS.forEach((id, k) => ($("#" + id).value = fmtField(id, vals[k])));
   historyLists(); periodStats(); paintBrush(); heroText();
   if (H.shown) drawHistory();
-  hay.relabel(); fees(); own(); expText(); drawMC();
+  hay.relabel(); fees(); own(); expText(); drawMC(); drawMix();
   SLIDERS.forEach((f) => f());
   SEGS.forEach((f) => f());
 }
@@ -893,7 +994,8 @@ bindHistory(); bindBrush(); historyLists(); periodStats();
 drawSpark(margins($("#histChart").clientWidth));
 haystack(); fees(); bindOwn(); own();
 bindMC(); expText(); simulate();
-bindVideos(); revealQuotes();
+bindVideos(); bindBooks(); revealQuotes();
+drawMix(); onResize($("#mixChart"), drawMix);
 const hc = $("#histChart");
 $("#histSvg").setAttribute("height", hc.clientWidth < 560 ? 320 : 380);
 // the chart is the hero: it draws straight away and the number counts up with it
