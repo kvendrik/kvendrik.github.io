@@ -151,12 +151,10 @@ window.I18N = (function () {
   // Dutch for the static text in index.html, by data-t key. Keys ending in @attr set that attribute.
   const html = { nl: {
     "lang@aria-label": "Taal",
-    "toc@aria-label": "Op deze pagina",
     h1: "Koop de hooiberg.",
     heroLede: "Een trage, saaie en heel oude manier om je geld te laten groeien: bezit een klein stukje van elk bedrijf ter wereld, betaal er bijna niets voor, en wacht.",
     quote: "“Zoek niet naar de naald in de hooiberg. Koop gewoon de hele hooiberg!”",
     cite: "John C. Bogle · oprichter van Vanguard en van het eerste indexfonds voor gewone beleggers, 1976",
-    toc1: "01 · 125 jaar", toc2: "02 · Indexfondsen", toc3: "03 · Wat je bezit", toc4: "04 · Jouw geld", toc5: "05 · De regels", toc6: "06 · Verder lezen",
 
     histEye: "01 · De lange termijn",
     histH: "125 jaar wereldwijde aandelenmarkt",

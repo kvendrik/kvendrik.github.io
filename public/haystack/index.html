@@ -44,7 +44,7 @@
 html{scroll-behavior:smooth;scroll-padding-top:20px;-webkit-text-size-adjust:100%;-webkit-tap-highlight-color:transparent;interpolate-size:allow-keywords}
 /* Native feel: no tap delay, no selection or callouts on controls. Body text stays selectable. */
 a,button,summary,.slider,.brush,.chart svg{touch-action:manipulation}
-button,summary,.seg,.slider,.brush,.chart svg,.grid100,.toc a{-webkit-user-select:none;user-select:none;-webkit-touch-callout:none}
+button,summary,.seg,.slider,.brush,.chart svg,.grid100{-webkit-user-select:none;user-select:none;-webkit-touch-callout:none}
 body{margin:0;background:var(--paper);color:var(--ink);font:400 17px/1.6 var(--f-body);font-variation-settings:"ROND" 0;-webkit-font-smoothing:antialiased;
   padding:env(safe-area-inset-top,0px) max(16px,env(safe-area-inset-right,0px)) env(safe-area-inset-bottom,0px) max(16px,env(safe-area-inset-left,0px))}
 p,h1,h2,h3,ul,ol{margin:0}
@@ -64,17 +64,13 @@ h2{font-size:clamp(40px,7vw,60px);margin:10px 0 24px}
 .note a,.end a{color:inherit;text-underline-offset:3px}
 
 /* top bar + hero */
-.top{display:flex;justify-content:space-between;align-items:center;gap:12px;padding-top:20px}
-.top a{color:var(--ink);text-decoration:none}
+.top{display:flex;justify-content:flex-end;padding-top:20px}
 .hero{padding-block:56px 0}
 .hero h1{font-size:clamp(60px,13vw,124px);letter-spacing:-.01em}
 .hero .lede{margin-top:20px;max-width:30ch}
 .quote{margin-top:36px;padding-top:18px;border-top:1px solid var(--ink)}
 .quote p{font-family:var(--f-display);font-style:italic;font-size:clamp(24px,3.8vw,30px);line-height:1.25}
 .quote .mono{display:block;margin-top:8px}
-.toc{display:flex;flex-wrap:wrap;gap:6px 22px;margin-top:28px}
-.toc a{font-family:var(--f-mono);font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--ink);text-decoration:none;border-bottom:1px solid var(--rule);padding-bottom:2px;transition:border-color .2s}
-@media (hover:hover) and (pointer:fine){.toc a:hover{border-bottom-color:var(--ink)}}
 
 /* segmented control: a thumb glides to the chosen option */
 .seg{position:relative;isolation:isolate;display:inline-flex;border:2px solid var(--ink);background:var(--paper);box-shadow:var(--shadow)}
@@ -258,7 +254,7 @@ table.data :is(th,td):first-child{text-align:left}
 /* the page arrives once */
 @keyframes rise{from{opacity:0;transform:translateY(16px)}}
 .hero>*{animation:rise 1s var(--ease) backwards}
-.hero>:nth-child(2){animation-delay:.1s}.hero>:nth-child(3){animation-delay:.35s}.hero>:nth-child(4){animation-delay:.5s}
+.hero>:nth-child(2){animation-delay:.1s}.hero>:nth-child(3){animation-delay:.35s}
 @media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}*{animation:none!important;transition:none!important}}
 
 @media (max-width:700px){
@@ -269,10 +265,6 @@ table.data :is(th,td):first-child{text-align:left}
   .stats>div:nth-child(n+3),.outcomes>div:nth-child(n+3){border-top:1px solid var(--rule)}
   .how,.then,.reading{grid-template-columns:1fr}
   .how{gap:20px}
-  .toc{flex-wrap:nowrap;overflow-x:auto;overscroll-behavior-x:contain;scroll-snap-type:x proximity;scrollbar-width:none;margin-inline:-16px;padding:4px 16px 10px;gap:8px}
-  .toc::-webkit-scrollbar{display:none}
-  .toc a{flex:none;scroll-snap-align:start;scroll-margin-inline:16px;padding:13px 14px;border:1.5px solid var(--ink);background:var(--paper);box-shadow:2px 2px 0 0 var(--ink);transition:transform 120ms var(--ease),box-shadow 120ms var(--ease)}
-  .toc a:active{transform:translate(2px,2px);box-shadow:none}
   .hay{padding:18px}
   .hay .row{grid-template-columns:1fr}
   .calc{grid-template-columns:1fr;gap:12px}
@@ -288,7 +280,6 @@ table.data :is(th,td):first-child{text-align:left}
 <body>
 <main class="wrap">
   <div class="top">
-    <a class="mono" href="/">kvendrik.com</a>
     <div class="seg small" role="group" aria-label="Language" data-ta="lang@aria-label">
       <button type="button" data-lang="en" aria-pressed="true">EN</button>
       <button type="button" data-lang="nl" aria-pressed="false">NL</button>
@@ -302,9 +293,6 @@ table.data :is(th,td):first-child{text-align:left}
       <p data-t="quote">“Don’t look for the needle in the haystack. Just buy the haystack!”</p>
       <span class="mono" data-t="cite">John C. Bogle · founder of Vanguard and the first index fund for regular people, 1976</span>
     </div>
-    <nav class="toc" aria-label="On this page" data-ta="toc@aria-label">
-      <a href="#history" data-t="toc1">01 · 125 years</a><a href="#etfs" data-t="toc2">02 · Index funds</a><a href="#today" data-t="toc3">03 · What you own</a><a href="#future" data-t="toc4">04 · Your money</a><a href="#rules" data-t="toc5">05 · The rules</a><a href="#reading" data-t="toc6">06 · Further reading</a>
-    </nav>
   </header>
 
   <section id="history" aria-labelledby="h-history">
@@ -477,7 +465,7 @@ table.data :is(th,td):first-child{text-align:left}
 </main>
 
 <script src="/haystack/returns.js?v=1"></script>
-<script src="/haystack/i18n.js?v=1"></script>
-<script src="/haystack/app.js?v=1"></script>
+<script src="/haystack/i18n.js?v=2"></script>
+<script src="/haystack/app.js?v=2"></script>
 </body>
 </html>
