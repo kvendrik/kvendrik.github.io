@@ -253,6 +253,12 @@ table.data :is(th,td):first-child{text-align:left}
 .pre{opacity:0;transform:translateY(14px)}
 .reveal{transition:opacity .7s var(--ease),transform .7s var(--ease)}
 .vids{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:48px 32px;margin-top:72px}
+.vids.tight{margin-top:28px}
+.vid figcaption a{color:inherit;text-decoration-color:var(--rule);text-underline-offset:3px}
+.vid figcaption a:hover{text-decoration-color:var(--ink)}
+.reading .cd-card{grid-column:1/-1;display:grid;grid-template-columns:240px minmax(0,1fr);gap:0 40px;align-items:center}
+.cd-card .cd3d{margin-bottom:0}
+#voices>.note{margin-top:56px}
 .vid{margin:0;min-width:0}
 .vid-frame{position:relative;aspect-ratio:16/9;overflow:hidden;border:2px solid var(--ink);box-shadow:var(--shadow);background:var(--ink);transition:transform 120ms var(--ease),box-shadow 120ms var(--ease)}
 .vid-frame:has(.vid-play:active){transform:translate(3px,3px);box-shadow:none;transition-duration:40ms}
@@ -275,7 +281,7 @@ table.data :is(th,td):first-child{text-align:left}
 .mix .slider-val .mix-rest{margin-left:10px;color:var(--muted)}
 .mix-chart{margin-top:48px}
 /* quote wall: a sketch, the words, the name */
-.wall{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:72px 56px;margin-top:72px}
+.wall{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:72px 56px;margin-top:96px}
 .sage{margin:0;display:grid;grid-template-columns:120px minmax(0,1fr);grid-template-rows:auto 1fr;gap:0 22px;align-items:start}
 .face{grid-row:span 2;width:120px;height:120px;margin-top:-10px}
 .face img{display:block;width:100%;height:100%;object-fit:contain}
@@ -328,7 +334,7 @@ table.data :is(th,td):first-child{text-align:left}
 .book-card:hover .book{transition-duration:.45s}
 .book.open{transform:rotateY(4deg)}
 @media (hover:none){.book-card{cursor:pointer}}
-.cd3d,.tv3d{position:relative;height:236px;margin-bottom:28px}
+.cd3d{position:relative;height:236px;margin-bottom:28px}
 .sleeve{position:absolute;z-index:1;left:0;bottom:8px;width:176px;height:176px;padding:14px;display:flex;flex-direction:column;justify-content:space-between;background:var(--ink);color:var(--paper);box-shadow:var(--shadow)}
 .sleeve .mono{color:var(--paper);opacity:.65}
 .sleeve b{font-family:var(--f-display);font-weight:400;font-size:27px;line-height:1}
@@ -341,12 +347,7 @@ table.data :is(th,td):first-child{text-align:left}
 @keyframes spin{to{transform:rotate(360deg)}}
 .cd-card:hover .disc{transform:translateX(96px)}
 .cd-card:hover .disc .spin{animation-play-state:running}
-.tv3d{display:flex;align-items:flex-end;perspective:1000px;padding-bottom:20px}
-.tv{position:relative;width:232px;aspect-ratio:16/9;border:2px solid var(--ink);background:var(--card) var(--img) center/cover no-repeat;filter:grayscale(1) contrast(1.05);box-shadow:var(--shadow);
   transform:rotateY(22deg) rotateX(3deg);transition:transform .7s var(--ease-drawer),filter .3s var(--ease)}
-.tv .vid-badge{width:44px;height:44px;margin:-22px 0 0 -22px}
-.tv .vid-badge::after{left:18px;top:13px;border-width:9px 0 9px 14px}
-.tv-card:hover .tv{transform:none;filter:none}
 @media (prefers-reduced-motion:reduce){.disc .spin{animation:none}}
 .end{padding-block:160px 120px}
 .end .big{font-family:var(--f-display);font-size:clamp(44px,9vw,84px);line-height:1}
@@ -368,6 +369,8 @@ table.data :is(th,td):first-child{text-align:left}
   .stats>div:nth-child(3),.outcomes>div:nth-child(3){padding-left:0;border-left:0}
   .stats>div:nth-child(n+3),.outcomes>div:nth-child(n+3){border-top:1px solid var(--rule)}
   .then,.reading,.vids,.wall{grid-template-columns:1fr}
+  .reading .cd-card{grid-template-columns:1fr}
+  .cd-card .cd3d{margin-bottom:28px}
   .wall{gap:56px}
   .sage{grid-template-columns:88px minmax(0,1fr);gap:0 16px}
   .face{width:88px;height:88px}
@@ -592,39 +595,34 @@ table.data :is(th,td):first-child{text-align:left}
   </section>
 
   <section id="voices" aria-labelledby="h-voices">
-    <span class="mono" data-t="wallEye">Ask the people who know</span>
-    <h2 id="h-voices" data-t="wallH">The famous names agree</h2>
-    <p class="lede" data-t="wallLede">Some of the best-known investors and economists, on what most people should do with their money.</p>
+    <span class="mono" data-t="wallEye">In their own words</span>
+    <h2 id="h-voices" data-t="readH">From the people who said it first</h2>
+    <p class="lede" data-t="readLede">This page borrows almost all of its ideas. These are the people behind them, and some of the best-known investors who agree.</p>
+    <figure class="pull"><blockquote data-t="qStatue">“If a statue is ever erected to honor the person who has done the most for American investors, the hands-down choice should be Jack Bogle.”</blockquote><figcaption class="mono" data-t="qStatueBy">Warren Buffett, letter to shareholders, 2016</figcaption></figure>
     <div class="wall">
-      <figure class="sage"><div class="face" aria-hidden="true"><img src="/investing/people/buffett.png" alt="" width="300" height="300" loading="lazy" decoding="async"></div><blockquote data-t="w_buffett">“By periodically investing in an index fund, the know-nothing investor can actually out-perform most investment professionals.”</blockquote><figcaption><b>Warren Buffett</b><span class="mono" data-t="w_buffettBy">Letter to shareholders, 1993</span></figcaption></figure>
+      <figure class="sage"><div class="face" aria-hidden="true"><img src="/investing/people/buffett.png?v=3" alt="" width="360" height="360" loading="lazy" decoding="async"></div><blockquote data-t="w_buffett">“By periodically investing in an index fund, the know-nothing investor can actually out-perform most investment professionals.”</blockquote><figcaption><b>Warren Buffett</b><span class="mono" data-t="w_buffettBy">Letter to shareholders, 1993</span></figcaption></figure>
       <figure class="sage bare"><blockquote data-t="w_lynch">“Far more money has been lost by investors preparing for corrections, or trying to anticipate corrections, than has been lost in corrections themselves.”</blockquote><figcaption><b>Peter Lynch</b><span class="mono" data-t="w_lynchBy">Ran Fidelity’s Magellan fund, 1977–1990</span></figcaption></figure>
       <figure class="sage bare"><blockquote data-t="w_samuelson">“Investing should be more like watching paint dry or watching grass grow. If you want excitement, take $800 and go to Las Vegas.”</blockquote><figcaption><b>Paul Samuelson</b><span class="mono" data-t="w_samuelsonBy">Nobel Prize–winning economist</span></figcaption></figure>
-      <figure class="sage"><div class="face" aria-hidden="true"><img src="/investing/people/graham.png" alt="" width="300" height="300" loading="lazy" decoding="async"></div><blockquote data-t="w_graham">“In the short run, the market is a voting machine but in the long run, it is a weighing machine.”</blockquote><figcaption><b>Benjamin Graham</b><span class="mono" data-t="w_grahamBy">Buffett’s teacher, as Buffett quotes him</span></figcaption></figure>
-      <figure class="sage"><div class="face" aria-hidden="true"><img src="/investing/people/sharpe.png" alt="" width="300" height="300" loading="lazy" decoding="async"></div><blockquote data-t="w_sharpe">“Properly measured, the average actively managed dollar must underperform the average passively managed dollar, net of costs.”</blockquote><figcaption><b>William F. Sharpe</b><span class="mono" data-t="w_sharpeBy">The Arithmetic of Active Management, 1991</span></figcaption></figure>
-      <figure class="sage"><div class="face" aria-hidden="true"><img src="/investing/people/munger.png" alt="" width="300" height="300" loading="lazy" decoding="async"></div><blockquote data-t="w_munger">“The big money is not in the buying and the selling, but in the waiting.”</blockquote><figcaption><b>Charlie Munger</b><span class="mono" data-t="w_mungerBy">Buffett’s partner at Berkshire Hathaway</span></figcaption></figure>
+      <figure class="sage"><div class="face" aria-hidden="true"><img src="/investing/people/graham.png?v=3" alt="" width="360" height="360" loading="lazy" decoding="async"></div><blockquote data-t="w_graham">“In the short run, the market is a voting machine but in the long run, it is a weighing machine.”</blockquote><figcaption><b>Benjamin Graham</b><span class="mono" data-t="w_grahamBy">Buffett’s teacher, as Buffett quotes him</span></figcaption></figure>
+      <figure class="sage"><div class="face" aria-hidden="true"><img src="/investing/people/sharpe.png?v=3" alt="" width="360" height="360" loading="lazy" decoding="async"></div><blockquote data-t="w_sharpe">“Properly measured, the average actively managed dollar must underperform the average passively managed dollar, net of costs.”</blockquote><figcaption><b>William F. Sharpe</b><span class="mono" data-t="w_sharpeBy">The Arithmetic of Active Management, 1991</span></figcaption></figure>
+      <figure class="sage"><div class="face" aria-hidden="true"><img src="/investing/people/munger.png?v=3" alt="" width="360" height="360" loading="lazy" decoding="async"></div><blockquote data-t="w_munger">“The big money is not in the buying and the selling, but in the waiting.”</blockquote><figcaption><b>Charlie Munger</b><span class="mono" data-t="w_mungerBy">Buffett’s partner at Berkshire Hathaway</span></figcaption></figure>
       <figure class="sage bare"><blockquote data-t="w_fama">“Your money is like soap. The more you handle it, the less you’ll have.”</blockquote><figcaption><b>Eugene Fama</b><span class="mono" data-t="w_famaBy">Nobel Prize–winning economist</span></figcaption></figure>
       <figure class="sage bare"><blockquote data-t="w_housel">“Doing well with money has a little to do with how smart you are and a lot to do with how you behave.”</blockquote><figcaption><b>Morgan Housel</b><span class="mono" data-t="w_houselBy">The Psychology of Money, 2020</span></figcaption></figure>
     </div>
-    <p class="note" data-t="wallCredit">Line drawings traced from photos on Wikimedia Commons. Warren Buffett: <a href="https://commons.wikimedia.org/wiki/File:Warren_Buffett_KU_Visit.jpg">Mark Hirschey</a>, CC BY-SA 2.0; Benjamin Graham: <a href="https://commons.wikimedia.org/wiki/File:Benjamin_Graham_(1894-1976)_portrait_on_23_March_1950.jpg">unknown photographer, 1950</a>, public domain; William F. Sharpe: <a href="https://commons.wikimedia.org/wiki/File:William_sharpe_2007.jpg">Larry D. Moore</a>, CC BY 4.0; Charlie Munger: <a href="https://commons.wikimedia.org/wiki/File:Charlie_Munger.jpg">Nick J Webb</a>, CC BY 2.0.</p>
-  </section>
 
-  <section id="reading" aria-labelledby="h-reading">
-    <span class="mono" data-t="readEye">Watch, read, listen</span>
-    <h2 id="h-reading" data-t="readH">From the people who said it first</h2>
-    <p class="lede" data-t="readLede">This page borrows almost all of its ideas. These are the people behind them, in their own words.</p>
-    <figure class="pull"><blockquote data-t="qStatue">“If a statue is ever erected to honor the person who has done the most for American investors, the hands-down choice should be Jack Bogle.”</blockquote><figcaption class="mono" data-t="qStatueBy">Warren Buffett, letter to shareholders, 2016</figcaption></figure>
-    <div class="vids">
+    <span class="mono eye-gap" data-t="readEye">Watch, read, listen</span>
+    <div class="vids tight">
       <figure class="vid"><div class="vid-frame"><button class="vid-play" type="button" data-yt="n_paK_p3_gs" data-title="Vanguard's John Bogle on Starting the First Index Fund" style="--img:url(/investing/video/bogle-first-index-fund.jpg)" aria-label="Play: Vanguard's John Bogle on Starting the First Index Fund" data-ta="v1play@aria-label"><span class="vid-badge" aria-hidden="true"></span><span class="vid-sound mono" aria-hidden="true" data-t="vidSound">Click for sound</span></button></div><figcaption><span class="mono">Investopedia</span><h3>John C. Bogle</h3><p data-t="v1">Why he started the first index fund for ordinary investors.</p></figcaption></figure>
       <figure class="vid"><div class="vid-frame"><button class="vid-play" type="button" data-yt="-GrKhUdu-YE" data-title="Buffett: I would buy the S&P 500 in a second" style="--img:url(/investing/video/buffett-sp500.jpg)" aria-label="Play: Buffett: I would buy the S&P 500 in a second" data-ta="v2play@aria-label"><span class="vid-badge" aria-hidden="true"></span><span class="vid-sound mono" aria-hidden="true" data-t="vidSound">Click for sound</span></button></div><figcaption><span class="mono">CNBC</span><h3>Warren Buffett</h3><p data-t="v2">Why he would buy the index rather than pick stocks. He means America’s 500 biggest companies; the idea works the same for the whole world.</p></figcaption></figure>
-      <figure class="vid"><div class="vid-frame"><button class="vid-play" type="button" data-yt="yhldVcWhhc0" data-title="Why It's So Hard to Beat the Market P1" style="--img:url(/investing/video/felix-beat-the-market.jpg)" aria-label="Play: Why It's So Hard to Beat the Market P1" data-ta="v3play@aria-label"><span class="vid-badge" aria-hidden="true"></span><span class="vid-sound mono" aria-hidden="true" data-t="vidSound">Click for sound</span></button></div><figcaption><span class="mono">Ben Felix</span><h3>Ben Felix</h3><p data-t="v3">Why so few professionals beat the market, with the research on screen.</p></figcaption></figure>
+      <figure class="vid"><div class="vid-frame"><button class="vid-play" type="button" data-yt="yhldVcWhhc0" data-title="Why It's So Hard to Beat the Market P1" style="--img:url(/investing/video/felix-beat-the-market.jpg)" aria-label="Play: Why It's So Hard to Beat the Market P1" data-ta="v3play@aria-label"><span class="vid-badge" aria-hidden="true"></span><span class="vid-sound mono" aria-hidden="true" data-t="vidSound">Click for sound</span></button></div><figcaption><span class="mono">Ben Felix</span><h3>Ben Felix</h3><p data-t="v3">Why so few professionals beat the market, with the research on screen. His channel, <a href="https://www.youtube.com/@BenFelixCSI" rel="noopener">Common Sense Investing</a>, has a short video like this for most investing questions.</p></figcaption></figure>
       <figure class="vid"><div class="vid-frame"><button class="vid-play" type="button" data-yt="L-QQ_XtZNNI" data-title="Legendary John Bogle Shares the Investment Lessons of a Lifetime" style="--img:url(/investing/video/bogle-lessons.jpg)" aria-label="Play: Legendary John Bogle Shares the Investment Lessons of a Lifetime" data-ta="v4play@aria-label"><span class="vid-badge" aria-hidden="true"></span><span class="vid-sound mono" aria-hidden="true" data-t="vidSound">Click for sound</span></button></div><figcaption><span class="mono">WEALTHTRACK</span><h3>John C. Bogle</h3><p data-t="v4">A long interview: what a lifetime in investing taught him.</p></figcaption></figure>
     </div>
     <div class="reading">
       <div class="book-card"><div class="book3d" aria-hidden="true"><div class="book little"><div class="b-front"><span class="b-author">John C. Bogle</span><span class="b-title">The Little Book of Common Sense Investing</span><svg class="b-mark" viewBox="0 0 32 20"><g fill="currentColor"><rect x="1" y="12" width="2.6" height="8" rx="1.3"/><rect x="5.4" y="7.5" width="2.6" height="12.5" rx="1.3"/><rect x="9.8" y="4" width="2.6" height="16" rx="1.3"/><rect x="14.2" y="2" width="2.6" height="18" rx="1.3"/><rect x="18.6" y="4" width="2.6" height="16" rx="1.3"/><rect x="23" y="7.5" width="2.6" height="12.5" rx="1.3"/><rect x="27.4" y="12" width="2.6" height="8" rx="1.3"/></g></svg></div><div class="b-spine"><span>The Little Book</span></div><div class="b-pages"></div><div class="b-back"></div></div></div><div data-t="read1"><span class="mono">Book · 2007, updated 2017</span><h3>The Little Book of Common Sense Investing</h3><p class="by">John C. Bogle</p><p>The case for index funds from the man who built the first one for ordinary investors. Short, plain and stubborn: own the market, keep costs low, stay the course.</p></div></div>
       <div class="book-card"><div class="book3d" aria-hidden="true"><div class="book pillars"><div class="b-front"><span class="b-author">William J. Bernstein</span><span class="b-title">The Four Pillars of Investing</span><span class="b-pillars"><i></i><i></i><i></i><i></i></span></div><div class="b-spine"><span>The Four Pillars</span></div><div class="b-pages"></div><div class="b-back"></div></div></div><div data-t="read2"><span class="mono">Book · 2002, 2nd edition 2023</span><h3>The Four Pillars of Investing</h3><p class="by">William J. Bernstein</p><p>Theory, history, psychology and business: the four things you need to understand to invest well. The history chapters on bubbles and crashes alone are worth it.</p></div></div>
-      <a class="obj-card tv-card" href="https://www.youtube.com/@BenFelixCSI" rel="noopener"><div class="tv3d" aria-hidden="true"><div class="tv" style="--img:url(/investing/video/felix-beat-the-market.jpg)"><span class="vid-badge"></span></div></div><div data-t="read3"><span class="mono">YouTube ↗</span><h3>Ben Felix, Common Sense Investing</h3><p class="by">Ben Felix</p><p>Short, well-sourced videos that take on one investing question at a time, with the research on screen. He goes a step further than Bogle and argues for leaning toward smaller and cheaper companies; this page sticks to the plain version.</p></div></a>
-      <a class="obj-card cd-card" href="https://rationalreminder.ca/podcast" rel="noopener"><div class="cd3d" aria-hidden="true"><div class="disc"><div class="spin"><span>Rational Reminder</span></div></div><div class="sleeve"><span class="mono">Podcast</span><b>The Rational<br>Reminder</b></div></div><div data-t="read4"><span class="mono">Podcast ↗</span><h3>The Rational Reminder</h3><p class="by">Ben Felix, Cameron Passmore and guests</p><p>Long conversations about evidence-based investing and decisions about money, often with the academics whose papers the rest of the industry quotes.</p></div></a>
+      <a class="obj-card cd-card" href="https://rationalreminder.ca/podcast" rel="noopener"><div class="cd3d" aria-hidden="true"><div class="disc"><div class="spin"><span>Rational Reminder</span></div></div><div class="sleeve"><span class="mono">Podcast</span><b>The Rational<br>Reminder</b></div></div><div data-t="read4"><span class="mono">Podcast ↗</span><h3>The Rational Reminder</h3><p class="by">Ben Felix, Cameron Passmore and guests</p><p>Long conversations about evidence-based investing and decisions about money, often with the academics whose papers the rest of the industry quotes. Felix goes a step further than Bogle and leans toward smaller and cheaper companies; this page sticks to the plain version.</p></div></a>
     </div>
+    <p class="note" data-t="wallCredit">Line drawings traced from photos on Wikimedia Commons. Warren Buffett: <a href="https://commons.wikimedia.org/wiki/File:Warren_Buffett_KU_Visit.jpg">Mark Hirschey</a>, CC BY-SA 2.0; Benjamin Graham: <a href="https://commons.wikimedia.org/wiki/File:Benjamin_Graham_(1894-1976)_portrait_on_23_March_1950.jpg">unknown photographer, 1950</a>, public domain; William F. Sharpe: <a href="https://commons.wikimedia.org/wiki/File:William_sharpe_2007.jpg">Larry D. Moore</a>, CC BY 4.0; Charlie Munger: <a href="https://commons.wikimedia.org/wiki/File:Charlie_Munger.jpg">Nick J Webb</a>, CC BY 2.0.</p>
   </section>
 
   <footer class="end">
@@ -634,7 +632,7 @@ table.data :is(th,td):first-child{text-align:left}
 </main>
 
 <script src="/investing/returns.js?v=2"></script>
-<script src="/investing/i18n.js?v=12"></script>
+<script src="/investing/i18n.js?v=13"></script>
 <script src="/investing/app.js?v=12"></script>
 </body>
 </html>

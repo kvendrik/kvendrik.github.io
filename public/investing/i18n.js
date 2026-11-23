@@ -235,9 +235,7 @@ window.I18N = (function () {
     rule5: "<h3>Houd koers.</h3><p>Bogles motto. Het rendement in de grafiek hierboven ging naar wie na de slechte jaren nog belegd was, niet naar wie was uitgestapt.</p>",
 
     /* wall:start */
-    wallEye: "Vraag het de mensen die het weten",
-    wallH: "De grote namen zijn het eens",
-    wallLede: "Enkele van de bekendste beleggers en economen, over wat de meeste mensen met hun geld zouden moeten doen.",
+    wallEye: "In hun eigen woorden",
     w_buffett: "“Door regelmatig in een indexfonds te beleggen, kan de belegger die er niets van weet het zelfs beter doen dan de meeste beleggingsprofessionals.”", w_buffettBy: "Brief aan aandeelhouders, 1993",
     w_lynch: "“Beleggers hebben veel meer geld verloren door zich op correcties voor te bereiden, of ze te proberen te voorspellen, dan door de correcties zelf.”", w_lynchBy: "Beheerde het Magellan-fonds van Fidelity, 1977–1990",
     w_samuelson: "“Beleggen zou meer moeten lijken op verf zien drogen of gras zien groeien. Wil je spanning, neem dan 800 dollar mee naar Las Vegas.”", w_samuelsonBy: "Nobelprijswinnaar economie",
@@ -250,11 +248,10 @@ window.I18N = (function () {
     /* wall:end */
     readEye: "Kijken, lezen, luisteren",
     readH: "Van wie we het leerden",
-    readLede: "Bijna alles op deze pagina is geleend. Dit zijn de mensen erachter, in hun eigen woorden.",
+    readLede: "Bijna alles op deze pagina is geleend. Dit zijn de mensen erachter, en enkele van de bekendste beleggers die het met ze eens zijn.",
     read1: "<span class=\"mono\">Boek · 2007, herzien 2017</span><h3>The Little Book of Common Sense Investing</h3><p class=\"by\">John C. Bogle</p><p>Het pleidooi voor indexfondsen van de man die het eerste voor gewone beleggers bouwde. Kort, helder en koppig: bezit de markt, houd de kosten laag, houd koers.</p>",
     read2: "<span class=\"mono\">Boek · 2002, 2e editie 2023</span><h3>The Four Pillars of Investing</h3><p class=\"by\">William J. Bernstein</p><p>Theorie, geschiedenis, psychologie en de beleggingsindustrie: de vier dingen die je moet begrijpen om goed te beleggen. Alleen de hoofdstukken over bubbels en crashes zijn het al waard.</p>",
-    read3: "<span class=\"mono\">YouTube ↗</span><h3>Ben Felix, Common Sense Investing</h3><p class=\"by\">Ben Felix</p><p>Korte, goed onderbouwde video’s die steeds één beleggingsvraag behandelen, met het onderzoek in beeld. Hij gaat een stap verder dan Bogle en weegt kleinere en goedkopere bedrijven wat zwaarder; deze pagina houdt het bij de eenvoudige versie.</p>",
-    read4: "<span class=\"mono\">Podcast ↗</span><h3>The Rational Reminder</h3><p class=\"by\">Ben Felix, Cameron Passmore en gasten</p><p>Lange gesprekken over beleggen op basis van bewijs en over keuzes rond geld, vaak met de wetenschappers wier onderzoek de rest van de sector aanhaalt.</p>",
+    read4: "<span class=\"mono\">Podcast ↗</span><h3>The Rational Reminder</h3><p class=\"by\">Ben Felix, Cameron Passmore en gasten</p><p>Lange gesprekken over beleggen op basis van bewijs en over keuzes rond geld, vaak met de wetenschappers wier onderzoek de rest van de sector aanhaalt. Felix gaat een stap verder dan Bogle en weegt kleinere en goedkopere bedrijven wat zwaarder; deze pagina houdt het bij de eenvoudige versie.</p>",
 
     qTime: "“Tijd is je vriend; impuls is je vijand.”", qTimeBy: "John C. Bogle",
     qSam: "“Ik zet deze uitvinding van Bogle op één lijn met de uitvinding van het wiel, het alfabet, de boekdrukkunst van Gutenberg, en wijn en kaas.”",
@@ -271,7 +268,7 @@ window.I18N = (function () {
     vidSound: "Klik voor geluid",
     v1: "Waarom hij het eerste indexfonds voor gewone beleggers begon.",
     v2: "Waarom hij de index zou kopen in plaats van zelf aandelen te kiezen. Hij bedoelt de 500 grootste Amerikaanse bedrijven; voor de hele wereld werkt het idee hetzelfde.",
-    v3: "Waarom zo weinig professionals de markt verslaan, met het onderzoek in beeld.",
+    v3: "Waarom zo weinig professionals de markt verslaan, met het onderzoek in beeld. Zijn kanaal, <a href=\"https://www.youtube.com/@BenFelixCSI\" rel=\"noopener\">Common Sense Investing</a>, heeft voor bijna elke beleggingsvraag zo’n korte video.",
     v4: "Een lang interview: wat een leven lang beleggen hem leerde.",
     "v1play@aria-label": "Afspelen: Vanguard's John Bogle on Starting the First Index Fund",
     "v2play@aria-label": "Afspelen: Buffett: I would buy the S&P 500 in a second",
