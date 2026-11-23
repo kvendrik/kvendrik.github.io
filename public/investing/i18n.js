@@ -56,10 +56,10 @@ window.I18N = (function () {
 
   const nl = {
     locale: "nl-NL", cur: "€", K: "k", M: " mln", B: " mld", Mlong: " miljoen",
-    title: "Buy the Haystack",
+    title: "Koop de hele hooiberg",
     description: "Wereldwijd indexbeleggen zoals Bogle het bedoelde: 125 jaar beursrendement, wat een indexfonds is, wat je bezit en wat je geld kan worden.",
     ogDescription: "€10.000 in de wereldwijde aandelenmarkt in 1900 werd na inflatie €25,7 miljoen, dwars door twee wereldoorlogen heen. Waarom alles bezitten het simpelste plan is.",
-    ogImageAlt: "Buy the haystack. Een lijn die stijgt van 10.000 in 1900 naar 25,7 miljoen in 2025, na inflatie.",
+    ogImageAlt: "Koop de hele hooiberg. Een lijn die stijgt van €10.000 in 1900 naar €25,7 miljoen in 2025, na inflatie.",
     dir: (up) => (up ? "hoger" : "lager"),
     period: (a, b, n) => `${a}–${b} · ${n} jaar · na inflatie`,
     hint: (touch) => (touch ? "Sleep aan de randen om in te zoomen · sleep over de grafiek voor een jaar" : "Sleep aan de randen om in te zoomen · wijs een jaar aan in de grafiek"),

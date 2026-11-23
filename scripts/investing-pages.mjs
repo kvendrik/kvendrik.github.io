@@ -68,6 +68,7 @@ html = setMeta(html, 'property', 'og:url', url);
 html = setMeta(html, 'property', 'og:title', title);
 html = setMeta(html, 'property', 'og:description', ogDescription);
 if (I.nl.ogImageAlt) html = setMeta(html, 'property', 'og:image:alt', I.nl.ogImageAlt);
+html = setMeta(html, 'property', 'og:image', 'https://kvendrik.com/investing/og-nl.png');
 html = html.replace('<meta property="og:type" content="website">', '<meta property="og:type" content="website">\n<meta property="og:locale" content="nl_NL">');
 
 const json = JSON.stringify(EN).replace(/</g, '\\u003c');
