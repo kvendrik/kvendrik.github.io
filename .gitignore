@@ -7,3 +7,4 @@ public/**/*.html
 !public/v60/index.html
 !public/philosophy/index.html
 !public/haystack/index.html
+__pycache__/
