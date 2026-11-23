@@ -137,17 +137,18 @@ select{width:100%;font:inherit;font-size:16px;padding:10px 12px;background:var(-
 .end p+p{margin-top:20px}
 .end small{display:block;margin-top:40px;color:var(--muted);font-size:13px}
 
-.browse>summary{display:none}
-@media (max-width:700px){
-  .browse{border:1px solid var(--rule);border-radius:2px;margin:0}
-  .browse>summary{display:flex;justify-content:space-between;align-items:center;gap:12px;padding:12px 14px;cursor:pointer}
-  .browse>summary::after{content:"+";font-family:var(--f-mono);color:var(--muted)}
-  .browse[open]>summary::after{content:"–"}
-  .browse .cur{margin-left:auto;font-family:var(--f-display);font-style:italic;font-size:20px;line-height:1}
-  .browse[open] .cur{display:none}
-  .browse .groups{padding:4px 14px 16px}
-  .card{margin-top:28px}
-}
+/* the tradition picker: one slim bar at every width, opens to the full list */
+.browse{border:1px solid var(--rule);border-radius:2px;margin:0;transition:border-color .2s}
+.browse:hover{border-color:var(--muted)}
+.browse>summary{display:flex;justify-content:space-between;align-items:center;gap:12px;padding:12px 16px;cursor:pointer;list-style:none}
+.browse>summary::-webkit-details-marker{display:none}
+.browse>summary::after{content:"+";font-family:var(--f-mono);color:var(--muted)}
+.browse[open]>summary::after{content:"–"}
+.browse .cur{margin-left:auto;font-family:var(--f-display);font-style:italic;font-size:20px;line-height:1}
+.browse[open] .cur{display:none}
+.browse .groups{padding:6px 16px 20px}
+.browse[open] .groups{animation:rise .4s var(--ease) backwards}
+.card{margin-top:28px}
 .card{touch-action:pan-y;position:relative;overflow:clip;overflow-clip-margin:6px}
 .slide.peek{position:absolute;left:0;right:0;pointer-events:none}
 .slide{will-change:transform}
@@ -205,8 +206,8 @@ select{width:100%;font:inherit;font-size:16px;padding:10px 12px;background:var(-
 
 <script src="/philosophy/d1.js"></script><script src="/philosophy/d2.js"></script><script src="/philosophy/d3.js"></script>
 <script src="/philosophy/d4.js"></script><script src="/philosophy/d5.js"></script><script src="/philosophy/d6.js"></script>
-<script src="/philosophy/d7.js"></script><script src="/philosophy/d8.js"></script><script src="/philosophy/d9.js"></script><script src="/philosophy/art.js?v=5"></script><script src="/philosophy/slugs.js?v=5"></script>
-<script src="/philosophy/app.js?v=5"></script>
+<script src="/philosophy/d7.js"></script><script src="/philosophy/d8.js"></script><script src="/philosophy/d9.js"></script><script src="/philosophy/art.js?v=6"></script><script src="/philosophy/slugs.js?v=6"></script>
+<script src="/philosophy/app.js?v=6"></script>
 
 </body>
 </html>
