@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Builds public/haystack/returns.js: one real (after-inflation) world stock return per year since 1900,
+"""Builds public/investing/returns.js: one real (after-inflation) world stock return per year since 1900,
 and world government bond returns built the same way for the years the JST data covers.
 
 1900 to the last JST year: the Jorda-Schularick-Taylor Macrohistory Database (macrohistory.net).
@@ -9,7 +9,7 @@ and world government bond returns built the same way for the years the JST data 
   would have had. Countries without a return in a year drop out of that year.
 After that: MSCI ACWI net total return in USD, deflated by US CPI-U (December to December).
 
-Usage: python3 -I scripts/haystack-returns.py JSTdatasetR6.xlsx > public/haystack/returns.js
+Usage: python3 -I scripts/investing-returns.py JSTdatasetR6.xlsx > public/investing/returns.js
 Standard library only; reads the .xlsx directly.
 """
 import json
@@ -130,7 +130,7 @@ def main(path):
     for r in real:
         g *= 1 + r
     sys.stderr.write(f"geometric real {g ** (1 / len(real)) - 1:.4f}, $1 -> {g:.1f}, min {min(real)}, max {max(real)}\n")
-    print("/* Real (after US inflation) yearly return of a world stock portfolio in US dollars. Built by scripts/haystack-returns.py */")
+    print("/* Real (after US inflation) yearly return of a world stock portfolio in US dollars. Built by scripts/investing-returns.py */")
     # bonds stop where the JST data stops (no global bond index is spliced on)
     print("window.WORLD = " + json.dumps({"first": first, "real": real, "bonds": [round(b, 4) for b in bonds]}) + ";")
 

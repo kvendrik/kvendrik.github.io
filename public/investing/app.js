@@ -48,7 +48,7 @@ const START = 10000; // Bogle's chart: what $10,000 became
 let LANG = (() => {
   const q = new URLSearchParams(location.search).get("lang");
   if (q === "en" || q === "nl") return q;
-  const s = store.get("haystack-lang");
+  const s = store.get("investing-lang");
   if (s === "en" || s === "nl") return s;
   return /^nl\b/i.test(navigator.language || "") ? "nl" : "en";
 })();
@@ -972,7 +972,7 @@ function setLang(lang) {
   if (lang === LANG) return;
   const vals = FIELDS.map((id) => num($("#" + id), 0)); // read in the old language, write in the new one
   LANG = lang;
-  store.set("haystack-lang", lang);
+  store.set("investing-lang", lang);
   try { const u = new URL(location.href); u.searchParams.set("lang", lang); history.replaceState(null, "", u); } catch {}
   applyStatic();
   FIELDS.forEach((id, k) => ($("#" + id).value = fmtField(id, vals[k])));
