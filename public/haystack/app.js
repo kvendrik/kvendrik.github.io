@@ -68,9 +68,8 @@ function compact(sym, v) {
   return s + sym + int(v);
 }
 const money = (v) => compact(L().cur, v);
-const usd = (v) => compact("$", v);
-const usdBig = (v) => (v >= 1e6 ? "$" + nf(v / 1e6, 1) + L().Mlong : "$" + int(v >= 1e5 ? Math.round(v / 1000) * 1000 : Math.round(v / 100) * 100));
-const usdTick = (v) => (v >= 1e6 ? "$" + nf(v / 1e6, v % 1e6 ? 1 : 0) + L().M : "$" + nf(v / 1e3, v % 1e3 ? 1 : 0) + L().K);
+const usdBig = (v) => (v >= 1e6 ? L().cur + nf(v / 1e6, 1) + L().Mlong : L().cur + int(v >= 1e5 ? Math.round(v / 1000) * 1000 : Math.round(v / 100) * 100));
+const usdTick = (v) => (v >= 1e6 ? L().cur + nf(v / 1e6, v % 1e6 ? 1 : 0) + L().M : L().cur + nf(v / 1e3, v % 1e3 ? 1 : 0) + L().K);
 // Read what someone typed in the current language: "10,000.5" in English, "10.000,5" in Dutch.
 function parse(s, lang = LANG) {
   s = String(s).trim();
@@ -149,57 +148,14 @@ function onResize(el, fn) {
   new ResizeObserver(() => { if (el.clientWidth === w) return; w = el.clientWidth; clearTimeout(timer); timer = setTimeout(fn, 80); }).observe(el);
 }
 
-/* ---------- hero: $10,000 counts up to $25.7 million as the line draws ---------- */
-const HERO = { p: 0, geo: null };
-function drawHero() {
-  const svg = $("#heroLine"), w = svg.clientWidth || 700, h = w < 500 ? 96 : 132;
-  svg.setAttribute("viewBox", `0 0 ${w} ${h}`);
-  svg.setAttribute("height", h);
-  const vals = [1, ...CUM]; // vals[k]: $1 at the start, then at the end of each year
-  const lo = Math.log(Math.min(...vals)), hi = Math.log(Math.max(...vals));
-  const X = (k) => 5 + k / N * (w - 10), Y = (v) => h - 6 - (Math.log(v) - lo) / (hi - lo) * (h - 12);
-  const d = vals.map((v, k) => (k ? "L" : "M") + X(k).toFixed(1) + " " + Y(v).toFixed(1)).join(" ");
-  svg.innerHTML = `<defs><clipPath id="heroClip"><rect id="heroClipR" x="0" y="-10" width="0" height="${h + 20}"/></clipPath></defs>` +
-    `<line x1="${X(0)}" x2="${X(N)}" y1="${Y(1)}" y2="${Y(1)}" stroke="var(--rule)"/>` +
-    `<path d="${d}" clip-path="url(#heroClip)" fill="none" stroke="var(--ink)" stroke-width="2" stroke-linejoin="round"/>` +
-    `<circle id="heroDot" r="5" fill="var(--ink)"/>`;
-  HERO.geo = { X, Y, vals };
-  paintHero();
-}
-function paintHero() {
-  const g = HERO.geo;
-  if (!g) return;
-  const f = HERO.p * N, k = Math.min(N - 1, Math.floor(f)), r = f - k;
-  const v = g.vals[k] * (g.vals[k + 1] / g.vals[k]) ** r; // grow smoothly within the year
-  $("#heroClipR").setAttribute("width", g.X(f).toFixed(1));
-  const dot = $("#heroDot");
-  dot.setAttribute("cx", g.X(f).toFixed(1));
-  dot.setAttribute("cy", g.Y(v).toFixed(1));
-  $("#heroTo").textContent = usdBig(START * v);
-  $("#heroCap").textContent = t("heroCap", FIRST, HERO.p >= 1 ? LAST : FIRST + Math.floor(f));
-}
-function playHero() {
-  const done = () => { HERO.p = 1; paintHero(); };
-  if (reduced) return done();
-  const delay = 450, dur = 3000, t0 = performance.now() + delay;
-  const ease = (x) => (x < 0.5 ? 4 * x * x * x : 1 - (-2 * x + 2) ** 3 / 2);
-  const step = (now) => {
-    const x = clamp((now - t0) / dur, 0, 1);
-    HERO.p = ease(x);
-    paintHero();
-    if (x < 1) requestAnimationFrame(step);
-  };
-  requestAnimationFrame(step);
-}
 function heroText() {
-  $("#heroFrom").textContent = $("#calloutFrom").textContent = "$" + int(START);
-  $("#heroStat").setAttribute("aria-label", t("heroAria", "$" + int(START), usdBig(START * CUM[N - 1]), FIRST, LAST));
-  paintHero();
+  $("#calloutFrom").textContent = L().cur + int(START);
+  if (H.intro < 1) paintIntro(); else paintBrush();
 }
 
 /* ---------- history: chart ---------- */
 const measure = document.createElement("canvas").getContext("2d");
-const H = { view: "growth", a: 0, b: N - 1, sel: -1, pt: "mouse", animated: {}, geo: null, shown: false };
+const H = { view: "growth", a: 0, b: N - 1, sel: -1, pt: "mouse", animated: { growth: true }, geo: null, shown: false, intro: reduced ? 1 : 0, labIn: false };
 const MINSPAN = 5;
 const margins = (w) => ({ t: w < 560 ? 50 : 58, r: 8, b: 22, l: w < 560 ? 42 : 50 });
 
@@ -215,6 +171,7 @@ function drawHistory() {
   const V = (i) => (i < a ? 1 : CUM[i] / base); // $1 put in at the start of the period, at the end of year i
   const anim = !reduced && !H.animated[H.view];
   H.animated[H.view] = true;
+  const intro = H.intro < 1 && H.view === "growth" && a === 0 && b === N - 1;
 
   let vmin = 1, vmax = 1;
   for (let i = a; i <= b; i++) { vmin = Math.min(vmin, V(i)); vmax = Math.max(vmax, V(i)); }
@@ -271,9 +228,10 @@ function drawHistory() {
   let d = `M${m.l} ${LY(1).toFixed(1)}`;
   for (let i = a; i <= b; i++) d += ` L${(X(i) + step).toFixed(1)} ${LY(V(i)).toFixed(1)}`;
   if (H.view === "bars") out += `<path d="${d}" fill="none" stroke="var(--paper)" stroke-width="6" stroke-linejoin="round" opacity=".85"/>`;
-  out += `<path d="${d}"${anim ? ` pathLength="1" class="drawn"${H.view === "bars" ? ' style="animation-delay:.8s"' : ""}` : ""} fill="none" stroke="var(--ink)" stroke-width="2.25" stroke-linejoin="round"/>`;
+  if (intro) out += `<defs><clipPath id="introClip"><rect id="introClipR" x="0" y="0" width="0" height="${h}"/></clipPath></defs>`;
+  out += `<path d="${d}"${intro ? ' clip-path="url(#introClip)"' : anim ? ` pathLength="1" class="drawn"${H.view === "bars" ? ' style="animation-delay:.8s"' : ""}` : ""} fill="none" stroke="var(--ink)" stroke-width="2.25" stroke-linejoin="round"/>`;
   // where the money started and where it ended up, written on the line
-  const lab = (x, y, text, anchor) => `<text class="lab" x="${x.toFixed(1)}" y="${y.toFixed(1)}" text-anchor="${anchor}" paint-order="stroke" stroke="var(--paper)" stroke-width="5" stroke-linejoin="round">${text}</text>`;
+  const lab = (x, y, text, anchor) => `<text class="lab${H.labIn ? " lab-in" : ""}" x="${x.toFixed(1)}" y="${y.toFixed(1)}" text-anchor="${anchor}" paint-order="stroke" stroke="var(--paper)" stroke-width="5" stroke-linejoin="round">${text}</text>`;
   const dot = (x, y) => `<circle cx="${x.toFixed(1)}" cy="${y.toFixed(1)}" r="3.5" fill="var(--ink)" stroke="var(--paper)" stroke-width="2"/>`;
   const pts = [[m.l, LY(1)]];
   for (let i = a; i <= b; i++) pts.push([X(i) + step, LY(V(i))]);
@@ -298,12 +256,14 @@ function drawHistory() {
     return best;
   };
   const y1 = LY(1), xN = X(b) + step, yN = LY(V(b));
-  const t1 = t("at", usd(START), YEARS[a]), tN = t("at", usd(START * V(b)), YEARS[b]);
+  const t1 = t("at", money(START), YEARS[a]), tN = t("at", money(START * V(b)), YEARS[b]);
   measure.font = "italic 16px 'Instrument Serif', Georgia, serif";
   const tw = (s) => measure.measureText(s).width + 4;
-  out += dot(m.l, y1) + dot(xN, yN);
+  out += dot(m.l, y1);
   out += lab(m.l + 6, side(m.l, m.l + 6 + tw(t1), y1), t1, "start");
-  out += lab(xN - 2, side(xN - 2 - tw(tN), xN, yN), tN, "end");
+  if (intro) out += `<circle id="introDot" r="5" fill="var(--ink)" stroke="var(--paper)" stroke-width="2"/>`;
+  else out += dot(xN, yN) + lab(xN - 2, side(xN - 2 - tw(tN), xN, yN), tN, "end");
+  H.labIn = false;
 
   // event names, packed into three rows above the plot; spans get theirs first
   const rows = [[], [], []], rowY = [m.t - 36, m.t - 20, m.t - 6], cw = 7.3;
@@ -334,6 +294,39 @@ function drawHistory() {
   H.geo = { X, Y, LY, V, step, m };
   if (H.sel >= a && H.sel <= b) select(H.sel, false); else clearSel();
   drawSpark(m);
+  if (intro) paintIntro();
+}
+function paintIntro() {
+  const g = H.geo;
+  if (!g || H.intro >= 1) return;
+  const f = H.intro * N, k = Math.min(N - 1, Math.floor(f)), r = f - k;
+  const v0 = k ? CUM[k - 1] : 1, v = v0 * (CUM[k] / v0) ** r; // grow smoothly within the year
+  const x = g.m.l + f * g.step, clip = $("#introClipR"), dot = $("#introDot");
+  if (clip) clip.setAttribute("width", x.toFixed(1));
+  if (dot) { dot.setAttribute("cx", x.toFixed(1)); dot.setAttribute("cy", g.LY(v).toFixed(1)); }
+  const yr = Math.min(LAST, FIRST + Math.floor(f));
+  $("#calloutTo").textContent = usdBig(START * v);
+  $("#period").textContent = t("period", FIRST, yr, yr - FIRST + 1);
+}
+function playIntro() {
+  if (H.intro >= 1) return;
+  const t0 = performance.now() + 550, dur = 3200;
+  const ease = (x) => (x < 0.5 ? 4 * x * x * x : 1 - (-2 * x + 2) ** 3 / 2);
+  const step = (now) => {
+    if (H.intro >= 1) return;
+    const x = clamp((now - t0) / dur, 0, 1);
+    H.intro = Math.min(ease(x), 0.99999);
+    paintIntro();
+    if (x < 1) requestAnimationFrame(step); else finishIntro();
+  };
+  requestAnimationFrame(step);
+}
+// The intro never makes anyone wait: touching the chart, the window or the views ends it.
+function finishIntro() {
+  if (H.intro >= 1) return;
+  H.intro = 1; H.labIn = true;
+  if (H.shown) drawHistory();
+  paintBrush();
 }
 function select(i, fromPointer, py) {
   const g = H.geo;
@@ -349,7 +342,7 @@ function select(i, fromPointer, py) {
   const ev = eventsFor(YEARS[i]);
   tip.innerHTML = `<div class="y">${YEARS[i]}</div><div class="v">${esc(t("tipReturn", pct(R[i])))}</div>` +
     (ev.length ? `<div class="e">${ev.map((e) => `<b>${esc(evName(e))}.</b> ${esc(evText(e))}`).join("<br>")}</div>` : "") +
-    `<div class="m">${esc(t("tipGrowth", YEARS[H.a], usd(START * g.V(i))))}</div>`;
+    `<div class="m">${esc(t("tipGrowth", YEARS[H.a], money(START * g.V(i))))}</div>`;
   tip.classList.add("on");
   const ty = H.view === "bars" ? Math.min(g.Y(Math.max(R[i], 0)), g.Y(0)) : ly;
   placeTip(tip, $("#histChart"), cx, fromPointer && py != null ? Math.min(py, ty) : ty, touch);
@@ -369,7 +362,7 @@ function bindHistory() {
     const r = svg.getBoundingClientRect();
     return [H.a + Math.floor((e.clientX - r.left - H.geo.m.l) / H.geo.step), e.clientY - r.top];
   };
-  const move = (e) => { if (!H.geo) return; H.pt = e.pointerType; const [i, y] = at(e); select(i, true, y); };
+  const move = (e) => { if (e.type === "pointerdown" || e.pointerType === "mouse") finishIntro(); if (!H.geo) return; H.pt = e.pointerType; const [i, y] = at(e); select(i, true, y); };
   svg.addEventListener("pointermove", move);
   svg.addEventListener("pointerdown", move);
   svg.addEventListener("pointerleave", (e) => { if (e.pointerType === "mouse") clearSel(); });
@@ -381,6 +374,7 @@ function bindHistory() {
     select(clamp((H.sel < 0 ? H.b + 1 : H.sel) + k, H.a, H.b), false);
   });
   $$("[data-view]").forEach((btn) => btn.addEventListener("click", () => {
+    finishIntro();
     H.view = btn.dataset.view;
     $$("[data-view]").forEach((x) => x.setAttribute("aria-pressed", String(x === btn)));
     $("#histKey").hidden = H.view !== "bars";
@@ -416,6 +410,7 @@ function paintBrush() {
   set($("#hL"), t("startOf"), FIRST, YEARS[H.b] - MINSPAN + 1, YEARS[H.a]);
   set($("#hR"), t("endOf"), YEARS[H.a] + MINSPAN - 1, LAST, YEARS[H.b]);
   $("#resetZoom").hidden = H.a === 0 && H.b === N - 1;
+  if (H.intro < 1) return;
   $("#period").textContent = t("period", YEARS[H.a], YEARS[H.b], H.b - H.a + 1);
   $("#calloutTo").textContent = usdBig(START * CUM[H.b] / (H.a ? CUM[H.a - 1] : 1));
 }
@@ -431,6 +426,7 @@ function bindBrush() {
   let id = null, mode = null, x0 = 0, a0 = 0, b0 = 0, moved = false;
   el.addEventListener("pointerdown", (e) => {
     if (id !== null || e.button > 0) return; // one finger at a time
+    finishIntro();
     const handle = e.target.closest(".brush-h");
     mode = handle ? handle.dataset.h : e.target.closest(".brush-win") ? "pan" : "jump";
     id = e.pointerId; x0 = e.clientX; a0 = H.a; b0 = H.b; moved = false;
@@ -490,7 +486,7 @@ function periodStats() {
     [t("worst"), pct(R[worst], 0), YEARS[worst] + (ev ? " · " + evName(ev) : "")],
     [t("wait"), none ? t("waitNone") : t("waitN", best.len), none ? t("waitNoneP") : best.open ? t("waitOpen", py, fromStart) : t("waitDone", py, fromStart)],
   ].map(([k, v, p]) => `<div><span class="mono">${esc(k)}</span><div class="n tab">${esc(v)}</div><p>${esc(p)}</p></div>`).join("");
-  $("#histDesc").textContent = t("desc", YEARS[a], YEARS[b], up, n, pctU(geo), YEARS[worst], pct(R[worst], 0), usd(START * CUM[b] / base));
+  $("#histDesc").textContent = t("desc", YEARS[a], YEARS[b], up, n, pctU(geo), YEARS[worst], pct(R[worst], 0), money(START * CUM[b] / base));
 }
 function historyLists() {
   $("#evList").innerHTML = I.events.map((e) => {
@@ -500,7 +496,7 @@ function historyLists() {
   }).join("");
   const [hy, hr, hv] = t("head");
   $("#histTable").innerHTML = `<thead><tr><th>${hy}</th><th>${hr}</th><th>${hv}</th></tr></thead><tbody>` +
-    R.map((r, i) => `<tr><td>${YEARS[i]}</td><td>${pct(r)}</td><td>${usd(CUM[i] * START)}</td></tr>`).join("") + "</tbody>";
+    R.map((r, i) => `<tr><td>${YEARS[i]}</td><td>${pct(r)}</td><td>${money(CUM[i] * START)}</td></tr>`).join("") + "</tbody>";
   $("#histHint").textContent = t("hint", COARSE);
 }
 
@@ -843,6 +839,31 @@ function segThumbs() {
   });
 }
 
+/* ---------- videos and quotes ---------- */
+function bindVideos() {
+  $$(".vid-play").forEach((btn) => btn.addEventListener("click", () => {
+    haptic();
+    const f = document.createElement("iframe");
+    f.src = `https://www.youtube-nocookie.com/embed/${encodeURIComponent(btn.dataset.yt)}?autoplay=1&rel=0&playsinline=1`;
+    f.title = btn.dataset.title;
+    f.allow = "autoplay; encrypted-media; picture-in-picture; fullscreen";
+    f.allowFullscreen = true;
+    btn.replaceWith(f);
+  }));
+}
+// Quotes further down rise in once as they come into view. They start visible; the script only
+// hides the ones below the fold, so the page is complete without it.
+function revealQuotes() {
+  if (reduced || !("IntersectionObserver" in window)) return;
+  const io = new IntersectionObserver((es) => es.forEach((e) => {
+    if (!e.isIntersecting) return;
+    io.unobserve(e.target);
+    e.target.classList.add("reveal");
+    requestAnimationFrame(() => e.target.classList.remove("pre"));
+  }), { rootMargin: "0px 0px -12% 0px" });
+  $$(".pull").forEach((el) => { if (el.getBoundingClientRect().top > innerHeight) { el.classList.add("pre"); io.observe(el); } });
+}
+
 /* ---------- switching language ---------- */
 const FIELDS = ["cStart", "cMonthly", "cYears", "cFee", "ownAmt"];
 const fmtField = (id, v) => (SL[id] ? SL[id].fmt(v) : int(v));
@@ -854,7 +875,7 @@ function setLang(lang) {
   try { const u = new URL(location.href); u.searchParams.set("lang", lang); history.replaceState(null, "", u); } catch {}
   applyStatic();
   FIELDS.forEach((id, k) => ($("#" + id).value = fmtField(id, vals[k])));
-  heroText(); historyLists(); periodStats(); paintBrush();
+  historyLists(); periodStats(); paintBrush(); heroText();
   if (H.shown) drawHistory();
   hay.relabel(); fees(); own(); expText(); drawMC();
   SLIDERS.forEach((f) => f());
@@ -866,15 +887,16 @@ const typed = FIELDS.map((id) => parse($("#" + id).value, "en")); // the page sh
 applyStatic();
 FIELDS.forEach((id, k) => ($("#" + id).value = fmtField(id, typed[k])));
 segThumbs();
-drawHero(); heroText(); playHero();
-onResize($("#heroStat"), drawHero);
+heroText();
 $$("[data-lang]").forEach((btn) => btn.addEventListener("click", () => setLang(btn.dataset.lang)));
 bindHistory(); bindBrush(); historyLists(); periodStats();
 drawSpark(margins($("#histChart").clientWidth));
 haystack(); fees(); bindOwn(); own();
 bindMC(); expText(); simulate();
+bindVideos(); revealQuotes();
 const hc = $("#histChart");
 $("#histSvg").setAttribute("height", hc.clientWidth < 560 ? 320 : 380);
-whenVisible(hc, () => { H.shown = true; drawHistory(); onResize(hc, drawHistory); });
+// the chart is the hero: it draws straight away and the number counts up with it
+H.shown = true; drawHistory(); playIntro(); onResize(hc, drawHistory);
 whenVisible($("#mcChart"), () => { mcAnimated = false; drawMC(); onResize($("#mcChart"), drawMC); });
 })();

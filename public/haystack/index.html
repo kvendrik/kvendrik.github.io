@@ -45,7 +45,7 @@ html{scroll-behavior:smooth;scroll-padding-top:20px;-webkit-text-size-adjust:100
 /* Native feel: no tap delay, no selection or callouts on controls. Body text stays selectable. */
 a,button,summary,.slider,.brush,.chart svg{touch-action:manipulation}
 button,summary,.seg,.slider,.brush,.chart svg,.grid100{-webkit-user-select:none;user-select:none;-webkit-touch-callout:none}
-body{margin:0;background:var(--paper);color:var(--ink);font:400 17px/1.6 var(--f-body);font-variation-settings:"ROND" 0;-webkit-font-smoothing:antialiased;
+body{margin:0;background:var(--paper);color:var(--ink);font:400 18px/1.7 var(--f-body);font-variation-settings:"ROND" 0;-webkit-font-smoothing:antialiased;
   padding:env(safe-area-inset-top,0px) max(16px,env(safe-area-inset-right,0px)) env(safe-area-inset-bottom,0px) max(16px,env(safe-area-inset-left,0px))}
 p,h1,h2,h3,ul,ol{margin:0}
 h1,h2,h3{font-family:var(--f-display);font-weight:400;line-height:1.05;text-wrap:balance}
@@ -55,28 +55,27 @@ button{font:inherit;color:inherit}
 .mono{font-family:var(--f-mono);font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--muted)}
 .tab{font-variant-numeric:tabular-nums}
 .sr-only{position:absolute;width:1px;height:1px;margin:-1px;padding:0;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap;border:0}
-section{padding-block:88px 0}
-h2{font-size:clamp(40px,7vw,60px);margin:10px 0 24px}
-.lede{font-family:var(--f-display);font-size:clamp(24px,3.8vw,32px);line-height:1.25;color:var(--ink-2);text-wrap:pretty}
-.prose{display:grid;gap:16px;margin-top:24px;color:var(--ink-2);max-width:62ch}
+section{padding-block:144px 0}
+section.more{padding-top:56px}
+h2{font-size:clamp(40px,7vw,60px);margin:14px 0 32px}
+.lede{font-family:var(--f-display);font-size:clamp(24px,3.8vw,32px);line-height:1.3;color:var(--ink-2);text-wrap:pretty;max-width:34ch}
+.prose{display:grid;gap:20px;margin-top:40px;color:var(--ink-2);max-width:60ch}
+.prose-p{margin-top:40px;color:var(--ink-2);max-width:60ch}
 .prose b{color:var(--ink);font-weight:600}
 .note{margin-top:14px;color:var(--muted);font-size:13px;line-height:1.5}
 .note a{color:inherit;text-underline-offset:3px}
 
 /* top bar + hero */
 .top{position:absolute;z-index:5;top:calc(env(safe-area-inset-top,0px) + 16px);right:max(16px,env(safe-area-inset-right,0px))}
-.hero{padding-block:96px 0}
+.hero{padding-block:120px 0}
 .hero h1{font-size:clamp(60px,13vw,124px);letter-spacing:-.01em}
-.hero .lede{margin-top:20px;max-width:30ch}
+.hero .lede{margin-top:28px;max-width:30ch}
 .count{display:flex;flex-wrap:wrap;align-items:baseline;gap:0 .28em;margin:0;font-family:var(--f-display);font-size:clamp(38px,8.4vw,80px);line-height:1.02;letter-spacing:-.01em}
 .count .from{color:var(--ink-2)}
 .count .arrow{color:var(--muted);font-size:.62em}
 .count .tail{display:inline-flex;align-items:baseline;gap:.28em;white-space:nowrap}
 .count .to{font-variant-numeric:tabular-nums}
-.hero-stat{margin-top:44px}
-#heroLine{display:block;width:100%;margin-top:18px;overflow:visible}
-.hero-stat .mono{display:block;margin-top:12px}
-.callout{margin-top:32px}
+.callout{margin-top:64px}
 .callout .count{font-size:clamp(36px,6.4vw,58px)}
 .callout .mono{display:block;margin-top:8px;color:var(--ink)}
 .quote{margin-top:44px;padding-top:18px;border-top:1px solid var(--ink)}
@@ -95,13 +94,15 @@ h2{font-size:clamp(40px,7vw,60px);margin:10px 0 24px}
 .seg-thumb.instant{transition:none}
 .seg.small button{padding:5px 10px}
 @media (pointer:coarse){.seg button{padding:14px 15px}.seg.small button{padding:11px 13px}}
-.controls{display:flex;flex-wrap:wrap;justify-content:space-between;align-items:center;gap:12px;margin:28px 0 14px}
+.controls{display:flex;flex-wrap:wrap;justify-content:space-between;align-items:center;gap:12px;margin:40px 0 20px}
 
 /* charts */
 .chart{position:relative;margin-top:8px;touch-action:pan-y}
 .chart svg{display:block;width:100%;overflow:visible}
 .chart text{font-family:var(--f-mono);font-size:10px;fill:var(--muted);letter-spacing:.04em}
 .chart .ev{font-family:var(--f-body);font-size:12px;fill:var(--ink-2);letter-spacing:0}
+@keyframes labIn{from{opacity:0;transform:translateY(6px)}}
+.chart .lab-in{animation:labIn .5s var(--ease) backwards}
 .chart .lab{font-family:var(--f-display);font-style:italic;font-size:16px;fill:var(--ink);letter-spacing:0}
 .tip{position:absolute;top:0;left:0;pointer-events:none;min-width:150px;max-width:240px;padding:10px 12px;background:var(--paper);border:2px solid var(--ink);box-shadow:var(--shadow);font-size:13px;line-height:1.4;opacity:0;transition:opacity .12s;z-index:2}
 .tip.on{opacity:1}
@@ -114,12 +115,12 @@ h2{font-size:clamp(40px,7vw,60px);margin:10px 0 24px}
 @keyframes grow{from{transform:scaleY(0)}}
 .bar{transform-box:fill-box;animation:grow .6s var(--ease) backwards}
 .bar.up{transform-origin:bottom}.bar.dn{transform-origin:top}
-.legend{display:flex;flex-wrap:wrap;gap:6px 18px;margin-top:14px}
+.legend{display:flex;flex-wrap:wrap;gap:8px 20px;margin-top:20px}
 .legend span{display:inline-flex;align-items:center;gap:8px}
 .legend i{display:inline-block;width:18px;height:10px}
 
 /* period zoom: a window over the whole history; drag its edges or slide it */
-.brush{position:relative;height:48px;margin-top:14px;touch-action:pan-y}
+.brush{position:relative;height:48px;margin-top:20px;touch-action:pan-y}
 .brush svg{position:absolute;inset:0;width:100%;height:100%;overflow:visible}
 .brush-shade{position:absolute;top:0;bottom:0;background:var(--paper);opacity:.75;pointer-events:none}
 .brush-win{position:absolute;top:0;bottom:0;border:2px solid var(--ink);box-shadow:var(--shadow);cursor:grab;transition:box-shadow .16s var(--ease)}
@@ -134,15 +135,15 @@ h2{font-size:clamp(40px,7vw,60px);margin:10px 0 24px}
 .linkbtn:focus-visible{outline:2px solid var(--ink);outline-offset:3px}
 
 /* stat rows */
-.stats,.outcomes{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));margin-top:32px;border-top:1px solid var(--ink)}
-.stats>div,.outcomes>div{padding:16px 16px 4px 0;min-width:0}
-.stats>div+div,.outcomes>div+div{padding-left:16px;border-left:1px solid var(--rule)}
+.stats,.outcomes{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));margin-top:48px;border-top:1px solid var(--ink)}
+.stats>div,.outcomes>div{padding:20px 20px 8px 0;min-width:0}
+.stats>div+div,.outcomes>div+div{padding-left:20px;border-left:1px solid var(--rule)}
 .stats .n,.outcomes .n{font-family:var(--f-display);font-size:clamp(30px,4.6vw,42px);line-height:1;margin-top:8px;overflow-wrap:anywhere}
 .stats p,.outcomes p{font-size:13px;color:var(--ink-2);margin-top:6px;line-height:1.4}
 
 /* disclosures */
-details{margin-top:28px;border-top:1px solid var(--rule)}
-summary{cursor:pointer;list-style:none;padding:14px 0;min-height:44px;display:flex;justify-content:space-between;align-items:center}
+details{margin-top:64px;border-top:1px solid var(--rule)}
+summary{cursor:pointer;list-style:none;padding:18px 0;min-height:52px;display:flex;justify-content:space-between;align-items:center}
 summary::-webkit-details-marker{display:none}
 summary::after{content:"+";font-family:var(--f-mono);font-size:16px;line-height:1;transition:transform .3s var(--ease)}
 details[open] summary::after{transform:rotate(45deg)}
@@ -163,14 +164,15 @@ table.data th{color:var(--muted);font-weight:400}
 table.data :is(th,td):first-child{text-align:left}
 
 /* index funds */
-.how{list-style:none;padding:0;margin-top:32px;display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:24px}
-.how li{border-top:1px solid var(--ink);padding-top:14px}
-.how h3{font-size:28px;margin:0 0 8px}
-.how p{font-size:15px;color:var(--ink-2)}
-.hay{margin-top:48px;padding:24px;background:var(--card);border-radius:2px}
+.how{list-style:none;padding:0;margin-top:56px;display:grid}
+.how li{display:grid;grid-template-columns:minmax(0,.8fr) minmax(0,1.2fr);gap:8px 32px;align-items:baseline;padding:32px 0;border-top:1px solid var(--rule)}
+.how li:first-child{border-top-color:var(--ink)}
+.how h3{font-size:30px;margin:0}
+.how p{font-size:17px;color:var(--ink-2)}
+.hay{margin-top:72px;padding:36px;background:var(--card);border-radius:2px}
 .hay h3{font-size:clamp(28px,4.6vw,38px);line-height:1.1}
-.hay-lede{margin-top:10px;font-size:15px;color:var(--ink-2);max-width:60ch}
-.hay .row{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.1fr);gap:28px;align-items:start;margin-top:20px}
+.hay-lede{margin-top:14px;font-size:17px;color:var(--ink-2);max-width:60ch}
+.hay .row{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.1fr);gap:36px;align-items:start;margin-top:28px}
 .grid100{display:grid;grid-template-columns:repeat(10,1fr);gap:5px;max-width:320px}
 .grid100 button{all:unset;box-sizing:border-box;aspect-ratio:1;border:1.5px solid var(--ink);border-radius:3px;background:var(--paper);cursor:pointer;
   transition:transform .32s var(--ease-drawer),background-color .16s var(--ease),border-color .16s var(--ease),box-shadow .16s var(--ease)}
@@ -193,23 +195,21 @@ table.data :is(th,td):first-child{text-align:left}
 .btn:active{box-shadow:none;transform:translate(3px,3px);transition-duration:40ms}
 .btn--quiet{background:var(--paper);color:var(--ink)}
 @media (pointer:coarse){.btn{min-height:48px;padding:14px 20px}}
-.btns{display:flex;flex-wrap:wrap;gap:12px;margin-top:20px}
-.fees{margin-top:48px;border-top:1px solid var(--ink);padding-top:18px}
-.fees h3{font-size:clamp(28px,4.6vw,38px);line-height:1.1}
-.feebars{display:grid;gap:10px;margin-top:20px}
+.btns{display:flex;flex-wrap:wrap;gap:14px;margin-top:28px}
+.feebars{display:grid;gap:16px;margin-top:40px}
 .feebars .r{display:grid;grid-template-columns:13em minmax(0,1fr) 6em;gap:12px;align-items:center;font-size:14px;color:var(--ink-2)}
 .feebars .t{height:14px;background:var(--band);border-radius:0 3px 3px 0;overflow:hidden}
 .feebars .f{display:block;height:100%;background:var(--ink);border-radius:0 3px 3px 0}
 .feebars .v{font-family:var(--f-mono);font-size:12px;text-align:right;color:var(--ink)}
 
 /* what you own */
-.amount{display:flex;align-items:center;flex-wrap:wrap;gap:10px 14px;margin-top:28px;font-family:var(--f-display);font-size:clamp(24px,3.8vw,30px);line-height:1.2}
+.amount{display:flex;align-items:center;flex-wrap:wrap;gap:12px 16px;margin-top:48px;font-family:var(--f-display);font-size:clamp(24px,3.8vw,30px);line-height:1.2}
 .field{display:flex;align-items:center;width:9.5em;background:var(--paper);border:2px solid var(--ink);box-shadow:var(--shadow);transition:transform 150ms var(--ease),box-shadow 150ms var(--ease)}
 .field:focus-within{transform:translate(-3px,-3px);box-shadow:var(--shadow-lg)}
 .field .cur{padding-left:10px;font-size:.75em;color:var(--ink-2)}
 .field input{flex:1;min-width:0;width:100%;margin:0;padding:6px 10px 6px 4px;border:0;border-radius:0;outline:0;background:transparent;color:var(--ink);font:inherit;font-variant-numeric:tabular-nums;-webkit-appearance:none;appearance:none}
 .rows{margin-top:8px}
-.rows .r{display:grid;grid-template-columns:minmax(7em,14em) minmax(0,1fr) 4.2em 6.5em;gap:12px;align-items:center;padding:9px 0;border-top:1px solid var(--rule);font-size:15px}
+.rows .r{display:grid;grid-template-columns:minmax(7em,14em) minmax(0,1fr) 4.2em 6.5em;gap:12px;align-items:center;padding:12px 0;border-top:1px solid var(--rule);font-size:15px}
 .rows .r:last-child{border-bottom:1px solid var(--rule)}
 .rows .nm{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .rows .t{height:12px}
@@ -217,13 +217,13 @@ table.data :is(th,td):first-child{text-align:left}
 .rows .rest .f{background:var(--down)}
 .rows .p,.rows .a{font-family:var(--f-mono);font-size:12px;text-align:right}
 .rows .a{color:var(--ink-2)}
-.then{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:32px;margin-top:40px}
-.then>div{border-top:1px solid var(--ink);padding-top:14px}
+.then{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:40px;margin-top:80px}
+.then>div{border-top:1px solid var(--ink);padding-top:18px}
 .then h3{font-size:28px;margin:6px 0 8px}
-.then p{font-size:15px;color:var(--ink-2)}
+.then p{font-size:17px;color:var(--ink-2)}
 
 /* calculator: drag a box sideways (relative drag, like iOS Control Center), tap the number to type */
-.calc{margin-top:32px;display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px 16px}
+.calc{margin-top:48px;display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:18px 20px}
 .slider{position:relative;display:flex;align-items:center;justify-content:space-between;gap:12px;height:64px;padding:0 16px;border:2px solid var(--ink);background:var(--paper);box-shadow:var(--shadow);
   overflow:hidden;cursor:ew-resize;touch-action:pan-y;transition:transform .45s var(--ease-drawer),box-shadow .16s var(--ease)}
 .slider.pressed{transform:translate(2px,2px);box-shadow:1px 1px 0 0 var(--ink);transition-duration:80ms}
@@ -240,45 +240,67 @@ table.data :is(th,td):first-child{text-align:left}
 .slider input{width:6ch;field-sizing:content;min-width:1ch;margin:0;padding:6px 0;border:0;border-radius:0;outline:0;background:transparent;color:var(--ink);font:inherit;text-align:right;font-variant-numeric:tabular-nums;-webkit-appearance:none;appearance:none;cursor:text}
 @supports (field-sizing:content){.slider input{width:auto}}
 .slider input:focus{text-decoration:underline;text-decoration-thickness:1.5px;text-underline-offset:6px}
-.verdict{margin-top:28px;font-family:var(--f-display);font-style:italic;font-size:clamp(22px,3.4vw,28px);line-height:1.3;text-wrap:pretty}
+.pull{margin:88px 0 0;padding-top:24px;border-top:1px solid var(--ink)}
+.pull.first{margin-top:0}
+.eye-gap{display:block;margin-top:112px}
+.pull blockquote{margin:0;font-family:var(--f-display);font-style:italic;font-size:clamp(24px,3.8vw,32px);line-height:1.25;text-wrap:balance}
+.pull figcaption{margin-top:10px}
+.pre{opacity:0;transform:translateY(14px)}
+.reveal{transition:opacity .7s var(--ease),transform .7s var(--ease)}
+.vids{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:48px 32px;margin-top:48px}
+.vid{margin:0;min-width:0}
+.vid-play,.vid iframe{display:block;width:100%;aspect-ratio:16/9;border:2px solid var(--ink);box-shadow:var(--shadow)}
+.vid-play{position:relative;padding:0;cursor:pointer;background:var(--card) var(--img) center/cover no-repeat;filter:grayscale(1) contrast(1.05);transition:filter .3s var(--ease),transform 120ms var(--ease),box-shadow 120ms var(--ease)}
+.vid-play:active{transform:translate(3px,3px);box-shadow:none;transition-duration:40ms}
+@media (hover:hover) and (pointer:fine){.vid-play:hover{filter:none}}
+.vid-play:focus-visible{outline:2px solid var(--ink);outline-offset:3px}
+.vid-badge{position:absolute;left:50%;top:50%;width:64px;height:64px;margin:-32px 0 0 -32px;border-radius:50%;background:var(--ink);box-shadow:0 0 0 3px var(--paper)}
+.vid-badge::after{content:"";position:absolute;left:26px;top:20px;border-style:solid;border-width:12px 0 12px 19px;border-color:transparent transparent transparent var(--paper)}
+.vid figcaption{margin-top:14px}
+.vid h3{font-size:26px;margin-top:4px}
+.vid p{font-size:17px;color:var(--ink-2);margin-top:6px}
+.verdict{margin-top:48px;font-family:var(--f-display);font-style:italic;font-size:clamp(22px,3.4vw,28px);line-height:1.3;text-wrap:pretty}
 
 /* rules + reading */
 .rules{display:grid;margin-top:8px}
-.rules>div{padding:20px 0;border-top:1px solid var(--rule);display:grid;grid-template-columns:3em minmax(0,1fr);gap:12px}
+.rules>div{padding:28px 0;border-top:1px solid var(--rule);display:grid;grid-template-columns:3em minmax(0,1fr);gap:12px}
 .rules .k{font-family:var(--f-mono);font-size:11px;color:var(--muted);padding-top:9px}
 .rules h3{font-size:30px;line-height:1.15}
-.rules p{font-size:15px;color:var(--ink-2);margin-top:4px}
-.reading{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:0 32px;margin-top:8px}
-.reading>*{display:block;padding:20px 0 24px;border-top:1px solid var(--ink);color:inherit;text-decoration:none}
+.rules p{font-size:17px;color:var(--ink-2);margin-top:6px}
+.reading{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:0 40px;margin-top:48px}
+.reading>*{display:block;padding:24px 0 36px;border-top:1px solid var(--ink);color:inherit;text-decoration:none}
 .reading h3{font-size:30px;line-height:1.1;margin-top:10px}
 .reading .by{font-family:var(--f-display);font-style:italic;font-size:20px;color:var(--ink-2);margin-top:4px}
-.reading p:not(.by){font-size:15px;color:var(--ink-2);margin-top:10px}
+.reading p:not(.by){font-size:17px;color:var(--ink-2);margin-top:12px}
 .reading a{transition:transform 160ms var(--ease)}
 .reading a h3{text-decoration:underline;text-decoration-color:var(--rule);text-decoration-thickness:1px;text-underline-offset:5px;transition:text-decoration-color .2s}
 .reading a:active{transform:scale(.98)}
 .reading a:active h3{text-decoration-color:var(--ink)}
 @media (hover:hover) and (pointer:fine){.reading a:hover h3{text-decoration-color:var(--ink)}}
-.end{padding-block:88px 80px}
+.end{padding-block:160px 120px}
 .end .big{font-family:var(--f-display);font-size:clamp(44px,9vw,84px);line-height:1}
 .end small{display:block;margin-top:40px;color:var(--muted);font-size:13px;line-height:1.6;max-width:68ch}
 
 /* the page arrives once */
 @keyframes rise{from{opacity:0;transform:translateY(16px)}}
 .hero>*{animation:rise 1s var(--ease) backwards}
-.hero>:nth-child(2){animation-delay:.1s}.hero>:nth-child(3){animation-delay:.25s}.hero>:nth-child(4){animation-delay:1.2s}
+.hero>:nth-child(2){animation-delay:.1s}.hero>:nth-child(3){animation-delay:.2s}.hero>:nth-child(n+4){animation-delay:.3s}
 @media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}*{animation:none!important;transition:none!important}}
 
 @media (max-width:700px){
-  section{padding-block:64px 0}
-  .hero{padding-top:84px}
+  section{padding-block:112px 0}
+  section.more{padding-top:48px}
+  .eye-gap{margin-top:88px}
+  .pull{margin-top:72px}
+  .hero{padding-top:96px}
   .stats,.outcomes{grid-template-columns:repeat(2,minmax(0,1fr))}
   .stats>div:nth-child(3),.outcomes>div:nth-child(3){padding-left:0;border-left:0}
   .stats>div:nth-child(n+3),.outcomes>div:nth-child(n+3){border-top:1px solid var(--rule)}
-  .how,.then,.reading{grid-template-columns:1fr}
-  .how{gap:20px}
-  .hay{padding:18px}
+  .then,.reading,.vids{grid-template-columns:1fr}
+  .how li{grid-template-columns:1fr;padding:28px 0}
+  .hay{padding:24px 20px}
   .hay .row{grid-template-columns:1fr}
-  .calc{grid-template-columns:1fr;gap:12px}
+  .calc{grid-template-columns:1fr;gap:16px}
   .rows .r{grid-template-columns:minmax(0,1fr) 4em 6em;gap:4px 10px}
   .rows .t{grid-column:1/-1;grid-row:2}
   .evlist li{grid-template-columns:5.5em minmax(0,1fr)}
@@ -300,23 +322,7 @@ table.data :is(th,td):first-child{text-align:left}
   <header class="hero">
     <h1 data-t="h1">Buy the haystack.</h1>
     <p class="lede" data-t="heroLede">A slow, boring and very old way to grow money: own a little of every company in the world, pay almost nothing for it, and wait.</p>
-    <div class="hero-stat" id="heroStat" role="img">
-      <p class="count"><span class="from" id="heroFrom">$10,000</span><span class="tail"><span class="arrow">→</span><span class="to" id="heroTo">$25.7 million</span></span></p>
-      <svg id="heroLine" aria-hidden="true"></svg>
-      <span class="mono" id="heroCap"></span>
-    </div>
-    <div class="quote">
-      <p data-t="quote">“Don’t look for the needle in the haystack. Just buy the haystack!”</p>
-      <span class="mono" data-t="cite">John C. Bogle, founder of Vanguard</span>
-    </div>
-  </header>
-
-  <section id="history" aria-labelledby="h-history">
-    <span class="mono" data-t="histEye">The long view</span>
-    <h2 id="h-history" data-t="histH">125 years of the world’s stock market</h2>
-    <p class="lede" data-t="histLede">Two world wars, a pandemic, a depression, oil shocks, bubbles and crashes. Every one of them hurt. None of them stopped it.</p>
-
-    <div class="callout" aria-live="polite">
+    <div class="callout">
       <p class="count"><span class="from" id="calloutFrom">$10,000</span><span class="tail"><span class="arrow">→</span><span class="to" id="calloutTo"></span></span></p>
       <span class="mono tab" id="period"></span>
     </div>
@@ -341,8 +347,14 @@ table.data :is(th,td):first-child{text-align:left}
       <span><i style="background:var(--ink);height:2.5px"></i><span data-t="keyLine">$10,000 invested at the start, after inflation</span></span>
     </div>
     <p class="sr-only" id="histDesc"></p>
+  </header>
+
+  <section id="history" class="more" aria-label="125 years of the world’s stock market" data-ta="hist@aria-label">
+    <p class="lede" data-t="histLede">Two world wars, a pandemic, a depression, oil shocks, bubbles and crashes. Every one of them hurt. None of them stopped it.</p>
+
 
     <div class="stats" id="histStats"></div>
+    <figure class="pull"><blockquote data-t="qTime">“Time is your friend; impulse is your enemy.”</blockquote><figcaption class="mono" data-t="qTimeBy">John C. Bogle</figcaption></figure>
 
     <details>
       <summary class="mono" data-t="evSum">What happened in the bad years</summary>
@@ -367,6 +379,16 @@ table.data :is(th,td):first-child{text-align:left}
       <li data-t="how2"><h3>Nobody picks</h3><p>No star manager, no research team, no trading on hunches. The fund follows the list, so it costs very little to run: often 0.1% to 0.25% a year.</p></li>
       <li data-t="how3"><h3>You get the market</h3><p>You give up any chance of beating the market. In return you get its return, minus a tiny fee, which most professionals don’t manage once their own fees are counted.</p></li>
     </ul>
+    <figure class="pull"><blockquote data-t="qSam">“I rank this Bogle invention along with the invention of the wheel, the alphabet, Gutenberg printing, and wine and cheese.”</blockquote><figcaption class="mono" data-t="qSamBy">Paul Samuelson, Nobel Prize–winning economist, 2005</figcaption></figure>
+
+
+  </section>
+
+  <section id="picking" aria-labelledby="h-picking">
+    <figure class="pull first"><blockquote data-t="quote">“Don’t look for the needle in the haystack. Just buy the haystack!”</blockquote><figcaption class="mono" data-t="cite">John C. Bogle, founder of Vanguard</figcaption></figure>
+    <span class="mono eye-gap" data-t="pickEye">Picking stocks</span>
+    <h2 id="h-picking" data-t="pickH">Why not just pick the winners?</h2>
+    <p class="lede" data-t="pickLede">Because finding them is much harder than it looks, and paying someone else to try usually costs more than it earns.</p>
     <div class="prose">
       <p data-t="prose1">Picking stocks is a game played against professionals with more data, more time and faster computers. Before costs, the market’s return is by definition the average return of everyone in it. <b>After costs, the average active investor has to do worse than the index</b>, because they pay more. The numbers bear it out: the S&amp;P SPIVA scorecards find that over 15 to 20 years roughly nine in ten actively managed US stock funds trail their index.</p>
     </div>
@@ -391,14 +413,16 @@ table.data :is(th,td):first-child{text-align:left}
       </div>
       <p class="note" data-t="hayNote">The index fund owns all 100, so it always owns all 4.</p>
     </div>
+    <figure class="pull"><blockquote data-t="qMalkiel">“A blindfolded monkey throwing darts at a newspaper’s financial pages could select a portfolio that would do just as well as one carefully selected by experts.”</blockquote><figcaption class="mono" data-t="qMalkielBy">Burton Malkiel, A Random Walk Down Wall Street, 1973</figcaption></figure>
+  </section>
 
-    <div class="fees">
-      <span class="mono" data-t="feeEye">What costs do over 40 years</span>
-      <h3 data-t="feeH">“In investing, you get what you don’t pay for.”</h3>
-      <p class="note" id="feeIntro" style="margin-top:6px"></p>
-      <div class="feebars" id="feeBars"></div>
-      <p class="note" id="feeNote"></p>
-    </div>
+  <section id="costs" aria-labelledby="h-costs">
+    <span class="mono" data-t="feeEye">What costs cost</span>
+    <h2 id="h-costs" data-t="feeH">“In investing, you get what you don’t pay for.”</h2>
+    <p class="lede" data-t="costLede">Fees look tiny: a percent or two a year. But they compound for decades, just like returns, only against you.</p>
+    <p class="prose-p" id="feeIntro"></p>
+    <div class="feebars" id="feeBars"></div>
+    <p class="note" id="feeNote"></p>
   </section>
 
   <section id="today" aria-labelledby="h-today">
@@ -452,6 +476,7 @@ table.data :is(th,td):first-child{text-align:left}
     <div class="outcomes" id="outcomes"></div>
     <p class="verdict" id="verdict"></p>
     <p class="note" data-t="futNote">Everything is in today’s money, after inflation and before tax. Research on 39 countries finds that a single country’s stock market has lost money over 30 years, after inflation, more often than these futures suggest. One more reason to own the whole world.</p>
+    <figure class="pull"><blockquote data-t="qBuffett">“Put 10% of the cash in short-term government bonds and 90% in a very low-cost S&P 500 index fund. (I suggest Vanguard’s.)”</blockquote><figcaption class="mono" data-t="qBuffettBy">Warren Buffett, on the money he will leave his wife · letter to shareholders, 2013</figcaption></figure>
   </section>
 
   <section id="rules" aria-labelledby="h-rules">
@@ -464,12 +489,26 @@ table.data :is(th,td):first-child{text-align:left}
       <div><span class="k">04</span><div data-t="rule4"><h3>Match the risk to your stomach.</h3><p>Stocks can fall by half and stay down for years. If you would sell in a crash, hold some bonds so you won’t. The best plan is the one you can stick to.</p></div></div>
       <div><span class="k">05</span><div data-t="rule5"><h3>Stay the course.</h3><p>Bogle’s phrase. The returns on the chart above went to the people who were still holding after the bad years, not to those who left.</p></div></div>
     </div>
+    <figure class="pull"><blockquote data-t="qGraham">“The investor’s chief problem — and even his worst enemy — is likely to be himself.”</blockquote><figcaption class="mono" data-t="qGrahamBy">Benjamin Graham, The Intelligent Investor</figcaption></figure>
+  </section>
+
+  <section id="voices" aria-labelledby="h-voices">
+    <span class="mono" data-t="vidEye">Watch and listen</span>
+    <h2 id="h-voices" data-t="vidH">In their own words</h2>
+    <p class="lede" data-t="vidLede">The people behind these ideas, in their own voices. The videos are in English and play right here.</p>
+    <div class="vids">
+      <figure class="vid"><button class="vid-play" type="button" data-yt="n_paK_p3_gs" data-title="Vanguard's John Bogle on Starting the First Index Fund" style="--img:url(/haystack/video/bogle-first-index-fund.jpg)" aria-label="Play: Vanguard's John Bogle on Starting the First Index Fund" data-ta="v1play@aria-label"><span class="vid-badge" aria-hidden="true"></span></button><figcaption><span class="mono">Investopedia</span><h3>John C. Bogle</h3><p data-t="v1">Why he started the first index fund for ordinary investors.</p></figcaption></figure>
+      <figure class="vid"><button class="vid-play" type="button" data-yt="-GrKhUdu-YE" data-title="Buffett: I would buy the S&P 500 in a second" style="--img:url(/haystack/video/buffett-sp500.jpg)" aria-label="Play: Buffett: I would buy the S&P 500 in a second" data-ta="v2play@aria-label"><span class="vid-badge" aria-hidden="true"></span></button><figcaption><span class="mono">CNBC</span><h3>Warren Buffett</h3><p data-t="v2">Why he would buy the index rather than pick stocks. He means America’s 500 biggest companies; the idea works the same for the whole world.</p></figcaption></figure>
+      <figure class="vid"><button class="vid-play" type="button" data-yt="yhldVcWhhc0" data-title="Why It's So Hard to Beat the Market P1" style="--img:url(/haystack/video/felix-beat-the-market.jpg)" aria-label="Play: Why It's So Hard to Beat the Market P1" data-ta="v3play@aria-label"><span class="vid-badge" aria-hidden="true"></span></button><figcaption><span class="mono">Ben Felix</span><h3>Ben Felix</h3><p data-t="v3">Why so few professionals beat the market, with the research on screen.</p></figcaption></figure>
+      <figure class="vid"><button class="vid-play" type="button" data-yt="L-QQ_XtZNNI" data-title="Legendary John Bogle Shares the Investment Lessons of a Lifetime" style="--img:url(/haystack/video/bogle-lessons.jpg)" aria-label="Play: Legendary John Bogle Shares the Investment Lessons of a Lifetime" data-ta="v4play@aria-label"><span class="vid-badge" aria-hidden="true"></span></button><figcaption><span class="mono">WEALTHTRACK</span><h3>John C. Bogle</h3><p data-t="v4">A long interview: what a lifetime in investing taught him.</p></figcaption></figure>
+    </div>
   </section>
 
   <section id="reading" aria-labelledby="h-reading">
     <span class="mono" data-t="readEye">Further reading</span>
     <h2 id="h-reading" data-t="readH">From the people who said it first</h2>
     <p class="lede" data-t="readLede">This page borrows almost all of its ideas. Here is where they come from, and where they are argued far better.</p>
+    <figure class="pull"><blockquote data-t="qStatue">“If a statue is ever erected to honor the person who has done the most for American investors, the hands-down choice should be Jack Bogle.”</blockquote><figcaption class="mono" data-t="qStatueBy">Warren Buffett, letter to shareholders, 2016</figcaption></figure>
     <div class="reading">
       <div data-t="read1"><span class="mono">Book · 2007, updated 2017</span><h3>The Little Book of Common Sense Investing</h3><p class="by">John C. Bogle</p><p>The case for index funds from the man who built the first one for ordinary investors. Short, plain and stubborn: own the market, keep costs low, stay the course.</p></div>
       <div data-t="read2"><span class="mono">Book · 2002, 2nd edition 2023</span><h3>The Four Pillars of Investing</h3><p class="by">William J. Bernstein</p><p>Theory, history, psychology and business: the four things you need to understand to invest well. The history chapters on bubbles and crashes alone are worth it.</p></div>
@@ -485,7 +524,7 @@ table.data :is(th,td):first-child{text-align:left}
 </main>
 
 <script src="/haystack/returns.js?v=1"></script>
-<script src="/haystack/i18n.js?v=4"></script>
-<script src="/haystack/app.js?v=4"></script>
+<script src="/haystack/i18n.js?v=7"></script>
+<script src="/haystack/app.js?v=7"></script>
 </body>
 </html>
