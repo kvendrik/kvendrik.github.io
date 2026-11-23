@@ -962,7 +962,7 @@ function revealQuotes() {
     e.target.classList.add("reveal");
     requestAnimationFrame(() => e.target.classList.remove("pre"));
   }), { rootMargin: "0px 0px -12% 0px" });
-  $$(".pull").forEach((el) => { if (el.getBoundingClientRect().top > innerHeight) { el.classList.add("pre"); io.observe(el); } });
+  $$(".pull, .sage").forEach((el) => { if (el.getBoundingClientRect().top > innerHeight) { el.classList.add("pre"); io.observe(el); } });
 }
 
 /* ---------- switching language ---------- */

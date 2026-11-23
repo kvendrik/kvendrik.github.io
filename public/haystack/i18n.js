@@ -234,6 +234,20 @@ window.I18N = (function () {
     rule4: "<h3>Neem niet meer risico dan je aankunt.</h3><p>Aandelen kunnen halveren en jarenlang laag blijven. Zou je in een crash verkopen, houd dan ook obligaties aan, zodat je dat niet doet. Het beste plan is het plan dat je volhoudt.</p>",
     rule5: "<h3>Houd koers.</h3><p>Bogles motto. Het rendement in de grafiek hierboven ging naar wie na de slechte jaren nog belegd was, niet naar wie was uitgestapt.</p>",
 
+    /* wall:start */
+    wallEye: "Vraag het de mensen die het weten",
+    wallH: "De grote namen zijn het eens",
+    wallLede: "Enkele van de bekendste beleggers en economen, over wat de meeste mensen met hun geld zouden moeten doen.",
+    w_buffett: "“Door regelmatig in een indexfonds te beleggen, kan de belegger die er niets van weet het zelfs beter doen dan de meeste beleggingsprofessionals.”", w_buffettBy: "Brief aan aandeelhouders, 1993",
+    w_lynch: "“Beleggers hebben veel meer geld verloren door zich op correcties voor te bereiden, of ze te proberen te voorspellen, dan door de correcties zelf.”", w_lynchBy: "Beheerde het Magellan-fonds van Fidelity, 1977–1990",
+    w_samuelson: "“Beleggen zou meer moeten lijken op verf zien drogen of gras zien groeien. Wil je spanning, neem dan 800 dollar mee naar Las Vegas.”", w_samuelsonBy: "Nobelprijswinnaar economie",
+    w_graham: "“Op korte termijn is de markt een stemmachine, op lange termijn een weegschaal.”", w_grahamBy: "Buffetts leermeester, zoals Buffett hem citeert",
+    w_sharpe: "“Goed gemeten moet de gemiddelde actief beheerde dollar het na kosten slechter doen dan de gemiddelde passief beheerde dollar.”", w_sharpeBy: "The Arithmetic of Active Management, 1991",
+    w_munger: "“Het grote geld zit niet in het kopen en verkopen, maar in het wachten.”", w_mungerBy: "Buffetts partner bij Berkshire Hathaway",
+    w_fama: "“Je geld is als zeep. Hoe vaker je eraan zit, hoe minder je overhoudt.”", w_famaBy: "Nobelprijswinnaar economie",
+    w_housel: "“Goed omgaan met geld heeft weinig te maken met hoe slim je bent en veel met hoe je je gedraagt.”", w_houselBy: "The Psychology of Money, 2020",
+    wallCredit: "Lijntekeningen naar foto’s op Wikimedia Commons. Warren Buffett: <a href=\"https://commons.wikimedia.org/wiki/File:Warren_Buffett_KU_Visit.jpg\">Mark Hirschey</a>, CC BY-SA 2.0; Benjamin Graham: <a href=\"https://commons.wikimedia.org/wiki/File:Benjamin_Graham_(1894-1976)_portrait_on_23_March_1950.jpg\">unknown photographer, 1950</a>, public domain; William F. Sharpe: <a href=\"https://commons.wikimedia.org/wiki/File:William_sharpe_2007.jpg\">Larry D. Moore</a>, CC BY 4.0; Charlie Munger: <a href=\"https://commons.wikimedia.org/wiki/File:Charlie_Munger.jpg\">Nick J Webb</a>, CC BY 2.0.",
+    /* wall:end */
     readEye: "Kijken, lezen, luisteren",
     readH: "Van wie we het leerden",
     readLede: "Bijna alles op deze pagina is geleend. Dit zijn de mensen erachter, in hun eigen woorden.",

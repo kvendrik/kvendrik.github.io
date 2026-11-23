@@ -274,6 +274,16 @@ table.data :is(th,td):first-child{text-align:left}
 .mix .slider-val .suf{margin-left:1px}
 .mix .slider-val .mix-rest{margin-left:10px;color:var(--muted)}
 .mix-chart{margin-top:48px}
+/* quote wall: a sketch, the words, the name */
+.wall{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:72px 56px;margin-top:72px}
+.sage{margin:0;display:grid;grid-template-columns:120px minmax(0,1fr);grid-template-rows:auto 1fr;gap:0 22px;align-items:start}
+.face{grid-row:span 2;width:120px;height:120px;margin-top:-10px}
+.face img{display:block;width:100%;height:100%;object-fit:contain}
+.sage.bare{grid-template-columns:minmax(0,1fr)}
+.sage blockquote{margin:0;font-family:var(--f-display);font-style:italic;font-size:23px;line-height:1.3;text-wrap:pretty}
+.sage figcaption{margin-top:14px}
+.sage figcaption b{display:block;font-weight:600;font-size:16px}
+.sage figcaption .mono{display:block;margin-top:2px}
 .verdict{margin-top:48px;font-family:var(--f-display);font-style:italic;font-size:clamp(22px,3.4vw,28px);line-height:1.3;text-wrap:pretty}
 
 /* rules + reading */
@@ -357,7 +367,11 @@ table.data :is(th,td):first-child{text-align:left}
   .stats,.outcomes{grid-template-columns:repeat(2,minmax(0,1fr))}
   .stats>div:nth-child(3),.outcomes>div:nth-child(3){padding-left:0;border-left:0}
   .stats>div:nth-child(n+3),.outcomes>div:nth-child(n+3){border-top:1px solid var(--rule)}
-  .then,.reading,.vids{grid-template-columns:1fr}
+  .then,.reading,.vids,.wall{grid-template-columns:1fr}
+  .wall{gap:56px}
+  .sage{grid-template-columns:88px minmax(0,1fr);gap:0 16px}
+  .face{width:88px;height:88px}
+  .sage blockquote{font-size:21px}
   .how li{grid-template-columns:1fr;padding:28px 0}
   .hay{padding:24px 20px}
   .hay .row{grid-template-columns:1fr}
@@ -577,6 +591,23 @@ table.data :is(th,td):first-child{text-align:left}
     <figure class="pull"><blockquote data-t="qGraham">“The investor’s chief problem — and even his worst enemy — is likely to be himself.”</blockquote><figcaption class="mono" data-t="qGrahamBy">Benjamin Graham, The Intelligent Investor</figcaption></figure>
   </section>
 
+  <section id="voices" aria-labelledby="h-voices">
+    <span class="mono" data-t="wallEye">Ask the people who know</span>
+    <h2 id="h-voices" data-t="wallH">The famous names agree</h2>
+    <p class="lede" data-t="wallLede">Some of the best-known investors and economists, on what most people should do with their money.</p>
+    <div class="wall">
+      <figure class="sage"><div class="face" aria-hidden="true"><img src="/haystack/people/buffett.png" alt="" width="300" height="300" loading="lazy" decoding="async"></div><blockquote data-t="w_buffett">“By periodically investing in an index fund, the know-nothing investor can actually out-perform most investment professionals.”</blockquote><figcaption><b>Warren Buffett</b><span class="mono" data-t="w_buffettBy">Letter to shareholders, 1993</span></figcaption></figure>
+      <figure class="sage bare"><blockquote data-t="w_lynch">“Far more money has been lost by investors preparing for corrections, or trying to anticipate corrections, than has been lost in corrections themselves.”</blockquote><figcaption><b>Peter Lynch</b><span class="mono" data-t="w_lynchBy">Ran Fidelity’s Magellan fund, 1977–1990</span></figcaption></figure>
+      <figure class="sage bare"><blockquote data-t="w_samuelson">“Investing should be more like watching paint dry or watching grass grow. If you want excitement, take $800 and go to Las Vegas.”</blockquote><figcaption><b>Paul Samuelson</b><span class="mono" data-t="w_samuelsonBy">Nobel Prize–winning economist</span></figcaption></figure>
+      <figure class="sage"><div class="face" aria-hidden="true"><img src="/haystack/people/graham.png" alt="" width="300" height="300" loading="lazy" decoding="async"></div><blockquote data-t="w_graham">“In the short run, the market is a voting machine but in the long run, it is a weighing machine.”</blockquote><figcaption><b>Benjamin Graham</b><span class="mono" data-t="w_grahamBy">Buffett’s teacher, as Buffett quotes him</span></figcaption></figure>
+      <figure class="sage"><div class="face" aria-hidden="true"><img src="/haystack/people/sharpe.png" alt="" width="300" height="300" loading="lazy" decoding="async"></div><blockquote data-t="w_sharpe">“Properly measured, the average actively managed dollar must underperform the average passively managed dollar, net of costs.”</blockquote><figcaption><b>William F. Sharpe</b><span class="mono" data-t="w_sharpeBy">The Arithmetic of Active Management, 1991</span></figcaption></figure>
+      <figure class="sage"><div class="face" aria-hidden="true"><img src="/haystack/people/munger.png" alt="" width="300" height="300" loading="lazy" decoding="async"></div><blockquote data-t="w_munger">“The big money is not in the buying and the selling, but in the waiting.”</blockquote><figcaption><b>Charlie Munger</b><span class="mono" data-t="w_mungerBy">Buffett’s partner at Berkshire Hathaway</span></figcaption></figure>
+      <figure class="sage bare"><blockquote data-t="w_fama">“Your money is like soap. The more you handle it, the less you’ll have.”</blockquote><figcaption><b>Eugene Fama</b><span class="mono" data-t="w_famaBy">Nobel Prize–winning economist</span></figcaption></figure>
+      <figure class="sage bare"><blockquote data-t="w_housel">“Doing well with money has a little to do with how smart you are and a lot to do with how you behave.”</blockquote><figcaption><b>Morgan Housel</b><span class="mono" data-t="w_houselBy">The Psychology of Money, 2020</span></figcaption></figure>
+    </div>
+    <p class="note" data-t="wallCredit">Line drawings traced from photos on Wikimedia Commons. Warren Buffett: <a href="https://commons.wikimedia.org/wiki/File:Warren_Buffett_KU_Visit.jpg">Mark Hirschey</a>, CC BY-SA 2.0; Benjamin Graham: <a href="https://commons.wikimedia.org/wiki/File:Benjamin_Graham_(1894-1976)_portrait_on_23_March_1950.jpg">unknown photographer, 1950</a>, public domain; William F. Sharpe: <a href="https://commons.wikimedia.org/wiki/File:William_sharpe_2007.jpg">Larry D. Moore</a>, CC BY 4.0; Charlie Munger: <a href="https://commons.wikimedia.org/wiki/File:Charlie_Munger.jpg">Nick J Webb</a>, CC BY 2.0.</p>
+  </section>
+
   <section id="reading" aria-labelledby="h-reading">
     <span class="mono" data-t="readEye">Watch, read, listen</span>
     <h2 id="h-reading" data-t="readH">From the people who said it first</h2>
@@ -603,7 +634,7 @@ table.data :is(th,td):first-child{text-align:left}
 </main>
 
 <script src="/haystack/returns.js?v=2"></script>
-<script src="/haystack/i18n.js?v=9"></script>
+<script src="/haystack/i18n.js?v=12"></script>
 <script src="/haystack/app.js?v=12"></script>
 </body>
 </html>
