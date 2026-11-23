@@ -1,0 +1,483 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="color-scheme" content="light">
+<meta name="theme-color" content="#F3EDE1">
+<title>Buy the Haystack</title>
+<meta name="description" content="Index investing in the whole world, the Bogle way: 125 years of stock returns, what an index fund is, what you own, and what your money could become.">
+<link rel="canonical" href="https://kvendrik.com/haystack/">
+<link rel="alternate" hreflang="en" href="https://kvendrik.com/haystack/?lang=en">
+<link rel="alternate" hreflang="nl" href="https://kvendrik.com/haystack/?lang=nl">
+<link rel="icon" href="/haystack/favicon.svg" type="image/svg+xml">
+<link rel="icon" href="/haystack/favicon-32.png" type="image/png" sizes="32x32">
+<link rel="apple-touch-icon" href="/haystack/apple-touch-icon.png" sizes="180x180">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://kvendrik.com/haystack/">
+<meta property="og:title" content="Buy the Haystack">
+<meta property="og:description" content="$10,000 in the world’s stock market in 1900 became $25.7 million after inflation, through two world wars. Why owning all of it is the simple plan.">
+<meta property="og:image" content="https://kvendrik.com/haystack/og.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="Buy the haystack. A line climbing from $10,000 in 1900 to $25.7 million in 2025, after inflation.">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:site" content="@kvendrik">
+<link rel="preload" href="/bodega/fonts/AlloVariable.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Space+Mono:wght@400;700&display=swap">
+<style>
+@font-face{font-family:"Allo";src:url("/bodega/fonts/AlloVariable.woff2") format("woff2");font-weight:100 900;font-display:swap}
+/* One narrow column on cream paper: Philosophy's layout and type, Bodega's hard-edged controls. Light only, on purpose. */
+:root{
+  --paper:#F3EDE1; --card:#EAE3D5; --fill:#DDD3C1; --band:#E6DECD; --rule:#D5CCBB; --down:#A39A8B; --muted:#756F65; --ink-2:#3B3833; --ink:#141312;
+  --f-display:"Instrument Serif","Bodoni Moda",Didot,Georgia,serif;
+  --f-body:"Allo",system-ui,-apple-system,"Segoe UI",sans-serif;
+  --f-mono:"Space Mono",ui-monospace,Menlo,monospace;
+  --ease:cubic-bezier(0.23,1,0.32,1); --ease-drawer:cubic-bezier(0.32,0.72,0,1);
+  --shadow:3px 3px 0 0 var(--ink); --shadow-lg:6px 6px 0 0 var(--ink);
+  color-scheme:light;
+}
+*{box-sizing:border-box}
+[hidden]{display:none!important}
+html{scroll-behavior:smooth;scroll-padding-top:20px;-webkit-text-size-adjust:100%;-webkit-tap-highlight-color:transparent;interpolate-size:allow-keywords}
+/* Native feel: no tap delay, no selection or callouts on controls. Body text stays selectable. */
+a,button,summary,.slider,.brush,.chart svg{touch-action:manipulation}
+button,summary,.seg,.slider,.brush,.chart svg,.grid100,.toc a{-webkit-user-select:none;user-select:none;-webkit-touch-callout:none}
+body{margin:0;background:var(--paper);color:var(--ink);font:400 17px/1.6 var(--f-body);font-variation-settings:"ROND" 0;-webkit-font-smoothing:antialiased;
+  padding:env(safe-area-inset-top,0px) max(16px,env(safe-area-inset-right,0px)) env(safe-area-inset-bottom,0px) max(16px,env(safe-area-inset-left,0px))}
+p,h1,h2,h3,ul,ol{margin:0}
+h1,h2,h3{font-family:var(--f-display);font-weight:400;line-height:1.05;text-wrap:balance}
+:focus-visible{outline:2px solid var(--ink);outline-offset:3px}
+button{font:inherit;color:inherit}
+.wrap{max-width:760px;margin:0 auto}
+.mono{font-family:var(--f-mono);font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--muted)}
+.tab{font-variant-numeric:tabular-nums}
+.sr-only{position:absolute;width:1px;height:1px;margin:-1px;padding:0;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap;border:0}
+section{padding-block:88px 0}
+h2{font-size:clamp(40px,7vw,60px);margin:10px 0 24px}
+.lede{font-family:var(--f-display);font-size:clamp(24px,3.8vw,32px);line-height:1.25;color:var(--ink-2);text-wrap:pretty}
+.prose{display:grid;gap:16px;margin-top:24px;color:var(--ink-2);max-width:62ch}
+.prose b{color:var(--ink);font-weight:600}
+.note{margin-top:14px;color:var(--muted);font-size:13px;line-height:1.5}
+.note a,.end a{color:inherit;text-underline-offset:3px}
+
+/* top bar + hero */
+.top{display:flex;justify-content:space-between;align-items:center;gap:12px;padding-top:20px}
+.top a{color:var(--ink);text-decoration:none}
+.hero{padding-block:56px 0}
+.hero h1{font-size:clamp(60px,13vw,124px);letter-spacing:-.01em}
+.hero .lede{margin-top:20px;max-width:30ch}
+.quote{margin-top:36px;padding-top:18px;border-top:1px solid var(--ink)}
+.quote p{font-family:var(--f-display);font-style:italic;font-size:clamp(24px,3.8vw,30px);line-height:1.25}
+.quote .mono{display:block;margin-top:8px}
+.toc{display:flex;flex-wrap:wrap;gap:6px 22px;margin-top:28px}
+.toc a{font-family:var(--f-mono);font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--ink);text-decoration:none;border-bottom:1px solid var(--rule);padding-bottom:2px;transition:border-color .2s}
+@media (hover:hover) and (pointer:fine){.toc a:hover{border-bottom-color:var(--ink)}}
+
+/* segmented control: a thumb glides to the chosen option */
+.seg{position:relative;isolation:isolate;display:inline-flex;border:2px solid var(--ink);background:var(--paper);box-shadow:var(--shadow)}
+.seg button{all:unset;position:relative;z-index:1;cursor:pointer;padding:8px 14px;font:700 11px/16px var(--f-mono);letter-spacing:.1em;text-transform:uppercase;text-align:center;transition:color .2s var(--ease),transform 160ms var(--ease)}
+.seg button+button{border-left:2px solid var(--ink)}
+.seg button[aria-pressed="true"]{color:var(--paper)}
+.seg:not(.has-thumb) button[aria-pressed="true"]{background:var(--ink)}
+.seg button:active{transform:scale(.94)}
+.seg button:focus-visible{outline:2px solid var(--ink);outline-offset:3px}
+.seg-thumb{position:absolute;z-index:0;top:0;left:0;height:100%;width:0;background:var(--ink);pointer-events:none;transition:transform .38s var(--ease-drawer),width .38s var(--ease-drawer)}
+.seg-thumb.instant{transition:none}
+.seg.small button{padding:5px 10px}
+@media (pointer:coarse){.seg button{padding:14px 15px}.seg.small button{padding:11px 13px}}
+.controls{display:flex;flex-wrap:wrap;justify-content:space-between;align-items:center;gap:12px;margin:28px 0 14px}
+.period{color:var(--ink)}
+
+/* charts */
+.chart{position:relative;margin-top:8px;touch-action:pan-y}
+.chart svg{display:block;width:100%;overflow:visible}
+.chart text{font-family:var(--f-mono);font-size:10px;fill:var(--muted);letter-spacing:.04em}
+.chart .ev{font-family:var(--f-body);font-size:12px;fill:var(--ink-2);letter-spacing:0}
+.chart .lab{font-family:var(--f-display);font-style:italic;font-size:16px;fill:var(--ink);letter-spacing:0}
+.tip{position:absolute;top:0;left:0;pointer-events:none;min-width:150px;max-width:240px;padding:10px 12px;background:var(--paper);border:2px solid var(--ink);box-shadow:var(--shadow);font-size:13px;line-height:1.4;opacity:0;transition:opacity .12s;z-index:2}
+.tip.on{opacity:1}
+.tip .y{font-family:var(--f-display);font-size:24px;line-height:1}
+.tip .v{font-family:var(--f-mono);font-size:12px;margin-top:4px}
+.tip .e{color:var(--ink-2);margin-top:6px}
+.tip .m{color:var(--muted);font-family:var(--f-mono);font-size:11px;margin-top:4px}
+@keyframes draw{from{stroke-dashoffset:1}}
+.drawn{stroke-dasharray:1;animation:draw 2.2s var(--ease) .15s backwards}
+@keyframes grow{from{transform:scaleY(0)}}
+.bar{transform-box:fill-box;animation:grow .6s var(--ease) backwards}
+.bar.up{transform-origin:bottom}.bar.dn{transform-origin:top}
+.legend{display:flex;flex-wrap:wrap;gap:6px 18px;margin-top:14px}
+.legend span{display:inline-flex;align-items:center;gap:8px}
+.legend i{display:inline-block;width:18px;height:10px}
+
+/* period zoom: a window over the whole history; drag its edges or slide it */
+.brush{position:relative;height:48px;margin-top:14px;touch-action:pan-y}
+.brush svg{position:absolute;inset:0;width:100%;height:100%;overflow:visible}
+.brush-shade{position:absolute;top:0;bottom:0;background:var(--paper);opacity:.75;pointer-events:none}
+.brush-win{position:absolute;top:0;bottom:0;border:2px solid var(--ink);box-shadow:var(--shadow);cursor:grab;transition:box-shadow .16s var(--ease)}
+.brush-win.dragging{cursor:grabbing;box-shadow:1px 1px 0 0 var(--ink)}
+.brush-h{position:absolute;top:50%;width:12px;height:30px;margin-top:-15px;background:var(--ink);border-radius:2px;cursor:ew-resize;transition:transform .16s var(--ease)}
+.brush-h::before{content:"";position:absolute;inset:-9px -16px}
+.brush-h::after{content:"";position:absolute;left:5px;top:9px;width:2px;height:12px;background:var(--paper);opacity:.7}
+.brush-h.l{left:-7px}.brush-h.r{right:-7px}
+.brush-h.active{transform:scaleY(1.15)}
+.brush-foot{display:flex;justify-content:space-between;align-items:center;gap:12px;margin-top:10px;min-height:24px}
+.linkbtn{all:unset;cursor:pointer;color:var(--ink);text-decoration:underline;text-underline-offset:4px;padding:6px 0}
+.linkbtn:focus-visible{outline:2px solid var(--ink);outline-offset:3px}
+
+/* stat rows */
+.stats,.outcomes{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));margin-top:32px;border-top:1px solid var(--ink)}
+.stats>div,.outcomes>div{padding:16px 16px 4px 0;min-width:0}
+.stats>div+div,.outcomes>div+div{padding-left:16px;border-left:1px solid var(--rule)}
+.stats .n,.outcomes .n{font-family:var(--f-display);font-size:clamp(30px,4.6vw,42px);line-height:1;margin-top:8px;overflow-wrap:anywhere}
+.stats p,.outcomes p{font-size:13px;color:var(--ink-2);margin-top:6px;line-height:1.4}
+
+/* disclosures */
+details{margin-top:28px;border-top:1px solid var(--rule)}
+summary{cursor:pointer;list-style:none;padding:14px 0;min-height:44px;display:flex;justify-content:space-between;align-items:center}
+summary::-webkit-details-marker{display:none}
+summary::after{content:"+";font-family:var(--f-mono);font-size:16px;line-height:1;transition:transform .3s var(--ease)}
+details[open] summary::after{transform:rotate(45deg)}
+summary:active{opacity:.6}
+details::details-content{block-size:0;overflow:clip;transition:block-size .4s var(--ease-drawer),content-visibility .4s allow-discrete}
+details[open]::details-content{block-size:auto}
+details+details{margin-top:0}
+.evlist{list-style:none;padding:0 0 12px;display:grid}
+.evlist li{display:grid;grid-template-columns:7.5em minmax(0,1fr) auto;gap:4px 16px;padding:10px 0;border-top:1px solid var(--rule);font-size:15px;color:var(--ink-2)}
+.evlist .yr,.evlist .rv{font-family:var(--f-mono);font-size:12px;padding-top:3px}
+.evlist .yr{color:var(--ink)}
+.evlist b{color:var(--ink);font-weight:600}
+.tablewrap{max-height:340px;overflow:auto}
+table.data{width:100%;border-collapse:collapse;font-family:var(--f-mono);font-size:12px;margin-bottom:12px}
+table.data th,table.data td{padding:4px 6px;text-align:right;border-bottom:1px solid var(--rule)}
+table.data th{color:var(--muted);font-weight:400}
+table.data :is(th,td):first-child{text-align:left}
+
+/* index funds */
+.how{list-style:none;padding:0;margin-top:32px;display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:24px;counter-reset:s}
+.how li{border-top:1px solid var(--ink);padding-top:14px;counter-increment:s}
+.how li::before{content:counter(s,decimal-leading-zero);font-family:var(--f-mono);font-size:11px;color:var(--muted);letter-spacing:.1em}
+.how h3{font-size:28px;margin:6px 0 8px}
+.how p{font-size:15px;color:var(--ink-2)}
+.hay{margin-top:48px;padding:24px;background:var(--card);border-radius:2px}
+.hay h3{font-size:clamp(28px,4.6vw,38px);line-height:1.1}
+.hay .row{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.1fr);gap:28px;align-items:start;margin-top:20px}
+.grid100{display:grid;grid-template-columns:repeat(10,1fr);gap:5px;max-width:320px}
+.grid100 button{all:unset;box-sizing:border-box;aspect-ratio:1;border:1.5px solid var(--ink);border-radius:3px;background:var(--paper);cursor:pointer;
+  transition:transform .32s var(--ease-drawer),background-color .16s var(--ease),border-color .16s var(--ease),box-shadow .16s var(--ease)}
+.grid100 button:active{transform:scale(.8);transition-duration:90ms}
+.grid100 button:focus-visible{outline:2px solid var(--ink);outline-offset:2px}
+.grid100 button.pk{background:var(--ink);transform:scale(.88)}
+.grid100.revealed button{border-color:var(--rule)}
+.grid100.revealed button.pk{background:transparent;border-color:var(--ink);box-shadow:inset 0 0 0 2px var(--ink);transform:scale(.88)}
+.grid100.revealed button.win{background:var(--down);border-color:var(--down);box-shadow:none;transform:none;animation:pop .5s var(--ease) backwards}
+.grid100.revealed button.win.pk{background:var(--ink);border-color:var(--ink)}
+@keyframes pop{0%{transform:scale(.5);opacity:0}60%{transform:scale(1.15);opacity:1}100%{transform:scale(1)}}
+.haykey{display:flex;flex-wrap:wrap;gap:6px 14px;margin-top:12px}
+.haykey span{display:inline-flex;align-items:center;gap:6px}
+.haykey i{display:inline-block;width:11px;height:11px;border-radius:2px}
+.hay .out{font-family:var(--f-display);font-size:26px;line-height:1.2;min-height:3.6em}
+.hay .tally{margin-top:10px;min-height:16px}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;padding:12px 20px;background:var(--ink);color:var(--paper);border:2px solid var(--ink);border-radius:0;box-shadow:var(--shadow);
+  font:700 12px/16px var(--f-mono);letter-spacing:.12em;text-transform:uppercase;cursor:pointer;transition:transform 120ms var(--ease),box-shadow 120ms var(--ease)}
+@media (hover:hover) and (pointer:fine){.btn:hover{box-shadow:var(--shadow-lg);transform:translate(-3px,-3px)}}
+.btn:active{box-shadow:none;transform:translate(3px,3px);transition-duration:40ms}
+.btn--quiet{background:var(--paper);color:var(--ink)}
+@media (pointer:coarse){.btn{min-height:48px;padding:14px 20px}}
+.btns{display:flex;flex-wrap:wrap;gap:12px;margin-top:20px}
+.fees{margin-top:48px;border-top:1px solid var(--ink);padding-top:18px}
+.fees h3{font-size:clamp(28px,4.6vw,38px);line-height:1.1}
+.feebars{display:grid;gap:10px;margin-top:20px}
+.feebars .r{display:grid;grid-template-columns:13em minmax(0,1fr) 6em;gap:12px;align-items:center;font-size:14px;color:var(--ink-2)}
+.feebars .t{height:14px;background:var(--band);border-radius:0 3px 3px 0;overflow:hidden}
+.feebars .f{display:block;height:100%;background:var(--ink);border-radius:0 3px 3px 0}
+.feebars .v{font-family:var(--f-mono);font-size:12px;text-align:right;color:var(--ink)}
+
+/* what you own */
+.amount{display:flex;align-items:center;flex-wrap:wrap;gap:10px 14px;margin-top:28px;font-family:var(--f-display);font-size:clamp(24px,3.8vw,30px);line-height:1.2}
+.field{display:flex;align-items:center;width:9.5em;background:var(--paper);border:2px solid var(--ink);box-shadow:var(--shadow);transition:transform 150ms var(--ease),box-shadow 150ms var(--ease)}
+.field:focus-within{transform:translate(-3px,-3px);box-shadow:var(--shadow-lg)}
+.field .cur{padding-left:10px;font-size:.75em;color:var(--ink-2)}
+.field input{flex:1;min-width:0;width:100%;margin:0;padding:6px 10px 6px 4px;border:0;border-radius:0;outline:0;background:transparent;color:var(--ink);font:inherit;font-variant-numeric:tabular-nums;-webkit-appearance:none;appearance:none}
+.rows{margin-top:8px}
+.rows .r{display:grid;grid-template-columns:minmax(7em,14em) minmax(0,1fr) 4.2em 6.5em;gap:12px;align-items:center;padding:9px 0;border-top:1px solid var(--rule);font-size:15px}
+.rows .r:last-child{border-bottom:1px solid var(--rule)}
+.rows .nm{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.rows .t{height:12px}
+.rows .f{display:block;height:100%;background:var(--ink);border-radius:0 3px 3px 0;min-width:2px;transition:width .5s var(--ease)}
+.rows .rest .f{background:var(--down)}
+.rows .p,.rows .a{font-family:var(--f-mono);font-size:12px;text-align:right}
+.rows .a{color:var(--ink-2)}
+.then{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:32px;margin-top:40px}
+.then>div{border-top:1px solid var(--ink);padding-top:14px}
+.then h3{font-size:28px;margin:6px 0 8px}
+.then p{font-size:15px;color:var(--ink-2)}
+
+/* calculator: drag a box sideways (relative drag, like iOS Control Center), tap the number to type */
+.calc{margin-top:32px;display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px 16px}
+.slider{position:relative;display:flex;align-items:center;justify-content:space-between;gap:12px;height:64px;padding:0 16px;border:2px solid var(--ink);background:var(--paper);box-shadow:var(--shadow);
+  overflow:hidden;cursor:ew-resize;touch-action:pan-y;transition:transform .45s var(--ease-drawer),box-shadow .16s var(--ease)}
+.slider.pressed{transform:translate(2px,2px);box-shadow:1px 1px 0 0 var(--ink);transition-duration:80ms}
+.slider.dragging{transition:none;box-shadow:1px 1px 0 0 var(--ink)}
+.slider:focus-within{transform:translate(-3px,-3px);box-shadow:var(--shadow-lg)}
+.slider-fill{position:absolute;inset:0;background:var(--fill);clip-path:inset(0 100% 0 0);pointer-events:none}
+.slider.dragging .slider-fill{background:#D3C8B4}
+.slider-grip{position:absolute;left:0;top:50%;width:3px;height:26px;margin:-13px 0 0 -9px;border-radius:2px;background:var(--ink);opacity:0;pointer-events:none;transition:opacity .16s var(--ease)}
+.slider.dragging .slider-grip{opacity:.8}
+.slider-label{position:relative;font:700 11px/16px var(--f-mono);letter-spacing:.12em;text-transform:uppercase;pointer-events:none;white-space:nowrap}
+.slider-val{position:relative;display:flex;align-items:baseline;gap:2px;font-family:var(--f-display);font-size:28px;line-height:1;cursor:text}
+.slider-val .cur,.slider-val .suf{font-size:20px;color:var(--ink-2)}
+.slider-val .suf{margin-left:4px}
+.slider input{width:6ch;field-sizing:content;min-width:1ch;margin:0;padding:6px 0;border:0;border-radius:0;outline:0;background:transparent;color:var(--ink);font:inherit;text-align:right;font-variant-numeric:tabular-nums;-webkit-appearance:none;appearance:none;cursor:text}
+@supports (field-sizing:content){.slider input{width:auto}}
+.slider input:focus{text-decoration:underline;text-decoration-thickness:1.5px;text-underline-offset:6px}
+.verdict{margin-top:28px;font-family:var(--f-display);font-style:italic;font-size:clamp(22px,3.4vw,28px);line-height:1.3;text-wrap:pretty}
+
+/* rules + reading */
+.rules{display:grid;margin-top:8px}
+.rules>div{padding:20px 0;border-top:1px solid var(--rule);display:grid;grid-template-columns:3em minmax(0,1fr);gap:12px}
+.rules .k{font-family:var(--f-mono);font-size:11px;color:var(--muted);padding-top:9px}
+.rules h3{font-size:30px;line-height:1.15}
+.rules p{font-size:15px;color:var(--ink-2);margin-top:4px}
+.reading{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:0 32px;margin-top:8px}
+.reading>*{display:block;padding:20px 0 24px;border-top:1px solid var(--ink);color:inherit;text-decoration:none}
+.reading h3{font-size:30px;line-height:1.1;margin-top:10px}
+.reading .by{font-family:var(--f-display);font-style:italic;font-size:20px;color:var(--ink-2);margin-top:4px}
+.reading p:not(.by){font-size:15px;color:var(--ink-2);margin-top:10px}
+.reading a{transition:transform 160ms var(--ease)}
+.reading a h3{text-decoration:underline;text-decoration-color:var(--rule);text-decoration-thickness:1px;text-underline-offset:5px;transition:text-decoration-color .2s}
+.reading a:active{transform:scale(.98)}
+.reading a:active h3{text-decoration-color:var(--ink)}
+@media (hover:hover) and (pointer:fine){.reading a:hover h3{text-decoration-color:var(--ink)}}
+.end{padding-block:88px 80px}
+.end .big{font-family:var(--f-display);font-size:clamp(44px,9vw,84px);line-height:1}
+.end small{display:block;margin-top:40px;color:var(--muted);font-size:13px;line-height:1.6;max-width:68ch}
+
+/* the page arrives once */
+@keyframes rise{from{opacity:0;transform:translateY(16px)}}
+.hero>*{animation:rise 1s var(--ease) backwards}
+.hero>:nth-child(2){animation-delay:.1s}.hero>:nth-child(3){animation-delay:.35s}.hero>:nth-child(4){animation-delay:.5s}
+@media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}*{animation:none!important;transition:none!important}}
+
+@media (max-width:700px){
+  section{padding-block:64px 0}
+  .hero{padding-top:40px}
+  .stats,.outcomes{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .stats>div:nth-child(3),.outcomes>div:nth-child(3){padding-left:0;border-left:0}
+  .stats>div:nth-child(n+3),.outcomes>div:nth-child(n+3){border-top:1px solid var(--rule)}
+  .how,.then,.reading{grid-template-columns:1fr}
+  .how{gap:20px}
+  .toc{flex-wrap:nowrap;overflow-x:auto;overscroll-behavior-x:contain;scroll-snap-type:x proximity;scrollbar-width:none;margin-inline:-16px;padding:4px 16px 10px;gap:8px}
+  .toc::-webkit-scrollbar{display:none}
+  .toc a{flex:none;scroll-snap-align:start;scroll-margin-inline:16px;padding:13px 14px;border:1.5px solid var(--ink);background:var(--paper);box-shadow:2px 2px 0 0 var(--ink);transition:transform 120ms var(--ease),box-shadow 120ms var(--ease)}
+  .toc a:active{transform:translate(2px,2px);box-shadow:none}
+  .hay{padding:18px}
+  .hay .row{grid-template-columns:1fr}
+  .calc{grid-template-columns:1fr;gap:12px}
+  .rows .r{grid-template-columns:minmax(0,1fr) 4em 6em;gap:4px 10px}
+  .rows .t{grid-column:1/-1;grid-row:2}
+  .evlist li{grid-template-columns:5.5em minmax(0,1fr)}
+  .evlist .rv{grid-column:2}
+  .feebars .r{grid-template-columns:7.5em minmax(0,1fr) 5.5em}
+  .brush{height:52px}
+}
+</style>
+</head>
+<body>
+<main class="wrap">
+  <div class="top">
+    <a class="mono" href="/">kvendrik.com</a>
+    <div class="seg small" role="group" aria-label="Language" data-ta="lang@aria-label">
+      <button type="button" data-lang="en" aria-pressed="true">EN</button>
+      <button type="button" data-lang="nl" aria-pressed="false">NL</button>
+    </div>
+  </div>
+
+  <header class="hero">
+    <h1 data-t="h1">Buy the haystack.</h1>
+    <p class="lede" data-t="heroLede">A slow, boring and very old way to grow money: own a little of every company in the world, pay almost nothing for it, and wait.</p>
+    <div class="quote">
+      <p data-t="quote">“Don’t look for the needle in the haystack. Just buy the haystack!”</p>
+      <span class="mono" data-t="cite">John C. Bogle · founder of Vanguard and the first index fund for regular people, 1976</span>
+    </div>
+    <nav class="toc" aria-label="On this page" data-ta="toc@aria-label">
+      <a href="#history" data-t="toc1">01 · 125 years</a><a href="#etfs" data-t="toc2">02 · Index funds</a><a href="#today" data-t="toc3">03 · What you own</a><a href="#future" data-t="toc4">04 · Your money</a><a href="#rules" data-t="toc5">05 · The rules</a><a href="#reading" data-t="toc6">06 · Further reading</a>
+    </nav>
+  </header>
+
+  <section id="history" aria-labelledby="h-history">
+    <span class="mono" data-t="histEye">01 · The long view</span>
+    <h2 id="h-history" data-t="histH">125 years of the world’s stock market</h2>
+    <p class="lede" data-t="histLede">Two world wars, a pandemic, a depression, oil shocks, bubbles and crashes. Every one of them hurt. None of them stopped it.</p>
+
+    <div class="controls">
+      <div class="seg" role="group" aria-label="Chart view" data-ta="view@aria-label">
+        <button type="button" data-view="growth" aria-pressed="true" data-t="viewGrowth">Growth</button>
+        <button type="button" data-view="bars" aria-pressed="false" data-t="viewBars">Each year</button>
+      </div>
+      <span class="mono period tab" id="period"></span>
+    </div>
+    <div class="chart" id="histChart"><svg id="histSvg" role="img" aria-describedby="histDesc"></svg><div class="tip" id="histTip" role="status" aria-live="polite"></div></div>
+    <div class="brush" id="brush">
+      <svg id="brushSvg" aria-hidden="true"></svg>
+      <div class="brush-shade" id="shadeL"></div><div class="brush-shade" id="shadeR"></div>
+      <div class="brush-win" id="brushWin">
+        <div class="brush-h l" id="hL" data-h="l" role="slider" tabindex="0" aria-orientation="horizontal"></div>
+        <div class="brush-h r" id="hR" data-h="r" role="slider" tabindex="0" aria-orientation="horizontal"></div>
+      </div>
+    </div>
+    <div class="brush-foot"><span class="mono" id="histHint"></span><button class="linkbtn mono" type="button" id="resetZoom" data-t="reset" hidden>Show all</button></div>
+    <div class="legend mono" id="histKey">
+      <span id="keyBars" hidden><i style="background:linear-gradient(90deg,var(--ink) 50%,var(--down) 50%);width:12px;height:12px"></i><span data-t="keyBars">Each year’s return, left scale</span></span>
+      <span><i style="background:var(--ink);height:2.5px"></i><span data-t="keyLine">$10,000 invested at the start, after inflation</span></span>
+      <span id="keyLog"><span data-t="keyLog">Log scale: equal steps are equal growth</span></span>
+    </div>
+    <p class="sr-only" id="histDesc"></p>
+
+    <div class="stats" id="histStats"></div>
+
+    <details>
+      <summary class="mono" data-t="evSum">What happened in the bad years</summary>
+      <ul class="evlist" id="evList"></ul>
+    </details>
+    <details>
+      <summary class="mono" data-t="tableSum">The numbers, year by year</summary>
+      <div class="tablewrap"><table class="data" id="histTable"></table></div>
+    </details>
+    <p class="note" data-t="source">Sources: 1900–2020, the Jordà-Schularick-Taylor Macrohistory Database (<a href="https://www.macrohistory.net/database/">macrohistory.net</a>): stock total returns for 16 developed countries in US dollars, weighted by the size of each economy, minus US inflation. 2021–2025, MSCI ACWI net total return in US dollars minus US CPI. Germany’s 1923 hyperinflation and 1948 currency reform years are left out, because the data can’t place them cleanly. This series flatters history: it misses markets that were wiped out, like Russia’s in 1917, and Germany’s and Japan’s worst war years. The Dimson-Marsh-Staunton Global Investment Returns Yearbook, which Ben Felix often cites, includes them and finds about 5% a year after inflation since 1900.</p>
+  </section>
+
+  <section id="etfs" aria-labelledby="h-etfs">
+    <span class="mono" data-t="etfEye">02 · The tool</span>
+    <h2 id="h-etfs" data-t="etfH">What an index fund is</h2>
+    <p class="lede" data-t="etfLede">An index is a list: say, every listed company in the world, each counted by its size. An index fund simply buys everything on the list. An ETF is an index fund you buy and sell like a share.</p>
+    <ol class="how">
+      <li data-t="how1"><h3>It owns everything</h3><p>One fund, thousands of companies. If a company grows, you own it. If one fails, it was a tiny slice. Nobody has to guess which is which.</p></li>
+      <li data-t="how2"><h3>Nobody picks</h3><p>No star manager, no research team, no trading on hunches. The fund follows the list, so it costs very little to run: often 0.1% to 0.25% a year.</p></li>
+      <li data-t="how3"><h3>You get the market</h3><p>You give up any chance of beating the market. In return you get its return, minus a tiny fee, which most professionals don’t manage once their own fees are counted.</p></li>
+    </ol>
+    <div class="prose">
+      <p data-t="prose1">Picking stocks is a game played against professionals with more data, more time and faster computers. Before costs, the market’s return is by definition the average return of everyone in it. <b>After costs, the average active investor has to do worse than the index</b>, because they pay more. The numbers bear it out: the S&amp;P SPIVA scorecards find that over 15 to 20 years roughly nine in ten actively managed US stock funds trail their index.</p>
+      <p data-t="prose2">There is a second reason, and it is stranger. Most stocks don’t do well. Hendrik Bessembinder looked at every US stock from 1926 to 2016 and found that just 4% of them created all of the stock market’s wealth above treasury bills. The other 96%, together, did no better than cash. If you pick a handful of stocks, you will probably miss the few that matter.</p>
+    </div>
+
+    <div class="hay" id="hay">
+      <span class="mono" data-t="hayEye">Try it · 100 stocks, 4 of them winners</span>
+      <h3 data-t="hayH">Pick 10 and see if you find the needles.</h3>
+      <div class="row">
+        <div>
+          <div class="grid100" id="grid100" role="group" aria-label="100 stocks. Pick 10." data-ta="grid@aria-label"></div>
+          <div class="haykey mono" id="hayKey" hidden><span><i style="background:var(--ink)"></i><span data-t="keyOwn">Winner you own</span></span><span><i style="background:var(--down)"></i><span data-t="keyMissed">Winner you missed</span></span><span><i style="box-shadow:inset 0 0 0 2px var(--ink)"></i><span data-t="keyPick">Your pick</span></span></div>
+        </div>
+        <div>
+          <p class="out" id="hayOut" aria-live="polite"></p>
+          <p class="mono tally" id="hayTally"></p>
+          <div class="btns">
+            <button class="btn" type="button" id="pickBtn" data-t="pickBtn">Pick for me</button>
+            <button class="btn btn--quiet" type="button" id="pick1000" data-t="pick1000">Try 1,000 times</button>
+          </div>
+        </div>
+      </div>
+      <p class="note" data-t="hayNote">The index fund owns all 100, so it always owns all 4. A random 10 stocks misses every winner about 65% of the time.</p>
+    </div>
+
+    <div class="fees">
+      <span class="mono" data-t="feeEye">What costs do over 40 years</span>
+      <h3 data-t="feeH">“In investing, you get what you don’t pay for.”</h3>
+      <p class="note" id="feeIntro" style="margin-top:6px"></p>
+      <div class="feebars" id="feeBars"></div>
+      <p class="note" id="feeNote"></p>
+    </div>
+  </section>
+
+  <section id="today" aria-labelledby="h-today">
+    <span class="mono" data-t="ownEye">03 · Market cap weighted</span>
+    <h2 id="h-today" data-t="ownH">What you actually own</h2>
+    <p class="lede" data-t="ownLede">A total world fund holds roughly 9,000 companies in about 50 countries. Each gets a share of your money in proportion to what it is worth on the stock market. Bigger companies get more.</p>
+    <p class="amount"><span data-t="amtPre">If you put in</span><span class="field"><span class="cur">$</span><input id="ownAmt" type="text" inputmode="numeric" enterkeyhint="done" autocomplete="off" value="10,000" aria-label="Amount to invest" data-ta="ownAmt@aria-label"></span><span data-t="amtPost">it goes to</span></p>
+    <div class="controls" style="margin-top:20px">
+      <div class="seg" role="group" aria-label="Break down by" data-ta="by@aria-label">
+        <button type="button" data-own="countries" aria-pressed="true" data-t="byCountries">Countries</button>
+        <button type="button" data-own="sectors" aria-pressed="false" data-t="bySectors">Sectors</button>
+        <button type="button" data-own="companies" aria-pressed="false" data-t="byCompanies">Companies</button>
+      </div>
+    </div>
+    <div class="rows" id="ownRows"></div>
+    <p class="note" id="ownNote"></p>
+    <div class="then">
+      <div data-t="then1"><span class="mono">Why weigh by size</span><h3>The market does the work</h3><p>Prices already hold everyone’s best guess about every company. Weighing by size means you hold the market’s own view, and as prices move your weights move with them. There is nothing to rebalance and almost nothing to trade, which keeps costs down.</p></div>
+      <div data-t="then2"><span class="mono">Why the whole world</span><h3>Nobody knows the next winner</h3><p>In 1900 Britain was the world’s biggest stock market, about a quarter of it. The US was around 15%. Russia’s market was large too, and in 1917 it went to zero. Today the US is nearly two thirds. A world fund follows whoever leads without you having to call it.</p></div>
+    </div>
+  </section>
+
+  <section id="future" aria-labelledby="h-future">
+    <span class="mono" data-t="futEye">04 · Compound interest, honestly</span>
+    <h2 id="h-future" data-t="futH">What your money could become</h2>
+    <p class="lede" data-t="futLede">A calculator with one fixed return draws a smooth line that never happens. This one runs 10,000 possible futures, each built from real stock market years in random order: good years, bad years, and sometimes several bad ones in a row.</p>
+
+    <div class="calc" id="calc">
+      <div class="slider"><span class="slider-fill"></span><span class="slider-grip"></span><label class="slider-label" for="cStart" data-t="sStart">Start with</label><span class="slider-val"><span class="cur">$</span><input id="cStart" type="text" inputmode="numeric" enterkeyhint="done" autocomplete="off" value="10,000"></span></div>
+      <div class="slider"><span class="slider-fill"></span><span class="slider-grip"></span><label class="slider-label" for="cMonthly" data-t="sMonthly">Add each month</label><span class="slider-val"><span class="cur">$</span><input id="cMonthly" type="text" inputmode="numeric" enterkeyhint="done" autocomplete="off" value="500"></span></div>
+      <div class="slider"><span class="slider-fill"></span><span class="slider-grip"></span><label class="slider-label" for="cYears" data-t="sYears">For how long</label><span class="slider-val"><input id="cYears" type="text" inputmode="numeric" enterkeyhint="done" autocomplete="off" value="30"><span class="suf" data-t="sYearsUnit">years</span></span></div>
+      <div class="slider"><span class="slider-fill"></span><span class="slider-grip"></span><label class="slider-label" for="cFee" data-t="sFee">Yearly fee</label><span class="slider-val"><input id="cFee" type="text" inputmode="decimal" enterkeyhint="done" autocomplete="off" value="0.2"><span class="suf">%</span></span></div>
+    </div>
+    <p class="note" style="margin-top:12px" data-t="dragHint">Drag a box sideways to change it, or tap the number to type.</p>
+
+    <div class="controls">
+      <div class="seg" role="group" aria-label="Which return to plan with" data-ta="exp@aria-label">
+        <button type="button" data-exp="plan" aria-pressed="true" data-t="expPlan">Plan · 5%</button>
+        <button type="button" data-exp="hist" aria-pressed="false" id="expHist">History</button>
+      </div>
+    </div>
+    <p class="note" id="expNote" style="margin-top:0"></p>
+
+    <div class="chart" id="mcChart" style="margin-top:20px"><svg id="mcSvg" role="img" aria-label="Fan chart of simulated portfolio values over time" data-ta="mcSvg@aria-label"></svg><div class="tip" id="mcTip" role="status" aria-live="polite"></div></div>
+    <div class="legend mono">
+      <span><i style="background:var(--ink);height:2px"></i><span data-t="lgMid">Middle outcome</span></span>
+      <span><i style="background:#CFC5B2"></i><span data-t="lgHalf">Half of futures</span></span>
+      <span><i style="background:var(--band)"></i><span data-t="lgEight">8 in 10 futures</span></span>
+      <span><i style="border-top:2px dashed var(--ink);height:0"></i><span data-t="lgSteady">Steady average</span></span>
+      <span><i style="border-top:2px dotted var(--muted);height:0"></i><span data-t="lgPaid">What you put in</span></span>
+    </div>
+    <div class="outcomes" id="outcomes"></div>
+    <p class="verdict" id="verdict"></p>
+    <p class="note" data-t="futNote">Everything is in today’s money, after inflation. Deposits stay the same in today’s money, fees come off every year, and taxes are left out. Research on 39 countries finds that a single country’s stock market has lost money after inflation over 30 years more often than these futures suggest. One more reason to own the whole world.</p>
+  </section>
+
+  <section id="rules" aria-labelledby="h-rules">
+    <span class="mono" data-t="rulesEye">05 · The whole plan</span>
+    <h2 id="h-rules" data-t="rulesH">Five rules, then go live your life</h2>
+    <div class="rules">
+      <div><span class="k">01</span><div data-t="rule1"><h3>Own the whole world.</h3><p>One total world index fund covers it. You don’t need a second one to “diversify” the first.</p></div></div>
+      <div><span class="k">02</span><div data-t="rule2"><h3>Keep costs close to zero.</h3><p>Fees are the one part of your return you control. Every tenth of a percent compounds against you for decades.</p></div></div>
+      <div><span class="k">03</span><div data-t="rule3"><h3>Don’t time it.</h3><p>Invest when you have money, not when it feels right. Nobody reliably knows when the next crash or the next rally is coming.</p></div></div>
+      <div><span class="k">04</span><div data-t="rule4"><h3>Match the risk to your stomach.</h3><p>Stocks can fall by half and stay down for years. If you would sell in a crash, hold some bonds so you won’t. The best plan is the one you can stick to.</p></div></div>
+      <div><span class="k">05</span><div data-t="rule5"><h3>Stay the course.</h3><p>Bogle’s phrase. The returns on the chart above went to the people who were still holding after the bad years, not to those who left.</p></div></div>
+    </div>
+  </section>
+
+  <section id="reading" aria-labelledby="h-reading">
+    <span class="mono" data-t="readEye">06 · Further reading</span>
+    <h2 id="h-reading" data-t="readH">From the people who said it first</h2>
+    <p class="lede" data-t="readLede">This page borrows almost all of its ideas. Here is where they come from, and where they are argued far better.</p>
+    <div class="reading">
+      <div data-t="read1"><span class="mono">Book · 2007, updated 2017</span><h3>The Little Book of Common Sense Investing</h3><p class="by">John C. Bogle</p><p>The case for index funds from the man who built the first one for ordinary investors. Short, plain and stubborn: own the market, keep costs low, stay the course.</p></div>
+      <div data-t="read2"><span class="mono">Book · 2002, 2nd edition 2023</span><h3>The Four Pillars of Investing</h3><p class="by">William J. Bernstein</p><p>Theory, history, psychology and business: the four things you need to understand to invest well. The history chapters on bubbles and crashes alone are worth it.</p></div>
+      <a href="https://www.youtube.com/@BenFelixCSI" rel="noopener" data-t="read3"><span class="mono">YouTube ↗</span><h3>Ben Felix, Common Sense Investing</h3><p class="by">Ben Felix</p><p>Short, well-sourced videos that take on one investing question at a time, with the research on screen. He goes a step further than Bogle and argues for leaning toward smaller and cheaper companies; this page sticks to the plain version.</p></a>
+      <a href="https://rationalreminder.ca/podcast" rel="noopener" data-t="read4"><span class="mono">Podcast ↗</span><h3>The Rational Reminder</h3><p class="by">Ben Felix, Cameron Passmore and guests</p><p>Long conversations about evidence-based investing and decisions about money, often with the academics whose papers the rest of the industry quotes.</p></a>
+    </div>
+  </section>
+
+  <footer class="end">
+    <p class="big" data-t="endBig">Stay the course.</p>
+    <small data-t="endSmall">This is an explainer, not financial advice. Holdings are approximate and change daily. Before you buy, check a fund’s costs and how it is taxed where you live: the country a fund is based in changes how much it loses to tax on dividends.</small>
+  </footer>
+</main>
+
+<script src="/haystack/returns.js?v=1"></script>
+<script src="/haystack/i18n.js?v=1"></script>
+<script src="/haystack/app.js?v=1"></script>
+</body>
+</html>

@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Builds public/invest/returns.js: one real (after-inflation) world stock return per year since 1900.
+"""Builds public/haystack/returns.js: one real (after-inflation) world stock return per year since 1900.
 
 1900 to the last JST year: the Jorda-Schularick-Taylor Macrohistory Database (macrohistory.net).
   For each country with stock returns, the equity total return in local currency is turned into US dollars with
@@ -8,7 +8,7 @@
   would have had. Countries without a return in a year drop out of that year.
 After that: MSCI ACWI net total return in USD, deflated by US CPI-U (December to December).
 
-Usage: python3 -I scripts/invest-returns.py JSTdatasetR6.xlsx > public/invest/returns.js
+Usage: python3 -I scripts/haystack-returns.py JSTdatasetR6.xlsx > public/haystack/returns.js
 Standard library only; reads the .xlsx directly.
 """
 import json
@@ -81,7 +81,7 @@ def main(path):
     years = sorted({k[1] for k in by})
     us_cpi = {y: num(by.get(("USA", y), {}).get("cpi")) for y in years}
 
-    out, detail, ever = [], {}, set()
+    out, ever = [], set()
     for y in range(1900, years[-1] + 1):
         tot_w, acc, used = 0.0, 0.0, []
         for iso in isos:
@@ -106,7 +106,6 @@ def main(path):
         infl = us_cpi[y] / us_cpi[y - 1] - 1
         real = (1 + nominal) / (1 + infl) - 1
         out.append((y, real))
-        detail[y] = {"n": len(used), "nominal": round(nominal, 4), "infl": round(infl, 4)}
 
     last = out[-1][0]
     for y in sorted(RECENT):
@@ -118,24 +117,14 @@ def main(path):
     first = out[0][0]
     assert [y for y, _ in out] == list(range(first, out[-1][0] + 1)), "gap in years"
     real = [round(r, 4) for _, r in out]
-    jst_end = last
-    src = (
-        f"Sources: {first}–{jst_end}, the Jordà-Schularick-Taylor Macrohistory Database "
-        f"(<a href=\"https://www.macrohistory.net/database/\">macrohistory.net</a>): stock total returns for {len(ever)} developed countries "
-        f"in US dollars, weighted by the size of each economy, minus US inflation. "
-        + (f"{jst_end + 1}–{out[-1][0]}, MSCI ACWI net total return in US dollars minus US CPI. " if out[-1][0] > jst_end else "")
-        + "Germany’s 1923 hyperinflation and 1948 currency reform years are left out, because the data can’t place them cleanly. "
-        "This series flatters history: it misses markets that were wiped out, like Russia’s in 1917, and Germany’s and Japan’s worst war years. "
-        "The Dimson-Marsh-Staunton Global Investment Returns Yearbook, which Ben Felix often cites, includes them and finds about 5% a year after inflation since 1900."
-    )
-    sys.stderr.write(json.dumps(detail, indent=0)[:4000] + "\n")
-    sys.stderr.write(f"years {first}-{out[-1][0]}, n={len(real)}\n")
+    # The page's source note (in i18n.js) names these: keep it in step if they change.
+    sys.stderr.write(f"years {first}-{out[-1][0]}, JST until {last}, {len(ever)} countries\n")
     g = 1.0
     for r in real:
         g *= 1 + r
     sys.stderr.write(f"geometric real {g ** (1 / len(real)) - 1:.4f}, $1 -> {g:.1f}, min {min(real)}, max {max(real)}\n")
-    print("/* Real (after US inflation) yearly return of a world stock portfolio in US dollars. Built by scripts/invest-returns.py */")
-    print("window.WORLD = " + json.dumps({"first": first, "real": real, "sourceHtml": src}, ensure_ascii=False) + ";")
+    print("/* Real (after US inflation) yearly return of a world stock portfolio in US dollars. Built by scripts/haystack-returns.py */")
+    print("window.WORLD = " + json.dumps({"first": first, "real": real}) + ";")
 
 
 if __name__ == "__main__":
