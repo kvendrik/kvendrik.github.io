@@ -52,7 +52,7 @@ window.I18N = (function () {
 
   const nl = {
     locale: "nl-NL", cur: "€", K: "k", M: " mln", B: " mld", Mlong: " miljoen",
-    title: "Koop de hooiberg",
+    title: "Buy the Haystack",
     description: "Wereldwijd indexbeleggen zoals Bogle het bedoelde: 125 jaar beursrendement, wat een indexfonds is, wat je bezit en wat je geld kan worden.",
     dir: (up) => (up ? "hoger" : "lager"),
     period: (a, b, n) => `${a}–${b} · ${n} jaar`,
@@ -62,7 +62,7 @@ window.I18N = (function () {
     tipGrowth: (y, v) => `$10.000 vanaf begin ${y} → ${v}`,
     startOf: "Begin van de periode", endOf: "Eind van de periode",
     up: "Jaren omhoog", upN: (u, n) => `${u} van ${n}`, upP: "jaren eindigden hoger dan ze begonnen, na inflatie",
-    avg: "Per jaar, gemiddeld", avgP: (a, b) => `samengestelde groei na inflatie, ${a}–${b}`,
+    avg: "Per jaar", avgP: (a, b) => `samengestelde groei na inflatie, ${a}–${b}`,
     worst: "Slechtste jaar",
     wait: "Langste wachttijd", waitN: (n) => `${n} jaar`, waitNone: "Geen",
     waitNoneP: "elk jaar eindigde op een nieuwe top",
@@ -151,12 +151,11 @@ window.I18N = (function () {
   // Dutch for the static text in index.html, by data-t key. Keys ending in @attr set that attribute.
   const html = { nl: {
     "lang@aria-label": "Taal",
-    h1: "Koop de hooiberg.",
     heroLede: "Een trage, saaie en heel oude manier om je geld te laten groeien: bezit een klein stukje van elk bedrijf ter wereld, betaal er bijna niets voor, en wacht.",
     quote: "“Zoek niet naar de naald in de hooiberg. Koop gewoon de hele hooiberg!”",
-    cite: "John C. Bogle · oprichter van Vanguard en van het eerste indexfonds voor gewone beleggers, 1976",
+    cite: "John C. Bogle, oprichter van Vanguard",
 
-    histEye: "01 · De lange termijn",
+    histEye: "De lange termijn",
     histH: "125 jaar wereldwijde aandelenmarkt",
     histLede: "Twee wereldoorlogen, een pandemie, een depressie, oliecrises, bubbels en crashes. Ze deden allemaal pijn. Geen ervan hield het tegen.",
     "view@aria-label": "Weergave",
@@ -164,12 +163,12 @@ window.I18N = (function () {
     reset: "Alles tonen",
     keyBars: "Rendement per jaar, linkeras",
     keyLine: "$10.000 belegd aan het begin, na inflatie",
-    keyLog: "Logaritmische schaal: gelijke stappen zijn gelijke groei",
     evSum: "Wat er gebeurde in de slechte jaren",
     tableSum: "De cijfers, jaar voor jaar",
+    srcSum: "Bronnen",
     source: "Bronnen: 1900–2020, de Jordà-Schularick-Taylor Macrohistory Database (<a href=\"https://www.macrohistory.net/database/\">macrohistory.net</a>): totaalrendement op aandelen in 16 ontwikkelde landen, in Amerikaanse dollars, gewogen naar de omvang van elke economie, min de Amerikaanse inflatie. 2021–2025: het netto totaalrendement van de MSCI ACWI in dollars, min de Amerikaanse inflatie. De Duitse hyperinflatie van 1923 en de munthervorming van 1948 zijn weggelaten, omdat de data die jaren niet zuiver kan plaatsen. Deze reeks is te rooskleurig: beurzen die werden weggevaagd, zoals de Russische in 1917, en de slechtste oorlogsjaren van Duitsland en Japan ontbreken. Het Dimson-Marsh-Staunton Global Investment Returns Yearbook, dat Ben Felix vaak aanhaalt, telt die wel mee en komt uit op ongeveer 5% per jaar na inflatie sinds 1900.",
 
-    etfEye: "02 · Het gereedschap",
+    etfEye: "Het gereedschap",
     etfH: "Wat een indexfonds is",
     etfLede: "Een index is een lijst: bijvoorbeeld elk beursgenoteerd bedrijf ter wereld, elk meegeteld naar zijn omvang. Een indexfonds koopt gewoon alles op die lijst. Een ETF is een indexfonds dat je koopt en verkoopt als een aandeel.",
     how1: "<h3>Het bezit alles</h3><p>Eén fonds, duizenden bedrijven. Groeit een bedrijf, dan bezit je het. Gaat er een failliet, dan was het een heel klein stukje. Niemand hoeft te raden welke welke is.</p>",
@@ -182,11 +181,11 @@ window.I18N = (function () {
     "grid@aria-label": "100 aandelen. Kies er 10.",
     keyOwn: "Winnaar die je hebt", keyMissed: "Gemiste winnaar", keyPick: "Jouw keuze",
     pickBtn: "Kies voor mij", pick1000: "Probeer 1.000 keer",
-    hayNote: "Het indexfonds bezit alle 100, dus altijd alle 4. Tien willekeurige aandelen missen in ongeveer 65% van de gevallen elke winnaar.",
+    hayNote: "Het indexfonds bezit alle 100, dus altijd alle 4.",
     feeEye: "Wat kosten doen in 40 jaar",
     feeH: "“Bij beleggen krijg je waar je níét voor betaalt.”",
 
-    ownEye: "03 · Gewogen naar beurswaarde",
+    ownEye: "Gewogen naar beurswaarde",
     ownH: "Wat je echt bezit",
     ownLede: "Een wereldwijd indexfonds bezit zo’n 9.000 bedrijven in ongeveer 50 landen. Elk bedrijf krijgt een deel van je geld naar wat het waard is op de beurs. Grotere bedrijven krijgen meer.",
     amtPre: "Als je", amtPost: "inlegt, gaat het naar",
@@ -196,7 +195,7 @@ window.I18N = (function () {
     then1: "<span class=\"mono\">Waarom naar omvang</span><h3>De markt doet het werk</h3><p>Prijzen bevatten al ieders beste inschatting van elk bedrijf. Door naar omvang te wegen volg je het oordeel van de markt zelf, en als koersen bewegen, bewegen je gewichten mee. Er valt niets te herbalanceren en bijna niets te handelen, en dat houdt de kosten laag.</p>",
     then2: "<span class=\"mono\">Waarom de hele wereld</span><h3>Niemand kent de volgende winnaar</h3><p>In 1900 was Groot-Brittannië de grootste beurs ter wereld, zo’n kwart van het geheel. De VS zat rond de 15%. Ook Rusland had een flinke beurs, en die ging in 1917 naar nul. Nu is de VS bijna twee derde. Een wereldfonds volgt vanzelf wie er voorop loopt, zonder dat jij dat hoeft te voorspellen.</p>",
 
-    futEye: "04 · Rente op rente, eerlijk",
+    futEye: "Rente op rente, eerlijk",
     futH: "Wat je geld kan worden",
     futLede: "Een rekenmachine met één vast rendement tekent een gladde lijn die nooit gebeurt. Deze rekent 10.000 mogelijke toekomsten door, elk opgebouwd uit echte beursjaren in willekeurige volgorde: goede jaren, slechte jaren, en soms meerdere slechte achter elkaar.",
     sStart: "Begin met", sMonthly: "Elke maand erbij", sYears: "Hoe lang", sFee: "Kosten per jaar", sYearsUnit: "jaar",
@@ -204,10 +203,10 @@ window.I18N = (function () {
     "exp@aria-label": "Met welk rendement rekenen",
     expPlan: "Plan · 5%",
     "mcSvg@aria-label": "Waaiergrafiek van gesimuleerde vermogens door de tijd",
-    lgMid: "Middelste uitkomst", lgHalf: "Helft van de toekomsten", lgEight: "8 op de 10 toekomsten", lgSteady: "Vast gemiddelde", lgPaid: "Wat je inlegt",
+    lgMid: "Middelste uitkomst", lgHalf: "Helft van de toekomsten", lgEight: "8 op de 10 toekomsten", lgPaid: "Wat je inlegt",
     futNote: "Alles is in het geld van nu, na inflatie. De inleg blijft gelijk in het geld van nu, kosten gaan er elk jaar af en belasting is weggelaten. Onderzoek naar 39 landen laat zien dat de beurs van één land over 30 jaar vaker geld verloor na inflatie dan deze toekomsten doen vermoeden. Nog een reden om de hele wereld te bezitten.",
 
-    rulesEye: "05 · Het hele plan",
+    rulesEye: "Het hele plan",
     rulesH: "Vijf regels, en dan gewoon leven",
     rule1: "<h3>Bezit de hele wereld.</h3><p>Eén wereldwijd indexfonds is genoeg. Je hebt geen tweede nodig om het eerste te “spreiden”.</p>",
     rule2: "<h3>Houd de kosten bijna nul.</h3><p>Kosten zijn het enige deel van je rendement dat je zelf in de hand hebt. Elk tiende procent werkt decennialang tegen je, met rente op rente.</p>",
@@ -215,7 +214,7 @@ window.I18N = (function () {
     rule4: "<h3>Neem niet meer risico dan je aankunt.</h3><p>Aandelen kunnen halveren en jarenlang laag blijven. Zou je verkopen in een crash, houd dan ook obligaties aan zodat je dat niet doet. Het beste plan is het plan dat je volhoudt.</p>",
     rule5: "<h3>Houd koers.</h3><p>Bogles woorden. Het rendement in de grafiek hierboven ging naar de mensen die na de slechte jaren nog steeds belegd waren, niet naar wie was uitgestapt.</p>",
 
-    readEye: "06 · Verder lezen",
+    readEye: "Verder lezen",
     readH: "Van de mensen die het eerst zeiden",
     readLede: "Bijna alle ideeën op deze pagina zijn geleend. Hier komen ze vandaan, en daar worden ze veel beter uitgelegd.",
     read1: "<span class=\"mono\">Boek · 2007, herzien 2017</span><h3>The Little Book of Common Sense Investing</h3><p class=\"by\">John C. Bogle</p><p>Het pleidooi voor indexfondsen van de man die het eerste bouwde voor gewone beleggers. Kort, helder en koppig: bezit de markt, houd de kosten laag, houd koers.</p>",

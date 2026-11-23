@@ -334,8 +334,7 @@ function bindHistory() {
   $$("[data-view]").forEach((btn) => btn.addEventListener("click", () => {
     H.view = btn.dataset.view;
     $$("[data-view]").forEach((x) => x.setAttribute("aria-pressed", String(x === btn)));
-    $("#keyBars").hidden = H.view !== "bars";
-    $("#keyLog").hidden = H.view !== "growth";
+    $("#histKey").hidden = H.view !== "bars";
     clearSel();
     drawHistory();
   }));
@@ -568,7 +567,6 @@ function bindOwn() {
 let EXP = "plan", MC = null, mcAnimated = false;
 // "Plan" lowers every historical year by the same amount, so the compound average lands on 5%.
 const SHIFT = () => (EXP === "plan" ? Math.log(1 + PLAN) - MU : 0);
-const geoNow = () => Math.exp(MU + SHIFT()) - 1;
 function rng(seed) { return () => { seed |= 0; seed = (seed + 0x6d2b79f5) | 0; let x = Math.imul(seed ^ (seed >>> 15), 1 | seed); x = (x + Math.imul(x ^ (x >>> 7), 61 | x)) ^ x; return ((x ^ (x >>> 14)) >>> 0) / 4294967296; }; }
 function simulate(S = 10000) {
   const start = Math.max(0, num($("#cStart"), 0));
@@ -594,16 +592,14 @@ function simulate(S = 10000) {
   const paid = Array.from({ length: Y + 1 }, (_, y) => start + yearly * y);
   let below = 0;
   for (let s = 0; s < S; s++) if (vals[s * (Y + 1) + Y] < paid[Y]) below++;
-  const gNet = (1 + geoNow()) * (1 - fee), steady = [start];
-  for (let y = 1; y <= Y; y++) steady.push(steady[y - 1] * gNet + yearly * Math.sqrt(gNet));
   const paths = Array.from({ length: 28 }, (_, j) => { const s = Math.floor(j * S / 28); return Array.from(vals.subarray(s * (Y + 1), (s + 1) * (Y + 1))); });
-  MC = { Y, q, paid, steady, paths, below: below / S };
+  MC = { Y, q, paid, paths, below: below / S };
 }
 function drawMC() {
   if (!MC) return;
   const box = $("#mcChart"), svg = $("#mcSvg"), w = box.clientWidth, narrow = w < 560, h = narrow ? 300 : 360;
-  const { Y, q, paid, steady, paths } = MC;
-  const top = Math.max(q[4][Y], steady[Y], paid[Y]) * 1.08 || 1;
+  const { Y, q, paid, paths } = MC;
+  const top = Math.max(q[4][Y], paid[Y]) * 1.08 || 1;
   // axis labels: round amounts without trailing zeros ("€1 mln", "$1.5M"); the margin fits the widest one
   const tickLabel = (v) => (v === 0 ? "0" : v >= 1e6 ? L().cur + (v / 1e6).toLocaleString(L().locale, { maximumFractionDigits: 2 }) + L().M : L().cur + int(v));
   const yTicks = ticksLin(0, top, narrow ? 4 : 5);
@@ -628,7 +624,6 @@ function drawMC() {
   out += `<g clip-path="url(#mcClip)"><path d="${area(q[0], q[4])}" fill="var(--band)"/><path d="${area(q[1], q[3])}" fill="#CFC5B2"/>`;
   paths.forEach((p, j) => (out += `<path d="${line(p)}" fill="none" stroke="var(--ink)" stroke-width=".7" opacity=".1"${anim ? ` pathLength="1" class="drawn" style="animation-duration:1.6s;animation-delay:${j * 25}ms"` : ""}/>`));
   out += `</g><path d="${line(paid)}" fill="none" stroke="var(--muted)" stroke-width="1.5" stroke-dasharray="1.5 3.5" stroke-linecap="round"/>`;
-  out += `<path d="${line(steady)}" fill="none" stroke="var(--ink)" stroke-width="1.5" stroke-dasharray="6 4"/>`;
   out += `<path d="${line(q[2])}" fill="none" stroke="var(--ink)" stroke-width="2.25" stroke-linejoin="round"${anim ? ` pathLength="1" class="drawn" style="animation-duration:1.4s"` : ""}/>`;
   out += `<circle cx="${X(Y)}" cy="${Yp(q[2][Y])}" r="4" fill="var(--ink)"/>`;
   out += `<line id="mcCross" y1="${m.t}" y2="${m.t + ih}" stroke="var(--ink)" stroke-width="1" opacity="0"/><circle id="mcDot" r="4" fill="var(--paper)" stroke="var(--ink)" stroke-width="2" opacity="0"/>`;

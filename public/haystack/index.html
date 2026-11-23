@@ -61,7 +61,7 @@ h2{font-size:clamp(40px,7vw,60px);margin:10px 0 24px}
 .prose{display:grid;gap:16px;margin-top:24px;color:var(--ink-2);max-width:62ch}
 .prose b{color:var(--ink);font-weight:600}
 .note{margin-top:14px;color:var(--muted);font-size:13px;line-height:1.5}
-.note a,.end a{color:inherit;text-underline-offset:3px}
+.note a{color:inherit;text-underline-offset:3px}
 
 /* top bar + hero */
 .top{display:flex;justify-content:flex-end;padding-top:20px}
@@ -146,16 +146,16 @@ details+details{margin-top:0}
 .evlist .yr{color:var(--ink)}
 .evlist b{color:var(--ink);font-weight:600}
 .tablewrap{max-height:340px;overflow:auto}
+.note.src{margin:0;padding-bottom:16px}
 table.data{width:100%;border-collapse:collapse;font-family:var(--f-mono);font-size:12px;margin-bottom:12px}
 table.data th,table.data td{padding:4px 6px;text-align:right;border-bottom:1px solid var(--rule)}
 table.data th{color:var(--muted);font-weight:400}
 table.data :is(th,td):first-child{text-align:left}
 
 /* index funds */
-.how{list-style:none;padding:0;margin-top:32px;display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:24px;counter-reset:s}
-.how li{border-top:1px solid var(--ink);padding-top:14px;counter-increment:s}
-.how li::before{content:counter(s,decimal-leading-zero);font-family:var(--f-mono);font-size:11px;color:var(--muted);letter-spacing:.1em}
-.how h3{font-size:28px;margin:6px 0 8px}
+.how{list-style:none;padding:0;margin-top:32px;display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:24px}
+.how li{border-top:1px solid var(--ink);padding-top:14px}
+.how h3{font-size:28px;margin:0 0 8px}
 .how p{font-size:15px;color:var(--ink-2)}
 .hay{margin-top:48px;padding:24px;background:var(--card);border-radius:2px}
 .hay h3{font-size:clamp(28px,4.6vw,38px);line-height:1.1}
@@ -291,12 +291,12 @@ table.data :is(th,td):first-child{text-align:left}
     <p class="lede" data-t="heroLede">A slow, boring and very old way to grow money: own a little of every company in the world, pay almost nothing for it, and wait.</p>
     <div class="quote">
       <p data-t="quote">“Don’t look for the needle in the haystack. Just buy the haystack!”</p>
-      <span class="mono" data-t="cite">John C. Bogle · founder of Vanguard and the first index fund for regular people, 1976</span>
+      <span class="mono" data-t="cite">John C. Bogle, founder of Vanguard</span>
     </div>
   </header>
 
   <section id="history" aria-labelledby="h-history">
-    <span class="mono" data-t="histEye">01 · The long view</span>
+    <span class="mono" data-t="histEye">The long view</span>
     <h2 id="h-history" data-t="histH">125 years of the world’s stock market</h2>
     <p class="lede" data-t="histLede">Two world wars, a pandemic, a depression, oil shocks, bubbles and crashes. Every one of them hurt. None of them stopped it.</p>
 
@@ -317,10 +317,9 @@ table.data :is(th,td):first-child{text-align:left}
       </div>
     </div>
     <div class="brush-foot"><span class="mono" id="histHint"></span><button class="linkbtn mono" type="button" id="resetZoom" data-t="reset" hidden>Show all</button></div>
-    <div class="legend mono" id="histKey">
-      <span id="keyBars" hidden><i style="background:linear-gradient(90deg,var(--ink) 50%,var(--down) 50%);width:12px;height:12px"></i><span data-t="keyBars">Each year’s return, left scale</span></span>
+    <div class="legend mono" id="histKey" hidden>
+      <span><i style="background:linear-gradient(90deg,var(--ink) 50%,var(--down) 50%);width:12px;height:12px"></i><span data-t="keyBars">Each year’s return, left scale</span></span>
       <span><i style="background:var(--ink);height:2.5px"></i><span data-t="keyLine">$10,000 invested at the start, after inflation</span></span>
-      <span id="keyLog"><span data-t="keyLog">Log scale: equal steps are equal growth</span></span>
     </div>
     <p class="sr-only" id="histDesc"></p>
 
@@ -334,18 +333,21 @@ table.data :is(th,td):first-child{text-align:left}
       <summary class="mono" data-t="tableSum">The numbers, year by year</summary>
       <div class="tablewrap"><table class="data" id="histTable"></table></div>
     </details>
-    <p class="note" data-t="source">Sources: 1900–2020, the Jordà-Schularick-Taylor Macrohistory Database (<a href="https://www.macrohistory.net/database/">macrohistory.net</a>): stock total returns for 16 developed countries in US dollars, weighted by the size of each economy, minus US inflation. 2021–2025, MSCI ACWI net total return in US dollars minus US CPI. Germany’s 1923 hyperinflation and 1948 currency reform years are left out, because the data can’t place them cleanly. This series flatters history: it misses markets that were wiped out, like Russia’s in 1917, and Germany’s and Japan’s worst war years. The Dimson-Marsh-Staunton Global Investment Returns Yearbook, which Ben Felix often cites, includes them and finds about 5% a year after inflation since 1900.</p>
+    <details>
+      <summary class="mono" data-t="srcSum">Sources</summary>
+      <p class="note src" data-t="source">Sources: 1900–2020, the Jordà-Schularick-Taylor Macrohistory Database (<a href="https://www.macrohistory.net/database/">macrohistory.net</a>): stock total returns for 16 developed countries in US dollars, weighted by the size of each economy, minus US inflation. 2021–2025, MSCI ACWI net total return in US dollars minus US CPI. Germany’s 1923 hyperinflation and 1948 currency reform years are left out, because the data can’t place them cleanly. This series flatters history: it misses markets that were wiped out, like Russia’s in 1917, and Germany’s and Japan’s worst war years. The Dimson-Marsh-Staunton Global Investment Returns Yearbook, which Ben Felix often cites, includes them and finds about 5% a year after inflation since 1900.</p>
+    </details>
   </section>
 
   <section id="etfs" aria-labelledby="h-etfs">
-    <span class="mono" data-t="etfEye">02 · The tool</span>
+    <span class="mono" data-t="etfEye">The tool</span>
     <h2 id="h-etfs" data-t="etfH">What an index fund is</h2>
     <p class="lede" data-t="etfLede">An index is a list: say, every listed company in the world, each counted by its size. An index fund simply buys everything on the list. An ETF is an index fund you buy and sell like a share.</p>
-    <ol class="how">
+    <ul class="how">
       <li data-t="how1"><h3>It owns everything</h3><p>One fund, thousands of companies. If a company grows, you own it. If one fails, it was a tiny slice. Nobody has to guess which is which.</p></li>
       <li data-t="how2"><h3>Nobody picks</h3><p>No star manager, no research team, no trading on hunches. The fund follows the list, so it costs very little to run: often 0.1% to 0.25% a year.</p></li>
       <li data-t="how3"><h3>You get the market</h3><p>You give up any chance of beating the market. In return you get its return, minus a tiny fee, which most professionals don’t manage once their own fees are counted.</p></li>
-    </ol>
+    </ul>
     <div class="prose">
       <p data-t="prose1">Picking stocks is a game played against professionals with more data, more time and faster computers. Before costs, the market’s return is by definition the average return of everyone in it. <b>After costs, the average active investor has to do worse than the index</b>, because they pay more. The numbers bear it out: the S&amp;P SPIVA scorecards find that over 15 to 20 years roughly nine in ten actively managed US stock funds trail their index.</p>
       <p data-t="prose2">There is a second reason, and it is stranger. Most stocks don’t do well. Hendrik Bessembinder looked at every US stock from 1926 to 2016 and found that just 4% of them created all of the stock market’s wealth above treasury bills. The other 96%, together, did no better than cash. If you pick a handful of stocks, you will probably miss the few that matter.</p>
@@ -368,7 +370,7 @@ table.data :is(th,td):first-child{text-align:left}
           </div>
         </div>
       </div>
-      <p class="note" data-t="hayNote">The index fund owns all 100, so it always owns all 4. A random 10 stocks misses every winner about 65% of the time.</p>
+      <p class="note" data-t="hayNote">The index fund owns all 100, so it always owns all 4.</p>
     </div>
 
     <div class="fees">
@@ -381,7 +383,7 @@ table.data :is(th,td):first-child{text-align:left}
   </section>
 
   <section id="today" aria-labelledby="h-today">
-    <span class="mono" data-t="ownEye">03 · Market cap weighted</span>
+    <span class="mono" data-t="ownEye">Market cap weighted</span>
     <h2 id="h-today" data-t="ownH">What you actually own</h2>
     <p class="lede" data-t="ownLede">A total world fund holds roughly 9,000 companies in about 50 countries. Each gets a share of your money in proportion to what it is worth on the stock market. Bigger companies get more.</p>
     <p class="amount"><span data-t="amtPre">If you put in</span><span class="field"><span class="cur">$</span><input id="ownAmt" type="text" inputmode="numeric" enterkeyhint="done" autocomplete="off" value="10,000" aria-label="Amount to invest" data-ta="ownAmt@aria-label"></span><span data-t="amtPost">it goes to</span></p>
@@ -401,7 +403,7 @@ table.data :is(th,td):first-child{text-align:left}
   </section>
 
   <section id="future" aria-labelledby="h-future">
-    <span class="mono" data-t="futEye">04 · Compound interest, honestly</span>
+    <span class="mono" data-t="futEye">Compound interest, honestly</span>
     <h2 id="h-future" data-t="futH">What your money could become</h2>
     <p class="lede" data-t="futLede">A calculator with one fixed return draws a smooth line that never happens. This one runs 10,000 possible futures, each built from real stock market years in random order: good years, bad years, and sometimes several bad ones in a row.</p>
 
@@ -426,7 +428,6 @@ table.data :is(th,td):first-child{text-align:left}
       <span><i style="background:var(--ink);height:2px"></i><span data-t="lgMid">Middle outcome</span></span>
       <span><i style="background:#CFC5B2"></i><span data-t="lgHalf">Half of futures</span></span>
       <span><i style="background:var(--band)"></i><span data-t="lgEight">8 in 10 futures</span></span>
-      <span><i style="border-top:2px dashed var(--ink);height:0"></i><span data-t="lgSteady">Steady average</span></span>
       <span><i style="border-top:2px dotted var(--muted);height:0"></i><span data-t="lgPaid">What you put in</span></span>
     </div>
     <div class="outcomes" id="outcomes"></div>
@@ -435,7 +436,7 @@ table.data :is(th,td):first-child{text-align:left}
   </section>
 
   <section id="rules" aria-labelledby="h-rules">
-    <span class="mono" data-t="rulesEye">05 · The whole plan</span>
+    <span class="mono" data-t="rulesEye">The whole plan</span>
     <h2 id="h-rules" data-t="rulesH">Five rules, then go live your life</h2>
     <div class="rules">
       <div><span class="k">01</span><div data-t="rule1"><h3>Own the whole world.</h3><p>One total world index fund covers it. You don’t need a second one to “diversify” the first.</p></div></div>
@@ -447,7 +448,7 @@ table.data :is(th,td):first-child{text-align:left}
   </section>
 
   <section id="reading" aria-labelledby="h-reading">
-    <span class="mono" data-t="readEye">06 · Further reading</span>
+    <span class="mono" data-t="readEye">Further reading</span>
     <h2 id="h-reading" data-t="readH">From the people who said it first</h2>
     <p class="lede" data-t="readLede">This page borrows almost all of its ideas. Here is where they come from, and where they are argued far better.</p>
     <div class="reading">
@@ -465,7 +466,7 @@ table.data :is(th,td):first-child{text-align:left}
 </main>
 
 <script src="/haystack/returns.js?v=1"></script>
-<script src="/haystack/i18n.js?v=2"></script>
-<script src="/haystack/app.js?v=2"></script>
+<script src="/haystack/i18n.js?v=3"></script>
+<script src="/haystack/app.js?v=3"></script>
 </body>
 </html>
