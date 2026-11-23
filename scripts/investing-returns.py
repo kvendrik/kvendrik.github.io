@@ -1,13 +1,14 @@
 #!/usr/bin/env python3
 """Builds public/investing/returns.js: one real (after-inflation) world stock return per year since 1900,
-and world government bond returns built the same way for the years the JST data covers.
+and world government bond returns built the same way.
 
 1900 to the last JST year: the Jorda-Schularick-Taylor Macrohistory Database (macrohistory.net).
   For each country with stock returns, the equity total return in local currency is turned into US dollars with
   the exchange rate, the countries are weighted by the previous year's real GDP (Maddison GDP per head times population), and the result is
   deflated by US inflation. That is the return a US-dollar investor in a GDP-weighted world portfolio
   would have had. Countries without a return in a year drop out of that year.
-After that: MSCI ACWI net total return in USD, deflated by US CPI-U (December to December).
+After that: MSCI ACWI net total return in USD for stocks and the Bloomberg Global Aggregate in USD, unhedged,
+for bonds, both deflated by US CPI-U (December to December).
 
 Usage: python3 -I scripts/investing-returns.py JSTdatasetR6.xlsx > public/investing/returns.js
 Standard library only; reads the .xlsx directly.
@@ -26,6 +27,11 @@ NS = {"m": "http://schemas.openxmlformats.org/spreadsheetml/2006/main"}
 _DEC = {2020: 260.474, 2021: 278.802, 2022: 296.797, 2023: 306.746, 2024: 315.605, 2025: 324.054}
 _ACWI = {2021: 0.1854, 2022: -0.1836, 2023: 0.2220, 2024: 0.1749, 2025: 0.2234}
 RECENT = {y: (_ACWI[y], _DEC[y] / _DEC[y - 1] - 1) for y in _ACWI}
+# Bonds after the JST data ends: the Bloomberg Global Aggregate index, total return in USD, unhedged
+# (the usual world bond benchmark; mostly government bonds). 2024 -1.69% and 2025 +8.17% from Bloomberg's
+# "Looking back at" fixed income reviews; 2021-2023 from the index's published annual returns (YCharts ^BBGATR),
+# matching the press at the time (2021 about -4.8%, 2022 a record -16.3%, 2023 a little under 6%).
+_GLOBAL_AGG = {2021: -0.0471, 2022: -0.1625, 2023: 0.0572, 2024: -0.0169, 2025: 0.0817}
 
 # Germany's hyperinflation (1923) and currency reform (1948) put the yearly return and the year-end
 # exchange rate on different footings, which gives offsetting spikes (+830% then -87%, -87% then +700%).
@@ -120,6 +126,8 @@ def main(path):
             continue
         nominal, infl = RECENT[y]
         out.append((y, (1 + nominal) / (1 + infl) - 1))
+        bonds.append((1 + _GLOBAL_AGG[y]) / (1 + infl) - 1)
+    assert len(bonds) == len(out), "bonds and stocks must cover the same years"
 
     first = out[0][0]
     assert [y for y, _ in out] == list(range(first, out[-1][0] + 1)), "gap in years"
@@ -130,8 +138,7 @@ def main(path):
     for r in real:
         g *= 1 + r
     sys.stderr.write(f"geometric real {g ** (1 / len(real)) - 1:.4f}, $1 -> {g:.1f}, min {min(real)}, max {max(real)}\n")
-    print("/* Real (after US inflation) yearly return of a world stock portfolio in US dollars. Built by scripts/investing-returns.py */")
-    # bonds stop where the JST data stops (no global bond index is spliced on)
+    print("/* Real (after US inflation) yearly returns in US dollars of a world stock portfolio (real) and world government bonds (bonds). Built by scripts/investing-returns.py */")
     print("window.WORLD = " + json.dumps({"first": first, "real": real, "bonds": [round(b, 4) for b in bonds]}) + ";")
 
 

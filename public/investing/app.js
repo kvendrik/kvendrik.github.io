@@ -613,8 +613,8 @@ function bindOwn() {
   amt.addEventListener("blur", () => { amt.value = int(num(amt, 0)); });
 }
 
-/* ---------- risk: a mix of stocks and bonds, 1950-2020 ---------- */
-const BONDS = W.bonds || [], MIX_FROM = 1950, M0 = MIX_FROM - FIRST, M1 = BONDS.length; // bonds end where the JST data ends
+/* ---------- risk: a mix of stocks and bonds, 1950-2025 ---------- */
+const BONDS = W.bonds || [], MIX_FROM = 1950, M0 = MIX_FROM - FIRST, M1 = BONDS.length; // bonds: JST to 2020, then the Bloomberg Global Aggregate
 const CHART_FROM = 1995; // the chart: recent enough to remember, with two big crashes in it
 function mixRun(w, from = MIX_FROM) {
   let v = 1, peak = 1, fall = 0, worst = Infinity, wy = from, down = 0;
