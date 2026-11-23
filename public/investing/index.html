@@ -8,8 +8,9 @@
 <title>Buy the Haystack</title>
 <meta name="description" content="Index investing in the whole world, the Bogle way: 125 years of stock returns, what an index fund is, what you own, and what your money could become.">
 <link rel="canonical" href="https://kvendrik.com/investing/">
-<link rel="alternate" hreflang="en" href="https://kvendrik.com/investing/?lang=en">
-<link rel="alternate" hreflang="nl" href="https://kvendrik.com/investing/?lang=nl">
+<link rel="alternate" hreflang="en" href="https://kvendrik.com/investing/">
+<link rel="alternate" hreflang="nl" href="https://kvendrik.com/investing/nl/">
+<link rel="alternate" hreflang="x-default" href="https://kvendrik.com/investing/">
 <link rel="icon" href="/investing/favicon.svg" type="image/svg+xml">
 <link rel="icon" href="/investing/favicon-32.png" type="image/png" sizes="32x32">
 <link rel="apple-touch-icon" href="/investing/apple-touch-icon.png" sizes="180x180">
@@ -102,6 +103,9 @@ h2{font-size:clamp(40px,7vw,60px);margin:14px 0 32px}
 .chart{position:relative;margin-top:8px;touch-action:pan-y}
 .chart svg{display:block;width:100%;overflow:visible}
 .chart text{font-family:var(--f-mono);font-size:10px;fill:var(--muted);letter-spacing:.04em}
+.chart text.ddh{font-size:11px;letter-spacing:.08em;text-transform:uppercase;fill:var(--ink-2)}
+.chart text.ddv{font-family:var(--f-display);font-style:italic;font-size:17px;letter-spacing:0;fill:var(--ink)}
+.chart text.ddv.all{fill:var(--muted)}
 .chart .ev{font-family:var(--f-body);font-size:12px;fill:var(--ink-2);letter-spacing:0}
 @keyframes labIn{from{opacity:0;transform:translateY(6px)}}
 .chart .lab-in{animation:labIn .5s var(--ease) backwards}
@@ -141,7 +145,8 @@ h2{font-size:clamp(40px,7vw,60px);margin:14px 0 32px}
 
 /* stat rows */
 .stats,.outcomes{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));margin-top:48px;border-top:1px solid var(--ink)}
-.stats>div,.outcomes>div{padding:20px 20px 8px 0;min-width:0}
+.stats>div,.outcomes>div{padding:20px 20px 8px 0;min-width:0;display:grid;grid-row:span 3;grid-template-rows:subgrid;row-gap:0}
+.stats>div>.mono,.outcomes>div>.mono{align-self:end}  /* a label that wraps grows upward, so every number stays on one line */
 .stats>div+div,.outcomes>div+div{padding-left:20px;border-left:1px solid var(--rule)}
 .stats .n,.outcomes .n{font-family:var(--f-display);font-size:clamp(30px,4.6vw,42px);line-height:1;margin-top:8px;overflow-wrap:anywhere}
 .stats p,.outcomes p{font-size:13px;color:var(--ink-2);margin-top:6px;line-height:1.4}
@@ -280,14 +285,12 @@ table.data :is(th,td):first-child{text-align:left}
 .mix .slider-val .suf{margin-left:1px}
 .mix .slider-val .mix-rest{margin-left:10px;color:var(--muted)}
 .mix-chart{margin-top:48px}
-/* quote wall: a sketch, the words, the name */
-.wall{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:72px 56px;margin-top:96px}
-.sage{margin:0;display:grid;grid-template-columns:120px minmax(0,1fr);grid-template-rows:auto 1fr;gap:0 22px;align-items:start}
-.face{grid-row:span 2;width:120px;height:120px;margin-top:-10px}
-.face img{display:block;width:100%;height:100%;object-fit:contain}
-.sage.bare{grid-template-columns:minmax(0,1fr)}
+/* quote wall: the words, then a small sketch beside the name */
+.wall{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:80px 56px;margin-top:96px}
+.sage{margin:0}
 .sage blockquote{margin:0;font-family:var(--f-display);font-style:italic;font-size:23px;line-height:1.3;text-wrap:pretty}
-.sage figcaption{margin-top:14px}
+.sage figcaption{margin-top:18px;display:flex;align-items:center;gap:14px}
+.sage .face{flex:none;display:block;width:68px;height:68px;margin:-6px 0 -6px -6px}
 .sage figcaption b{display:block;font-weight:600;font-size:16px}
 .sage figcaption .mono{display:block;margin-top:2px}
 .verdict{margin-top:48px;font-family:var(--f-display);font-style:italic;font-size:clamp(22px,3.4vw,28px);line-height:1.3;text-wrap:pretty}
@@ -372,8 +375,7 @@ table.data :is(th,td):first-child{text-align:left}
   .reading .cd-card{grid-template-columns:1fr}
   .cd-card .cd3d{margin-bottom:28px}
   .wall{gap:56px}
-  .sage{grid-template-columns:88px minmax(0,1fr);gap:0 16px}
-  .face{width:88px;height:88px}
+  .sage .face{width:60px;height:60px}
   .sage blockquote{font-size:21px}
   .how li{grid-template-columns:1fr;padding:28px 0}
   .hay{padding:24px 20px}
@@ -600,14 +602,14 @@ table.data :is(th,td):first-child{text-align:left}
     <p class="lede" data-t="readLede">This page borrows almost all of its ideas. These are the people behind them, and some of the best-known investors who agree.</p>
     <figure class="pull"><blockquote data-t="qStatue">“If a statue is ever erected to honor the person who has done the most for American investors, the hands-down choice should be Jack Bogle.”</blockquote><figcaption class="mono" data-t="qStatueBy">Warren Buffett, letter to shareholders, 2016</figcaption></figure>
     <div class="wall">
-      <figure class="sage"><div class="face" aria-hidden="true"><img src="/investing/people/buffett.png?v=3" alt="" width="360" height="360" loading="lazy" decoding="async"></div><blockquote data-t="w_buffett">“By periodically investing in an index fund, the know-nothing investor can actually out-perform most investment professionals.”</blockquote><figcaption><b>Warren Buffett</b><span class="mono" data-t="w_buffettBy">Letter to shareholders, 1993</span></figcaption></figure>
-      <figure class="sage bare"><blockquote data-t="w_lynch">“Far more money has been lost by investors preparing for corrections, or trying to anticipate corrections, than has been lost in corrections themselves.”</blockquote><figcaption><b>Peter Lynch</b><span class="mono" data-t="w_lynchBy">Ran Fidelity’s Magellan fund, 1977–1990</span></figcaption></figure>
-      <figure class="sage bare"><blockquote data-t="w_samuelson">“Investing should be more like watching paint dry or watching grass grow. If you want excitement, take $800 and go to Las Vegas.”</blockquote><figcaption><b>Paul Samuelson</b><span class="mono" data-t="w_samuelsonBy">Nobel Prize–winning economist</span></figcaption></figure>
-      <figure class="sage"><div class="face" aria-hidden="true"><img src="/investing/people/graham.png?v=3" alt="" width="360" height="360" loading="lazy" decoding="async"></div><blockquote data-t="w_graham">“In the short run, the market is a voting machine but in the long run, it is a weighing machine.”</blockquote><figcaption><b>Benjamin Graham</b><span class="mono" data-t="w_grahamBy">Buffett’s teacher, as Buffett quotes him</span></figcaption></figure>
-      <figure class="sage"><div class="face" aria-hidden="true"><img src="/investing/people/sharpe.png?v=3" alt="" width="360" height="360" loading="lazy" decoding="async"></div><blockquote data-t="w_sharpe">“Properly measured, the average actively managed dollar must underperform the average passively managed dollar, net of costs.”</blockquote><figcaption><b>William F. Sharpe</b><span class="mono" data-t="w_sharpeBy">The Arithmetic of Active Management, 1991</span></figcaption></figure>
-      <figure class="sage"><div class="face" aria-hidden="true"><img src="/investing/people/munger.png?v=3" alt="" width="360" height="360" loading="lazy" decoding="async"></div><blockquote data-t="w_munger">“The big money is not in the buying and the selling, but in the waiting.”</blockquote><figcaption><b>Charlie Munger</b><span class="mono" data-t="w_mungerBy">Buffett’s partner at Berkshire Hathaway</span></figcaption></figure>
-      <figure class="sage bare"><blockquote data-t="w_fama">“Your money is like soap. The more you handle it, the less you’ll have.”</blockquote><figcaption><b>Eugene Fama</b><span class="mono" data-t="w_famaBy">Nobel Prize–winning economist</span></figcaption></figure>
-      <figure class="sage bare"><blockquote data-t="w_housel">“Doing well with money has a little to do with how smart you are and a lot to do with how you behave.”</blockquote><figcaption><b>Morgan Housel</b><span class="mono" data-t="w_houselBy">The Psychology of Money, 2020</span></figcaption></figure>
+      <figure class="sage"><blockquote data-t="w_bogle">“In investing, you get what you don’t pay for.”</blockquote><figcaption><img class="face" src="/investing/people/bogle.png?v=4" alt="" width="204" height="204" loading="lazy" decoding="async"><span><b>John C. Bogle</b><span class="mono" data-t="w_bogleBy">Founded Vanguard and the first index fund for ordinary investors</span></span></figcaption></figure>
+      <figure class="sage"><blockquote data-t="w_buffett">“By periodically investing in an index fund, the know-nothing investor can actually out-perform most investment professionals.”</blockquote><figcaption><img class="face" src="/investing/people/buffett.png?v=4" alt="" width="204" height="204" loading="lazy" decoding="async"><span><b>Warren Buffett</b><span class="mono" data-t="w_buffettBy">Letter to shareholders, 1993</span></span></figcaption></figure>
+      <figure class="sage"><blockquote data-t="w_samuelson">“Investing should be more like watching paint dry or watching grass grow. If you want excitement, take $800 and go to Las Vegas.”</blockquote><figcaption><img class="face" src="/investing/people/samuelson.png?v=4" alt="" width="204" height="204" loading="lazy" decoding="async"><span><b>Paul Samuelson</b><span class="mono" data-t="w_samuelsonBy">Nobel Prize–winning economist</span></span></figcaption></figure>
+      <figure class="sage"><blockquote data-t="w_graham">“In the short run, the market is a voting machine but in the long run, it is a weighing machine.”</blockquote><figcaption><img class="face" src="/investing/people/graham.png?v=4" alt="" width="204" height="204" loading="lazy" decoding="async"><span><b>Benjamin Graham</b><span class="mono" data-t="w_grahamBy">Buffett’s teacher, as Buffett quotes him</span></span></figcaption></figure>
+      <figure class="sage"><blockquote data-t="w_sharpe">“Properly measured, the average actively managed dollar must underperform the average passively managed dollar, net of costs.”</blockquote><figcaption><img class="face" src="/investing/people/sharpe.png?v=4" alt="" width="204" height="204" loading="lazy" decoding="async"><span><b>William F. Sharpe</b><span class="mono" data-t="w_sharpeBy">The Arithmetic of Active Management, 1991</span></span></figcaption></figure>
+      <figure class="sage"><blockquote data-t="w_munger">“The big money is not in the buying and the selling, but in the waiting.”</blockquote><figcaption><img class="face" src="/investing/people/munger.png?v=4" alt="" width="204" height="204" loading="lazy" decoding="async"><span><b>Charlie Munger</b><span class="mono" data-t="w_mungerBy">Buffett’s partner at Berkshire Hathaway</span></span></figcaption></figure>
+      <figure class="sage"><blockquote data-t="w_fama">“Your money is like soap. The more you handle it, the less you’ll have.”</blockquote><figcaption><img class="face" src="/investing/people/fama.png?v=4" alt="" width="204" height="204" loading="lazy" decoding="async"><span><b>Eugene Fama</b><span class="mono" data-t="w_famaBy">Nobel Prize–winning economist</span></span></figcaption></figure>
+      <figure class="sage"><blockquote data-t="w_kahneman">“Professional investors, including fund managers, fail a basic test of skill: persistent achievement.”</blockquote><figcaption><img class="face" src="/investing/people/kahneman.png?v=4" alt="" width="204" height="204" loading="lazy" decoding="async"><span><b>Daniel Kahneman</b><span class="mono" data-t="w_kahnemanBy">Thinking, Fast and Slow, 2011</span></span></figcaption></figure>
     </div>
 
     <span class="mono eye-gap" data-t="readEye">Watch, read, listen</span>
@@ -622,7 +624,7 @@ table.data :is(th,td):first-child{text-align:left}
       <div class="book-card"><div class="book3d" aria-hidden="true"><div class="book pillars"><div class="b-front"><span class="b-author">William J. Bernstein</span><span class="b-title">The Four Pillars of Investing</span><span class="b-pillars"><i></i><i></i><i></i><i></i></span></div><div class="b-spine"><span>The Four Pillars</span></div><div class="b-pages"></div><div class="b-back"></div></div></div><div data-t="read2"><span class="mono">Book · 2002, 2nd edition 2023</span><h3>The Four Pillars of Investing</h3><p class="by">William J. Bernstein</p><p>Theory, history, psychology and business: the four things you need to understand to invest well. The history chapters on bubbles and crashes alone are worth it.</p></div></div>
       <a class="obj-card cd-card" href="https://rationalreminder.ca/podcast" rel="noopener"><div class="cd3d" aria-hidden="true"><div class="disc"><div class="spin"><span>Rational Reminder</span></div></div><div class="sleeve"><span class="mono">Podcast</span><b>The Rational<br>Reminder</b></div></div><div data-t="read4"><span class="mono">Podcast ↗</span><h3>The Rational Reminder</h3><p class="by">Ben Felix, Cameron Passmore and guests</p><p>Long conversations about evidence-based investing and decisions about money, often with the academics whose papers the rest of the industry quotes. Felix goes a step further than Bogle and leans toward smaller and cheaper companies; this page sticks to the plain version.</p></div></a>
     </div>
-    <p class="note" data-t="wallCredit">Line drawings traced from photos on Wikimedia Commons. Warren Buffett: <a href="https://commons.wikimedia.org/wiki/File:Warren_Buffett_KU_Visit.jpg">Mark Hirschey</a>, CC BY-SA 2.0; Benjamin Graham: <a href="https://commons.wikimedia.org/wiki/File:Benjamin_Graham_(1894-1976)_portrait_on_23_March_1950.jpg">unknown photographer, 1950</a>, public domain; William F. Sharpe: <a href="https://commons.wikimedia.org/wiki/File:William_sharpe_2007.jpg">Larry D. Moore</a>, CC BY 4.0; Charlie Munger: <a href="https://commons.wikimedia.org/wiki/File:Charlie_Munger.jpg">Nick J Webb</a>, CC BY 2.0.</p>
+    <p class="note" data-t="wallCredit">Line drawings made from photos on Wikimedia Commons. John C. Bogle: <a href="https://commons.wikimedia.org/wiki/File:Photo_of_a_John_C._Bogle_By_Bill_Cramer.jpg">Bill Cramer</a>, CC BY-SA 4.0; Warren Buffett: <a href="https://commons.wikimedia.org/wiki/File:Warren_Buffett_KU_Visit.jpg">Mark Hirschey</a>, CC BY-SA 2.0; Paul Samuelson: <a href="https://commons.wikimedia.org/wiki/File:Paul_A._Samuelson,_economist,_edited.jpg">Bernard Gotfryd</a>, public domain; Benjamin Graham: <a href="https://commons.wikimedia.org/wiki/File:Benjamin_Graham_(1894-1976)_portrait_on_23_March_1950.jpg">unknown photographer, 1950</a>, public domain; William F. Sharpe: <a href="https://commons.wikimedia.org/wiki/File:William_sharpe_2007.jpg">Larry D. Moore</a>, CC BY 4.0; Charlie Munger: <a href="https://commons.wikimedia.org/wiki/File:Charlie_Munger.jpg">Nick J Webb</a>, CC BY 2.0; Eugene Fama: <a href="https://commons.wikimedia.org/wiki/File:Eugene_Fama_at_Nobel_Prize,_2013.jpg">Bengt Nyman</a>, CC BY 2.0; Daniel Kahneman: <a href="https://commons.wikimedia.org/wiki/File:Daniel_Kahneman_(3283955327)_(cropped).jpg">nrkbeta</a>, CC BY-SA 2.0.</p>
   </section>
 
   <footer class="end">
@@ -632,7 +634,7 @@ table.data :is(th,td):first-child{text-align:left}
 </main>
 
 <script src="/investing/returns.js?v=2"></script>
-<script src="/investing/i18n.js?v=13"></script>
-<script src="/investing/app.js?v=12"></script>
+<script src="/investing/i18n.js?v=15"></script>
+<script src="/investing/app.js?v=14"></script>
 </body>
 </html>

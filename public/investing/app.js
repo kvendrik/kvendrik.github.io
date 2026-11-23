@@ -45,7 +45,10 @@ const PLAN = 0.05; // the planning return: about what the full record (DMS) show
 const START = 10000; // Bogle's chart: what $10,000 became
 
 /* ---------- language & formatting ---------- */
+// /investing/nl/ is the Dutch page; /investing/ follows ?lang=, then the reader's last choice, then the browser
+const ON_SITE = /^\/investing(\/|$)/.test(location.pathname);
 let LANG = (() => {
+  if (ON_SITE && /^\/investing\/nl(\/|$)/.test(location.pathname)) return "nl";
   const q = new URLSearchParams(location.search).get("lang");
   if (q === "en" || q === "nl") return q;
   const s = store.get("investing-lang");
@@ -82,7 +85,8 @@ function parse(s, lang = LANG) {
 }
 const num = (el, fb) => { const n = parse(el.value); return isFinite(n) ? n : fb; };
 
-const EN = {}; // the English text of each data-t element, read from the page once
+// the English text of each data-t element: read from the page once, or, on the Dutch page, shipped alongside it
+const EN = (() => { try { return JSON.parse($("#i18n-en").textContent); } catch { return {}; } })();
 function applyStatic() {
   const NL = I.html.nl, nl = LANG === "nl";
   $$("[data-t]").forEach((el) => {
@@ -613,15 +617,15 @@ function bindOwn() {
 const BONDS = W.bonds || [], MIX_FROM = 1950, M0 = MIX_FROM - FIRST, M1 = BONDS.length; // bonds end where the JST data ends
 function mixRun(w) {
   let v = 1, peak = 1, fall = 0, worst = Infinity, wy = MIX_FROM, down = 0;
-  const path = [1];
+  const path = [1], dd = [0];
   for (let i = M0; i < M1; i++) {
     const r = w * R[i] + (1 - w) * BONDS[i];
     v *= 1 + r; path.push(v);
-    peak = Math.max(peak, v); fall = Math.min(fall, v / peak - 1);
+    peak = Math.max(peak, v); fall = Math.min(fall, v / peak - 1); dd.push(v / peak - 1);
     if (r < worst) { worst = r; wy = YEARS[i]; }
     if (r < 0) down++;
   }
-  return { geo: v ** (1 / (M1 - M0)) - 1, worst, wy, fall, down, n: M1 - M0, path, end: v };
+  return { geo: v ** (1 / (M1 - M0)) - 1, worst, wy, fall, down, n: M1 - M0, path, dd, end: v };
 }
 function drawMix() {
   if (!BONDS.length) return;
@@ -636,23 +640,41 @@ function drawMix() {
     [t("mixDown"), t("upN", mix.down, mix.n), t("mixDownP")],
   ].map(([k, v, p]) => `<div><span class="mono">${esc(k)}</span><div class="n tab">${esc(v)}</div><p>${esc(p)}</p></div>`).join("");
   $("#mixDesc").textContent = t("mixDesc", s, b, pctU(mix.geo), pct(mix.worst, 0), pct(mix.fall, 0));
-  // the mix against all stocks: $10,000 put in at the start of 1950, on a log scale
-  const svg = $("#mixSvg"), w = $("#mixChart").clientWidth, h = w < 560 ? 200 : 240, n = mix.path.length - 1;
-  const m = { t: 16, r: 8, b: 22, l: 8 }, iw = w - m.l - m.r, ih = h - m.t - m.b;
+  // the mix against all stocks: $10,000 put in at the start of 1950, on a log scale (top),
+  // and how far each had fallen from its last high (bottom): that's where bonds earn their keep
+  const svg = $("#mixSvg"), w = $("#mixChart").clientWidth, small = w < 560, n = mix.path.length - 1;
+  const m = { t: 16, r: 8, b: 22, l: 8 }, iw = w - m.l - m.r;
+  const gh = small ? 150 : 190, gap = small ? 44 : 52, dh = small ? 110 : 140, h = m.t + gh + gap + dh + m.b;
   const lo = Math.log(Math.min(...mix.path, ...all.path)), hi = Math.log(Math.max(...mix.path, ...all.path));
-  const X = (k) => m.l + k / n * iw, Y = (v) => m.t + (hi - Math.log(v)) / (hi - lo || 1) * ih;
-  const line = (p) => p.map((v, k) => (k ? "L" : "M") + X(k).toFixed(1) + " " + Y(v).toFixed(1)).join(" ");
+  const X = (k) => m.l + k / n * iw, Y = (v) => m.t + (hi - Math.log(v)) / (hi - lo || 1) * gh;
+  const d0 = m.t + gh + gap, dMin = Math.min(-0.2, Math.floor(Math.min(...all.dd, ...mix.dd) * 10) / 10);
+  const D = (d) => d0 + d / dMin * dh;
+  const line = (p, f) => p.map((v, k) => (k ? "L" : "M") + X(k).toFixed(1) + " " + f(v).toFixed(1)).join(" ");
+  const area = (p) => line(p, D) + ` L${X(n).toFixed(1)} ${d0} L${X(0).toFixed(1)} ${d0} Z`;
   svg.setAttribute("viewBox", `0 0 ${w} ${h}`);
   svg.setAttribute("height", h);
   let out = `<line x1="${m.l}" x2="${w - m.r}" y1="${Y(1).toFixed(1)}" y2="${Y(1).toFixed(1)}" stroke="var(--rule)"/>`;
   for (let y = 1960; y <= last; y += 20) { const x = X(y - MIX_FROM + 1), end = w - m.r - x < 16; out += `<text x="${(end ? w - m.r : x).toFixed(1)}" y="${h - 4}" text-anchor="${end ? "end" : "middle"}">${y}</text>`; }
-  out += `<path d="${line(all.path)}" fill="none" stroke="var(--muted)" stroke-width="1.5" stroke-dasharray="5 4"/>`;
-  out += `<path d="${line(mix.path)}" fill="none" stroke="var(--ink)" stroke-width="2.25" stroke-linejoin="round"/>`;
+  out += `<path d="${line(all.path, Y)}" fill="none" stroke="var(--muted)" stroke-width="1.5" stroke-dasharray="5 4"/>`;
+  out += `<path d="${line(mix.path, Y)}" fill="none" stroke="var(--ink)" stroke-width="2.25" stroke-linejoin="round"/>`;
   const ex = X(n), ey = Y(mix.end);
   out += `<circle cx="${ex.toFixed(1)}" cy="${ey.toFixed(1)}" r="4" fill="var(--ink)"/>`;
   // one label says it all: where $10,000 from 1950 ended up
   out += `<text class="lab" x="${(ex - 4).toFixed(1)}" y="${(ey < m.t + 30 ? ey + 24 : ey - 12).toFixed(1)}" text-anchor="end" paint-order="stroke" stroke="var(--paper)" stroke-width="5" stroke-linejoin="round">${esc(t("mixEnd", L().cur + int(START), usdBig(START * mix.end), last))}</text>`;
   out += `<circle cx="${m.l}" cy="${Y(1).toFixed(1)}" r="3.5" fill="var(--ink)"/>`;
+  // the falls
+  out += `<text class="ddh" x="${m.l}" y="${(d0 - 14).toFixed(1)}">${esc(t("mixDD"))}</text>`;
+  for (let g = -0.2; g >= dMin - 1e-9; g -= 0.2) out += `<line x1="${m.l}" x2="${w - m.r}" y1="${D(g).toFixed(1)}" y2="${D(g).toFixed(1)}" stroke="var(--rule)" stroke-dasharray="2 4"/><text x="${w - m.r}" y="${(D(g) - 5).toFixed(1)}" text-anchor="end">${esc(pct(g, 0))}</text>`;
+  out += `<path d="${area(all.dd)}" fill="var(--muted)" fill-opacity=".16"/><path d="${line(all.dd, D)}" fill="none" stroke="var(--muted)" stroke-width="1.5" stroke-dasharray="5 4"/>`;
+  out += `<path d="${area(mix.dd)}" fill="var(--ink)" fill-opacity=".9"/>`;
+  out += `<line x1="${m.l}" x2="${w - m.r}" y1="${d0}" y2="${d0}" stroke="var(--ink)"/>`;
+  // mark the deepest point of each
+  const deep = (p) => p.reduce((b, v, k) => (v < p[b] ? k : b), 0);
+  const ka = deep(all.dd), km = deep(mix.dd);
+  const mark = (k, v, cls, below) => { const x = X(k), anchor = x < 60 ? "start" : x > w - 60 ? "end" : "middle";
+    return `<text class="${cls}" x="${x.toFixed(1)}" y="${(below ? D(v) + 16 : D(v) - 7).toFixed(1)}" text-anchor="${anchor}" paint-order="stroke" stroke="var(--paper)" stroke-width="4" stroke-linejoin="round">${esc(pct(v, 0))}</text>`; };
+  out += mark(ka, all.dd[ka], "ddv all", true);
+  if (mix.dd[km] < -0.005 && Math.abs(X(km) - X(ka)) > 40 || mix.dd[km] - all.dd[ka] > 0.12) out += mark(km, mix.dd[km], "ddv", mix.dd[km] - all.dd[ka] < 0.12);
   svg.innerHTML = out;
 }
 
@@ -966,6 +988,16 @@ function revealQuotes() {
 }
 
 /* ---------- switching language ---------- */
+// the address follows the language: /investing/ or /investing/nl/ (an old ?lang= link is tidied up too)
+function syncUrl() {
+  if (!ON_SITE) return;
+  try {
+    const u = new URL(location.href);
+    u.searchParams.delete("lang");
+    u.pathname = LANG === "nl" ? "/investing/nl/" : "/investing/";
+    if (u.href !== location.href) history.replaceState(null, "", u);
+  } catch {}
+}
 const FIELDS = ["cStart", "cMonthly", "cYears", "cFee", "ownAmt", "mixStocks"];
 const fmtField = (id, v) => (SL[id] ? SL[id].fmt(v) : int(v));
 function setLang(lang) {
@@ -973,7 +1005,7 @@ function setLang(lang) {
   const vals = FIELDS.map((id) => num($("#" + id), 0)); // read in the old language, write in the new one
   LANG = lang;
   store.set("investing-lang", lang);
-  try { const u = new URL(location.href); u.searchParams.set("lang", lang); history.replaceState(null, "", u); } catch {}
+  syncUrl();
   applyStatic();
   FIELDS.forEach((id, k) => ($("#" + id).value = fmtField(id, vals[k])));
   historyLists(); periodStats(); paintBrush(); heroText();
@@ -985,7 +1017,7 @@ function setLang(lang) {
 
 /* ---------- start ---------- */
 const typed = FIELDS.map((id) => parse($("#" + id).value, "en")); // the page ships with English-formatted values
-applyStatic();
+applyStatic(); syncUrl();
 FIELDS.forEach((id, k) => ($("#" + id).value = fmtField(id, typed[k])));
 segThumbs();
 heroText();

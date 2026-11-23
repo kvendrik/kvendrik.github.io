@@ -47,7 +47,7 @@ window.I18N = (function () {
     expHist: (p) => `History · ${p}`,
     mixRest: (b) => `· ${b}% bonds`, mixEnd: (from, to, y) => `${from} → ${to} by ${y}`, mixKey: (s, b) => `${s}% stocks, ${b}% bonds`,
     mixAvgP: (a, b) => `growth after inflation, ${a}–${b}`, mixFall: "Deepest fall", mixFallP: "from a high to the bottom",
-    mixDown: "Down years", mixDownP: "years that ended lower",
+    mixDown: "Down years", mixDD: "How far it had fallen from its last high", mixDownP: "years that ended lower",
     mixDesc: (s, b, avg, worst, fall) => `With ${s}% stocks and ${b}% bonds from 1950 to 2020: ${avg} a year on average after inflation, worst year ${worst}, deepest fall ${fall}.`,
     note: (exp, first, last, geo) => exp === "plan"
       ? `Real years from ${first}–${last} in random order, each lowered a little so the average is 5% a year. The past is no promise, so planning with less is the careful choice.`
@@ -58,6 +58,8 @@ window.I18N = (function () {
     locale: "nl-NL", cur: "€", K: "k", M: " mln", B: " mld", Mlong: " miljoen",
     title: "Buy the Haystack",
     description: "Wereldwijd indexbeleggen zoals Bogle het bedoelde: 125 jaar beursrendement, wat een indexfonds is, wat je bezit en wat je geld kan worden.",
+    ogDescription: "€10.000 in de wereldwijde aandelenmarkt in 1900 werd na inflatie €25,7 miljoen, dwars door twee wereldoorlogen heen. Waarom alles bezitten het simpelste plan is.",
+    ogImageAlt: "Buy the haystack. Een lijn die stijgt van 10.000 in 1900 naar 25,7 miljoen in 2025, na inflatie.",
     dir: (up) => (up ? "hoger" : "lager"),
     period: (a, b, n) => `${a}–${b} · ${n} jaar · na inflatie`,
     hint: (touch) => (touch ? "Sleep aan de randen om in te zoomen · sleep over de grafiek voor een jaar" : "Sleep aan de randen om in te zoomen · wijs een jaar aan in de grafiek"),
@@ -97,7 +99,7 @@ window.I18N = (function () {
     expHist: (p) => `Historisch · ${p}`,
     mixRest: (b) => `· ${b}% obligaties`, mixEnd: (from, to, y) => `${from} → ${to} in ${y}`, mixKey: (s, b) => `${s}% aandelen, ${b}% obligaties`,
     mixAvgP: (a, b) => `groei na inflatie, ${a}–${b}`, mixFall: "Diepste daling", mixFallP: "van een top tot de bodem",
-    mixDown: "Jaren in de min", mixDownP: "jaren die lager eindigden",
+    mixDown: "Jaren in de min", mixDD: "Hoe ver het onder de vorige top stond", mixDownP: "jaren die lager eindigden",
     mixDesc: (s, b, avg, worst, fall) => `Met ${s}% aandelen en ${b}% obligaties van 1950 tot 2020: gemiddeld ${avg} per jaar na inflatie, slechtste jaar ${worst}, diepste daling ${fall}.`,
     note: (exp, first, last, geo) => exp === "plan"
       ? `Echte jaren uit ${first}–${last} in willekeurige volgorde, elk iets verlaagd zodat het gemiddelde 5% per jaar is. Het verleden is geen belofte, dus rekenen met minder is de voorzichtige keuze.`
@@ -236,15 +238,15 @@ window.I18N = (function () {
 
     /* wall:start */
     wallEye: "In hun eigen woorden",
+    w_bogle: "“Bij beleggen krijg je waar je níét voor betaalt.”", w_bogleBy: "Richtte Vanguard op, en het eerste indexfonds voor gewone beleggers",
     w_buffett: "“Door regelmatig in een indexfonds te beleggen, kan de belegger die er niets van weet het zelfs beter doen dan de meeste beleggingsprofessionals.”", w_buffettBy: "Brief aan aandeelhouders, 1993",
-    w_lynch: "“Beleggers hebben veel meer geld verloren door zich op correcties voor te bereiden, of ze te proberen te voorspellen, dan door de correcties zelf.”", w_lynchBy: "Beheerde het Magellan-fonds van Fidelity, 1977–1990",
     w_samuelson: "“Beleggen zou meer moeten lijken op verf zien drogen of gras zien groeien. Wil je spanning, neem dan 800 dollar mee naar Las Vegas.”", w_samuelsonBy: "Nobelprijswinnaar economie",
     w_graham: "“Op korte termijn is de markt een stemmachine, op lange termijn een weegschaal.”", w_grahamBy: "Buffetts leermeester, zoals Buffett hem citeert",
     w_sharpe: "“Goed gemeten moet de gemiddelde actief beheerde dollar het na kosten slechter doen dan de gemiddelde passief beheerde dollar.”", w_sharpeBy: "The Arithmetic of Active Management, 1991",
     w_munger: "“Het grote geld zit niet in het kopen en verkopen, maar in het wachten.”", w_mungerBy: "Buffetts partner bij Berkshire Hathaway",
     w_fama: "“Je geld is als zeep. Hoe vaker je eraan zit, hoe minder je overhoudt.”", w_famaBy: "Nobelprijswinnaar economie",
-    w_housel: "“Goed omgaan met geld heeft weinig te maken met hoe slim je bent en veel met hoe je je gedraagt.”", w_houselBy: "The Psychology of Money, 2020",
-    wallCredit: "Lijntekeningen naar foto’s op Wikimedia Commons. Warren Buffett: <a href=\"https://commons.wikimedia.org/wiki/File:Warren_Buffett_KU_Visit.jpg\">Mark Hirschey</a>, CC BY-SA 2.0; Benjamin Graham: <a href=\"https://commons.wikimedia.org/wiki/File:Benjamin_Graham_(1894-1976)_portrait_on_23_March_1950.jpg\">unknown photographer, 1950</a>, public domain; William F. Sharpe: <a href=\"https://commons.wikimedia.org/wiki/File:William_sharpe_2007.jpg\">Larry D. Moore</a>, CC BY 4.0; Charlie Munger: <a href=\"https://commons.wikimedia.org/wiki/File:Charlie_Munger.jpg\">Nick J Webb</a>, CC BY 2.0.",
+    w_kahneman: "“Professionele beleggers, fondsbeheerders incluis, zakken voor een basistest van vaardigheid: blijvend presteren.”", w_kahnemanBy: "Thinking, Fast and Slow, 2011",
+    wallCredit: "Lijntekeningen naar foto’s op Wikimedia Commons. John C. Bogle: <a href=\"https://commons.wikimedia.org/wiki/File:Photo_of_a_John_C._Bogle_By_Bill_Cramer.jpg\">Bill Cramer</a>, CC BY-SA 4.0; Warren Buffett: <a href=\"https://commons.wikimedia.org/wiki/File:Warren_Buffett_KU_Visit.jpg\">Mark Hirschey</a>, CC BY-SA 2.0; Paul Samuelson: <a href=\"https://commons.wikimedia.org/wiki/File:Paul_A._Samuelson,_economist,_edited.jpg\">Bernard Gotfryd</a>, publiek domein; Benjamin Graham: <a href=\"https://commons.wikimedia.org/wiki/File:Benjamin_Graham_(1894-1976)_portrait_on_23_March_1950.jpg\">onbekende fotograaf, 1950</a>, publiek domein; William F. Sharpe: <a href=\"https://commons.wikimedia.org/wiki/File:William_sharpe_2007.jpg\">Larry D. Moore</a>, CC BY 4.0; Charlie Munger: <a href=\"https://commons.wikimedia.org/wiki/File:Charlie_Munger.jpg\">Nick J Webb</a>, CC BY 2.0; Eugene Fama: <a href=\"https://commons.wikimedia.org/wiki/File:Eugene_Fama_at_Nobel_Prize,_2013.jpg\">Bengt Nyman</a>, CC BY 2.0; Daniel Kahneman: <a href=\"https://commons.wikimedia.org/wiki/File:Daniel_Kahneman_(3283955327)_(cropped).jpg\">nrkbeta</a>, CC BY-SA 2.0.",
     /* wall:end */
     readEye: "Kijken, lezen, luisteren",
     readH: "Van wie we het leerden",
