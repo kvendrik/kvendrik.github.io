@@ -69,6 +69,7 @@ function compact(sym, v) {
 }
 const money = (v) => compact(L().cur, v);
 const usd = (v) => compact("$", v);
+const usdBig = (v) => (v >= 1e6 ? "$" + nf(v / 1e6, 1) + L().Mlong : "$" + int(v >= 1e5 ? Math.round(v / 1000) * 1000 : Math.round(v / 100) * 100));
 const usdTick = (v) => (v >= 1e6 ? "$" + nf(v / 1e6, v % 1e6 ? 1 : 0) + L().M : "$" + nf(v / 1e3, v % 1e3 ? 1 : 0) + L().K);
 // Read what someone typed in the current language: "10,000.5" in English, "10.000,5" in Dutch.
 function parse(s, lang = LANG) {
@@ -146,6 +147,54 @@ function onResize(el, fn) {
   let w = el.clientWidth, timer;
   if (!("ResizeObserver" in window)) return addEventListener("resize", fn);
   new ResizeObserver(() => { if (el.clientWidth === w) return; w = el.clientWidth; clearTimeout(timer); timer = setTimeout(fn, 80); }).observe(el);
+}
+
+/* ---------- hero: $10,000 counts up to $25.7 million as the line draws ---------- */
+const HERO = { p: 0, geo: null };
+function drawHero() {
+  const svg = $("#heroLine"), w = svg.clientWidth || 700, h = w < 500 ? 96 : 132;
+  svg.setAttribute("viewBox", `0 0 ${w} ${h}`);
+  svg.setAttribute("height", h);
+  const vals = [1, ...CUM]; // vals[k]: $1 at the start, then at the end of each year
+  const lo = Math.log(Math.min(...vals)), hi = Math.log(Math.max(...vals));
+  const X = (k) => 5 + k / N * (w - 10), Y = (v) => h - 6 - (Math.log(v) - lo) / (hi - lo) * (h - 12);
+  const d = vals.map((v, k) => (k ? "L" : "M") + X(k).toFixed(1) + " " + Y(v).toFixed(1)).join(" ");
+  svg.innerHTML = `<defs><clipPath id="heroClip"><rect id="heroClipR" x="0" y="-10" width="0" height="${h + 20}"/></clipPath></defs>` +
+    `<line x1="${X(0)}" x2="${X(N)}" y1="${Y(1)}" y2="${Y(1)}" stroke="var(--rule)"/>` +
+    `<path d="${d}" clip-path="url(#heroClip)" fill="none" stroke="var(--ink)" stroke-width="2" stroke-linejoin="round"/>` +
+    `<circle id="heroDot" r="5" fill="var(--ink)"/>`;
+  HERO.geo = { X, Y, vals };
+  paintHero();
+}
+function paintHero() {
+  const g = HERO.geo;
+  if (!g) return;
+  const f = HERO.p * N, k = Math.min(N - 1, Math.floor(f)), r = f - k;
+  const v = g.vals[k] * (g.vals[k + 1] / g.vals[k]) ** r; // grow smoothly within the year
+  $("#heroClipR").setAttribute("width", g.X(f).toFixed(1));
+  const dot = $("#heroDot");
+  dot.setAttribute("cx", g.X(f).toFixed(1));
+  dot.setAttribute("cy", g.Y(v).toFixed(1));
+  $("#heroTo").textContent = usdBig(START * v);
+  $("#heroCap").textContent = t("heroCap", FIRST, HERO.p >= 1 ? LAST : FIRST + Math.floor(f));
+}
+function playHero() {
+  const done = () => { HERO.p = 1; paintHero(); };
+  if (reduced) return done();
+  const delay = 450, dur = 3000, t0 = performance.now() + delay;
+  const ease = (x) => (x < 0.5 ? 4 * x * x * x : 1 - (-2 * x + 2) ** 3 / 2);
+  const step = (now) => {
+    const x = clamp((now - t0) / dur, 0, 1);
+    HERO.p = ease(x);
+    paintHero();
+    if (x < 1) requestAnimationFrame(step);
+  };
+  requestAnimationFrame(step);
+}
+function heroText() {
+  $("#heroFrom").textContent = $("#calloutFrom").textContent = "$" + int(START);
+  $("#heroStat").setAttribute("aria-label", t("heroAria", "$" + int(START), usdBig(START * CUM[N - 1]), FIRST, LAST));
+  paintHero();
 }
 
 /* ---------- history: chart ---------- */
@@ -368,6 +417,7 @@ function paintBrush() {
   set($("#hR"), t("endOf"), YEARS[H.a] + MINSPAN - 1, LAST, YEARS[H.b]);
   $("#resetZoom").hidden = H.a === 0 && H.b === N - 1;
   $("#period").textContent = t("period", YEARS[H.a], YEARS[H.b], H.b - H.a + 1);
+  $("#calloutTo").textContent = usdBig(START * CUM[H.b] / (H.a ? CUM[H.a - 1] : 1));
 }
 let periodFrame = 0;
 function setPeriod(a, b) {
@@ -804,7 +854,7 @@ function setLang(lang) {
   try { const u = new URL(location.href); u.searchParams.set("lang", lang); history.replaceState(null, "", u); } catch {}
   applyStatic();
   FIELDS.forEach((id, k) => ($("#" + id).value = fmtField(id, vals[k])));
-  historyLists(); periodStats(); paintBrush();
+  heroText(); historyLists(); periodStats(); paintBrush();
   if (H.shown) drawHistory();
   hay.relabel(); fees(); own(); expText(); drawMC();
   SLIDERS.forEach((f) => f());
@@ -816,6 +866,8 @@ const typed = FIELDS.map((id) => parse($("#" + id).value, "en")); // the page sh
 applyStatic();
 FIELDS.forEach((id, k) => ($("#" + id).value = fmtField(id, typed[k])));
 segThumbs();
+drawHero(); heroText(); playHero();
+onResize($("#heroStat"), drawHero);
 $$("[data-lang]").forEach((btn) => btn.addEventListener("click", () => setLang(btn.dataset.lang)));
 bindHistory(); bindBrush(); historyLists(); periodStats();
 drawSpark(margins($("#histChart").clientWidth));
