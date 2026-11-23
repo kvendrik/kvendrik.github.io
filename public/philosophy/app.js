@@ -34,11 +34,8 @@ let current = "taoism";
 
 /* picker */
 $("#groups").innerHTML = FAMS.map(([f,l])=>`<div><div class="mono">${GLYPH[f]}${l}</div><ul>${T.filter(t=>FAM[t.grp]===f).map(t=>`<li><button class="pick" data-id="${t.id}">${esc(t.name.replace(/^Existentialism: /,""))}</button></li>`).join("")}</ul></div>`).join("");
-const mq=matchMedia("(max-width:700px)");
-const syncBrowse=()=>{$("#browse").open=!mq.matches;};
-syncBrowse(); mq.addEventListener("change",syncBrowse);
 $("#groups").addEventListener("click",e=>{const b=e.target.closest("[data-id]");if(!b)return;show(b.dataset.id);
-  if(mq.matches){$("#browse").open=false;$("#browse").scrollIntoView({block:"start"});}else $("#card").scrollIntoView({block:"nearest"});});
+  $("#browse").open=false; if($("#browse").getBoundingClientRect().top<0) $("#browse").scrollIntoView({block:"start"});});
 
 let cardSeen=false;
 /* the drawing starts only once its card is on screen; classes are added then, so every browser starts the animation fresh */
