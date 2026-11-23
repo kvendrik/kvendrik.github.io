@@ -661,6 +661,45 @@ function drawMix() {
   svg.innerHTML = out;
 }
 
+/* ---------- ESG: the strictest world ESG index against the world index, year by year ---------- */
+// MSCI factsheet, 30 Oct 2026, net returns in USD (%): [year, MSCI ACWI SRI, MSCI ACWI]
+const ESG = [[2014, 4.00, 4.16], [2015, -2.72, -2.36], [2016, 8.23, 7.86], [2017, 24.66, 23.97], [2018, -7.07, -9.41], [2019, 28.46, 26.60],
+  [2020, 20.81, 16.25], [2021, 23.92, 18.54], [2022, -22.46, -18.36], [2023, 25.58, 22.20], [2024, 14.66, 17.49], [2025, 15.91, 22.34]];
+function drawEsg() {
+  const svg = $("#esgSvg"), box = $("#esgChart");
+  if (!svg || !box) return;
+  const w = box.clientWidth, small = w < 560, h = small ? 210 : 240, m = { t: 22, r: 4, b: 26, l: 4 }, ih = h - m.t - m.b;
+  const gaps = ESG.map(([y, a, b]) => [y, a - b]), top = 8.5; // the widest gap is 6.4 points; room for its label
+  const slot = (w - m.l - m.r) / gaps.length, bw = Math.min(28, slot * 0.6);
+  const Y = (v) => m.t + (top - v) / (2 * top) * ih, zero = Y(0);
+  svg.setAttribute("viewBox", `0 0 ${w} ${h}`);
+  svg.setAttribute("height", h);
+  let out = "";
+  for (const g of [-5, 5]) out += `<line x1="${m.l}" x2="${w - m.r}" y1="${Y(g).toFixed(1)}" y2="${Y(g).toFixed(1)}" stroke="var(--rule)" stroke-dasharray="2 4"/>`;
+  gaps.forEach(([y, d], k) => {
+    const cx = m.l + slot * (k + 0.5), y0 = Math.min(Y(d), zero), hh = Math.max(1, Math.abs(Y(d) - zero));
+    out += `<rect x="${(cx - bw / 2).toFixed(1)}" y="${y0.toFixed(1)}" width="${bw.toFixed(1)}" height="${hh.toFixed(1)}" fill="${d >= 0 ? "var(--ink)" : "var(--down)"}"/>`;
+    // on a phone only the big gaps get a number, so the labels never collide
+    if (!small || Math.abs(d) >= 2) out += `<text class="gap" x="${cx.toFixed(1)}" y="${(d >= 0 ? Y(d) - 6 : Y(d) + 13).toFixed(1)}" text-anchor="middle">${esc(pct(d / 100, 1))}</text>`;
+    if (!small || k % 2 === 0 || k === gaps.length - 1) out += `<text x="${cx.toFixed(1)}" y="${h - 4}" text-anchor="middle">${small ? "’" + String(y).slice(2) : y}</text>`;
+  });
+  out += `<line x1="${m.l}" x2="${w - m.r}" y1="${zero.toFixed(1)}" y2="${zero.toFixed(1)}" stroke="var(--ink)"/>`;
+  svg.innerHTML = out;
+}
+// the 24 kept companies light up one after another when the grid scrolls into view
+function revealGrid() {
+  const g = $("#esgGrid");
+  if (!g || reduced || !("IntersectionObserver" in window) || g.getBoundingClientRect().top < innerHeight) return;
+  g.classList.add("pre");
+  const io = new IntersectionObserver((es) => es.forEach((e) => {
+    if (!e.isIntersecting) return;
+    io.disconnect();
+    g.classList.add("go");
+    requestAnimationFrame(() => requestAnimationFrame(() => g.classList.remove("pre")));
+  }), { rootMargin: "0px 0px -20% 0px" });
+  io.observe(g);
+}
+
 /* ---------- the future: 10,000 runs ---------- */
 let EXP = "plan", MC = null, mcAnimated = false;
 // "Plan" lowers every historical year by the same amount, so the compound average lands on 5%.
@@ -993,7 +1032,7 @@ function setLang(lang) {
   FIELDS.forEach((id, k) => ($("#" + id).value = fmtField(id, vals[k])));
   historyLists(); periodStats(); paintBrush(); heroText();
   if (H.shown) drawHistory();
-  hay.relabel(); fees(); own(); expText(); drawMC(); drawMix();
+  hay.relabel(); fees(); own(); expText(); drawMC(); drawMix(); drawEsg();
   SLIDERS.forEach((f) => f());
   SEGS.forEach((f) => f());
 }
@@ -1011,6 +1050,7 @@ haystack(); fees(); bindOwn(); own();
 bindMC(); expText(); simulate();
 bindVideos(); bindBooks(); revealQuotes();
 drawMix(); onResize($("#mixChart"), drawMix);
+drawEsg(); onResize($("#esgChart"), drawEsg); revealGrid();
 const hc = $("#histChart");
 $("#histSvg").setAttribute("height", hc.clientWidth < 560 ? 320 : 380);
 // the chart is the hero: it draws straight away and the number counts up with it
