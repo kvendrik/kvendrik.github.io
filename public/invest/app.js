@@ -37,7 +37,9 @@ function money(v, exact) {
   if (!exact && v >= 1e4) return s + CUR + int(Math.round(v / 100) * 100);
   return s + CUR + int(v);
 }
-const dollars = (v) => "$" + (v >= 100 ? int(v) : v >= 10 ? v.toFixed(0) : v.toFixed(2));
+const START = 10000; // Bogle's chart: what $10,000 became
+const usd = (v) => v >= 1e6 ? "$" + (v / 1e6).toFixed(v >= 1e7 ? 1 : 2) + "M" : "$" + int(v >= 1e5 ? Math.round(v / 1000) * 1000 : Math.round(v / 100) * 100);
+const usdLong = (v) => v >= 1e6 ? "$" + (v / 1e6).toFixed(1) + " million" : "$" + int(Math.round(v / 100) * 100);
 const num = (el, fb) => { const n = parseFloat(String(el.value).replace(/[^0-9.]/g, "")); return isFinite(n) ? n : fb; };
 
 /* ---------- events ---------- */
@@ -91,7 +93,7 @@ function drawHero() {
   const svg = $("#heroLine"), w = svg.clientWidth || 760, h = w < 500 ? 150 : 200;
   svg.setAttribute("viewBox", `0 0 ${w} ${h}`);
   const lmin = Math.log(Math.min(1, ...CUM)), lmax = Math.log(Math.max(...CUM));
-  const pad = w < 500 ? 70 : 96;
+  const pad = w < 500 ? 76 : 104;
   const X = (i) => (i + 1) / N * (w - pad);
   const Y = (v) => h - 14 - (Math.log(v) - lmin) / (lmax - lmin) * (h - 40);
   let d = `M0 ${Y(1).toFixed(1)}`;
@@ -101,8 +103,8 @@ function drawHero() {
     `<path d="${d}" pathLength="1" class="${reduced ? "" : "drawn"}" fill="none" stroke="var(--ink)" stroke-width="1.6" stroke-linejoin="round"/>` +
     `<circle cx="0" cy="${Y(1)}" r="3" fill="var(--ink)"/>` +
     `<circle cx="${X(N - 1)}" cy="${Y(end)}" r="3.5" fill="var(--ink)" style="${reduced ? "" : "animation:rise .5s var(--ease) 2.4s backwards"}"/>` +
-    `<text x="0" y="${h}" font-family="Space Mono, monospace" font-size="10" letter-spacing=".08em" fill="var(--muted)">$1 IN ${W.first}</text>` +
-    `<text x="${X(N - 1) + 10}" y="${Y(end) + 8}" font-family="Instrument Serif, serif" font-size="${w < 500 ? 22 : 30}" fill="var(--ink)" style="${reduced ? "" : "animation:rise .6s var(--ease) 2.5s backwards"}">${dollars(end)}</text>` +
+    `<text x="0" y="${h}" font-family="Space Mono, monospace" font-size="10" letter-spacing=".08em" fill="var(--muted)">$10,000 IN ${W.first}</text>` +
+    `<text x="${X(N - 1) + 10}" y="${Y(end) + 8}" font-family="Instrument Serif, serif" font-size="${w < 500 ? 22 : 30}" fill="var(--ink)" style="${reduced ? "" : "animation:rise .6s var(--ease) 2.5s backwards"}">${usd(end * START)}</text>` +
     `<text x="${X(N - 1) + 10}" y="${Y(end) + 24}" font-family="Space Mono, monospace" font-size="10" letter-spacing=".08em" fill="var(--muted)" style="${reduced ? "" : "animation:rise .6s var(--ease) 2.6s backwards"}">IN ${LAST}</text>`;
 }
 
@@ -130,7 +132,7 @@ function drawHistory() {
     ticks = [0.5, 1, 2, 5, 10, 20, 50, 100, 200, 500, 1000, 2000, 5000]
       .filter((v) => Math.log(v) >= lmin && Math.log(v) <= lmax)
       .filter((v, _, a) => !narrow || a.length < 7 || [1, 10, 100, 1000].includes(v))
-      .map((v) => [v, Y(v), "$" + int(v)]);
+      .map((v) => [v, Y(v), v * START >= 1e6 ? "$" + v * START / 1e6 + "M" : "$" + v * START / 1000 + "K"]);
   }
 
   // war & crisis spans
@@ -145,7 +147,8 @@ function drawHistory() {
   });
   // decade labels
   for (let y = Math.ceil(W.first / 25) * 25; y <= LAST; y += narrow ? 25 : 25) {
-    out += `<text x="${(X(idx(y)) + step / 2).toFixed(1)}" y="${h - 4}" text-anchor="middle">${y}</text>`;
+    const last = y + 25 > LAST;
+    out += `<text x="${(last ? w - m.r : X(idx(y)) + step / 2).toFixed(1)}" y="${h - 4}" text-anchor="${last ? "end" : "middle"}">${y}</text>`;
   }
   // data
   if (H.view === "bars") {
@@ -155,6 +158,27 @@ function drawHistory() {
       const up = r >= 0;
       out += `<rect class="bar ${up ? "up" : "dn"}${i === H.sel ? " sel" : ""}" data-i="${i}" x="${(X(i) + (step - bw) / 2).toFixed(2)}" y="${top.toFixed(2)}" width="${bw.toFixed(2)}" height="${hh.toFixed(2)}" rx="${bw > 4 ? 1 : 0}" fill="${up ? "var(--ink)" : "var(--down)"}"${anim ? ` style="animation-delay:${(i * 7)}ms"` : ' style="animation:none"'}/>`;
     });
+    // The line uses its own log scale, stretched from the bottom of the plot to the top. It has no
+    // second axis: its values are written on it instead, so it can't be read against the % scale.
+    const lmin = Math.log(Math.min(1, ...CUM)), lmax = Math.log(Math.max(...CUM));
+    const top = m.t + 26, bot = m.t + ih - 8;
+    const LY = (v) => bot - (Math.log(v) - lmin) / (lmax - lmin) * (bot - top);
+    const LX = (i) => (i < 0 ? m.l : X(i) + step);
+    let d = `M${LX(-1)} ${LY(1).toFixed(1)}`;
+    CUM.forEach((v, i) => (d += ` L${LX(i).toFixed(1)} ${LY(v).toFixed(1)}`));
+    out += `<path d="${d}" fill="none" stroke="var(--paper)" stroke-width="6" stroke-linejoin="round" opacity=".85"/>`;
+    out += `<path d="${d}" pathLength="1" class="${anim ? "drawn" : ""}" fill="none" stroke="var(--ink)" stroke-width="2.25" stroke-linejoin="round"${anim ? ' style="animation-delay:.9s"' : ""}/>`;
+    const marks = [[-1, "left"], [idx(1950), "mid"], [idx(2000), "mid"], [N - 1, "end"]].filter(([i]) => i < N);
+    if (narrow) marks.splice(1, 2, [idx(1975), "mid"]);
+    marks.forEach(([i, where]) => {
+      const v = i < 0 ? 1 : CUM[i], x = LX(i), y = LY(v);
+      const label = i < 0 ? `$10,000 in ${W.first}` : where === "end" ? `${usd(v * START)} in ${YEARS[i]}` : usd(v * START);
+      const anchor = where === "left" ? "start" : where === "end" ? "end" : "middle";
+      const tx = where === "left" ? x + 4 : where === "end" ? x - 2 : x, ty = where === "left" ? y - 12 : y - 12;
+      out += `<circle cx="${x.toFixed(1)}" cy="${y.toFixed(1)}" r="3.5" fill="var(--ink)" stroke="var(--paper)" stroke-width="2"/>`;
+      out += `<text class="evb lab" x="${tx.toFixed(1)}" y="${ty.toFixed(1)}" text-anchor="${anchor}" paint-order="stroke" stroke="var(--paper)" stroke-width="5" stroke-linejoin="round"${anim ? ` style="animation:rise .5s var(--ease) ${(1.2 + (i < 0 ? 0 : i) * 0.012).toFixed(2)}s backwards"` : ""}>${label}</text>`;
+    });
+    H.LY = LY;
   } else {
     let d = "";
     CUM.forEach((v, i) => (d += (i ? " L" : "M") + (X(i) + step).toFixed(1) + " " + Y(v).toFixed(1)));
@@ -195,11 +219,13 @@ function select(i, fromPointer, py) {
   const cross = $("#histCross"), dot = $("#histDot"), tip = $("#histTip");
   $$("#histSvg .bar").forEach((b) => b.setAttribute("opacity", +b.dataset.i === i ? 1 : 0.45));
   cross.setAttribute("x1", cx); cross.setAttribute("x2", cx); cross.setAttribute("opacity", H.view === "growth" ? 0.35 : 0);
-  if (H.view === "growth") { dot.setAttribute("cx", X(i) + step); dot.setAttribute("cy", Y(CUM[i])); dot.setAttribute("opacity", 1); } else dot.setAttribute("opacity", 0);
+  dot.setAttribute("cx", X(i) + step);
+  dot.setAttribute("cy", H.view === "growth" ? Y(CUM[i]) : H.LY(CUM[i]));
+  dot.setAttribute("opacity", 1);
   const ev = eventsFor(YEARS[i]);
   tip.innerHTML = `<div class="y">${YEARS[i]}</div><div class="v">${pct(R[i])} after inflation</div>` +
     (ev.length ? `<div class="e">${ev.map((e) => `<b>${esc(e.name)}.</b> ${esc(evText(e))}`).join("<br>")}</div>` : "") +
-    `<div class="m">$1 from ${W.first} → ${dollars(CUM[i])}</div>`;
+    `<div class="m">$10,000 from ${W.first} → ${usd(CUM[i] * START)}</div>`;
   tip.classList.add("on");
   const ty = H.view === "bars" ? Math.min(Y(Math.max(R[i], 0)), Y(0)) : Y(CUM[i]);
   placeTip(tip, $("#histChart"), cx, fromPointer && py != null ? Math.min(py, ty) : ty);
@@ -233,6 +259,7 @@ function bindHistory() {
     H.view = b.dataset.view;
     $$("[data-view]").forEach((x) => x.setAttribute("aria-pressed", x === b));
     $("#histHint").textContent = H.view === "bars" ? "After inflation · hover or tap a year" : "After inflation · log scale, so equal steps are equal % growth";
+    $("#histKey").hidden = H.view !== "bars";
     clearSel();
     drawHistory();
   }));
@@ -259,15 +286,15 @@ function historyText() {
     ["Longest wait", `${best.len} years`, best.open ? `since the ${best.from} peak, and still waiting` : `for a new high after the ${best.from} peak. It happens; be ready for it`],
   ].map(([k, n, p]) => `<div><span class="mono">${k}</span><div class="n tab">${n}</div><p>${p}</p></div>`).join("");
 
-  $("#histDesc").textContent = `Bar chart of world stock market returns after inflation for each year from ${W.first} to ${LAST}. ${up} of ${N} years were positive. Average compound growth ${pctU(GEO)} a year. Worst year ${YEARS[worst]} at ${pct(R[worst], 0)}. One dollar grew to ${dollars(CUM[N - 1])}.`;
+  $("#histDesc").textContent = `Bar chart of world stock market returns after inflation for each year from ${W.first} to ${LAST}. ${up} of ${N} years were positive. Average compound growth ${pctU(GEO)} a year. Worst year ${YEARS[worst]} at ${pct(R[worst], 0)}. A line shows $10,000 invested in ${W.first} growing to ${usdLong(CUM[N - 1] * START)} after inflation.`;
 
   $("#evList").innerHTML = EVENTS.map((e) => {
     const span = e.to ? `${e.y}–${String(e.to).slice(2)}` : String(e.y);
     const tot = e.to ? CUM[idx(e.to)] / (idx(e.y) ? CUM[idx(e.y) - 1] : 1) - 1 : R[idx(e.y)];
     return `<li><span class="yr">${span}</span><span><b>${esc(e.name)}.</b> ${esc(evText(e))}</span><span class="rv tab">${pct(tot, 0)}${e.to ? " total" : ""}</span></li>`;
   }).join("");
-  $("#histTable").innerHTML = `<thead><tr><th style="text-align:left">Year</th><th>After inflation</th><th>$1 from ${W.first}</th></tr></thead><tbody>` +
-    R.map((r, i) => `<tr><td style="text-align:left">${YEARS[i]}</td><td>${pct(r)}</td><td>${dollars(CUM[i])}</td></tr>`).join("") + "</tbody>";
+  $("#histTable").innerHTML = `<thead><tr><th style="text-align:left">Year</th><th>After inflation</th><th>$10,000 from ${W.first}</th></tr></thead><tbody>` +
+    R.map((r, i) => `<tr><td style="text-align:left">${YEARS[i]}</td><td>${pct(r)}</td><td>${usd(CUM[i] * START)}</td></tr>`).join("") + "</tbody>";
   $("#histSource").innerHTML = W.sourceHtml;
 }
 

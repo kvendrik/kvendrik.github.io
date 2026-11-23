@@ -231,7 +231,7 @@ table.data th{color:var(--muted);font-weight:400}
   <header class="hero">
     <h1>Buy the haystack.</h1>
     <p class="lede sub">A slow, boring and very old way to grow money: own a little of every company in the world, pay almost nothing for it, and wait.</p>
-    <svg id="heroLine" viewBox="0 0 760 200" role="img" aria-label="The growth of one dollar in world stocks since 1900, after inflation, drawn on a log scale"></svg>
+    <svg id="heroLine" viewBox="0 0 760 200" role="img" aria-label="The growth of $10,000 in world stocks since 1900, after inflation, drawn on a log scale"></svg>
     <div class="quote">
       <p>“Don’t look for the needle in the haystack. Just buy the haystack!”</p>
       <span class="mono">John C. Bogle · founder of Vanguard and the first index fund for regular people, 1976</span>
@@ -249,11 +249,15 @@ table.data th{color:var(--muted);font-weight:400}
     <div class="controls">
       <div class="seg" role="group" aria-label="Chart view">
         <button type="button" data-view="bars" aria-pressed="true">Each year</button>
-        <button type="button" data-view="growth" aria-pressed="false">Growth of $1</button>
+        <button type="button" data-view="growth" aria-pressed="false">Just the line</button>
       </div>
       <span class="mono" id="histHint">After inflation · hover or tap a year</span>
     </div>
     <div class="chart" id="histChart"><svg id="histSvg" role="img" aria-describedby="histDesc"></svg><div class="tip" id="histTip" role="status" aria-live="polite"></div></div>
+    <div class="legend mono" id="histKey">
+      <span><i style="background:var(--ink);width:6px;height:12px"></i><i style="background:var(--down);width:6px;height:12px;margin-left:-6px"></i>Each year’s return, left scale</span>
+      <span><i style="background:var(--ink);height:2.5px"></i>$10,000 invested in 1900, after inflation</span>
+    </div>
     <p class="sr-only" id="histDesc"></p>
 
     <div class="stats" id="histStats"></div>
@@ -405,7 +409,7 @@ table.data th{color:var(--muted);font-weight:400}
   </footer>
 </main>
 
-<script src="/invest/returns.js?v=2"></script>
-<script src="/invest/app.js?v=2"></script>
+<script src="/invest/returns.js?v=3"></script>
+<script src="/invest/app.js?v=3"></script>
 </body>
 </html>
