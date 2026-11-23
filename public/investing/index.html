@@ -103,9 +103,6 @@ h2{font-size:clamp(40px,7vw,60px);margin:14px 0 32px}
 .chart{position:relative;margin-top:8px;touch-action:pan-y}
 .chart svg{display:block;width:100%;overflow:visible}
 .chart text{font-family:var(--f-mono);font-size:10px;fill:var(--muted);letter-spacing:.04em}
-.chart text.ddh{font-size:11px;letter-spacing:.08em;text-transform:uppercase;fill:var(--ink-2)}
-.chart text.ddv{font-family:var(--f-display);font-style:italic;font-size:17px;letter-spacing:0;fill:var(--ink)}
-.chart text.ddv.all{fill:var(--muted)}
 .chart .ev{font-family:var(--f-body);font-size:12px;fill:var(--ink-2);letter-spacing:0}
 @keyframes labIn{from{opacity:0;transform:translateY(6px)}}
 .chart .lab-in{animation:labIn .5s var(--ease) backwards}
@@ -546,7 +543,7 @@ table.data :is(th,td):first-child{text-align:left}
       <p data-t="riskP1">Bogle’s rule of thumb was to hold roughly your age in bonds: 30% at 30, 60% at 60. Ben Felix would add that age is only part of it. What counts is how much risk you can afford, how much you need to reach your goals, and how much you can sit through without selling. Money you’ll need within a few years doesn’t belong in stocks at all.</p>
       <p data-t="riskP2"><b>Rebalancing</b> keeps your mix where you chose it. Once a year, or when it drifts more than about five percentage points, sell a little of what grew and buy what fell. It quietly makes you buy low and sell high, without having to predict anything.</p>
     </div>
-    <p class="note" data-t="riskNote">After inflation, 1950–2020. Bonds are the government bonds of the same 16 countries, in US dollars (Jordà-Schularick-Taylor). From 1900 the picture is harsher for bonds: the inflation around the two world wars took about two thirds of their value. Bonds soften crashes; they don’t protect you from inflation. These are unhedged dollar bonds, which swing more than what you’d hold: for the bond half, pick bonds in your own currency or hedged to it.</p>
+    <p class="note" data-t="riskNote">The chart shows 1995–2020 on a normal scale, so the swings are visible; it was a good stretch for bonds, as interest rates kept falling. The numbers under it cover 1950–2020, after inflation. Bonds are the government bonds of the same 16 countries, in US dollars (Jordà-Schularick-Taylor). From 1900 the picture is harsher for bonds: the inflation around the two world wars took about two thirds of their value. Bonds soften crashes; they don’t protect you from inflation. These are unhedged dollar bonds, which swing more than what you’d hold: for the bond half, pick bonds in your own currency or hedged to it.</p>
   </section>
 
   <section id="future" aria-labelledby="h-future">
@@ -634,7 +631,7 @@ table.data :is(th,td):first-child{text-align:left}
 </main>
 
 <script src="/investing/returns.js?v=2"></script>
-<script src="/investing/i18n.js?v=15"></script>
-<script src="/investing/app.js?v=14"></script>
+<script src="/investing/i18n.js?v=17"></script>
+<script src="/investing/app.js?v=16"></script>
 </body>
 </html>

@@ -45,9 +45,9 @@ window.I18N = (function () {
     verdictNone: "Put something in to see what it could become.",
     verdict: (n, q0) => `${n < 1 ? "In fewer than 1 in 100 futures do you" : `In ${n} of 100 futures you`} end up with less than you put in. Investing longer makes a loss less likely, but not a bad outcome smaller: the worst 1 in 10 end below ${q0}.`,
     expHist: (p) => `History · ${p}`,
-    mixRest: (b) => `· ${b}% bonds`, mixEnd: (from, to, y) => `${from} → ${to} by ${y}`, mixKey: (s, b) => `${s}% stocks, ${b}% bonds`,
+    mixRest: (b) => `· ${b}% bonds`, mixEnd: (from, y0, to, y) => `${from} in ${y0} → ${to} by ${y}`, mixKey: (s, b) => `${s}% stocks, ${b}% bonds`,
     mixAvgP: (a, b) => `growth after inflation, ${a}–${b}`, mixFall: "Deepest fall", mixFallP: "from a high to the bottom",
-    mixDown: "Down years", mixDD: "How far it had fallen from its last high", mixDownP: "years that ended lower",
+    mixDown: "Down years", mixDownP: "years that ended lower",
     mixDesc: (s, b, avg, worst, fall) => `With ${s}% stocks and ${b}% bonds from 1950 to 2020: ${avg} a year on average after inflation, worst year ${worst}, deepest fall ${fall}.`,
     note: (exp, first, last, geo) => exp === "plan"
       ? `Real years from ${first}–${last} in random order, each lowered a little so the average is 5% a year. The past is no promise, so planning with less is the careful choice.`
@@ -97,9 +97,9 @@ window.I18N = (function () {
     verdictNone: "Leg iets in om te zien wat het kan worden.",
     verdict: (n, q0) => `${n < 1 ? "In minder dan 1 op de 100 toekomsten" : `In ${n} van de 100 toekomsten`} houd je minder over dan je inlegde. Langer beleggen maakt verlies minder waarschijnlijk, maar een slechte uitkomst niet kleiner: de slechtste 1 op de 10 eindigt onder ${q0}.`,
     expHist: (p) => `Historisch · ${p}`,
-    mixRest: (b) => `· ${b}% obligaties`, mixEnd: (from, to, y) => `${from} → ${to} in ${y}`, mixKey: (s, b) => `${s}% aandelen, ${b}% obligaties`,
+    mixRest: (b) => `· ${b}% obligaties`, mixEnd: (from, y0, to, y) => `${from} in ${y0} → ${to} in ${y}`, mixKey: (s, b) => `${s}% aandelen, ${b}% obligaties`,
     mixAvgP: (a, b) => `groei na inflatie, ${a}–${b}`, mixFall: "Diepste daling", mixFallP: "van een top tot de bodem",
-    mixDown: "Jaren in de min", mixDD: "Hoe ver het onder de vorige top stond", mixDownP: "jaren die lager eindigden",
+    mixDown: "Jaren in de min", mixDownP: "jaren die lager eindigden",
     mixDesc: (s, b, avg, worst, fall) => `Met ${s}% aandelen en ${b}% obligaties van 1950 tot 2020: gemiddeld ${avg} per jaar na inflatie, slechtste jaar ${worst}, diepste daling ${fall}.`,
     note: (exp, first, last, geo) => exp === "plan"
       ? `Echte jaren uit ${first}–${last} in willekeurige volgorde, elk iets verlaagd zodat het gemiddelde 5% per jaar is. Het verleden is geen belofte, dus rekenen met minder is de voorzichtige keuze.`
@@ -216,7 +216,7 @@ window.I18N = (function () {
     mixKeyAll: "100% aandelen",
     riskP1: "Bogles vuistregel: houd ongeveer je leeftijd aan obligaties aan, dus 30% op je dertigste en 60% op je zestigste. Ben Felix zou eraan toevoegen dat leeftijd maar een deel van het verhaal is. Het gaat om hoeveel risico je je kunt veroorloven, hoeveel je nodig hebt om je doelen te halen, en hoeveel je kunt uitzitten zonder te verkopen. Geld dat je binnen een paar jaar nodig hebt, hoort helemaal niet in aandelen.",
     riskP2: "<b>Rebalancen</b> houdt je verdeling waar je die koos. Eén keer per jaar, of als hij meer dan zo’n vijf procentpunt afwijkt, verkoop je een beetje van wat steeg en koop je bij wat daalde. Zo koop je vanzelf laag en verkoop je hoog, zonder iets te hoeven voorspellen.",
-    riskNote: "Na inflatie, 1950–2020. Obligaties zijn de staatsobligaties van dezelfde 16 landen, in dollars (Jordà-Schularick-Taylor). Vanaf 1900 is het beeld voor obligaties harder: de inflatie rond de twee wereldoorlogen kostte ze ongeveer twee derde van hun waarde. Obligaties dempen crashes; ze beschermen je niet tegen inflatie. Dit zijn dollarobligaties zonder valuta-afdekking, die meer schommelen dan wat je zelf zou aanhouden: kies voor het obligatiedeel obligaties in euro’s of afgedekt naar de euro.",
+    riskNote: "De grafiek toont 1995–2020 op een gewone schaal, zodat je de schommelingen ziet; dat was een goede periode voor obligaties, omdat de rente bleef dalen. De cijfers eronder gaan over 1950–2020, na inflatie. Obligaties zijn de staatsobligaties van dezelfde 16 landen, in dollars (Jordà-Schularick-Taylor). Vanaf 1900 is het beeld voor obligaties harder: de inflatie rond de twee wereldoorlogen kostte ze ongeveer twee derde van hun waarde. Obligaties dempen crashes; ze beschermen je niet tegen inflatie. Dit zijn dollarobligaties zonder valuta-afdekking, die meer schommelen dan wat je zelf zou aanhouden: kies voor het obligatiedeel obligaties in euro’s of afgedekt naar de euro.",
     futEye: "Rente op rente, eerlijk berekend",
     futH: "Wat je geld kan worden",
     futLede: "Een rekenmachine met één vast rendement tekent een gladde lijn die in het echt nooit voorkomt. Deze rekent 10.000 mogelijke toekomsten door, elk opgebouwd uit echte beursjaren in willekeurige volgorde: goede jaren, slechte jaren en soms een paar slechte op rij.",

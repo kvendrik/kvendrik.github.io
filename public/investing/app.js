@@ -615,17 +615,18 @@ function bindOwn() {
 
 /* ---------- risk: a mix of stocks and bonds, 1950-2020 ---------- */
 const BONDS = W.bonds || [], MIX_FROM = 1950, M0 = MIX_FROM - FIRST, M1 = BONDS.length; // bonds end where the JST data ends
-function mixRun(w) {
-  let v = 1, peak = 1, fall = 0, worst = Infinity, wy = MIX_FROM, down = 0;
-  const path = [1], dd = [0];
-  for (let i = M0; i < M1; i++) {
+const CHART_FROM = 1995; // the chart: recent enough to remember, with two big crashes in it
+function mixRun(w, from = MIX_FROM) {
+  let v = 1, peak = 1, fall = 0, worst = Infinity, wy = from, down = 0;
+  const path = [1], rs = [], i0 = from - FIRST;
+  for (let i = i0; i < M1; i++) {
     const r = w * R[i] + (1 - w) * BONDS[i];
-    v *= 1 + r; path.push(v);
-    peak = Math.max(peak, v); fall = Math.min(fall, v / peak - 1); dd.push(v / peak - 1);
+    v *= 1 + r; path.push(v); rs.push(r);
+    peak = Math.max(peak, v); fall = Math.min(fall, v / peak - 1);
     if (r < worst) { worst = r; wy = YEARS[i]; }
     if (r < 0) down++;
   }
-  return { geo: v ** (1 / (M1 - M0)) - 1, worst, wy, fall, down, n: M1 - M0, path, dd, end: v };
+  return { geo: v ** (1 / (M1 - i0)) - 1, worst, wy, fall, down, n: M1 - i0, path, rs, end: v };
 }
 function drawMix() {
   if (!BONDS.length) return;
@@ -640,41 +641,23 @@ function drawMix() {
     [t("mixDown"), t("upN", mix.down, mix.n), t("mixDownP")],
   ].map(([k, v, p]) => `<div><span class="mono">${esc(k)}</span><div class="n tab">${esc(v)}</div><p>${esc(p)}</p></div>`).join("");
   $("#mixDesc").textContent = t("mixDesc", s, b, pctU(mix.geo), pct(mix.worst, 0), pct(mix.fall, 0));
-  // the mix against all stocks: $10,000 put in at the start of 1950, on a log scale (top),
-  // and how far each had fallen from its last high (bottom): that's where bonds earn their keep
-  const svg = $("#mixSvg"), w = $("#mixChart").clientWidth, small = w < 560, n = mix.path.length - 1;
-  const m = { t: 16, r: 8, b: 22, l: 8 }, iw = w - m.l - m.r;
-  const gh = small ? 150 : 190, gap = small ? 44 : 52, dh = small ? 110 : 140, h = m.t + gh + gap + dh + m.b;
-  const lo = Math.log(Math.min(...mix.path, ...all.path)), hi = Math.log(Math.max(...mix.path, ...all.path));
-  const X = (k) => m.l + k / n * iw, Y = (v) => m.t + (hi - Math.log(v)) / (hi - lo || 1) * gh;
-  const d0 = m.t + gh + gap, dMin = Math.min(-0.2, Math.floor(Math.min(...all.dd, ...mix.dd) * 10) / 10);
-  const D = (d) => d0 + d / dMin * dh;
-  const line = (p, f) => p.map((v, k) => (k ? "L" : "M") + X(k).toFixed(1) + " " + f(v).toFixed(1)).join(" ");
-  const area = (p) => line(p, D) + ` L${X(n).toFixed(1)} ${d0} L${X(0).toFixed(1)} ${d0} Z`;
+  // $10,000 put in at the start of 1995, on a normal scale: over 25 years the swings show in the line itself.
+  // (on a log scale over 70 years even a −41% year is only a kink, and every mix looks smooth)
+  const cm = mixRun(s / 100, CHART_FROM), ca = mixRun(1, CHART_FROM);
+  const svg = $("#mixSvg"), w = $("#mixChart").clientWidth, h = w < 560 ? 240 : 300, n = cm.path.length - 1;
+  const m = { t: 40, r: 8, b: 22, l: 8 }, iw = w - m.l - m.r, ih = h - m.t - m.b;
+  const lo = Math.min(...cm.path, ...ca.path) * 0.85, hi = Math.max(...cm.path, ...ca.path);
+  const X = (k) => m.l + k / n * iw, Y = (v) => m.t + (hi - v) / (hi - lo) * ih;
+  const line = (p) => p.map((v, k) => (k ? "L" : "M") + X(k).toFixed(1) + " " + Y(v).toFixed(1)).join(" ");
   svg.setAttribute("viewBox", `0 0 ${w} ${h}`);
   svg.setAttribute("height", h);
   let out = `<line x1="${m.l}" x2="${w - m.r}" y1="${Y(1).toFixed(1)}" y2="${Y(1).toFixed(1)}" stroke="var(--rule)"/>`;
-  for (let y = 1960; y <= last; y += 20) { const x = X(y - MIX_FROM + 1), end = w - m.r - x < 16; out += `<text x="${(end ? w - m.r : x).toFixed(1)}" y="${h - 4}" text-anchor="${end ? "end" : "middle"}">${y}</text>`; }
-  out += `<path d="${line(all.path, Y)}" fill="none" stroke="var(--muted)" stroke-width="1.5" stroke-dasharray="5 4"/>`;
-  out += `<path d="${line(mix.path, Y)}" fill="none" stroke="var(--ink)" stroke-width="2.25" stroke-linejoin="round"/>`;
-  const ex = X(n), ey = Y(mix.end);
-  out += `<circle cx="${ex.toFixed(1)}" cy="${ey.toFixed(1)}" r="4" fill="var(--ink)"/>`;
-  // one label says it all: where $10,000 from 1950 ended up
-  out += `<text class="lab" x="${(ex - 4).toFixed(1)}" y="${(ey < m.t + 30 ? ey + 24 : ey - 12).toFixed(1)}" text-anchor="end" paint-order="stroke" stroke="var(--paper)" stroke-width="5" stroke-linejoin="round">${esc(t("mixEnd", L().cur + int(START), usdBig(START * mix.end), last))}</text>`;
-  out += `<circle cx="${m.l}" cy="${Y(1).toFixed(1)}" r="3.5" fill="var(--ink)"/>`;
-  // the falls
-  out += `<text class="ddh" x="${m.l}" y="${(d0 - 14).toFixed(1)}">${esc(t("mixDD"))}</text>`;
-  for (let g = -0.2; g >= dMin - 1e-9; g -= 0.2) out += `<line x1="${m.l}" x2="${w - m.r}" y1="${D(g).toFixed(1)}" y2="${D(g).toFixed(1)}" stroke="var(--rule)" stroke-dasharray="2 4"/><text x="${w - m.r}" y="${(D(g) - 5).toFixed(1)}" text-anchor="end">${esc(pct(g, 0))}</text>`;
-  out += `<path d="${area(all.dd)}" fill="var(--muted)" fill-opacity=".16"/><path d="${line(all.dd, D)}" fill="none" stroke="var(--muted)" stroke-width="1.5" stroke-dasharray="5 4"/>`;
-  out += `<path d="${area(mix.dd)}" fill="var(--ink)" fill-opacity=".9"/>`;
-  out += `<line x1="${m.l}" x2="${w - m.r}" y1="${d0}" y2="${d0}" stroke="var(--ink)"/>`;
-  // mark the deepest point of each
-  const deep = (p) => p.reduce((b, v, k) => (v < p[b] ? k : b), 0);
-  const ka = deep(all.dd), km = deep(mix.dd);
-  const mark = (k, v, cls, below) => { const x = X(k), anchor = x < 60 ? "start" : x > w - 60 ? "end" : "middle";
-    return `<text class="${cls}" x="${x.toFixed(1)}" y="${(below ? D(v) + 16 : D(v) - 7).toFixed(1)}" text-anchor="${anchor}" paint-order="stroke" stroke="var(--paper)" stroke-width="4" stroke-linejoin="round">${esc(pct(v, 0))}</text>`; };
-  out += mark(ka, all.dd[ka], "ddv all", true);
-  if (mix.dd[km] < -0.005 && Math.abs(X(km) - X(ka)) > 40 || mix.dd[km] - all.dd[ka] > 0.12) out += mark(km, mix.dd[km], "ddv", mix.dd[km] - all.dd[ka] < 0.12);
+  for (let y = 2000; y <= last; y += 5) { const x = X(y - CHART_FROM), end = w - m.r - x < 16; out += `<text x="${(end ? w - m.r : x).toFixed(1)}" y="${h - 4}" text-anchor="${end ? "end" : "middle"}">${y}</text>`; }
+  if (s < 100) out += `<path d="${line(ca.path)}" fill="none" stroke="var(--muted)" stroke-width="1.5" stroke-dasharray="5 4"/>`;
+  out += `<path d="${line(cm.path)}" fill="none" stroke="var(--ink)" stroke-width="2.5" stroke-linejoin="round"/>`;
+  out += `<circle cx="${X(n).toFixed(1)}" cy="${Y(cm.end).toFixed(1)}" r="4" fill="var(--ink)"/><circle cx="${m.l}" cy="${Y(1).toFixed(1)}" r="3.5" fill="var(--ink)"/>`;
+  // the headline sits in the top left corner: the line starts low on the left, so that corner is free
+  out += `<text class="lab" x="${m.l}" y="${m.t - 18}" text-anchor="start">${esc(t("mixEnd", L().cur + int(START), CHART_FROM, usdBig(START * cm.end), last))}</text>`;
   svg.innerHTML = out;
 }
 
