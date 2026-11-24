@@ -32,7 +32,7 @@
 @font-face{font-family:"Allo";src:url("/bodega/fonts/AlloVariable.woff2") format("woff2");font-weight:100 900;font-display:swap}
 /* One narrow column on cream paper: Philosophy's layout and type, Bodega's hard-edged controls. Light only, on purpose. */
 :root{
-  --paper:#F3EDE1; --card:#EAE3D5; --fill:#DDD3C1; --band:#E6DECD; --rule:#D5CCBB; --down:#A39A8B; --muted:#756F65; --ink-2:#3B3833; --ink:#141312;
+  --paper:#F3EDE1; --card:#EAE3D5; --fill:#DDD3C1; --band:#E6DECD; --rule:#D5CCBB; --down:#A39A8B; --muted:#69635A; --ink-2:#3B3833; --ink:#141312;
   --f-display:"Instrument Serif","Bodoni Moda",Didot,Georgia,serif;
   --f-body:"Allo",system-ui,-apple-system,"Segoe UI",sans-serif;
   --f-mono:"Space Mono",ui-monospace,Menlo,monospace;
@@ -183,14 +183,14 @@ details+details{margin-top:0}
 .steps{scroll-margin-top:var(--s-6)}
 /* start in four steps */
 .steps{margin-top:var(--s-9)}
-.steps-h{font-size:var(--t-h2);line-height:1.05;margin:var(--s-3) 0 var(--s-6)}
+.steps-h{font-size:var(--t-3xl);line-height:1.1;margin:var(--s-3) 0 var(--s-6)}
 .steps-list{list-style:none;padding:0;margin:0;display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:var(--s-7) var(--s-7);counter-reset:step}
 .steps-list li{counter-increment:step;border-top:1px solid var(--ink);padding-top:var(--s-4)}
 .steps-list li::before{content:counter(step);display:block;font-family:var(--f-display);font-size:var(--t-3xl);line-height:1;margin-bottom:var(--s-3)}
 .steps-list h4{margin:0;font-family:var(--f-display);font-weight:400;font-size:var(--t-xl);line-height:1.15}
 .steps-list p{margin-top:var(--s-2);font-size:var(--t-card);color:var(--ink-2)}
 .step-q{margin:var(--s-4) 0 0;padding-left:var(--s-3);border-left:2px solid var(--rule)}
-.step-q blockquote{margin:0;font-family:var(--f-display);font-style:italic;font-size:var(--t-lg);line-height:1.3;color:var(--ink-2);text-wrap:pretty}
+.step-q blockquote{margin:0;text-indent:-.38em;font-family:var(--f-display);font-style:italic;font-size:var(--t-lg);line-height:1.3;color:var(--ink-2);text-wrap:pretty}
 .step-q figcaption{margin-top:var(--s-1)}
 .steps-list a{color:inherit;text-underline-offset:3px;text-decoration-color:var(--rule)}
 /* green investing: the evidence opens on demand */
@@ -296,8 +296,10 @@ table.data :is(th,td):first-child{text-align:left}
 .pull{margin:var(--s-9) 0 0;padding-top:var(--s-5);border-top:1px solid var(--ink)}
 .pull.first{margin-top:0}
 .eye-gap{display:block;margin-top:var(--s-10)}
-.pull blockquote{margin:0;font-family:var(--f-display);font-style:italic;font-size:var(--t-lede);line-height:1.25;text-wrap:balance}
+.pull blockquote{margin:0;text-indent:-.42em;font-family:var(--f-display);font-style:italic;font-size:var(--t-lede);line-height:1.25;text-wrap:balance}
 .pull figcaption{margin-top:var(--s-3)}
+.pull+.pull{margin-top:var(--s-7)}
+.hang{text-indent:-.4em}
 .pre{opacity:0;transform:translateY(14px)}
 .reveal{transition:opacity .7s var(--ease),transform .7s var(--ease)}
 .vids{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:var(--s-7) var(--s-6);margin-top:var(--s-9)}
@@ -344,12 +346,12 @@ table.data :is(th,td):first-child{text-align:left}
 .esg-chart .gap{font-family:var(--f-mono);font-size:10px;fill:var(--ink-2)}
 .esg-voices{margin-top:var(--s-9)}
 .esg-way{margin-top:var(--s-9)}
-.esg-way-h{font-size:var(--t-h2);margin:var(--s-3) 0 var(--s-5);line-height:1.05}
+.esg-way-h{font-size:var(--t-3xl);margin:var(--s-3) 0 var(--s-5);line-height:1.1}
 #esg details{margin-top:var(--s-8)}
 /* quote wall: the words, then a small sketch beside the name */
 .wall{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:var(--s-9) var(--s-8);margin-top:var(--s-9)}
 .sage{margin:0}
-.sage blockquote{margin:0;font-family:var(--f-display);font-style:italic;font-size:var(--t-xl);line-height:1.3;text-wrap:pretty}
+.sage blockquote{margin:0;text-indent:-.4em;font-family:var(--f-display);font-style:italic;font-size:var(--t-xl);line-height:1.3;text-wrap:pretty}
 .sage figcaption{margin-top:var(--s-4);display:flex;align-items:center;gap:var(--s-4)}
 .sage .face{flex:none;display:block;width:68px;height:68px;margin:-6px 0 -6px -6px}
 .sage figcaption b{display:block;font-weight:600;font-size:var(--t-card)}
@@ -574,7 +576,7 @@ table.data :is(th,td):first-child{text-align:left}
 
   <section id="costs" aria-labelledby="h-costs">
     <span class="mono" data-t="feeEye">What costs cost</span>
-    <h2 id="h-costs" data-t="feeH">“In investing, you get what you don’t pay for.”</h2>
+    <h2 id="h-costs" class="hang" data-t="feeH">“In investing, you get what you don’t pay for.”</h2>
     <p class="lede" data-t="costLede">Fees look tiny: a percent or two a year. But they compound for decades, just like returns, only against you.</p>
     <p class="prose-p" id="feeIntro"></p>
     <div class="feebars" id="feeBars"></div>
