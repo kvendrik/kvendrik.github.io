@@ -98,6 +98,14 @@ function parse(s, lang = LANG) {
 const num = (el, fb) => { const n = parse(el.value); return isFinite(n) ? n : fb; };
 
 // the English text of each data-t element: read from the page once, or, on the Dutch page, shipped alongside it
+// links that leave the site open in a new tab (they can come from the page, the Dutch text or a tooltip)
+function externalLinks(root = document) {
+  root.querySelectorAll('a[href^="http"]').forEach((a) => {
+    if (a.host === location.host) return;
+    a.target = "_blank";
+    a.rel = "noopener";
+  });
+}
 const EN = (() => { try { return JSON.parse($("#i18n-en").textContent); } catch { return {}; } })();
 function applyStatic() {
   const NL = I.html.nl, nl = LANG === "nl";
@@ -116,6 +124,7 @@ function applyStatic() {
   $('meta[name="description"]').setAttribute("content", t("description"));
   $$(".cur").forEach((el) => (el.textContent = L().cur));
   $$("[data-lang]").forEach((b) => b.setAttribute("aria-pressed", String(b.dataset.lang === LANG)));
+  externalLinks();
 }
 
 /* ---------- events ---------- */
@@ -1038,6 +1047,7 @@ function bindTerms() {
   const show = (btn) => {
     close();
     if (btn.dataset.tip) pop.textContent = btn.dataset.tip; else pop.innerHTML = t("term_" + btn.dataset.term) || ""; // our own copy, may hold a source link
+    externalLinks(pop);
     pop.hidden = false;
     const r = btn.getBoundingClientRect(), pw = pop.offsetWidth, ph = pop.offsetHeight, pad = 16;
     const left = clamp(r.left + r.width / 2 - pw / 2, pad, innerWidth - pw - pad);
