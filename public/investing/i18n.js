@@ -7,6 +7,7 @@ window.I18N = (function () {
   const en = {
     locale: "en-US", cur: "$", K: "K", M: "M", B: "B", Mlong: " million",
     title: "Buy the Haystack",
+    term_etf: "An ETF is an index fund you buy and sell on the stock exchange, like a single share. Same idea, often even cheaper.",
     term_lumpsum: "In <a href=\"https://corporate.vanguard.com/content/dam/corp/research/pdf/cost_averaging_invest_now_or_temporarily_hold_your_cash.pdf\" rel=\"noopener\">Vanguard’s research</a>, putting a lump sum in at once beat spreading it over a year about two times in three, because markets rise more often than they fall. Spreading it out is fine if it helps you sleep.",
     term_withdraw: "A crash right before or after you start living off your savings hurts far more than one at 30: you sell low to pay the bills. A common rule of thumb is to take out about 3 to 4% of your savings in the first year, then adjust for inflation.",
     term_inflation: "Prices rise over time, so money buys a little less each year. “After inflation” means these numbers are corrected for that: they show what your money could buy. And it’s history, not a promise: further down, we plan with less.",
@@ -64,6 +65,7 @@ window.I18N = (function () {
   const nl = {
     locale: "nl-NL", cur: "€", K: "k", M: " mln", B: " mld", Mlong: " miljoen",
     title: "Koop de hele hooiberg",
+    term_etf: "Een ETF is een indexfonds dat je op de beurs koopt en verkoopt, net als een los aandeel. Hetzelfde idee, vaak nog goedkoper.",
     term_lumpsum: "In <a href=\"https://corporate.vanguard.com/content/dam/corp/research/pdf/cost_averaging_invest_now_or_temporarily_hold_your_cash.pdf\" rel=\"noopener\">onderzoek van Vanguard</a> won alles in één keer inleggen in zo’n twee van de drie gevallen van spreiden over een jaar. Beurzen stijgen nu eenmaal vaker dan ze dalen. Slaap je beter van spreiden? Ook prima.",
     term_box3: "Nederland belast sparen en beleggen in box 3. Die regels worden herschreven: vanaf 2028 staat <a href=\"https://www.rijksoverheid.nl/themas/werk/inkomstenbelasting/plannen-werkelijk-rendement-box-3\" rel=\"noopener\">een belasting op het werkelijke rendement</a> gepland. Kijk voor je begint naar de <a href=\"https://www.belastingdienst.nl/wps/wcm/connect/nl/box-3/box-3\" rel=\"noopener\">actuele regels</a>.",
     term_withdraw: "Een crash vlak voor of na het moment dat je van je spaargeld gaat leven, doet veel meer pijn dan op je dertigste: je verkoopt dan laag om rekeningen te betalen. Vuistregel: neem het eerste jaar zo’n 3 tot 4% op en laat dat daarna meegroeien met de inflatie.",
@@ -177,7 +179,7 @@ window.I18N = (function () {
   // The title, "Buy the haystack.", stays English on purpose.
   const html = { nl: {
     "lang@aria-label": "Taal",
-    heroLede: "Saai, traag en beproefd. Bezit een stukje van elk bedrijf ter wereld, betaal er bijna niets voor en wacht af.",
+    heroLede: "Een saaie, trage en beproefde manier om je geld te laten groeien: een stukje van elk bedrijf ter wereld, bijna geen kosten, en geduld.",
     quote: "“Zoek niet naar de naald in de hooiberg. Koop gewoon de hele hooiberg!”",
     cite: "John C. Bogle, oprichter van Vanguard",
 
@@ -195,7 +197,7 @@ window.I18N = (function () {
 
     etfEye: "Het instrument",
     etfH: "Eén fonds. Elk bedrijf.",
-    etfLede: "Een index is een lijst, bijvoorbeeld van alle beursbedrijven ter wereld, elk naar hun omvang. Een indexfonds koopt gewoon alles op die lijst. Een ETF is een indexfonds dat je koopt en verkoopt als een aandeel.",
+    etfLede: "Een index is een lijst bedrijven. Een wereldindex zet bijna elk beursbedrijf ter wereld op die lijst, van Apple tot ASML. Een indexfonds koopt gewoon alles wat erop staat. Eén fonds, en je bezit een stukje van de hele wereldeconomie.",
     how1: "<h3>Je bezit alles</h3><p>Eén fonds, duizenden bedrijven. Groeit een bedrijf, dan groei je mee. Gaat er een failliet, dan was dat maar een klein stukje. Je hoeft nooit te raden welke wat wordt.</p>",
     how2: "<h3>Niemand kiest</h3><p>Geen beroemde fondsmanager, geen analisten, geen onderbuikgevoel. Het fonds volgt gewoon de lijst en kost daardoor bijna niets: vaak <button type=\"button\" class=\"term\" data-term=\"ter\" aria-expanded=\"false\">0,1% tot 0,25% per jaar</button>.</p>",
     how3: "<h3>Je krijgt de markt</h3><p>Je geeft de kans op om de markt te verslaan. In ruil krijg je wat de markt doet, min een kleine vergoeding. Na hun kosten halen de meeste professionals dat niet eens.</p>",
@@ -269,7 +271,7 @@ window.I18N = (function () {
     "stepsEye": "Zo begin je",
     "stepsH": "Begin in vier stappen",
     "step1": "<h4>Eerst een buffer.</h4><p>Zet drie tot zes maanden aan uitgaven op een spaarrekening. Geld dat je binnen zo’n vijf jaar nodig hebt, hoort niet in aandelen.</p>",
-    "step2": "<h4>Open een rekening.</h4><p>Elke <button type=\"button\" class=\"term\" data-term=\"broker\" aria-expanded=\"false\">broker</button> met een goedkoop wereldwijd indexfonds of ETF is prima. In Nederland draait Meesman helemaal om dit idee; <a href=\"https://www.meesman.nl/waarom-indexbeleggen/\" rel=\"noopener\">hun uitleg</a> is een goed begin. Vergelijk de totale kosten per jaar: fonds en platform samen.</p>",
+    "step2": "<h4>Open een rekening.</h4><p>Elke <button type=\"button\" class=\"term\" data-term=\"broker\" aria-expanded=\"false\">broker</button> met een goedkoop wereldwijd indexfonds of <button type=\"button\" class=\"term\" data-term=\"etf\" aria-expanded=\"false\">ETF</button> is prima. In Nederland draait Meesman helemaal om dit idee; <a href=\"https://www.meesman.nl/waarom-indexbeleggen/\" rel=\"noopener\">hun uitleg</a> is een goed begin. Vergelijk de totale kosten per jaar: fonds en platform samen.</p>",
     "step3": "<h4>Kies één fonds.</h4><p>Eén wereldwijd aandelenfonds is de hele hooiberg. Wil je er obligaties bij? Een gemengd fonds heeft allebei en houdt de verdeling voor je op peil. <a href=\"https://www.vanguardinvestor.co.uk/investing-explained/what-are-lifestrategy-funds\" rel=\"noopener\">De LifeStrategy-fondsen van Vanguard</a> gaan van 20% tot 100% aandelen.</p>",
     "step4": "<h4>Zet het op automatisch en laat het met rust.</h4><p>Stel een maandelijkse overboeking in en laat die lopen. Een bedrag ineens? Dat in één keer inleggen <button type=\"button\" class=\"term\" data-term=\"lumpsum\" aria-expanded=\"false\">wint meestal</button>. Belasting: beleggingen vallen in box 3, en die wordt <button type=\"button\" class=\"term\" data-term=\"box3\" aria-expanded=\"false\">op de schop genomen</button>.</p>",
     /* esg */
