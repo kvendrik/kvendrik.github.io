@@ -98,6 +98,20 @@ function parse(s, lang = LANG) {
 const num = (el, fb) => { const n = parse(el.value); return isFinite(n) ? n : fb; };
 
 // the English text of each data-t element: read from the page once, or, on the Dutch page, shipped alongside it
+// tap-to-explain words are written as <button>s; browsers lay a button out as one rigid box, so a longer phrase
+// can't wrap with the sentence. Swap each for an inline span that still acts like a button.
+function inlineTerms(root = document) {
+  root.querySelectorAll("button.term:not(.term-q)").forEach((b) => {
+    const s = document.createElement("span");
+    for (const a of b.attributes) if (a.name !== "type") s.setAttribute(a.name, a.value);
+    s.setAttribute("role", "button"); s.tabIndex = 0; s.innerHTML = b.innerHTML;
+    b.replaceWith(s);
+  });
+}
+document.addEventListener("keydown", (e) => {
+  const t = e.target.closest && e.target.closest('span.term[role="button"]');
+  if (t && (e.key === "Enter" || e.key === " ")) { e.preventDefault(); t.click(); }
+});
 // links that leave the site open in a new tab (they can come from the page, the Dutch text or a tooltip)
 function externalLinks(root = document) {
   root.querySelectorAll('a[href^="http"]').forEach((a) => {
@@ -124,6 +138,7 @@ function applyStatic() {
   $('meta[name="description"]').setAttribute("content", t("description"));
   $$(".cur").forEach((el) => (el.textContent = L().cur));
   $$("[data-lang]").forEach((b) => b.setAttribute("aria-pressed", String(b.dataset.lang === LANG)));
+  inlineTerms();
   externalLinks();
 }
 
