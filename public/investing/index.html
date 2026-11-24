@@ -521,7 +521,7 @@ table.data :is(th,td):first-child{text-align:left}
     </details>
     <details>
       <summary class="mono" data-t="srcSum">Sources</summary>
-      <p class="note src" data-t="source">Sources: 1900–2020, the Jordà-Schularick-Taylor Macrohistory Database (<a href="https://www.macrohistory.net/database/">macrohistory.net</a>); 2021–2025, MSCI ACWI net total return in US dollars and US CPI (BLS). How it’s computed: each year, every country’s stock return is turned into dollars at that year’s closing exchange rate and weighted by the size of its economy the year before (GDP per head × population, Maddison). The result, minus US inflation, is one return per year. $10,000 is simply multiplied through those 126 years; “a year, on average” is the compound rate that gets you the same result. Germany’s 1923 hyperinflation and 1948 currency reform years are left out, because the data can’t place them cleanly. This series flatters history: it misses markets that were wiped out, like Russia’s in 1917. The Dimson-Marsh-Staunton Global Investment Returns Yearbook, which Ben Felix often cites, includes them and finds about 5% a year after inflation since 1900.</p>
+      <p class="note src" data-t="source">Sources: 1900–2020, the Jordà-Schularick-Taylor Macrohistory Database (<a href="https://www.macrohistory.net/database/">macrohistory.net</a>); 2021–2025, MSCI ACWI net total return in US dollars and US CPI (BLS). How it’s computed: each year, every country’s stock return is turned into dollars at that year’s closing exchange rate and weighted by the size of its economy the year before (GDP per head × population, Maddison). The result, minus US inflation, is one return per year. $10,000 is simply multiplied through those 126 years; “a year, on average” is the compound rate that gets you the same result. Germany’s 1923–24 hyperinflation and 1948–49 currency reform years are left out, because the data can’t place them cleanly. This series flatters history: it misses markets that were wiped out, like Russia’s in 1917. The Dimson-Marsh-Staunton Global Investment Returns Yearbook, which Ben Felix often cites, includes them and finds about 5% a year after inflation since 1900.</p>
     </details>
   </section>
 
@@ -569,6 +569,7 @@ table.data :is(th,td):first-child{text-align:left}
       <p class="note" data-t="hayNote">The index fund owns all 100, so it always owns all 4.</p>
     </div>
     <figure class="pull"><blockquote data-t="qMalkiel">“A blindfolded monkey throwing darts at a newspaper’s financial pages could select a portfolio that would do just as well as one carefully selected by experts.”</blockquote><figcaption class="mono" data-t="qMalkielBy">Burton Malkiel, A Random Walk Down Wall Street, 1973</figcaption></figure>
+    <details class="fn"><summary data-t="fnNotes">Notes &amp; sources</summary><p class="note" data-t="pickSrc">Nine in ten: S&amp;P Dow Jones Indices, SPIVA U.S. Scorecard, the share of actively managed US stock funds that trailed their benchmark over 15 and 20 years. Why it has to be so: William F. Sharpe, “The Arithmetic of Active Management” (1991). The game: Hendrik Bessembinder, “Do stocks outperform Treasury bills?”, Journal of Financial Economics (2018). It’s a simplified version: 4 winners hidden among 100 stocks, ten picks, equal money in each. Quote: Burton Malkiel, A Random Walk Down Wall Street (1973).</p></details>
   </section>
 
   <section id="costs" aria-labelledby="h-costs">
@@ -578,6 +579,7 @@ table.data :is(th,td):first-child{text-align:left}
     <p class="prose-p" id="feeIntro"></p>
     <div class="feebars" id="feeBars"></div>
     <p class="note" id="feeNote"></p>
+    <details class="fn"><summary data-t="fnNotes">Notes &amp; sources</summary><p class="note" data-t="costSrc">How it’s computed: $10,000 grows 5% a year after inflation for 40 years, and each year the fee comes off what you hold: 10,000 × (1.05 × (1 − fee))<sup>40</sup>. The fees are examples: 0.2% for a world index fund, about 1% for a typical active fund, and 2% for an active fund plus an adviser. Quote: John C. Bogle, The Little Book of Common Sense Investing.</p></details>
   </section>
 
   <section id="today" aria-labelledby="h-today">
@@ -691,7 +693,7 @@ table.data :is(th,td):first-child{text-align:left}
     </div>
     <div class="outcomes" id="outcomes"></div>
     <p class="verdict" id="verdict"></p>
-    <details class="fn"><summary data-t="fnNotes">Notes &amp; sources</summary><p class="note" data-t="futNote">How it’s computed: each of the 10,000 futures picks a real year at random from 1900–2025 for every year you invest (the same year can come up twice), all stocks. “Plan” lowers every year by the same factor so the compound average is 5%. Your fee comes off every year, and monthly deposits arrive through the year. The middle outcome is the 50th of 100 futures in order, a bad one the 10th, a good one the 90th. Everything is in today’s money, before tax. Research on 39 countries finds that a single country’s market has lost money over 30 years more often than these futures suggest: one more reason to own the whole world.</p></details>
+    <details class="fn"><summary data-t="fnNotes">Notes &amp; sources</summary><p class="note" data-t="futNote">How it’s computed: each of the 10,000 futures picks a real year at random from 1900–2025 for every year you invest (the same year can come up twice), all stocks. “Plan” lowers every year by the same factor so the compound average is 5%. Your fee comes off every year, and monthly deposits arrive through the year. The middle outcome is the 50th of 100 futures in order, a bad one the 10th, a good one the 90th. Everything is in today’s money, before tax. Research on 39 countries (Anarkulova, Cederburg and O’Doherty, 2022) finds that a single country’s market has lost money over 30 years more often than these futures suggest: one more reason to own the whole world.</p></details>
     <figure class="pull"><blockquote data-t="qBuffett">“Put 10% of the cash in short-term government bonds and 90% in a very low-cost S&P 500 index fund. (I suggest Vanguard’s.)”</blockquote><figcaption class="mono" data-t="qBuffettBy">Warren Buffett, on the money he will leave his wife · letter to shareholders, 2013</figcaption></figure>
   </section>
 
@@ -759,7 +761,7 @@ table.data :is(th,td):first-child{text-align:left}
 </main>
 
 <script src="/investing/returns.js?v=4"></script>
-<script src="/investing/i18n.js?v=32"></script>
+<script src="/investing/i18n.js?v=33"></script>
 <script src="/investing/app.js?v=22"></script>
 </body>
 </html>
