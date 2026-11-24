@@ -1037,7 +1037,7 @@ function bindTerms() {
   };
   const show = (btn) => {
     close();
-    pop.textContent = btn.dataset.tip || t("term_" + btn.dataset.term) || "";
+    if (btn.dataset.tip) pop.textContent = btn.dataset.tip; else pop.innerHTML = t("term_" + btn.dataset.term) || ""; // our own copy, may hold a source link
     pop.hidden = false;
     const r = btn.getBoundingClientRect(), pw = pop.offsetWidth, ph = pop.offsetHeight, pad = 16;
     const left = clamp(r.left + r.width / 2 - pw / 2, pad, innerWidth - pw - pad);

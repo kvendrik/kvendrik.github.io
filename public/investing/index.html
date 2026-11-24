@@ -168,16 +168,18 @@ details+details{margin-top:0}
 /* a word you can tap for its meaning */
 .term{all:unset;cursor:help;text-decoration:underline dotted;text-decoration-color:var(--muted);text-decoration-thickness:1.5px;text-underline-offset:.2em;-webkit-tap-highlight-color:transparent}
 .term[aria-expanded="true"]{text-decoration-style:solid;text-decoration-color:var(--ink)}
-.term:focus-visible{outline:2px solid var(--ink);outline-offset:2px}
+.term:focus{outline:none}
+.term:focus-visible{text-decoration-style:solid;text-decoration-color:var(--ink);background:var(--band)}
 .term-pop{position:absolute;z-index:30;width:max-content;max-width:min(320px,calc(100vw - 32px));padding:14px 16px;background:var(--ink);color:var(--paper);font:400 15px/1.5 var(--f-body);border-radius:2px;box-shadow:0 10px 30px -12px rgba(20,19,18,.55);transform-origin:var(--ox,50%) top;animation:term-in .18s var(--ease)}
 .term-pop[hidden]{display:none}
+.term-pop a{color:inherit;text-decoration:underline;text-decoration-color:rgba(243,237,225,.45);text-underline-offset:3px}
+.term-pop a:hover{text-decoration-color:var(--paper)}
+.steps .fn{margin-top:var(--s-6)}
 @keyframes term-in{from{opacity:0;transform:translateY(-4px) scale(.98)}}
 .seg-q{display:inline-flex;align-items:center;gap:var(--s-3)}
 .term.term-q{position:relative;display:inline-grid;place-items:center;width:30px;height:30px;border:1.5px solid var(--ink);border-radius:50%;font:700 13px/1 var(--f-mono);text-decoration:none;cursor:pointer}
 .term.term-q::before{content:"";position:absolute;inset:-8px}
 .term.term-q[aria-expanded="true"]{background:var(--ink);color:var(--paper)}
-.jump{display:inline-flex;align-items:center;min-height:44px;margin-top:var(--s-3);color:var(--ink-2);text-decoration:underline;text-decoration-color:var(--rule);text-underline-offset:4px}
-@media (hover:hover) and (pointer:fine){.jump:hover{text-decoration-color:var(--ink)}}
 .steps{scroll-margin-top:var(--s-6)}
 /* start in four steps */
 .steps{margin-top:var(--s-9)}
@@ -416,6 +418,8 @@ table.data :is(th,td):first-child{text-align:left}
 @media (prefers-reduced-motion:reduce){.disc .spin{animation:none}}
 .end{padding-block:var(--s-11) var(--s-10)}
 .end .big{font-family:var(--f-display);font-size:var(--t-display);line-height:1}
+.read-lede{margin-top:var(--s-3)}
+.end-lede{margin-top:var(--s-5);font-family:var(--f-display);font-size:var(--t-lede);line-height:1.3;color:var(--ink-2);max-width:30ch;text-wrap:pretty}
 .end small{display:block;margin-top:var(--s-7);color:var(--muted);font-size:var(--t-sm);line-height:1.6;max-width:68ch}
 
 /* the page arrives once */
@@ -467,7 +471,6 @@ table.data :is(th,td):first-child{text-align:left}
   <header class="hero">
     <h1 data-t="h1">Buy the haystack.</h1>
     <p class="lede" data-t="heroLede">A slow, boring and very old way to grow money: own a little of every company in the world, pay almost nothing for it, and wait.</p>
-    <a class="jump mono" href="#start" data-t="jump">Just want to start? Four steps ↓</a>
     <div class="callout">
       <p class="count"><span class="from" id="calloutFrom">$10,000</span><span class="tail"><span class="arrow">→</span><span class="to" id="calloutTo"></span></span></p>
       <span class="mono tab" id="period"></span>
@@ -521,12 +524,12 @@ table.data :is(th,td):first-child{text-align:left}
 
   <section id="etfs" aria-labelledby="h-etfs">
     <span class="mono" data-t="etfEye">The tool</span>
-    <h2 id="h-etfs" data-t="etfH">What an index fund is</h2>
+    <h2 id="h-etfs" data-t="etfH">One fund. Every company.</h2>
     <p class="lede" data-t="etfLede">An index is a list: say, every listed company in the world, each counted by its size. An index fund simply buys everything on the list. An ETF is an index fund you buy and sell like a share.</p>
     <ul class="how">
       <li data-t="how1"><h3>It owns everything</h3><p>One fund, thousands of companies. If a company grows, you own it. If one fails, it was a tiny slice. Nobody has to guess which is which.</p></li>
       <li data-t="how2"><h3>Nobody picks</h3><p>No star manager, no research team, no trading on hunches. The fund just follows the list, so it costs very little to run: often <button type="button" class="term" data-term="ter" aria-expanded="false">0.1% to 0.25% a year</button>.</p></li>
-      <li data-t="how3"><h3>You get the market</h3><p>You give up any chance of beating the market. In return you get its return, minus a tiny fee, which most professionals don’t manage once their own fees are counted.</p></li>
+      <li data-t="how3"><h3>You get the market</h3><p>You give up any shot at beating the market. In exchange you get its return, minus a tiny fee. That alone beats most professionals once their fees are counted.</p></li>
     </ul>
     <figure class="pull"><blockquote data-t="qSam">“I rank this Bogle invention along with the invention of the wheel, the alphabet, Gutenberg printing, and wine and cheese.”</blockquote><figcaption class="mono" data-t="qSamBy">Paul Samuelson, Nobel Prize–winning economist, 2005</figcaption></figure>
 
@@ -599,7 +602,7 @@ table.data :is(th,td):first-child{text-align:left}
     <h2 id="h-esg" data-t="esgH">Can you buy just the green part?</h2>
     <p class="lede" data-t="esgLede">Yes. Funds that do it are sold as “ESG”: environmental, social and governance, or how a company treats the planet, its people, and how it’s run. They take the normal index and leave out the worst. Fine, as long as you know what that does, and what it doesn’t.</p>
     <ul class="how">
-      <li data-t="esgHow1"><h3>Leave out the worst</h3><p>The lightest version starts from the normal index and drops whole industries: controversial weapons, tobacco, often coal. Most of the market stays in. Meesman’s world fund in the Netherlands works roughly like this.</p></li>
+      <li data-t="esgHow1"><h3>Leave out the worst</h3><p>The lightest version starts from the normal index and drops whole industries: controversial weapons, tobacco, often coal. Most of the market stays in.</p></li>
       <li data-t="esgHow2"><h3>Keep the best-rated</h3><p>A stricter fund keeps only the companies a rating firm scores highest within each industry. Some tilt instead: everyone stays, the high scorers get more of your money.</p></li>
       <li data-t="esgHow3"><h3>Read past the label</h3><p>Since 2025, an EU fund with “ESG” or “sustainable” in its name has to live up to it with at least 80% of its money. Still, a label is a promise, not a measurement.</p></li>
     </ul>
@@ -704,10 +707,11 @@ table.data :is(th,td):first-child{text-align:left}
       <h3 class="steps-h" data-t="stepsH">Start in four steps</h3>
       <ol class="steps-list">
         <li data-t="step1"><h4>Keep a buffer first.</h4><p>Put three to six months of expenses in a savings account. Money you need within about five years doesn’t belong in stocks.</p></li>
-        <li data-t="step2"><h4>Open an account.</h4><p>Any <button type="button" class="term" data-term="broker" aria-expanded="false">broker</button> with a cheap total-world index fund or ETF will do. In the Netherlands, <a href="https://www.meesman.nl/">Meesman</a> is built around exactly this idea. Compare the total yearly costs, fund and platform together.</p></li>
-        <li data-t="step3"><h4>Pick one fund.</h4><p>A world stock fund like Vanguard’s <a href="https://www.nl.vanguard/professional/product/etf/equity/9505/vanguard-ftse-all-world-ucits-etf-usd-distributing" rel="noopener">FTSE All-World (VWRL)</a> is the whole haystack. Want bonds in it too? One mixed fund does both and rebalances for you, like Vanguard’s <a href="https://www.nl.vanguard/professional/product/etf/lifestrategy/9496/lifestrategy-80-equity-ucits-etf-eur-accumulating" rel="noopener">LifeStrategy 80%</a> or, in Canada, VGRO: 80% stocks, 20% bonds.</p></p></li>
-        <li data-t="step4"><h4>Automate it, then look away.</h4><p>Set up a monthly transfer and let it run. Got a lump sum? Putting it in at once <button type="button" class="term" data-term="lumpsum" aria-expanded="false">usually wins</button>. On taxes: in the Netherlands, investments fall under box 3, which is <button type="button" class="term" data-term="box3" aria-expanded="false">being reworked</button>.</p></p></li>
+        <li data-t="step2"><h4>Open an account.</h4><p>Any <button type="button" class="term" data-term="broker" aria-expanded="false">broker</button> with a cheap total-world index fund or ETF will do. Compare the total yearly costs, fund and platform together.</p></li>
+        <li data-t="step3"><h4>Pick one fund.</h4><p>One world stock fund is the whole haystack. Want bonds in it too? A mixed fund holds both and rebalances for you. <a href="https://www.vanguardinvestor.co.uk/investing-explained/what-are-lifestrategy-funds" rel="noopener">Vanguard’s LifeStrategy funds</a> come in mixes from 20% to 100% stocks.</p></li>
+        <li data-t="step4"><h4>Automate it, then look away.</h4><p>Set up a monthly transfer and let it run. Got a lump sum? Putting it in at once <button type="button" class="term" data-term="lumpsum" aria-expanded="false">usually wins</button>.</p></p></li>
       </ol>
+      <details class="fn"><summary data-t="fnNotes">Notes &amp; sources</summary><p class="note" data-t="stepsSrc">Buffer: a common rule of thumb, not a law. Lump sum: Vanguard, <a href="https://corporate.vanguard.com/content/dam/corp/research/pdf/cost_averaging_invest_now_or_temporarily_hold_your_cash.pdf" rel="noopener">“Cost averaging: invest now or temporarily hold your cash?”</a> (2023), rolling one-year periods 1976–2022. Mixed funds: <a href="https://www.vanguardinvestor.co.uk/investing-explained/what-are-lifestrategy-funds" rel="noopener">Vanguard, What is a LifeStrategy fund?</a> Other providers offer similar one-fund mixes; compare costs before you pick.</p></details>
     </div>
     <figure class="pull"><blockquote data-t="qGraham">“The investor’s chief problem — and even his worst enemy — is likely to be himself.”</blockquote><figcaption class="mono" data-t="qGrahamBy">Benjamin Graham, The Intelligent Investor</figcaption></figure>
   </section>
@@ -729,6 +733,7 @@ table.data :is(th,td):first-child{text-align:left}
     </div>
 
     <span class="mono eye-gap" data-t="readEye">Watch, read, listen</span>
+    <p class="lede read-lede" data-t="readMore">Want to go deeper? These are the best places to start.</p>
     <div class="vids tight">
       <figure class="vid"><div class="vid-frame"><button class="vid-play" type="button" data-yt="n_paK_p3_gs" data-title="Vanguard's John Bogle on Starting the First Index Fund" style="--img:url(/investing/video/bogle-first-index-fund.jpg)" aria-label="Play: Vanguard's John Bogle on Starting the First Index Fund" data-ta="v1play@aria-label"><span class="vid-badge" aria-hidden="true"></span><span class="vid-sound mono" aria-hidden="true" data-t="vidSound">Click for sound</span></button></div><figcaption><span class="mono">Investopedia</span><h3>John C. Bogle</h3><p data-t="v1">Why he started the first index fund for ordinary investors.</p></figcaption></figure>
       <figure class="vid"><div class="vid-frame"><button class="vid-play" type="button" data-yt="-GrKhUdu-YE" data-title="Buffett: I would buy the S&P 500 in a second" style="--img:url(/investing/video/buffett-sp500.jpg)" aria-label="Play: Buffett: I would buy the S&P 500 in a second" data-ta="v2play@aria-label"><span class="vid-badge" aria-hidden="true"></span><span class="vid-sound mono" aria-hidden="true" data-t="vidSound">Click for sound</span></button></div><figcaption><span class="mono">CNBC</span><h3>Warren Buffett</h3><p data-t="v2">Why he would buy the index rather than pick stocks.</p></figcaption></figure>
@@ -746,12 +751,13 @@ table.data :is(th,td):first-child{text-align:left}
 
   <footer class="end">
     <p class="big" data-t="endBig">Stay the course.</p>
+    <p class="end-lede" data-t="endLede">You don’t need to be clever, lucky or early. A world fund, a monthly transfer and a lot of patience quietly beat most of the professionals trying very hard.</p>
     <small data-t="endSmall">This is an explainer, not financial advice. Holdings are approximate and change daily. Before you buy, check a fund’s costs and how it is taxed where you live: the country a fund is based in changes how much it loses to tax on dividends.</small>
   </footer>
 </main>
 
 <script src="/investing/returns.js?v=4"></script>
-<script src="/investing/i18n.js?v=27"></script>
-<script src="/investing/app.js?v=21"></script>
+<script src="/investing/i18n.js?v=29"></script>
+<script src="/investing/app.js?v=22"></script>
 </body>
 </html>
