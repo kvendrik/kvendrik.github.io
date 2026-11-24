@@ -45,10 +45,10 @@ const PLAN = 0.05; // the planning return: about what the full record (DMS) show
 const START = 10000; // Bogle's chart: what $10,000 became
 
 /* ---------- language & formatting ---------- */
-// /investing/nl/ is the Dutch page; /investing/ follows ?lang=, then the reader's last choice, then the browser
-const ON_SITE = /^\/investing(\/|$)/.test(location.pathname);
+// /beleggen/ is the Dutch page; /investing/ follows ?lang=, then the reader's last choice, then the browser
+const ON_SITE = /^\/(investing|beleggen)(\/|$)/.test(location.pathname);
 let LANG = (() => {
-  if (ON_SITE && /^\/investing\/nl(\/|$)/.test(location.pathname)) return "nl";
+  if (ON_SITE && /^\/beleggen(\/|$)/.test(location.pathname)) return "nl";
   const q = new URLSearchParams(location.search).get("lang");
   if (q === "en" || q === "nl") return q;
   const s = store.get("investing-lang");
@@ -668,7 +668,9 @@ const ESG = [[2014, 4.00, 4.16], [2015, -2.72, -2.36], [2016, 8.23, 7.86], [2017
 function drawEsg() {
   const svg = $("#esgSvg"), box = $("#esgChart");
   if (!svg || !box) return;
-  const w = box.clientWidth, small = w < 560, h = small ? 210 : 240, m = { t: 22, r: 4, b: 26, l: 4 }, ih = h - m.t - m.b;
+  const w = box.clientWidth;
+  if (!w) return; // folded away; drawn when it opens
+  const small = w < 560, h = small ? 210 : 240, m = { t: 22, r: 4, b: 26, l: 4 }, ih = h - m.t - m.b;
   const gaps = ESG.map(([y, a, b]) => [y, a - b]), top = 8.5; // the widest gap is 6.4 points; room for its label
   const slot = (w - m.l - m.r) / gaps.length, bw = Math.min(28, slot * 0.6);
   const Y = (v) => m.t + (top - v) / (2 * top) * ih, zero = Y(0);
@@ -1009,14 +1011,51 @@ function revealQuotes() {
   $$(".pull, .sage").forEach((el) => { if (el.getBoundingClientRect().top > innerHeight) { el.classList.add("pre"); io.observe(el); } });
 }
 
+/* ---------- words you can tap for their meaning ---------- */
+// one bubble for the whole page; the text comes from the dictionary, so it follows the language
+function bindTerms() {
+  const pop = document.createElement("div");
+  pop.className = "term-pop"; pop.id = "termPop"; pop.setAttribute("role", "tooltip"); pop.hidden = true;
+  document.body.appendChild(pop);
+  let open = null;
+  const close = () => {
+    if (!open) return;
+    open.setAttribute("aria-expanded", "false"); open.removeAttribute("aria-describedby");
+    pop.hidden = true; open = null;
+  };
+  const show = (btn) => {
+    close();
+    pop.textContent = t("term_" + btn.dataset.term) || "";
+    pop.hidden = false;
+    const r = btn.getBoundingClientRect(), pw = pop.offsetWidth, ph = pop.offsetHeight, pad = 16;
+    const left = clamp(r.left + r.width / 2 - pw / 2, pad, innerWidth - pw - pad);
+    const below = r.bottom + 10 + ph < innerHeight || r.top < ph + 20;
+    pop.style.left = left + scrollX + "px";
+    pop.style.top = (below ? r.bottom + 10 : r.top - ph - 10) + scrollY + "px";
+    pop.style.setProperty("--ox", (r.left + r.width / 2 - left) + "px");
+    btn.setAttribute("aria-expanded", "true"); btn.setAttribute("aria-describedby", "termPop");
+    open = btn;
+    haptic();
+  };
+  document.addEventListener("click", (e) => {
+    const btn = e.target.closest(".term");
+    if (btn) { e.preventDefault(); e.stopPropagation(); open === btn ? close() : show(btn); return; }
+    if (!e.target.closest(".term-pop")) close();
+  });
+  document.addEventListener("keydown", (e) => { if (e.key === "Escape" && open) { const b = open; close(); b.focus(); } });
+  addEventListener("resize", close);
+  return close;
+}
+const closeTerm = bindTerms();
+
 /* ---------- switching language ---------- */
-// the address follows the language: /investing/ or /investing/nl/ (an old ?lang= link is tidied up too)
+// the address follows the language: /investing/ or /beleggen/ (an old ?lang= link is tidied up too)
 function syncUrl() {
   if (!ON_SITE) return;
   try {
     const u = new URL(location.href);
     u.searchParams.delete("lang");
-    u.pathname = LANG === "nl" ? "/investing/nl/" : "/investing/";
+    u.pathname = LANG === "nl" ? "/beleggen/" : "/investing/";
     if (u.href !== location.href) history.replaceState(null, "", u);
   } catch {}
 }
@@ -1028,6 +1067,7 @@ function setLang(lang) {
   LANG = lang;
   store.set("investing-lang", lang);
   syncUrl();
+  closeTerm();
   applyStatic();
   FIELDS.forEach((id, k) => ($("#" + id).value = fmtField(id, vals[k])));
   historyLists(); periodStats(); paintBrush(); heroText();
@@ -1051,6 +1091,7 @@ bindMC(); expText(); simulate();
 bindVideos(); bindBooks(); revealQuotes();
 drawMix(); onResize($("#mixChart"), drawMix);
 drawEsg(); onResize($("#esgChart"), drawEsg); revealGrid();
+$("#esgChart")?.closest("details")?.addEventListener("toggle", (e) => e.target.open && drawEsg());
 const hc = $("#histChart");
 $("#histSvg").setAttribute("height", hc.clientWidth < 560 ? 320 : 380);
 // the chart is the hero: it draws straight away and the number counts up with it

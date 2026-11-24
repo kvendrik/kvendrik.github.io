@@ -1,4 +1,4 @@
-// Generates /investing/nl/index.html: the investing page with its Dutch text filled in,
+// Generates /beleggen/index.html: the investing page with its Dutch text filled in,
 // so Dutch readers, search engines and link previews get Dutch without waiting for the script.
 // The English originals ride along as JSON, so switching language in place still works.
 import fs from 'node:fs';
@@ -54,7 +54,7 @@ html = html.replace(/<[^>]*data-ta="([^"]+)"[^>]*>/g, (tagHtml, key) => {
   });
 });
 
-const url = 'https://kvendrik.com/investing/nl/';
+const url = 'https://kvendrik.com/beleggen/';
 const title = I.nl.title;
 const description = I.nl.description;
 const ogDescription = I.nl.ogDescription || description;
@@ -75,7 +75,16 @@ const json = JSON.stringify(EN).replace(/</g, '\\u003c');
 // (a function, so the $ signs in the English text aren't read as replacement patterns)
 html = html.replace('<script src="/investing/returns.js', (m) => `<script type="application/json" id="i18n-en">${json}</script>\n${m}`);
 
+fs.mkdirSync('public/beleggen', { recursive: true });
+fs.writeFileSync('public/beleggen/index.html', html);
+// the page's first Dutch address keeps working: it forwards to /beleggen/
 fs.mkdirSync(path.join(dir, 'nl'), { recursive: true });
-fs.writeFileSync(path.join(dir, 'nl', 'index.html'), html);
+fs.writeFileSync(path.join(dir, 'nl', 'index.html'), `<!DOCTYPE html>
+<html lang="nl"><head><meta charset="utf-8"><title>${esc(title)}</title>
+<link rel="canonical" href="${url}"><meta name="robots" content="noindex">
+<meta http-equiv="refresh" content="0; url=/beleggen/">
+<script>location.replace('/beleggen/' + location.search.replace(/[?&]lang=[^&]*/, '').replace(/^&/, '?') + location.hash)</script>
+</head><body><p><a href="/beleggen/">Naar de pagina</a></p></body></html>
+`);
 const missing = Object.keys(EN).filter((k) => NL[k] == null);
-console.log(`investing/nl: ${Object.keys(EN).length} strings, ${missing.length} kept in English${missing.length ? ': ' + missing.join(', ') : ''}`);
+console.log(`beleggen: ${Object.keys(EN).length} strings, ${missing.length} kept in English${missing.length ? ': ' + missing.join(', ') : ''}`);

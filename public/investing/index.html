@@ -9,7 +9,7 @@
 <meta name="description" content="Index investing in the whole world, the Bogle way: 125 years of stock returns, what an index fund is, what you own, and what your money could become.">
 <link rel="canonical" href="https://kvendrik.com/investing/">
 <link rel="alternate" hreflang="en" href="https://kvendrik.com/investing/">
-<link rel="alternate" hreflang="nl" href="https://kvendrik.com/investing/nl/">
+<link rel="alternate" hreflang="nl" href="https://kvendrik.com/beleggen/">
 <link rel="alternate" hreflang="x-default" href="https://kvendrik.com/investing/">
 <link rel="icon" href="/investing/favicon.svg" type="image/svg+xml">
 <link rel="icon" href="/investing/favicon-32.png" type="image/png" sizes="32x32">
@@ -165,6 +165,26 @@ summary:active{opacity:.6}
 details::details-content{block-size:0;overflow:clip;transition:block-size .4s var(--ease-drawer),content-visibility .4s allow-discrete}
 details[open]::details-content{block-size:auto}
 details+details{margin-top:0}
+/* a word you can tap for its meaning */
+.term{all:unset;cursor:help;text-decoration:underline dotted;text-decoration-color:var(--muted);text-decoration-thickness:1.5px;text-underline-offset:.2em;-webkit-tap-highlight-color:transparent}
+.term[aria-expanded="true"]{text-decoration-style:solid;text-decoration-color:var(--ink)}
+.term:focus-visible{outline:2px solid var(--ink);outline-offset:2px}
+.term-pop{position:absolute;z-index:30;width:max-content;max-width:min(320px,calc(100vw - 32px));padding:14px 16px;background:var(--ink);color:var(--paper);font:400 15px/1.5 var(--f-body);border-radius:2px;box-shadow:0 10px 30px -12px rgba(20,19,18,.55);transform-origin:var(--ox,50%) top;animation:term-in .18s var(--ease)}
+.term-pop[hidden]{display:none}
+@keyframes term-in{from{opacity:0;transform:translateY(-4px) scale(.98)}}
+/* start in four steps */
+.steps{margin-top:var(--s-9)}
+.steps-h{font-size:var(--t-h2);line-height:1.05;margin:var(--s-3) 0 var(--s-6)}
+.steps-list{list-style:none;padding:0;margin:0;display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:var(--s-7) var(--s-7);counter-reset:step}
+.steps-list li{counter-increment:step;border-top:1px solid var(--ink);padding-top:var(--s-4)}
+.steps-list li::before{content:counter(step);display:block;font-family:var(--f-display);font-size:var(--t-3xl);line-height:1;margin-bottom:var(--s-3)}
+.steps-list h4{margin:0;font-family:var(--f-display);font-weight:400;font-size:var(--t-xl);line-height:1.15}
+.steps-list p{margin-top:var(--s-2);font-size:var(--t-card);color:var(--ink-2)}
+.steps-list a{color:inherit;text-underline-offset:3px;text-decoration-color:var(--rule)}
+/* green investing: the evidence opens on demand */
+details.deep{margin-top:var(--s-8)}
+details.deep>.esg-part:first-of-type{margin-top:var(--s-5)}
+details.deep>.esg-voices{margin-bottom:var(--s-5)}
 /* footnotes: folded away, one quiet line until you want them */
 details.fn{margin-top:var(--s-5);border-top:0}
 details.fn>summary{display:inline-flex;gap:var(--s-2);justify-content:flex-start;min-height:44px;padding:0;font-family:var(--f-mono);font-size:var(--t-mono);letter-spacing:.1em;text-transform:uppercase;color:var(--muted)}
@@ -366,6 +386,8 @@ table.data :is(th,td):first-child{text-align:left}
 .money .b-spine{background:#ADA290;color:var(--ink)}
 .money .b-title{font-size:22px}
 .b-glass{width:38px;margin-top:auto;align-self:center;color:var(--ink)}
+.gr{display:inline-flex;align-items:center;min-height:44px;margin-top:var(--s-2);color:var(--ink-2);text-decoration:underline;text-decoration-color:var(--rule);text-underline-offset:4px;transition:text-decoration-color .2s}
+@media (hover:hover) and (pointer:fine){.gr:hover{text-decoration-color:var(--ink)}}
 .book-card:hover .book{transition-duration:.45s}
 .book.open{transform:rotateY(4deg)}
 @media (hover:none){.book-card{cursor:pointer}}
@@ -420,6 +442,7 @@ table.data :is(th,td):first-child{text-align:left}
   .feebars .r{grid-template-columns:7.5em minmax(0,1fr) 5.5em}
   .feebars .r .mono{display:block;margin-top:2px}
   .hay .btns{display:grid;grid-template-columns:1fr;gap:var(--s-3)}
+  .steps-list{grid-template-columns:1fr;gap:var(--s-6)}
   .rules>div{grid-template-columns:2.25em minmax(0,1fr);gap:var(--s-2)}
   .brush{height:52px}
 }
@@ -468,7 +491,7 @@ table.data :is(th,td):first-child{text-align:left}
   </header>
 
   <section id="history" class="more" aria-label="125 years of the world’s stock market" data-ta="hist@aria-label">
-    <p class="lede" data-t="histLede">Two world wars, a pandemic, a depression, oil shocks, bubbles and crashes. Every one of them hurt. None of them stopped it.</p>
+    <p class="lede" data-t="histLede">Two world wars, a pandemic, a depression, oil shocks, bubbles and crashes. Every one of them hurt. None of them stopped it. All numbers are <button type="button" class="term" data-term="inflation" aria-expanded="false">after inflation</button>. And it’s history, not a promise: further down, we plan with less.</p>
 
 
     <div class="stats" id="histStats"></div>
@@ -494,7 +517,7 @@ table.data :is(th,td):first-child{text-align:left}
     <p class="lede" data-t="etfLede">An index is a list: say, every listed company in the world, each counted by its size. An index fund simply buys everything on the list. An ETF is an index fund you buy and sell like a share.</p>
     <ul class="how">
       <li data-t="how1"><h3>It owns everything</h3><p>One fund, thousands of companies. If a company grows, you own it. If one fails, it was a tiny slice. Nobody has to guess which is which.</p></li>
-      <li data-t="how2"><h3>Nobody picks</h3><p>No star manager, no research team, no trading on hunches. The fund follows the list, so it costs very little to run: often 0.1% to 0.25% a year.</p></li>
+      <li data-t="how2"><h3>Nobody picks</h3><p>No star manager, no research team, no trading on hunches. The fund follows the list, so it costs very little to run: often 0.1% to 0.25% a year (its <button type="button" class="term" data-term="ter" aria-expanded="false">TER</button>).</p></p></li>
       <li data-t="how3"><h3>You get the market</h3><p>You give up any chance of beating the market. In return you get its return, minus a tiny fee, which most professionals don’t manage once their own fees are counted.</p></li>
     </ul>
     <figure class="pull"><blockquote data-t="qSam">“I rank this Bogle invention along with the invention of the wheel, the alphabet, Gutenberg printing, and wine and cheese.”</blockquote><figcaption class="mono" data-t="qSamBy">Paul Samuelson, Nobel Prize–winning economist, 2005</figcaption></figure>
@@ -576,17 +599,19 @@ table.data :is(th,td):first-child{text-align:left}
       <div data-t="esg1"><span class="mono">What you’d own</span><h3>One company in four</h3><p>The strictest green version of MSCI’s world index (called ACWI SRI) keeps 585 of its 2,413 companies. Fewer companies means bigger bets on the ones left: Nvidia is 8.0% of the green index against 4.7% of the world index. Energy companies are 0.1% of it.</p></div>
       <figure class="g100-fig"><div class="g100" id="esgGrid" aria-hidden="true"><i></i><i></i><i></i><i></i><i class="on" style="--i:0"></i><i></i><i class="on" style="--i:1"></i><i class="on" style="--i:2"></i><i class="on" style="--i:3"></i><i class="on" style="--i:4"></i><i></i><i class="on" style="--i:5"></i><i class="on" style="--i:6"></i><i></i><i></i><i></i><i></i><i></i><i></i><i class="on" style="--i:7"></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i class="on" style="--i:8"></i><i></i><i></i><i class="on" style="--i:9"></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i class="on" style="--i:10"></i><i></i><i></i><i></i><i></i><i class="on" style="--i:11"></i><i></i><i></i><i></i><i class="on" style="--i:12"></i><i></i><i></i><i class="on" style="--i:13"></i><i class="on" style="--i:14"></i><i class="on" style="--i:15"></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i class="on" style="--i:16"></i><i></i><i></i><i></i><i class="on" style="--i:17"></i><i></i><i class="on" style="--i:18"></i><i></i><i class="on" style="--i:19"></i><i></i><i class="on" style="--i:20"></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i class="on" style="--i:21"></i><i></i><i class="on" style="--i:22"></i><i></i><i></i><i></i><i class="on" style="--i:23"></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div><figcaption class="note" data-t="esgGridCap">Of every 100 companies in the world index, 24 make it into the strictest green version.</figcaption></figure>
     </div>
+    <details class="deep"><summary class="mono" data-t="esgDeep">The evidence: returns, impact, ratings</summary>
     <div class="esg-part">
       <div data-t="esg2"><span class="mono">What it does to your return</span><h3>Different, not better</h3></div>
       <figure class="chart esg-chart" id="esgChart"><svg id="esgSvg" role="img" aria-label="Bar chart: each year’s difference between the green index and the world index, 2014 to 2025." data-ta="esgChart@aria-label"></svg><figcaption class="note" data-t="esgChartCap">Each year, the green index minus the world index. Since mid-2011 they ended up close: 10.2% a year against 9.8%.</figcaption></figure>
       <div data-t="esg2b"><p>Over the long run, theory says to expect a little less. When many investors shun a stock, its price drops until the people still willing to own it are paid extra for it. Green stocks did well in recent years mostly because worries about the climate grew faster than anyone expected, and a surprise can’t be counted on twice. The flip side: “sin stocks” in alcohol, tobacco and gambling beat comparable companies by about 2.5% a year from 1926 to 2006.</p></div>
     </div>
-    <div class="esg-part" data-t="esg3"><span class="mono">What it does to the world</span><h3>Less than you’d hope</h3><p>When you sell a share, someone else buys it. Economists Jonathan Berk and Jules van Binsbergen estimate that all the selling by green and ESG investors so far has raised targeted companies’ cost of capital by about 0.44 basis points: less than a hundredth of a percent. Moving it by one full percentage point would take 86% of all investors. Another study finds that making money pricier for the dirtiest companies can even make them dirtier. Owning shares and voting them is more likely to change a company than selling them.</p></div>
-    <div class="esg-part" data-t="esg4"><span class="mono">Who decides what’s good</span><h3>The raters don’t agree</h3><p>Credit ratings from different agencies agree almost perfectly: a correlation of 0.99. ESG ratings from six big raters agree far less: correlations of 0.38 to 0.71. In 2022, S&amp;P dropped Tesla from its S&amp;P 500 ESG index while ExxonMobil stayed in. Elon Musk called ESG “a scam”. A year later Larry Fink, who runs BlackRock, the world’s largest fund manager, stopped using the word, saying it had been weaponized.</p></div>
+    <div class="esg-part" data-t="esg3"><span class="mono">What it does to the world</span><h3>Less than you’d hope</h3><p>When you sell a share, someone else buys it. Economists Jonathan Berk and Jules van Binsbergen estimate that all the selling by green and ESG investors so far has raised targeted companies’ <button type="button" class="term" data-term="capital" aria-expanded="false">cost of capital</button> by about 0.44 <button type="button" class="term" data-term="bp" aria-expanded="false">basis points</button>: less than a hundredth of a percent. Moving it by one full percentage point would take 86% of all investors. Another study finds that making money pricier for the dirtiest companies can even make them dirtier. Owning shares and voting them is more likely to change a company than selling them.</p></div>
+    <div class="esg-part" data-t="esg4"><span class="mono">Who decides what’s good</span><h3>The raters don’t agree</h3><p>Credit ratings from different agencies agree almost perfectly: a correlation of 0.99. ESG ratings from six big raters agree far less: <button type="button" class="term" data-term="correlation" aria-expanded="false">correlations</button> of 0.38 to 0.71. In 2022, S&amp;P dropped Tesla from its S&amp;P 500 ESG index while ExxonMobil stayed in. Elon Musk called ESG “a scam”. A year later Larry Fink, who runs BlackRock, the world’s largest fund manager, stopped using the word, saying it had been weaponized.</p></div>
     <div class="wall esg-voices">
       <figure class="sage"><blockquote data-t="esgQ1">“Accepting a lower expected return is not just an unfortunate ancillary consequence to ESG investing, it’s precisely the point.”</blockquote><figcaption><span><b>Cliff Asness</b><span class="mono" data-t="esgQ1By">Founder of AQR, in “Virtue is its Own Reward”, 2017</span></span></figcaption></figure>
       <figure class="sage"><blockquote data-t="esgQ2">“A feel-good scam that is enriching consultants, measurement services and fund managers, while doing close to nothing for the businesses and investors it claims to help.”</blockquote><figcaption><span><b>Aswath Damodaran</b><span class="mono" data-t="esgQ2By">Professor of finance at NYU Stern, 2022</span></span></figcaption></figure>
     </div>
+    </details>
     <div class="esg-way">
       <span class="mono" data-t="esgWayEye">If you want it</span>
       <h3 class="esg-way-h" data-t="esgWayH">The Bogle way to invest green</h3>
@@ -602,7 +627,7 @@ table.data :is(th,td):first-child{text-align:left}
   <section id="risk" aria-labelledby="h-risk">
     <span class="mono" data-t="riskEye">Risk</span>
     <h2 id="h-risk" data-t="riskH">How much can you stomach?</h2>
-    <p class="lede" data-t="riskLede">Stocks grow your money; bonds steady it. How you split the two is the one big choice in this plan, and it’s about you, not about the market.</p>
+    <p class="lede" data-t="riskLede">Stocks grow your money; <button type="button" class="term" data-term="bonds" aria-expanded="false">bonds</button> steady it. How you split the two is the one big choice in this plan, and it’s about you, not about the market.</p>
     <div class="calc mix" id="mixCalc">
       <div class="slider"><span class="slider-fill"></span><span class="slider-grip"></span><label class="slider-label" for="mixStocks" data-t="sMix">Stocks</label><span class="slider-val"><input id="mixStocks" type="text" inputmode="numeric" enterkeyhint="done" autocomplete="off" value="60"><span class="suf">%</span><span class="suf mix-rest" id="mixRest"></span></span></div>
     </div>
@@ -614,7 +639,7 @@ table.data :is(th,td):first-child{text-align:left}
     <p class="sr-only" id="mixDesc"></p>
     <div class="stats" id="mixStats"></div>
     <div class="prose">
-      <p data-t="riskP1">Bogle’s rule of thumb was to hold roughly your age in bonds: 30% at 30, 60% at 60. Ben Felix would add that age is only part of it. What counts is how much risk you can afford, how much you need to reach your goals, and how much you can sit through without selling. Money you’ll need within a few years doesn’t belong in stocks at all.</p>
+      <p data-t="riskP1">Bogle’s rule of thumb was to hold roughly your age in bonds: 30% at 30, 60% at 60. Ben Felix would add that age is only part of it. What counts is how much risk you can afford, how much you need to reach your goals, and how much you can sit through without selling. Money you’ll need within a few years doesn’t belong in stocks at all. The mix matters most in the years just before and after you start living off your savings: a crash then hurts far more than one at 30.</p>
       <p data-t="riskP2"><b>Rebalancing</b> keeps your mix where you chose it. Once a year, or when it drifts more than about five percentage points, sell a little of what grew and buy what fell. It quietly makes you buy low and sell high, without having to predict anything.</p>
     </div>
     <details class="fn"><summary data-t="fnNotes">Notes &amp; sources</summary><p class="note" data-t="riskNote">The chart shows 1995–2025 on a normal scale, so the swings are visible. Interest rates mostly fell in those years, which helped bonds, until 2022, when inflation hit stocks and bonds at the same time. The numbers under it cover 1950–2025, after inflation. Bonds: until 2020 the government bonds of the same 16 countries, in US dollars (Jordà-Schularick-Taylor); from 2021 the Bloomberg Global Aggregate bond index, in US dollars. From 1900 the picture is harsher for bonds: the inflation around the two world wars took about two thirds of their value. Bonds soften crashes; they don’t protect you from inflation. These are unhedged dollar bonds, which swing more than what you’d hold: for the bond half, pick bonds in your own currency or hedged to it.</p></details>
@@ -664,7 +689,16 @@ table.data :is(th,td):first-child{text-align:left}
       <div><span class="k">04</span><div data-t="rule4"><h3>Match the risk to your stomach.</h3><p>Stocks can fall by half and stay down for years. If you would sell in a crash, hold some bonds so you won’t. The best plan is the one you can stick to.</p></div></div>
       <div><span class="k">05</span><div data-t="rule5"><h3>Stay the course.</h3><p>Bogle’s phrase. The returns on the chart above went to the people who were still holding after the bad years, not to those who left.</p></div></div>
     </div>
-    <div class="esg-part buy" data-t="buy"><span class="mono">Where to buy it</span><h3>Pick a home that thinks the same way</h3><p>Any broker that sells a cheap total-world index fund or ETF will do. Some firms are built around the idea. In the Netherlands, <a href="https://www.meesman.nl/">Meesman</a> has done index investing since 2005: a world fund that follows the whole market by size, with a light filter that leaves out the worst companies. Wherever you buy, compare the total yearly costs: fund and platform together.</p></div>
+    <div class="steps">
+      <span class="mono" data-t="stepsEye">Getting started</span>
+      <h3 class="steps-h" data-t="stepsH">Start in four steps</h3>
+      <ol class="steps-list">
+        <li data-t="step1"><h4>Keep a buffer first.</h4><p>Put three to six months of expenses in a savings account. Money you need within about five years doesn’t belong in stocks.</p></li>
+        <li data-t="step2"><h4>Open an account.</h4><p>Any <button type="button" class="term" data-term="broker" aria-expanded="false">broker</button> that sells a cheap total-world index fund or ETF will do. In the Netherlands, <a href="https://www.meesman.nl/">Meesman</a> has done index investing since 2005: a world fund that follows the whole market by size, with a light filter that leaves out the worst companies. Compare the total yearly costs: fund and platform together.</p></li>
+        <li data-t="step3"><h4>Pick one world fund.</h4><p>Add a bond fund if you want a calmer ride, in the mix you chose above. That’s the whole portfolio.</p></li>
+        <li data-t="step4"><h4>Automate it, then look away.</h4><p>Set up a monthly transfer and let it run; rebalance once a year. Got a lump sum? Investing it at once beat spreading it out about two times in three in Vanguard’s research, because markets rise more often than they fall. Spreading it out is fine if it helps you sleep.</p></li>
+      </ol>
+    </div>
     <figure class="pull"><blockquote data-t="qGraham">“The investor’s chief problem — and even his worst enemy — is likely to be himself.”</blockquote><figcaption class="mono" data-t="qGrahamBy">Benjamin Graham, The Intelligent Investor</figcaption></figure>
   </section>
 
@@ -692,9 +726,9 @@ table.data :is(th,td):first-child{text-align:left}
       <figure class="vid"><div class="vid-frame"><button class="vid-play" type="button" data-yt="L-QQ_XtZNNI" data-title="Legendary John Bogle Shares the Investment Lessons of a Lifetime" style="--img:url(/investing/video/bogle-lessons.jpg)" aria-label="Play: Legendary John Bogle Shares the Investment Lessons of a Lifetime" data-ta="v4play@aria-label"><span class="vid-badge" aria-hidden="true"></span><span class="vid-sound mono" aria-hidden="true" data-t="vidSound">Click for sound</span></button></div><figcaption><span class="mono">WEALTHTRACK</span><h3>John C. Bogle</h3><p data-t="v4">A long interview: what a lifetime in investing taught him.</p></figcaption></figure>
     </div>
     <div class="reading">
-      <div class="book-card"><div class="book3d" aria-hidden="true"><div class="book little"><div class="b-front"><span class="b-author">John C. Bogle</span><span class="b-title">The Little Book of Common Sense Investing</span><svg class="b-mark" viewBox="0 0 32 20"><g fill="currentColor"><rect x="1" y="12" width="2.6" height="8" rx="1.3"/><rect x="5.4" y="7.5" width="2.6" height="12.5" rx="1.3"/><rect x="9.8" y="4" width="2.6" height="16" rx="1.3"/><rect x="14.2" y="2" width="2.6" height="18" rx="1.3"/><rect x="18.6" y="4" width="2.6" height="16" rx="1.3"/><rect x="23" y="7.5" width="2.6" height="12.5" rx="1.3"/><rect x="27.4" y="12" width="2.6" height="8" rx="1.3"/></g></svg></div><div class="b-spine"><span>The Little Book</span></div><div class="b-pages"></div><div class="b-back"></div></div></div><div data-t="read1"><span class="mono">Book · 2007, updated 2017</span><h3>The Little Book of Common Sense Investing</h3><p class="by">John C. Bogle</p><p>The case for index funds from the man who built the first one for ordinary investors. Short, plain and stubborn: own the market, keep costs low, stay the course.</p></div></div>
-      <div class="book-card"><div class="book3d" aria-hidden="true"><div class="book pillars"><div class="b-front"><span class="b-author">William J. Bernstein</span><span class="b-title">The Four Pillars of Investing</span><span class="b-pillars"><i></i><i></i><i></i><i></i></span></div><div class="b-spine"><span>The Four Pillars</span></div><div class="b-pages"></div><div class="b-back"></div></div></div><div data-t="read2"><span class="mono">Book · 2002, 2nd edition 2023</span><h3>The Four Pillars of Investing</h3><p class="by">William J. Bernstein</p><p>Theory, history, psychology and business: the four things you need to understand to invest well. The history chapters on bubbles and crashes alone are worth it.</p></div></div>
-      <div class="book-card"><div class="book3d" aria-hidden="true"><div class="book money"><div class="b-front"><span class="b-author">Morgan Housel</span><span class="b-title">The Psychology of Money</span><svg class="b-glass" viewBox="0 0 24 34" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M3 2h18M3 32h18" stroke-width="2"/><path d="M5 3c0 7 6 10 6 14s-6 7-6 14h14c0-7-6-10-6-14s6-7 6-14z" stroke-width="1.4"/><path d="M8 9h8c-1 3-3 4.5-4 6-1-1.5-3-3-4-6z" fill="currentColor" stroke="none"/><path d="M12 16v10" stroke-width=".8"/><path d="M7 31c1.5-4 8.5-4 10 0z" fill="currentColor" stroke="none"/></svg></div><div class="b-spine"><span>Psychology of Money</span></div><div class="b-pages"></div><div class="b-back"></div></div></div><div data-t="read5"><span class="mono">Book · 2020</span><h3>The Psychology of Money</h3><p class="by">Morgan Housel</p><p>Short stories about how people really behave with money: luck, risk, envy and the quiet power of doing nothing for a long time. Why behaving well beats being clever.</p></div></div>
+      <div class="book-card"><div class="book3d" aria-hidden="true"><div class="book little"><div class="b-front"><span class="b-author">John C. Bogle</span><span class="b-title">The Little Book of Common Sense Investing</span><svg class="b-mark" viewBox="0 0 32 20"><g fill="currentColor"><rect x="1" y="12" width="2.6" height="8" rx="1.3"/><rect x="5.4" y="7.5" width="2.6" height="12.5" rx="1.3"/><rect x="9.8" y="4" width="2.6" height="16" rx="1.3"/><rect x="14.2" y="2" width="2.6" height="18" rx="1.3"/><rect x="18.6" y="4" width="2.6" height="16" rx="1.3"/><rect x="23" y="7.5" width="2.6" height="12.5" rx="1.3"/><rect x="27.4" y="12" width="2.6" height="8" rx="1.3"/></g></svg></div><div class="b-spine"><span>The Little Book</span></div><div class="b-pages"></div><div class="b-back"></div></div></div><div data-t="read1"><span class="mono">Book · 2007, updated 2017</span><h3>The Little Book of Common Sense Investing</h3><p class="by">John C. Bogle</p><p>The case for index funds from the man who built the first one for ordinary investors. Short, plain and stubborn: own the market, keep costs low, stay the course.</p></div><a class="gr mono" href="https://www.goodreads.com/book/show/171127" rel="noopener">Goodreads ↗</a></div>
+      <div class="book-card"><div class="book3d" aria-hidden="true"><div class="book pillars"><div class="b-front"><span class="b-author">William J. Bernstein</span><span class="b-title">The Four Pillars of Investing</span><span class="b-pillars"><i></i><i></i><i></i><i></i></span></div><div class="b-spine"><span>The Four Pillars</span></div><div class="b-pages"></div><div class="b-back"></div></div></div><div data-t="read2"><span class="mono">Book · 2002, 2nd edition 2023</span><h3>The Four Pillars of Investing</h3><p class="by">William J. Bernstein</p><p>Theory, history, psychology and business: the four things you need to understand to invest well. The history chapters on bubbles and crashes alone are worth it.</p></div><a class="gr mono" href="https://www.goodreads.com/book/show/79351" rel="noopener">Goodreads ↗</a></div>
+      <div class="book-card"><div class="book3d" aria-hidden="true"><div class="book money"><div class="b-front"><span class="b-author">Morgan Housel</span><span class="b-title">The Psychology of Money</span><svg class="b-glass" viewBox="0 0 24 34" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M3 2h18M3 32h18" stroke-width="2"/><path d="M5 3c0 7 6 10 6 14s-6 7-6 14h14c0-7-6-10-6-14s6-7 6-14z" stroke-width="1.4"/><path d="M8 9h8c-1 3-3 4.5-4 6-1-1.5-3-3-4-6z" fill="currentColor" stroke="none"/><path d="M12 16v10" stroke-width=".8"/><path d="M7 31c1.5-4 8.5-4 10 0z" fill="currentColor" stroke="none"/></svg></div><div class="b-spine"><span>Psychology of Money</span></div><div class="b-pages"></div><div class="b-back"></div></div></div><div data-t="read5"><span class="mono">Book · 2020</span><h3>The Psychology of Money</h3><p class="by">Morgan Housel</p><p>Short stories about how people really behave with money: luck, risk, envy and the quiet power of doing nothing for a long time. Why behaving well beats being clever.</p></div><a class="gr mono" href="https://www.goodreads.com/book/show/51181015" rel="noopener">Goodreads ↗</a></div>
       <a class="obj-card cd-card" href="https://rationalreminder.ca/podcast" rel="noopener"><div class="cd3d" aria-hidden="true"><div class="disc"><div class="spin"><span>Rational Reminder</span></div></div><div class="sleeve"><span class="mono">Podcast</span><b>The Rational<br>Reminder</b></div></div><div data-t="read4"><span class="mono">Podcast ↗</span><h3>The Rational Reminder</h3><p class="by">Ben Felix, Cameron Passmore and guests</p><p>Long conversations about evidence-based investing and decisions about money, often with the academics whose papers the rest of the industry quotes. Felix goes a step further than Bogle and leans toward smaller and cheaper companies; this page sticks to the plain version.</p></div></a>
     </div>
     <details class="fn"><summary data-t="fnCredits">Drawing credits</summary><p class="note" data-t="wallCredit">Line drawings made from photos on Wikimedia Commons. John C. Bogle: <a href="https://commons.wikimedia.org/wiki/File:Photo_of_a_John_C._Bogle_By_Bill_Cramer.jpg">Bill Cramer</a>, CC BY-SA 4.0; Warren Buffett: <a href="https://commons.wikimedia.org/wiki/File:Warren_Buffett_KU_Visit.jpg">Mark Hirschey</a>, CC BY-SA 2.0; Paul Samuelson: <a href="https://commons.wikimedia.org/wiki/File:Paul_A._Samuelson,_economist,_edited.jpg">Bernard Gotfryd</a>, public domain; Benjamin Graham: <a href="https://commons.wikimedia.org/wiki/File:Benjamin_Graham_(1894-1976)_portrait_on_23_March_1950.jpg">unknown photographer, 1950</a>, public domain; William F. Sharpe: <a href="https://commons.wikimedia.org/wiki/File:William_sharpe_2007.jpg">Larry D. Moore</a>, CC BY 4.0; Charlie Munger: <a href="https://commons.wikimedia.org/wiki/File:Charlie_Munger.jpg">Nick J Webb</a>, CC BY 2.0; Eugene Fama: <a href="https://commons.wikimedia.org/wiki/File:Eugene_Fama_at_Nobel_Prize,_2013.jpg">Bengt Nyman</a>, CC BY 2.0; Daniel Kahneman: <a href="https://commons.wikimedia.org/wiki/File:Daniel_Kahneman_(3283955327)_(cropped).jpg">nrkbeta</a>, CC BY-SA 2.0.</p></details>
@@ -707,7 +741,7 @@ table.data :is(th,td):first-child{text-align:left}
 </main>
 
 <script src="/investing/returns.js?v=3"></script>
-<script src="/investing/i18n.js?v=24"></script>
-<script src="/investing/app.js?v=19"></script>
+<script src="/investing/i18n.js?v=25"></script>
+<script src="/investing/app.js?v=20"></script>
 </body>
 </html>
