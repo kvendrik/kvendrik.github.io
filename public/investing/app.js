@@ -36,11 +36,21 @@ const haptic = (() => {
 })();
 
 /* ---------- data ---------- */
-const R = W.real, N = R.length, FIRST = W.first, YEARS = R.map((_, i) => FIRST + i), LAST = YEARS[N - 1];
-const CUM = []; // what $1 put in at the start of FIRST was worth at the end of each year, after inflation
-R.reduce((v, r, i) => (CUM[i] = v * (1 + r)), 1);
-const GEO = CUM[N - 1] ** (1 / N) - 1; // the compound yearly rate history delivered
-const MU = Math.log(1 + GEO);
+// Two versions of the same history: in dollars after US inflation, and as a Dutch investor saw it, in
+// guilders and euros after Dutch inflation. The Dutch page uses the second; switching language swaps them.
+const N = W.real.length, FIRST = W.first, YEARS = W.real.map((_, i) => FIRST + i), LAST = YEARS[N - 1];
+let R = W.real, BONDS = W.bonds || [], M1 = BONDS.length, GEO = 0, MU = 0;
+const CUM = []; // what 1 put in at the start of FIRST was worth at the end of each year, after inflation
+function useSeries(lang) {
+  const eur = lang === "nl" && W.realEur;
+  R = eur ? W.realEur : W.real;
+  BONDS = (eur ? W.bondsEur : W.bonds) || [];
+  M1 = BONDS.length; // bonds: JST to 2020, then the Bloomberg Global Aggregate
+  R.reduce((v, r, i) => (CUM[i] = v * (1 + r)), 1);
+  GEO = CUM[N - 1] ** (1 / N) - 1; // the compound yearly rate history delivered
+  MU = Math.log(1 + GEO);
+}
+useSeries("en");
 const PLAN = 0.05; // the planning return: about what the full record (DMS) shows once lost markets count
 const START = 10000; // Bogle's chart: what $10,000 became
 
@@ -55,7 +65,9 @@ let LANG = (() => {
   if (s === "en" || s === "nl") return s;
   return /^nl\b/i.test(navigator.language || "") ? "nl" : "en";
 })();
+useSeries(LANG);
 const L = () => I[LANG];
+const PERIOD_TERM = () => `<button type="button" class="term" data-term="inflation" aria-expanded="false">${t("afterInfl")}</button>`;
 const t = (k, ...a) => { const v = I[LANG][k]; return typeof v === "function" ? v(...a) : v; };
 const nf = (v, d = 0) => v.toLocaleString(L().locale, { minimumFractionDigits: d, maximumFractionDigits: d });
 const int = (v) => nf(Math.round(v));
@@ -310,7 +322,7 @@ function paintIntro() {
   if (dot) { dot.setAttribute("cx", x.toFixed(1)); dot.setAttribute("cy", g.LY(v).toFixed(1)); }
   const yr = Math.min(LAST, FIRST + Math.floor(f));
   $("#calloutTo").textContent = usdBig(START * v);
-  $("#period").textContent = t("period", FIRST, yr, yr - FIRST + 1);
+  $("#period").innerHTML = esc(t("period", FIRST, yr, yr - FIRST + 1)) + " · " + PERIOD_TERM();
 }
 function playIntro() {
   if (H.intro >= 1) return;
@@ -415,7 +427,7 @@ function paintBrush() {
   set($("#hR"), t("endOf"), YEARS[H.a] + MINSPAN - 1, LAST, YEARS[H.b]);
   $("#resetZoom").hidden = H.a === 0 && H.b === N - 1;
   if (H.intro < 1) return;
-  $("#period").textContent = t("period", YEARS[H.a], YEARS[H.b], H.b - H.a + 1);
+  $("#period").innerHTML = esc(t("period", YEARS[H.a], YEARS[H.b], H.b - H.a + 1)) + " · " + PERIOD_TERM();
   $("#calloutTo").textContent = usdBig(START * CUM[H.b] / (H.a ? CUM[H.a - 1] : 1));
 }
 let periodFrame = 0;
@@ -614,7 +626,7 @@ function bindOwn() {
 }
 
 /* ---------- risk: a mix of stocks and bonds, 1950-2025 ---------- */
-const BONDS = W.bonds || [], MIX_FROM = 1950, M0 = MIX_FROM - FIRST, M1 = BONDS.length; // bonds: JST to 2020, then the Bloomberg Global Aggregate
+const MIX_FROM = 1950, M0 = MIX_FROM - FIRST;
 const CHART_FROM = 1995; // the chart: recent enough to remember, with two big crashes in it
 function mixRun(w, from = MIX_FROM) {
   let v = 1, peak = 1, fall = 0, worst = Infinity, wy = from, down = 0;
@@ -795,7 +807,7 @@ function mcTip(y, py) {
 }
 function expText() {
   $("#expHist").textContent = t("expHist", pctU(GEO));
-  $("#expNote").textContent = t("note", EXP, FIRST, LAST, pctU(GEO));
+  $("#expQ").dataset.tip = t("note", FIRST, LAST, pctU(GEO));
 }
 function bindMC() {
   const svg = $("#mcSvg");
@@ -1025,7 +1037,7 @@ function bindTerms() {
   };
   const show = (btn) => {
     close();
-    pop.textContent = t("term_" + btn.dataset.term) || "";
+    pop.textContent = btn.dataset.tip || t("term_" + btn.dataset.term) || "";
     pop.hidden = false;
     const r = btn.getBoundingClientRect(), pw = pop.offsetWidth, ph = pop.offsetHeight, pad = 16;
     const left = clamp(r.left + r.width / 2 - pw / 2, pad, innerWidth - pw - pad);
@@ -1065,11 +1077,13 @@ function setLang(lang) {
   if (lang === LANG) return;
   const vals = FIELDS.map((id) => num($("#" + id), 0)); // read in the old language, write in the new one
   LANG = lang;
+  useSeries(lang);
   store.set("investing-lang", lang);
   syncUrl();
   closeTerm();
   applyStatic();
   FIELDS.forEach((id, k) => ($("#" + id).value = fmtField(id, vals[k])));
+  if (MC) simulate(); // the forecast draws from the other history now (after the inputs speak the new language)
   historyLists(); periodStats(); paintBrush(); heroText();
   if (H.shown) drawHistory();
   hay.relabel(); fees(); own(); expText(); drawMC(); drawMix(); drawEsg();

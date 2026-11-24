@@ -33,6 +33,18 @@ RECENT = {y: (_ACWI[y], _DEC[y] / _DEC[y - 1] - 1) for y in _ACWI}
 # matching the press at the time (2021 about -4.8%, 2022 a record -16.3%, 2023 a little under 6%).
 _GLOBAL_AGG = {2021: -0.0471, 2022: -0.1625, 2023: 0.0572, 2024: -0.0169, 2025: 0.0817}
 
+# The same portfolios as a Dutch investor saw them: dollar returns turned into guilders (euros from 1999,
+# kept in guilder units at 2.20371) with the year-end exchange rate, then minus Dutch inflation.
+# JST's guilder rate for 1946-1952 is a free-market rate (6.5 per dollar in 1946); the official rate was
+# pegged at 2.65 until the September 1949 devaluation, then 3.80. A Dutch saver's foreign holdings were
+# valued at the official rate, so those years use it.
+NLG_OFFICIAL = {1946: 2.65, 1947: 2.65, 1948: 2.65, 1949: 3.80, 1950: 3.80, 1951: 3.80, 1952: 3.80}
+NLG_PER_EUR = 2.20371
+# after JST: ECB euro reference rate on the last business day of the year (dollars per euro), and
+# CBS yearly average Dutch inflation (the JST price index is a yearly average too)
+_EURUSD = {2020: 1.2271, 2021: 1.1326, 2022: 1.0666, 2023: 1.1050, 2024: 1.0389, 2025: 1.1750}
+_NL_INFL = {2021: 0.027, 2022: 0.100, 2023: 0.038, 2024: 0.033, 2025: 0.033}
+
 # Germany's hyperinflation (1923) and currency reform (1948) put the yearly return and the year-end
 # exchange rate on different footings, which gives offsetting spikes (+830% then -87%, -87% then +700%).
 # Each pair nets out close to flat, so leave both years of each pair out.
@@ -89,6 +101,12 @@ def main(path):
     us_cpi = {y: num(by.get(("USA", y), {}).get("cpi")) for y in years}
 
     out, bonds, ever = [], [], set()
+    real_eur, bonds_eur = [], []
+    nl_xr = {y: NLG_OFFICIAL.get(y, num(by.get(("NLD", y), {}).get("xrusd"))) for y in years}
+    nl_cpi = {y: num(by.get(("NLD", y), {}).get("cpi")) for y in years}
+
+    def to_eur(nominal_usd, fx_ratio, infl_nl):
+        return (1 + nominal_usd) * fx_ratio / (1 + infl_nl) - 1
     for y in range(1900, years[-1] + 1):
         tot_w, acc, used = 0.0, 0.0, []
         b_w, b_acc = 0.0, 0.0
@@ -119,6 +137,9 @@ def main(path):
         real = (1 + nominal) / (1 + infl) - 1
         out.append((y, real))
         bonds.append((1 + b_acc / b_w) / (1 + infl) - 1)
+        fx, infl_nl = nl_xr[y] / nl_xr[y - 1], nl_cpi[y] / nl_cpi[y - 1] - 1
+        real_eur.append(to_eur(nominal, fx, infl_nl))
+        bonds_eur.append(to_eur(b_acc / b_w, fx, infl_nl))
 
     last = out[-1][0]
     for y in sorted(RECENT):
@@ -127,7 +148,12 @@ def main(path):
         nominal, infl = RECENT[y]
         out.append((y, (1 + nominal) / (1 + infl) - 1))
         bonds.append((1 + _GLOBAL_AGG[y]) / (1 + infl) - 1)
-    assert len(bonds) == len(out), "bonds and stocks must cover the same years"
+        fx = (NLG_PER_EUR / _EURUSD[y]) / (NLG_PER_EUR / _EURUSD[y - 1])
+        real_eur.append(to_eur(nominal, fx, _NL_INFL[y]))
+        bonds_eur.append(to_eur(_GLOBAL_AGG[y], fx, _NL_INFL[y]))
+    assert len(bonds) == len(out) == len(real_eur) == len(bonds_eur), "every series must cover the same years"
+    # the hand-off from JST to the ECB rate must be seamless: JST's 2020 guilder rate is the ECB's 2020 rate
+    assert abs(nl_xr[last] - NLG_PER_EUR / _EURUSD[last]) < 0.002, (nl_xr[last], NLG_PER_EUR / _EURUSD[last])
 
     first = out[0][0]
     assert [y for y, _ in out] == list(range(first, out[-1][0] + 1)), "gap in years"
@@ -138,8 +164,13 @@ def main(path):
     for r in real:
         g *= 1 + r
     sys.stderr.write(f"geometric real {g ** (1 / len(real)) - 1:.4f}, $1 -> {g:.1f}, min {min(real)}, max {max(real)}\n")
-    print("/* Real (after US inflation) yearly returns in US dollars of a world stock portfolio (real) and world government bonds (bonds). Built by scripts/investing-returns.py */")
-    print("window.WORLD = " + json.dumps({"first": first, "real": real, "bonds": [round(b, 4) for b in bonds]}) + ";")
+    print("/* Real yearly returns of a world stock portfolio and world government bonds: in US dollars after US inflation (real, bonds), and in guilders/euros after Dutch inflation (realEur, bondsEur). Built by scripts/investing-returns.py */")
+    ge = 1.0
+    for r in real_eur:
+        ge *= 1 + r
+    sys.stderr.write(f"euro series: geometric real {ge ** (1 / len(real_eur)) - 1:.4f}, 1 -> {ge:.1f}, min {min(real_eur):.4f}, max {max(real_eur):.4f}\n")
+    r4 = lambda xs: [round(x, 4) for x in xs]
+    print("window.WORLD = " + json.dumps({"first": first, "real": real, "bonds": r4(bonds), "realEur": r4(real_eur), "bondsEur": r4(bonds_eur)}) + ";")
 
 
 if __name__ == "__main__":

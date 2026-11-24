@@ -7,7 +7,10 @@ window.I18N = (function () {
   const en = {
     locale: "en-US", cur: "$", K: "K", M: "M", B: "B", Mlong: " million",
     title: "Buy the Haystack",
-    term_inflation: "Prices rise over time, so money buys a little less each year. “After inflation” means the numbers are corrected for that: they show what your money could buy, not just how many dollars it was.",
+    term_lumpsum: "In Vanguard’s research, putting a lump sum in at once beat spreading it over a year about two times in three, because markets rise more often than they fall. Spreading it out is fine if it helps you sleep.",
+    term_box3: "The Netherlands taxes savings and investments in box 3. The rules are being rewritten: a tax on actual returns is planned from 2028. Check the current rules on belastingdienst.nl before you start.",
+    term_withdraw: "A crash right before or after you start living off your savings hurts far more than one at 30: you sell low to pay the bills. A common rule of thumb is to take out about 3 to 4% of your savings in the first year, then adjust for inflation.",
+    term_inflation: "Prices rise over time, so money buys a little less each year. “After inflation” means these numbers are corrected for that: they show what your money could buy. And it’s history, not a promise: further down, we plan with less.",
     term_bonds: "A bond is a loan to a government or a company. It pays you a fixed interest and gives your money back at the end. Steadier than stocks, but it grows less.",
     term_ter: "The total expense ratio: what a fund charges each year, as a share of what you have in it. 0.2% means $2 a year for every $1,000.",
     term_broker: "The company where you open an account to buy and hold your funds, like a bank account for investments.",
@@ -16,7 +19,7 @@ window.I18N = (function () {
     term_correlation: "How closely two sets of numbers move together: 1 means in lockstep, 0 means no relation at all.",
     description: "Index investing in the whole world, the Bogle way: 125 years of stock returns, what an index fund is, what you own, and what your money could become.",
     dir: (up) => (up ? "up" : "down"),
-    period: (a, b, n) => `${a}–${b} · ${years(n, "year", "years")} · after inflation`,
+    period: (a, b, n) => `${a}–${b} · ${years(n, "year", "years")}`, afterInfl: "after inflation",
     hint: (touch) => (touch ? "Drag the edges to zoom in · drag across the chart for any year" : "Drag the edges to zoom in · hover the chart for any year"),
     at: (v, y) => `${v} in ${y}`,
     tipReturn: (p) => `${p} after inflation`,
@@ -56,15 +59,16 @@ window.I18N = (function () {
     mixAvgP: (a, b) => `growth after inflation, ${a}–${b}`, mixFall: "Deepest fall", mixFallP: "from a high to the bottom",
     mixDown: "Down years", mixDownP: "years that ended lower",
     mixDesc: (s, b, avg, worst, fall) => `With ${s}% stocks and ${b}% bonds from 1950 to 2025: ${avg} a year on average after inflation, worst year ${worst}, deepest fall ${fall}.`,
-    note: (exp, first, last, geo) => exp === "plan"
-      ? `Real years from ${first}–${last} in random order, each lowered a little so the average is 5% a year. The past is no promise, so planning with less is the careful choice.`
-      : `Real years from ${first}–${last} in random order, as they happened: ${geo} a year on average. That flatters the past a little, because markets that went to zero aren’t in the data.`,
+    note: (first, last, geo) => `Both draw real years from ${first}–${last} in random order. Plan lowers each year a little, so the average is 5%: the past is no promise, so planning with less is the careful choice. History uses them as they happened, ${geo} a year on average, which flatters the past a little: markets that went to zero aren’t in the data.`,
   };
 
   const nl = {
     locale: "nl-NL", cur: "€", K: "k", M: " mln", B: " mld", Mlong: " miljoen",
     title: "Koop de hele hooiberg",
-    term_inflation: "Prijzen stijgen, dus met geld koop je elk jaar iets minder. “Na inflatie” betekent dat de getallen daarvoor zijn gecorrigeerd: ze laten zien wat je geld kon kopen. Deze reeks volgt de wereldmarkt in dollars, na Amerikaanse inflatie; we tonen hem in euro’s. Voor een Nederlandse belegger liep het pad door wisselkoersen en Nederlandse inflatie anders, maar op lange termijn in dezelfde orde van grootte: wisselkoersen volgen op den duur grotendeels de verschillen in inflatie.",
+    term_lumpsum: "In onderzoek van Vanguard won alles in één keer inleggen het in ongeveer twee van de drie gevallen van spreiden over een jaar, omdat beurzen vaker stijgen dan dalen. Spreiden is prima als je er beter van slaapt.",
+    term_box3: "Nederland belast sparen en beleggen in box 3. Die regels worden herschreven: vanaf 2028 staat een belasting op het werkelijke rendement gepland. Kijk voor je begint naar de actuele regels op belastingdienst.nl.",
+    term_withdraw: "Een crash vlak voor of na het moment dat je van je spaargeld gaat leven, doet veel meer pijn dan een op je dertigste: je verkoopt laag om de rekeningen te betalen. Een gangbare vuistregel is in het eerste jaar zo’n 3 tot 4% op te nemen en dat daarna mee te laten groeien met de inflatie.",
+    term_inflation: "Prijzen stijgen, dus met geld koop je elk jaar iets minder. “Na inflatie” betekent dat de getallen daarvoor zijn gecorrigeerd: ze laten zien wat je geld kon kopen, zoals een Nederlandse belegger het zag, in guldens en euro’s. En het is geschiedenis, geen belofte: verderop rekenen we met minder.",
     term_bonds: "Een obligatie is een lening aan een overheid of bedrijf. Je krijgt een vaste rente en aan het eind je geld terug. Stabieler dan aandelen, maar het groeit minder.",
     term_ter: "De totale kostenratio: wat een fonds per jaar rekent, als deel van wat je erin hebt. 0,2% betekent €2 per jaar voor elke €1.000.",
     term_broker: "Het bedrijf waar je een rekening opent om fondsen te kopen en te bewaren, een soort bankrekening voor beleggingen.",
@@ -72,10 +76,10 @@ window.I18N = (function () {
     term_bp: "Een basispunt is een honderdste procentpunt. 0,44 basispunt is 0,0044%.",
     term_correlation: "Hoe sterk twee reeksen getallen samen bewegen: 1 is precies gelijk op, 0 is geen enkel verband.",
     description: "Wereldwijd indexbeleggen zoals Bogle het bedoelde: 125 jaar beursrendement, wat een indexfonds is, wat je bezit en wat je geld kan worden.",
-    ogDescription: "€10.000 in de wereldwijde aandelenmarkt in 1900 werd na inflatie €25,7 miljoen, dwars door twee wereldoorlogen heen. Waarom alles bezitten het simpelste plan is.",
-    ogImageAlt: "Koop de hele hooiberg. Een lijn die stijgt van €10.000 in 1900 naar €25,7 miljoen in 2025, na inflatie.",
+    ogDescription: "€10.000 in de wereldwijde aandelenmarkt in 1900 werd na inflatie €16,5 miljoen, dwars door twee wereldoorlogen heen. Waarom alles bezitten het simpelste plan is.",
+    ogImageAlt: "Koop de hele hooiberg. Een lijn die stijgt van €10.000 in 1900 naar €16,5 miljoen in 2025, na inflatie.",
     dir: (up) => (up ? "hoger" : "lager"),
-    period: (a, b, n) => `${a}–${b} · ${n} jaar · na inflatie`,
+    period: (a, b, n) => `${a}–${b} · ${n} jaar`, afterInfl: "na inflatie",
     hint: (touch) => (touch ? "Sleep aan de randen om in te zoomen · sleep over de grafiek voor een jaar" : "Sleep aan de randen om in te zoomen · wijs een jaar aan in de grafiek"),
     at: (v, y) => `${v} in ${y}`,
     tipReturn: (p) => `${p} na inflatie`,
@@ -115,9 +119,7 @@ window.I18N = (function () {
     mixAvgP: (a, b) => `groei na inflatie, ${a}–${b}`, mixFall: "Diepste daling", mixFallP: "van een top tot de bodem",
     mixDown: "Jaren in de min", mixDownP: "jaren die lager eindigden",
     mixDesc: (s, b, avg, worst, fall) => `Met ${s}% aandelen en ${b}% obligaties van 1950 tot 2025: gemiddeld ${avg} per jaar na inflatie, slechtste jaar ${worst}, diepste daling ${fall}.`,
-    note: (exp, first, last, geo) => exp === "plan"
-      ? `Echte jaren uit ${first}–${last} in willekeurige volgorde, elk iets verlaagd zodat het gemiddelde 5% per jaar is. Het verleden is geen belofte, dus rekenen met minder is de voorzichtige keuze.`
-      : `Echte jaren uit ${first}–${last} in willekeurige volgorde, zoals ze waren: gemiddeld ${geo} per jaar. Dat is iets te mooi, want beurzen die naar nul gingen zitten niet in de data.`,
+    note: (first, last, geo) => `Allebei trekken ze echte jaren uit ${first}–${last} in willekeurige volgorde. Plan verlaagt elk jaar iets, zodat het gemiddelde 5% is: het verleden is geen belofte, dus rekenen met minder is de voorzichtige keuze. Historisch gebruikt ze zoals ze waren, gemiddeld ${geo} per jaar. Dat is iets te mooi: beurzen die naar nul gingen zitten niet in de data.`,
   };
 
   const events = [
@@ -181,7 +183,7 @@ window.I18N = (function () {
     cite: "John C. Bogle, oprichter van Vanguard",
 
     "hist@aria-label": "125 jaar aandelen, wereldwijd",
-    histLede: "Twee wereldoorlogen, een pandemie, een depressie, oliecrises, bubbels en crashes. Ze deden allemaal pijn. Geen ervan hield de groei tegen. Alle bedragen zijn <button type=\"button\" class=\"term\" data-term=\"inflation\" aria-expanded=\"false\">na inflatie</button>. En het is geschiedenis, geen belofte: verderop rekenen we met minder.",
+    histLede: "Twee wereldoorlogen, een pandemie, een depressie, oliecrises, bubbels en crashes. Ze deden allemaal pijn. Geen ervan hield de groei tegen.",
     "view@aria-label": "Weergave",
     viewGrowth: "Groei", viewBars: "Per jaar",
     reset: "Toon alles",
@@ -190,7 +192,7 @@ window.I18N = (function () {
     evSum: "Wat er gebeurde in de slechte jaren",
     tableSum: "Alle cijfers per jaar",
     srcSum: "Bronnen",
-    source: "Alle bedragen zijn berekend in dollars, na Amerikaanse inflatie, en in euro’s getoond. Bronnen: 1900–2020, de Jordà-Schularick-Taylor Macrohistory Database (<a href=\"https://www.macrohistory.net/database/\">macrohistory.net</a>): totaalrendement op aandelen in 16 ontwikkelde landen, in Amerikaanse dollars, gewogen naar de omvang van elke economie, min de Amerikaanse inflatie. 2021–2025: het netto totaalrendement van de MSCI ACWI in dollars, min de Amerikaanse inflatie. De Duitse hyperinflatie van 1923 en de munthervorming van 1948 zijn weggelaten, omdat de data die jaren niet zuiver kan plaatsen. Deze reeks is iets te rooskleurig: beurzen die werden weggevaagd, zoals de Russische in 1917, en de slechtste oorlogsjaren van Duitsland en Japan ontbreken. Het Dimson-Marsh-Staunton Global Investment Returns Yearbook, dat Ben Felix vaak aanhaalt, telt die wel mee en komt uit op ongeveer 5% per jaar na inflatie sinds 1900. De bedragen staan hier in euro’s, maar gerekend is in dollars na Amerikaanse inflatie. Over zo’n lange periode ligt het rendement na inflatie voor een belegger in euro’s in dezelfde orde van grootte.",
+    source: "Op deze pagina omgerekend naar guldens (vanaf 1999 euro’s) met de wisselkoers aan het eind van elk jaar, voor 1946–1952 de officiële koers, en na Nederlandse inflatie (Jordà-Schularick-Taylor; vanaf 2021 ECB en CBS). Bronnen: 1900–2020, de Jordà-Schularick-Taylor Macrohistory Database (<a href=\"https://www.macrohistory.net/database/\">macrohistory.net</a>): totaalrendement op aandelen in 16 ontwikkelde landen, in Amerikaanse dollars, gewogen naar de omvang van elke economie, min de Amerikaanse inflatie. 2021–2025: het netto totaalrendement van de MSCI ACWI in dollars, min de Amerikaanse inflatie. De Duitse hyperinflatie van 1923 en de munthervorming van 1948 zijn weggelaten, omdat de data die jaren niet zuiver kan plaatsen. Deze reeks is iets te rooskleurig: beurzen die werden weggevaagd, zoals de Russische in 1917, en de slechtste oorlogsjaren van Duitsland en Japan ontbreken. Het Dimson-Marsh-Staunton Global Investment Returns Yearbook, dat Ben Felix vaak aanhaalt, telt die wel mee en komt uit op ongeveer 5% per jaar na inflatie sinds 1900. De bedragen staan hier in euro’s, maar gerekend is in dollars na Amerikaanse inflatie. Over zo’n lange periode ligt het rendement na inflatie voor een belegger in euro’s in dezelfde orde van grootte.",
 
     etfEye: "Het gereedschap",
     etfH: "Wat is een indexfonds?",
@@ -228,9 +230,9 @@ window.I18N = (function () {
     riskLede: "Aandelen laten je geld groeien, <button type=\"button\" class=\"term\" data-term=\"bonds\" aria-expanded=\"false\">obligaties</button> houden het stabiel. Hoe je die twee verdeelt is de enige grote keuze in dit plan, en die gaat over jou, niet over de markt.",
     sMix: "Aandelen",
     mixKeyAll: "100% aandelen",
-    riskP1: "Bogles vuistregel: houd ongeveer je leeftijd aan obligaties aan, dus 30% op je dertigste en 60% op je zestigste. Ben Felix zou eraan toevoegen dat leeftijd maar een deel van het verhaal is. Het gaat om hoeveel risico je je kunt veroorloven, hoeveel je nodig hebt om je doelen te halen, en hoeveel je kunt uitzitten zonder te verkopen. Geld dat je binnen een paar jaar nodig hebt, hoort helemaal niet in aandelen. De verdeling telt het zwaarst in de jaren vlak voor en na het moment dat je van je spaargeld gaat leven: een crash dan doet veel meer pijn dan een op je dertigste.",
+    riskP1: "Bogles vuistregel: houd ongeveer je leeftijd aan obligaties aan, dus 30% op je dertigste en 60% op je zestigste. Ben Felix zou eraan toevoegen dat leeftijd maar een deel van het verhaal is. Het gaat om hoeveel risico je je kunt veroorloven, hoeveel je nodig hebt om je doelen te halen, en hoeveel je kunt uitzitten zonder te verkopen. Geld dat je binnen een paar jaar nodig hebt, hoort helemaal niet in aandelen. De verdeling telt het zwaarst rond het moment dat je <button type=\"button\" class=\"term\" data-term=\"withdraw\" aria-expanded=\"false\">ervan gaat leven</button>.",
     riskP2: "<b>Rebalancen</b> houdt je verdeling waar je die koos. Eén keer per jaar, of als hij meer dan zo’n vijf procentpunt afwijkt, verkoop je een beetje van wat steeg en koop je bij wat daalde. Zo koop je vanzelf laag en verkoop je hoog, zonder iets te hoeven voorspellen.",
-    riskNote: "De grafiek toont 1995–2025 op een gewone schaal, zodat je de schommelingen ziet. De rente daalde in die jaren meestal, wat obligaties hielp, tot 2022: toen raakte de inflatie aandelen en obligaties tegelijk. De cijfers eronder gaan over 1950–2025, na inflatie. Obligaties: tot en met 2020 de staatsobligaties van dezelfde 16 landen, in dollars (Jordà-Schularick-Taylor); vanaf 2021 de Bloomberg Global Aggregate-obligatie-index, in dollars. Vanaf 1900 is het beeld voor obligaties harder: de inflatie rond de twee wereldoorlogen kostte ze ongeveer twee derde van hun waarde. Obligaties dempen crashes; ze beschermen je niet tegen inflatie. Dit zijn dollarobligaties zonder valuta-afdekking, die meer schommelen dan wat je zelf zou aanhouden: kies voor het obligatiedeel obligaties in euro’s of afgedekt naar de euro.",
+    riskNote: "De grafiek toont 1995–2025 op een gewone schaal, zodat je de schommelingen ziet. De rente daalde in die jaren meestal, wat obligaties hielp, tot 2022: toen raakte de inflatie aandelen en obligaties tegelijk. De cijfers eronder gaan over 1950–2025, na inflatie. Obligaties: tot en met 2020 de staatsobligaties van dezelfde 16 landen (Jordà-Schularick-Taylor), vanaf 2021 de Bloomberg Global Aggregate-obligatie-index; alles omgerekend naar euro’s en na Nederlandse inflatie. Vanaf 1900 is het beeld voor obligaties harder: de inflatie rond de twee wereldoorlogen kostte ze ongeveer twee derde van hun waarde. Obligaties dempen crashes; ze beschermen je niet tegen inflatie. Dit zijn buitenlandse obligaties zonder valuta-afdekking, die meer schommelen dan wat je zelf zou aanhouden: kies voor het obligatiedeel obligaties in euro’s of afgedekt naar de euro.",
     futEye: "Rente op rente, eerlijk berekend",
     futH: "Wat je geld kan worden",
     futLede: "Een rekenmachine met één vast rendement tekent een gladde lijn die in het echt nooit voorkomt. Deze rekent 10.000 mogelijke toekomsten door, elk opgebouwd uit echte beursjaren in willekeurige volgorde: goede jaren, slechte jaren en soms een paar slechte op rij.",
@@ -251,6 +253,8 @@ window.I18N = (function () {
     rule5: "<h3>Houd koers.</h3><p>Bogles motto. Het rendement in de grafiek hierboven ging naar wie na de slechte jaren nog belegd was, niet naar wie was uitgestapt.</p>",
 
     "h1": "Koop de hele hooiberg.",
+    "expQ@aria-label": "Wat is het verschil?",
+    "jump": "Wil je gewoon beginnen? Vier stappen ↓",
     /* footnotes */
     "fnNotes": "Toelichting &amp; bronnen",
     "fnCredits": "Bronnen van de tekeningen",
@@ -259,8 +263,8 @@ window.I18N = (function () {
     "stepsH": "Begin in vier stappen",
     "step1": "<h4>Eerst een buffer.</h4><p>Zet drie tot zes maanden aan uitgaven op een spaarrekening. Geld dat je binnen zo’n vijf jaar nodig hebt, hoort niet in aandelen.</p>",
     "step2": "<h4>Open een rekening.</h4><p>Elke <button type=\"button\" class=\"term\" data-term=\"broker\" aria-expanded=\"false\">broker</button> met een goedkoop wereldwijd indexfonds of ETF is prima. In Nederland doet <a href=\"https://www.meesman.nl/\">Meesman</a> sinds 2005 aan indexbeleggen: een wereldfonds dat de hele markt naar omvang volgt, met een licht filter dat de slechtste bedrijven weglaat. Vergelijk de totale kosten per jaar: fonds en platform samen.</p>",
-    "step3": "<h4>Kies één wereldfonds.</h4><p>Voeg een obligatiefonds toe als je een rustiger rit wilt, in de verdeling die je hierboven koos. Meer heb je niet nodig.</p>",
-    "step4": "<h4>Automatiseer het en kijk weg.</h4><p>Stel een maandelijkse overboeking in en laat die lopen; herbalanceer één keer per jaar. Heb je een bedrag ineens? In onderzoek van Vanguard won alles in één keer beleggen het in ongeveer twee van de drie gevallen van spreiden in de tijd, omdat beurzen vaker stijgen dan dalen. Spreiden is prima als je er beter van slaapt.</p>",
+    "step3": "<h4>Kies één fonds.</h4><p>Een wereldwijd aandelenfonds zoals <a href=\"https://www.nl.vanguard/professional/product/etf/equity/9505/vanguard-ftse-all-world-ucits-etf-usd-distributing\" rel=\"noopener\">FTSE All-World (VWRL)</a> van Vanguard is de hele hooiberg. Wil je er obligaties bij? Eén gemengd fonds doet allebei en herbalanceert voor je, zoals <a href=\"https://www.nl.vanguard/professional/product/etf/lifestrategy/9496/lifestrategy-80-equity-ucits-etf-eur-accumulating\" rel=\"noopener\">LifeStrategy 80%</a> van Vanguard: 80% aandelen, 20% obligaties.</p>",
+    "step4": "<h4>Automatiseer het en kijk weg.</h4><p>Stel een maandelijkse overboeking in en laat die lopen. Een bedrag ineens? Alles in één keer inleggen <button type=\"button\" class=\"term\" data-term=\"lumpsum\" aria-expanded=\"false\">wint meestal</button>. Over belasting: beleggingen vallen in box 3, en die wordt <button type=\"button\" class=\"term\" data-term=\"box3\" aria-expanded=\"false\">op de schop genomen</button>.</p>",
     /* esg */
     "esgEye": "Groen beleggen",
     "esgH": "Kun je alleen het groene deel kopen?",
