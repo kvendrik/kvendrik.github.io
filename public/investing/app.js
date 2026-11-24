@@ -1053,6 +1053,7 @@ function revealQuotes() {
 
 /* ---------- words you can tap for their meaning ---------- */
 // one bubble for the whole page; the text comes from the dictionary, so it follows the language
+const HOVER = matchMedia("(hover: hover) and (pointer: fine)").matches;
 function bindTerms() {
   const pop = document.createElement("div");
   pop.className = "term-pop"; pop.id = "termPop"; pop.setAttribute("role", "tooltip"); pop.hidden = true;
@@ -1081,10 +1082,24 @@ function bindTerms() {
   document.addEventListener("click", (e) => {
     if (!document.body.contains(e.target)) return; // the haptic tick clicks a hidden checkbox in <head>
     const btn = e.target.closest(".term");
-    if (btn) { e.preventDefault(); e.stopPropagation(); open === btn ? close() : show(btn); return; }
+    if (btn) { e.preventDefault(); e.stopPropagation(); open === btn && !HOVER ? close() : show(btn); return; }
     if (!e.target.closest(".term-pop")) close();
   });
   document.addEventListener("keydown", (e) => { if (e.key === "Escape" && open) { const b = open; close(); b.focus(); } });
+  if (HOVER) {
+    let hideT = 0;
+    const later = () => { clearTimeout(hideT); hideT = setTimeout(close, 180); };
+    document.addEventListener("pointerover", (e) => {
+      const t = e.target.closest && e.target.closest(".term");
+      if (t) { clearTimeout(hideT); if (open !== t) show(t); return; }
+      if (e.target.closest && e.target.closest(".term-pop")) clearTimeout(hideT);
+    });
+    document.addEventListener("pointerout", (e) => {
+      const from = e.target.closest && (e.target.closest(".term") || e.target.closest(".term-pop"));
+      const to = e.relatedTarget && e.relatedTarget.closest && (e.relatedTarget.closest(".term") || e.relatedTarget.closest(".term-pop"));
+      if (from && !to) later();
+    });
+  }
   let vw = innerWidth;
   addEventListener("resize", () => { if (innerWidth !== vw) { vw = innerWidth; close(); } }); // iOS resizes on scroll as the toolbar moves
   return close;

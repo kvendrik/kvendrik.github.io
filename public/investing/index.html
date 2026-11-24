@@ -353,6 +353,9 @@ table.data :is(th,td):first-child{text-align:left}
 .esg-chart .gap{font-family:var(--f-mono);font-size:10px;fill:var(--ink-2)}
 .esg-voices{margin-top:var(--s-9)}
 .esg-way{margin-top:var(--s-9)}
+.consider{margin-top:var(--s-8);padding:var(--s-6);background:var(--card);border-radius:2px}
+.consider h3{font-size:var(--t-2xl);margin:var(--s-2) 0 var(--s-3);line-height:1.15}
+.consider p{font-size:var(--t-card);color:var(--ink-2)}
 .esg-way-h{font-size:var(--t-3xl);margin:var(--s-3) 0 var(--s-5);line-height:1.1}
 #esg details{margin-top:var(--s-8)}
 /* quote wall: the words, then a small sketch beside the name */
@@ -467,6 +470,7 @@ table.data :is(th,td):first-child{text-align:left}
   .feebars .r .mono{display:block;margin-top:2px}
   .hay .btns{display:grid;grid-template-columns:1fr;gap:var(--s-3)}
   .steps-list{grid-template-columns:1fr;gap:var(--s-6)}
+  .consider{padding:var(--s-5) var(--s-4)}
   .rules>div{grid-template-columns:2.25em minmax(0,1fr);gap:var(--s-2)}
   .brush{height:52px}
 }
@@ -644,10 +648,10 @@ table.data :is(th,td):first-child{text-align:left}
       <div class="rules">
         <div><span class="k">01</span><div data-t="esgWay1"><h3>Keep it broad and cheap.</h3><p>A world index fund that only leaves out the worst keeps most of the haystack. Compare costs: many green index funds now cost about the same as plain ones.</p></div></div>
         <div><span class="k">02</span><div data-t="esgWay2"><h3>Expect the market, give or take.</h3><p>Not more. Some years your fund will trail the world index by several points. Hold on anyway; that’s the deal you chose.</p></div></div>
-        <div><span class="k">03</span><div data-t="esgWay3"><h3>Your money has a voice.</h3><p>A company <button type="button" class="term" data-term="exclude" aria-expanded="false">barely notices</button> being left out of your fund. Those who stay can speak up: fund managers vote at shareholder meetings, and that’s how a tiny fund got <button type="button" class="term" data-term="exxon" aria-expanded="false">three directors onto ExxonMobil’s board</button> in 2021, to push the oil giant to plan for the energy transition. <button type="button" class="term" data-term="vote" aria-expanded="false">Check how your fund manager votes</button>, and do the rest with what you buy and give.</p></div></div>
       </div>
+      <div class="consider"><span class="mono" data-t="considerEye">Something to consider</span><div data-t="esgWay3"><h3>Your money has a voice.</h3><p>A company <button type="button" class="term" data-term="exclude" aria-expanded="false">barely notices</button> being left out of your fund: someone else simply buys the shares. Keep them, and you keep their vote. Your fund manager casts it for you at shareholder meetings, and those votes can steer a company: <button type="button" class="term" data-term="exxon" aria-expanded="false">at ExxonMobil in 2021, shareholders elected three new directors</button> who push for a plan for the energy transition. <button type="button" class="term" data-term="engage" aria-expanded="false">Research finds</button> companies often improve after this kind of pressure, though it fails more often than it works. The catch: your fund’s vote is only as green as your fund manager, and BlackRock and Vanguard have <button type="button" class="term" data-term="greenless" aria-expanded="false">backed fewer and fewer green proposals</button> since 2022. So if you want your money to have a say, you can <button type="button" class="term" data-term="vote" aria-expanded="false">check how your fund manager votes</button>. What you buy and give counts too.</p></div></div>
     </div>
-    <details><summary class="mono" data-t="esgSrcSum">Sources</summary><p class="note src" data-t="esgSrc">MSCI ACWI SRI and MSCI ACWI index factsheet, net returns in USD, 30 October 2026 (<a href="https://www.msci.com/indexes/index/704367">msci.com</a>). ESMA guidelines on fund names using ESG or sustainability-related terms, applying from May 2025. Fama and French, “Disagreement, tastes, and asset prices” (2007); Pástor, Stambaugh and Taylor, “Sustainable investing in equilibrium” (2021) and “Dissecting green returns” (2022). Hong and Kacperczyk, “The price of sin” (2009). Berk and van Binsbergen, “The impact of impact investing” (Journal of Financial Economics). Hartzmark and Shue, “Counterproductive sustainable investing”. Berg, Kölbel and Rigobon, “Aggregate confusion: the divergence of ESG ratings” (Review of Finance, 2022). Cliff Asness, “Virtue is its own reward” (AQR, 2017). Aswath Damodaran, quoted in The Irish Times, 2022. Tesla and S&amp;P: S&amp;P Dow Jones Indices, May 2022. Larry Fink: Aspen Ideas Festival, June 2023. Engine No. 1 and ExxonMobil: NPR, May 2021. Voting by fund managers: Bloomberg, September 2024. Dimson, Karakaş and Li, “Active ownership” (Review of Financial Studies, 2015).</p></details>
+    <details><summary class="mono" data-t="esgSrcSum">Sources</summary><p class="note src" data-t="esgSrc">MSCI ACWI SRI and MSCI ACWI index factsheet, net returns in USD, 30 October 2026 (<a href="https://www.msci.com/indexes/index/704367">msci.com</a>). ESMA guidelines on fund names using ESG or sustainability-related terms, applying from May 2025. Fama and French, “Disagreement, tastes, and asset prices” (2007); Pástor, Stambaugh and Taylor, “Sustainable investing in equilibrium” (2021) and “Dissecting green returns” (2022). Hong and Kacperczyk, “The price of sin” (2009). Berk and van Binsbergen, “The impact of impact investing” (Journal of Financial Economics). Hartzmark and Shue, “Counterproductive sustainable investing”. Berg, Kölbel and Rigobon, “Aggregate confusion: the divergence of ESG ratings” (Review of Finance, 2022). Cliff Asness, “Virtue is its own reward” (AQR, 2017). Aswath Damodaran, quoted in The Irish Times, 2022. Tesla and S&amp;P: S&amp;P Dow Jones Indices, May 2022. Larry Fink: Aspen Ideas Festival, June 2023. Engine No. 1 and ExxonMobil: NPR, May 2021. Voting by fund managers: Bloomberg, September 2024. Dimson, Karakaş and Li, “Active ownership” (Review of Financial Studies, 2015). Voting trend: Reuters, 2023; ESG Dive and Morningstar, 2024.</p></details>
   </section>
 
   <section id="risk" aria-labelledby="h-risk">
@@ -770,7 +774,7 @@ table.data :is(th,td):first-child{text-align:left}
 </main>
 
 <script src="/investing/returns.js?v=4"></script>
-<script src="/investing/i18n.js?v=48"></script>
-<script src="/investing/app.js?v=26"></script>
+<script src="/investing/i18n.js?v=52"></script>
+<script src="/investing/app.js?v=27"></script>
 </body>
 </html>
