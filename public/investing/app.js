@@ -866,7 +866,7 @@ function bindSliders(onUpdate) {
   $$(".slider").forEach((el) => {
     const input = el.querySelector("input"), cfg = SL[input.id];
     const fill = el.querySelector(".slider-fill"), grip = el.querySelector(".slider-grip");
-    let x = 0, id = null, x0 = 0, s0 = 0, w = 1, dragging = false, bucket = null, edge = null, val = null;
+    let x = 0, id = null, x0 = 0, s0 = 0, w = 1, dragging = false, dragged = false, bucket = null, edge = null, val = null;
     const update = cfg.update || onUpdate;
     const paint = () => {
       fill.style.clipPath = `inset(0 ${((1 - x) * 100).toFixed(2)}% 0 0)`;
@@ -878,7 +878,7 @@ function bindSliders(onUpdate) {
     SLIDERS.push(sync);
     sync();
     el.addEventListener("pointerdown", (e) => {
-      if (id !== null || e.button > 0 || e.target === input) return; // one finger at a time; the number is for typing
+      if (id !== null || e.button > 0) return; // one finger at a time
       id = e.pointerId; x0 = e.clientX; s0 = x; w = el.clientWidth; dragging = false;
       el.classList.add("pressed");
     });
@@ -910,10 +910,14 @@ function bindSliders(onUpdate) {
       el.classList.remove("pressed", "dragging");
       el.style.transform = ""; // the CSS transition springs the stretch back
       if (dragging) update(false);
-      else if (e.type === "pointerup") { input.focus(); input.select(); }
+      dragged = dragging;
       dragging = false;
     };
     el.addEventListener("pointerup", end);
+    // a tap opens the number for typing (a click, so iOS lets the keyboard open); a drag doesn't
+    el.addEventListener("click", () => { if (dragged) { dragged = false; return; } input.focus(); input.select(); });
+    // once a horizontal drag has started, the page must not scroll too
+    el.addEventListener("touchmove", (e) => { if (dragging) e.preventDefault(); }, { passive: false });
     el.addEventListener("pointercancel", end);
     input.addEventListener("input", () => { sync(); update(); });
     input.addEventListener("keydown", (e) => {
@@ -1060,12 +1064,14 @@ function bindTerms() {
     haptic();
   };
   document.addEventListener("click", (e) => {
+    if (!document.body.contains(e.target)) return; // the haptic tick clicks a hidden checkbox in <head>
     const btn = e.target.closest(".term");
     if (btn) { e.preventDefault(); e.stopPropagation(); open === btn ? close() : show(btn); return; }
     if (!e.target.closest(".term-pop")) close();
   });
   document.addEventListener("keydown", (e) => { if (e.key === "Escape" && open) { const b = open; close(); b.focus(); } });
-  addEventListener("resize", close);
+  let vw = innerWidth;
+  addEventListener("resize", () => { if (innerWidth !== vw) { vw = innerWidth; close(); } }); // iOS resizes on scroll as the toolbar moves
   return close;
 }
 const closeTerm = bindTerms();
