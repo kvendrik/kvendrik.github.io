@@ -71,6 +71,9 @@ h2{font-size:var(--t-h2);margin:var(--s-4) 0 var(--s-6)}
 .prose-p{margin-top:var(--s-7);color:var(--ink-2);max-width:60ch}
 .prose b{color:var(--ink);font-weight:600}
 .note{margin-top:var(--s-4);color:var(--muted);font-size:var(--t-sm);line-height:1.5}
+/* one style for every link in running text: ink, with a quiet underline that darkens on hover */
+main a:not([class]){color:inherit;text-decoration:underline;text-decoration-color:var(--rule);text-decoration-thickness:1px;text-underline-offset:3px;transition:text-decoration-color .2s}
+@media (hover:hover) and (pointer:fine){main a:not([class]):hover{text-decoration-color:var(--ink)}}
 .note a{color:inherit;text-underline-offset:3px}
 
 /* top bar + hero */
