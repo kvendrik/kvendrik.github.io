@@ -189,6 +189,9 @@ details+details{margin-top:0}
 .steps-list li::before{content:counter(step);display:block;font-family:var(--f-display);font-size:var(--t-3xl);line-height:1;margin-bottom:var(--s-3)}
 .steps-list h4{margin:0;font-family:var(--f-display);font-weight:400;font-size:var(--t-xl);line-height:1.15}
 .steps-list p{margin-top:var(--s-2);font-size:var(--t-card);color:var(--ink-2)}
+.step-q{margin:var(--s-4) 0 0;padding-left:var(--s-3);border-left:2px solid var(--rule)}
+.step-q blockquote{margin:0;font-family:var(--f-display);font-style:italic;font-size:var(--t-lg);line-height:1.3;color:var(--ink-2);text-wrap:pretty}
+.step-q figcaption{margin-top:var(--s-1)}
 .steps-list a{color:inherit;text-underline-offset:3px;text-decoration-color:var(--rule)}
 /* green investing: the evidence opens on demand */
 details.deep{margin-top:var(--s-8)}
@@ -706,12 +709,12 @@ table.data :is(th,td):first-child{text-align:left}
       <span class="mono" data-t="stepsEye">Getting started</span>
       <h3 class="steps-h" data-t="stepsH">Start in four steps</h3>
       <ol class="steps-list">
-        <li data-t="step1"><h4>Keep a buffer first.</h4><p>Put three to six months of expenses in a savings account. Money you need within about five years doesn’t belong in stocks.</p></li>
-        <li data-t="step2"><h4>Open an account.</h4><p>Any <button type="button" class="term" data-term="broker" aria-expanded="false">broker</button> with a cheap total-world index fund or ETF will do. Compare the total yearly costs, fund and platform together.</p></li>
-        <li data-t="step3"><h4>Pick one fund.</h4><p>One world stock fund is the whole haystack. Want bonds in it too? A mixed fund holds both and rebalances for you. <a href="https://www.vanguardinvestor.co.uk/investing-explained/what-are-lifestrategy-funds" rel="noopener">Vanguard’s LifeStrategy funds</a> come in mixes from 20% to 100% stocks.</p></li>
-        <li data-t="step4"><h4>Automate it, then look away.</h4><p>Set up a monthly transfer and let it run. Got a lump sum? Putting it in at once <button type="button" class="term" data-term="lumpsum" aria-expanded="false">usually wins</button>.</p></p></li>
+        <li><div data-t="step1"><h4>Keep a buffer first.</h4><p>Put three to six months of expenses in a savings account. Money you need within about five years doesn’t belong in stocks.</p></div><figure class="step-q"><blockquote data-t="stepQ1">“Saving is a hedge against life’s inevitable ability to surprise the hell out of you at the worst possible moment.”</blockquote><figcaption class="mono">Morgan Housel</figcaption></figure></li>
+        <li><div data-t="step2"><h4>Open an account.</h4><p>Any <button type="button" class="term" data-term="broker" aria-expanded="false">broker</button> with a cheap total-world index fund or ETF will do. Compare the total yearly costs, fund and platform together.</p></div><figure class="step-q"><blockquote data-t="stepQ2">“Do not allow the tyranny of compounding costs to overwhelm the magic of compounding returns.”</blockquote><figcaption class="mono">John C. Bogle</figcaption></figure></li>
+        <li><div data-t="step3"><h4>Pick one fund.</h4><p>One world stock fund is the whole haystack. Want bonds in it too? A mixed fund holds both and rebalances for you. <a href="https://www.vanguardinvestor.co.uk/investing-explained/what-are-lifestrategy-funds" rel="noopener">Vanguard’s LifeStrategy funds</a> come in mixes from 20% to 100% stocks.</p></div><figure class="step-q"><blockquote data-t="stepQ3">“The goal of the non-professional should not be to pick winners, but to own a cross-section of businesses that in aggregate are bound to do well.”</blockquote><figcaption class="mono">Warren Buffett</figcaption></figure></li>
+        <li><div data-t="step4"><h4>Automate it, then look away.</h4><p>Set up a monthly transfer and let it run. Got a lump sum? Putting it in at once <button type="button" class="term" data-term="lumpsum" aria-expanded="false">usually wins</button>.</p></p></div><figure class="step-q"><blockquote data-t="stepQ4">“Compounding only works if you can give an asset years and years to grow.”</blockquote><figcaption class="mono">Morgan Housel</figcaption></figure></li>
       </ol>
-      <details class="fn"><summary data-t="fnNotes">Notes &amp; sources</summary><p class="note" data-t="stepsSrc">Buffer: a common rule of thumb, not a law. Lump sum: Vanguard, <a href="https://corporate.vanguard.com/content/dam/corp/research/pdf/cost_averaging_invest_now_or_temporarily_hold_your_cash.pdf" rel="noopener">“Cost averaging: invest now or temporarily hold your cash?”</a> (2023), rolling one-year periods 1976–2022. Mixed funds: <a href="https://www.vanguardinvestor.co.uk/investing-explained/what-are-lifestrategy-funds" rel="noopener">Vanguard, What is a LifeStrategy fund?</a> Other providers offer similar one-fund mixes; compare costs before you pick.</p></details>
+      <details class="fn"><summary data-t="fnNotes">Notes &amp; sources</summary><p class="note" data-t="stepsSrc">Buffer: a common rule of thumb, not a law. Lump sum: Vanguard, <a href="https://corporate.vanguard.com/content/dam/corp/research/pdf/cost_averaging_invest_now_or_temporarily_hold_your_cash.pdf" rel="noopener">“Cost averaging: invest now or temporarily hold your cash?”</a> (2023), rolling one-year periods 1976–2022. Mixed funds: <a href="https://www.vanguardinvestor.co.uk/investing-explained/what-are-lifestrategy-funds" rel="noopener">Vanguard, What is a LifeStrategy fund?</a> Other providers offer similar one-fund mixes; compare costs before you pick. Quotes: Morgan Housel, <i>The Psychology of Money</i> (2020); John C. Bogle, “The Arithmetic of ‘All-In’ Investment Expenses”, <i>Financial Analysts Journal</i> (2014); Warren Buffett, letter to Berkshire Hathaway shareholders (2013).</p></details>
     </div>
     <figure class="pull"><blockquote data-t="qGraham">“The investor’s chief problem — and even his worst enemy — is likely to be himself.”</blockquote><figcaption class="mono" data-t="qGrahamBy">Benjamin Graham, The Intelligent Investor</figcaption></figure>
   </section>
@@ -757,7 +760,7 @@ table.data :is(th,td):first-child{text-align:left}
 </main>
 
 <script src="/investing/returns.js?v=4"></script>
-<script src="/investing/i18n.js?v=29"></script>
+<script src="/investing/i18n.js?v=30"></script>
 <script src="/investing/app.js?v=22"></script>
 </body>
 </html>
