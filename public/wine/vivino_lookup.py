@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """Look up Vivino crowd scores for a wine via Vivino's public search page.
 
-Usage: python3 -I vivino_lookup.py "simon bize savigny talmettes" ["another query" ...]
+Usage: python3 vivino_lookup.py "simon bize savigny talmettes" ["another query" ...]
 
 Prints the top matches per query as:
   vintage_avg (n ratings) | wine_avg across vintages (n) | name
