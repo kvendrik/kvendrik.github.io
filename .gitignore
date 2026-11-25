@@ -7,4 +7,5 @@ public/**/*.html
 !public/v60/index.html
 !public/philosophy/index.html
 !public/investing/index.html
+!public/box3/index.html
 __pycache__/

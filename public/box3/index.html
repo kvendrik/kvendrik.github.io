@@ -1,0 +1,414 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="color-scheme" content="light">
+<meta name="theme-color" content="#F3EDE1">
+<title>Een eerlijkere box 3 komt eraan</title>
+<meta name="description" content="Box 3 gaat over wat je echt verdient, en pas als je verkoopt. Zie wat het nieuwe plan, het huidige stelsel en de andere voorstellen jou opleveren, in 2.000 gesimuleerde toekomsten.">
+<link rel="canonical" href="https://kvendrik.com/box3/">
+<link rel="icon" href="/investing/favicon.svg" type="image/svg+xml">
+<link rel="icon" href="/investing/favicon-32.png" type="image/png" sizes="32x32">
+<link rel="apple-touch-icon" href="/investing/apple-touch-icon.png" sizes="180x180">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://kvendrik.com/box3/">
+<meta property="og:title" content="Een eerlijkere box 3 komt eraan">
+<meta property="og:description" content="Box 3 gaat over wat je echt verdient, en pas als je verkoopt. Zie wat het nieuwe plan, het huidige stelsel en de andere voorstellen jou opleveren, in 2.000 gesimuleerde toekomsten.">
+<meta property="og:locale" content="nl_NL">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:site" content="@kvendrik">
+<link rel="preload" href="/bodega/fonts/AlloVariable.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Space+Mono:wght@400;700&display=swap">
+<style>
+/* VOICE everyday money, for beginners: calm, positive, plain Dutch
+   IDEA a newspaper explainer of a tax bill: the same 2.000 futures, every box 3 plan
+   PICTURE a fan of simulated futures with each rule's middle line drawn through it
+   COLOUR /investing: cream paper, ink, paper tones for the bands; light only
+   TYPE Instrument Serif display + Allo text, Space Mono for small labels
+   LAYOUT title and answer on top; controls beside the fan on a laptop; then rules, then sources */
+@font-face{font-family:"Allo";src:url("/bodega/fonts/AlloVariable.woff2") format("woff2");font-weight:100 900;font-display:swap}
+:root{
+  --paper:#F3EDE1;--card:#EAE3D5;--fill:#DDD3C1;--band:#E6DECD;--rule:#D5CCBB;--down:#A39A8B;--muted:#69635A;--ink-2:#3B3833;--ink:#141312;
+  --f-display:"Instrument Serif",Didot,Georgia,serif;--f-body:"Allo",system-ui,-apple-system,"Segoe UI",sans-serif;--f-mono:"Space Mono",ui-monospace,Menlo,monospace;
+  --ease:cubic-bezier(0.23,1,0.32,1);--shadow:3px 3px 0 0 var(--ink);--shadow-lg:6px 6px 0 0 var(--ink);
+  color-scheme:light}
+*{box-sizing:border-box;min-width:0}
+[hidden]{display:none!important}
+html{-webkit-text-size-adjust:100%}
+body{margin:0;background:var(--paper);color:var(--ink);font:400 17px/1.6 var(--f-body);-webkit-font-smoothing:antialiased;overflow-x:clip;
+  padding-left:max(5vw,16px,env(safe-area-inset-left,0px));padding-right:max(5vw,16px,env(safe-area-inset-right,0px))}
+p,h1,h2,h3{margin:0}
+h1,h2,h3{font-family:var(--f-display);font-weight:400;line-height:1.05;text-wrap:balance}
+.wrap{max-width:1180px;margin:0 auto}
+.mono{font-family:var(--f-mono);font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--muted)}
+:focus-visible{outline:2px solid var(--ink);outline-offset:3px}
+a{color:inherit;text-decoration:underline;text-decoration-color:var(--down);text-underline-offset:3px}
+header{padding-block:clamp(40px,7vw,88px) 0}
+h1{margin-top:16px;font-size:clamp(44px,7vw,80px);letter-spacing:-.01em;max-width:13ch}
+.lede{margin-top:20px;font-family:var(--f-display);font-size:clamp(21px,2.6vw,28px);line-height:1.35;color:var(--ink-2);max-width:46ch;text-wrap:pretty}
+.lede b{font-weight:400;color:var(--ink);white-space:nowrap}
+.stats{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));max-width:980px;margin-top:40px;border-top:1px solid var(--ink)}
+.stats>div{padding:16px 16px 8px 0;display:grid;align-content:start;gap:6px}
+.stats>div+div{padding-left:24px;border-left:1px solid var(--rule)}
+.stats .n{font-family:var(--f-display);font-size:clamp(34px,4.6vw,52px);line-height:1;white-space:nowrap}
+.stats .d{font-size:14px;color:var(--ink-2)}
+h2.step{font-size:clamp(30px,4vw,44px);max-width:22ch}
+.sub{margin-top:12px;color:var(--ink-2);max-width:60ch}
+.tool{display:grid;grid-template-columns:250px minmax(0,1fr);gap:40px;margin-top:56px;align-items:start}
+.controls{display:grid;gap:12px}
+.fight{font-size:clamp(24px,2.6vw,30px)}
+.tt{grid-column:1/-1;order:-2;margin-bottom:-16px}
+.fhead{display:flex;flex-wrap:wrap;justify-content:space-between;align-items:center;gap:12px}
+.seg.small{box-shadow:none;border-width:1.5px}.seg.small button{padding:5px 10px}
+.term.q{display:inline-grid;place-items:center;width:28px;height:28px;border:1.5px solid var(--ink);border-radius:50%;font:700 12px/1 var(--f-mono);text-decoration:none}
+.term.q[aria-expanded=true]{background:var(--ink);color:var(--paper)}
+.controls h2{font-size:26px;margin-bottom:4px}
+.slider{position:relative;display:flex;align-items:center;justify-content:space-between;gap:12px;height:60px;padding:0 14px;border:2px solid var(--ink);background:var(--paper);box-shadow:var(--shadow);transition:transform .16s var(--ease),box-shadow .16s var(--ease)}
+.slider:focus-within{transform:translate(-2px,-2px);box-shadow:var(--shadow-lg)}
+.slider-fill{position:absolute;inset:0;background:var(--fill);clip-path:inset(0 calc(100% - var(--p,0%)) 0 0);pointer-events:none}
+.slider label{position:relative;font:700 11px/16px var(--f-mono);letter-spacing:.12em;text-transform:uppercase;pointer-events:none;white-space:nowrap}
+.slider output{position:relative;font-family:var(--f-display);font-size:26px;line-height:1;font-variant-numeric:tabular-nums;white-space:nowrap;pointer-events:none}
+.slider output small{font-size:18px;color:var(--ink-2)}
+.slider .sl{position:relative;z-index:2;display:flex;align-items:center;gap:8px;pointer-events:none}
+.slider .sl .term{pointer-events:auto}
+.term.q.s{width:20px;height:20px;font-size:10px;border-width:1.25px;background:var(--paper)}
+.slider input{position:absolute;inset:0;width:100%;height:100%;margin:0;opacity:0;cursor:ew-resize;touch-action:pan-y}
+.seg{display:flex;flex-wrap:wrap;padding:3px;border:2px solid var(--ink);background:var(--paper);box-shadow:var(--shadow);width:max-content;max-width:100%}
+.seg button{all:unset;cursor:pointer;padding:8px 12px;font:700 11px/16px var(--f-mono);letter-spacing:.1em;text-transform:uppercase;color:var(--ink-2);white-space:nowrap}
+.seg button{transition:transform 120ms var(--ease)}
+.seg button:active{transform:scale(.96)}
+.term.q{transition:transform 120ms var(--ease)}
+.term.q:active{transform:scale(.92)}
+.seg button[aria-pressed=true]{background:var(--ink);color:var(--paper)}
+.row{display:flex;flex-wrap:wrap;align-items:center;gap:12px}
+.tipline{max-width:70ch;font-size:15px;color:var(--ink-2);border-left:2px solid var(--ink);padding-left:12px}
+.figwrap{display:grid;gap:12px}
+.fighead h2{font-size:clamp(24px,2.6vw,30px)}
+.fighead p{margin-top:6px;font-size:15px;color:var(--ink-2)}
+.fig{position:relative;height:clamp(380px,40vw,520px);touch-action:pan-y}
+.fig svg{position:absolute;inset:0;width:100%;height:100%;overflow:visible}
+svg text{font-family:var(--f-mono);font-size:10px;fill:var(--muted);letter-spacing:.04em}
+svg .lab{font-family:var(--f-display);font-style:italic;font-size:16px;fill:var(--ink);letter-spacing:0;paint-order:stroke;stroke:var(--paper);stroke-width:5px;stroke-linejoin:round}
+svg .lab.q{fill:var(--muted)}
+.key{display:flex;flex-wrap:wrap;gap:6px 20px;font-size:13px;color:var(--ink-2)}
+.key span{display:inline-flex;align-items:center;gap:8px}
+.key i{display:inline-block;width:18px;height:10px}
+.tip{position:absolute;top:0;left:0;pointer-events:none;min-width:200px;padding:10px 12px;background:var(--paper);border:2px solid var(--ink);box-shadow:var(--shadow);font-size:13px;line-height:1.35;opacity:0;transition:opacity .12s;z-index:2}
+.tip.on{opacity:1}
+.tip .y{font-family:var(--f-display);font-size:22px;line-height:1;margin-bottom:6px}
+.tip div.r{display:flex;justify-content:space-between;gap:16px;font-family:var(--f-mono);font-size:11px}
+.tip div.r.sel{font-weight:700}
+.tip div.r span:first-child{color:var(--ink-2)}
+section{padding-block:clamp(64px,9vw,112px) 0}
+.ranges{margin-top:32px;border-top:1px solid var(--ink)}
+.pl{display:grid;grid-template-columns:minmax(0,1.15fr) minmax(0,1fr) 160px;gap:10px 36px;align-items:center;padding:24px 0;border-bottom:1px solid var(--rule)}
+@media(hover:hover) and (pointer:fine){a:hover{text-decoration-color:var(--ink)}}
+.pl.enter{animation:rowIn 220ms var(--ease) backwards}
+@keyframes rowIn{from{opacity:0;transform:translateY(6px)}}
+.pl.head{cursor:default;padding:10px 0;align-items:end}
+.pl.grp{display:block;cursor:default;padding:32px 0 10px;border-bottom:1px solid var(--ink)}
+.pl h3{font-size:clamp(24px,2.4vw,28px);margin:8px 0 6px}
+.pl p{color:var(--ink-2);font-size:15px;line-height:1.5}
+.pl dl{display:grid;grid-template-columns:max-content minmax(0,1fr);gap:4px 14px;margin:10px 0 0;font-size:14px}
+.pl dt{font-family:var(--f-mono);font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);padding-top:2px}
+.pl dd{margin:0}
+.pl svg{display:block;width:100%;height:40px;overflow:visible}
+.pl .num{text-align:right;display:grid;gap:4px}
+.pl .num .a{font-family:var(--f-display);font-size:clamp(26px,2.6vw,32px);line-height:1;white-space:nowrap}
+.pl .num .c{font-family:var(--f-mono);font-size:12px;color:var(--ink-2);white-space:nowrap}
+.pl.head .num,.pl.head>span{align-self:end}
+.tfoot{display:flex;flex-wrap:wrap;justify-content:space-between;align-items:center;gap:12px;margin-top:20px}
+.more{all:unset;cursor:pointer;padding:9px 14px;border:2px solid var(--ink);background:var(--paper);box-shadow:var(--shadow);font:700 11px/16px var(--f-mono);letter-spacing:.1em;text-transform:uppercase}
+.more{transition:transform 120ms var(--ease),box-shadow 120ms var(--ease)}
+.more:active{transform:translate(2px,2px);box-shadow:1px 1px 0 0 var(--ink)}
+.more:focus-visible{outline:2px solid var(--ink);outline-offset:3px}
+.status{display:inline-block;font:700 10px/1 var(--f-mono);letter-spacing:.1em;text-transform:uppercase;padding:5px 7px;border:1.5px solid var(--ink)}
+.status.dark{background:var(--ink);color:var(--paper)}
+.how{margin-top:20px;color:var(--ink-2);max-width:62ch;display:grid;gap:14px}
+footer{padding-block:48px 64px;margin-top:96px;border-top:1px solid var(--ink)}
+footer ol{margin:12px 0 0;padding-left:22px;font-size:14px;color:var(--ink-2);display:grid;gap:4px}
+sup{line-height:0}
+.sub.wide{max-width:84ch}
+sup a{font-family:var(--f-mono);font-size:10px;text-decoration:none;padding:0 1px}
+.term{all:unset;position:relative;cursor:help;text-decoration:underline dotted;text-decoration-color:var(--muted);text-decoration-thickness:1.5px;text-underline-offset:.2em}
+.term::after{content:"";position:absolute;inset:-8px 0}
+.term[aria-expanded=true]{text-decoration-style:solid;text-decoration-color:var(--ink)}
+.term:focus-visible{background:var(--band)}
+.pop{transition:opacity 160ms var(--ease),transform 160ms var(--ease)}
+.pop.pre{opacity:0;transform:translateY(-3px) scale(.96)}
+.pop.instant{transition:none}
+.pop{position:absolute;z-index:30;width:max-content;max-width:min(320px,calc(100vw - 32px));padding:12px 14px;background:var(--ink);color:var(--paper);font:400 13.5px/1.5 var(--f-body);border-radius:2px;box-shadow:0 10px 30px -12px rgba(20,19,18,.55)}
+.pop a{color:var(--paper);text-decoration-color:rgba(243,237,225,.5);display:inline-block;margin-top:6px;font-size:12px}
+@media(max-width:980px){.tool{grid-template-columns:minmax(0,1fr)}.figwrap{order:-1}.controls{grid-template-columns:repeat(2,minmax(0,1fr))}.controls>h2,.controls>.row{grid-column:1/-1}}
+@media(max-width:720px){.pl{grid-template-columns:minmax(0,1fr) auto;gap:12px 16px}.pl .info{grid-column:1/-1}.pl svg{grid-row:2}.pl.head{display:none}.stats>div+div{padding-left:14px}}
+@media(max-width:560px){.stats{grid-template-columns:minmax(0,1fr)}.stats>div{display:grid;grid-template-columns:minmax(0,1fr) auto;align-items:baseline;gap:2px 12px;padding:12px 0!important;border-left:0!important}.stats>div+div{border-top:1px solid var(--rule)}.stats .n{grid-column:2;grid-row:1/3;font-size:32px;text-align:right}.stats .d{font-size:13px}.controls{grid-template-columns:minmax(0,1fr)}.slider output{font-size:23px}.fig{height:380px}}
+@media(prefers-reduced-motion:reduce){.slider,.seg button,.term.q,.more{transition:none}.pop{transition:opacity 125ms ease}.pop.pre{transform:none}.pl.enter{animation:fade 200ms ease backwards}@keyframes fade{from{opacity:0}}}
+</style>
+</head>
+<body>
+<div class="wrap">
+<header>
+  <p class="mono">Bijgewerkt op <time datetime="2026-11-25">25 november 2026</time></p>
+  <h1>Een eerlijkere box 3 komt eraan</h1>
+  <p class="lede"><button class="term" data-t="box3">Box 3</button> verandert. Straks betaal je over wat je <button class="term" data-t="eerlijk">echt verdient</button>, en pas <button class="term" data-t="winst">als je verkoopt</button>. Hier zie je wat dat voor jou betekent, naast de andere plannen die op tafel liggen.</p>
+  <div class="stats" id="stats"></div>
+</header>
+
+<div class="tool">
+  <h2 class="fight tt" id="figTitle">Wat je na 30 jaar overhoudt met een wereldwijd indexfonds</h2>
+  <div class="controls" id="controls">
+    <div class="slider"><span class="slider-fill"></span><span class="sl"><label for="cStart">Start</label><button class="term q s" data-t="cStart" aria-label="Uitleg: start">?</button></span><output id="oStart"></output><input type="range" id="cStart" min="0" max="500000" step="5000" value="50000"></div>
+    <div class="slider"><span class="slider-fill"></span><span class="sl"><label for="cMonth">Per maand</label><button class="term q s" data-t="cMonth" aria-label="Uitleg: per maand">?</button></span><output id="oMonth"></output><input type="range" id="cMonth" min="0" max="3000" step="50" value="500"></div>
+    <div class="slider"><span class="slider-fill"></span><span class="sl"><label for="cYears">Looptijd</label><button class="term q s" data-t="cYears" aria-label="Uitleg: looptijd">?</button></span><output id="oYears"></output><input type="range" id="cYears" min="5" max="50" step="1" value="30"></div>
+    <div class="slider"><span class="slider-fill"></span><span class="sl"><label for="cStock">Aandelen</label><button class="term q s" data-t="cStock" aria-label="Uitleg: aandelen">?</button></span><output id="oStock"></output><input type="range" id="cStock" min="0" max="100" step="10" value="100"></div>
+    <div class="slider"><span class="slider-fill"></span><span class="sl"><label for="cFee">Kosten</label><button class="term q s" data-t="cFee" aria-label="Uitleg: kosten">?</button></span><output id="oFee"></output><input type="range" id="cFee" min="0" max="1.5" step="0.05" value="0.2"></div>
+    <div class="row">
+      <div class="seg" id="partner" role="group" aria-label="Fiscaal partner"><button aria-pressed="true" data-v="1">Alleen</button><button aria-pressed="false" data-v="2">Met partner</button></div>
+      <button class="term q" data-t="partner" aria-label="Wat is een fiscaal partner?">?</button>
+    </div>
+  </div>
+
+  <div class="figwrap">
+    <div class="fig" id="fig"><svg id="svg" aria-label="Waaier van gesimuleerde uitkomsten"></svg><div class="tip" id="tip"></div></div>
+    <div class="key"><span><i style="height:2px;background:var(--ink)"></i><button class="term" data-t="midden">Gewone uitkomst</button></span><span><i style="background:var(--fill)"></i><button class="term" data-t="mc">Helft van de toekomsten</button></span><span><i style="background:var(--band)"></i>9 van de 10</span><span><i style="height:0;border-top:1.5px dashed var(--muted)"></i>Je inleg</span></div>
+  </div>
+</div>
+
+<section>
+  <h2 class="step" id="rangeTitle">…</h2>
+  <p class="sub">Per plan: hoe het werkt, en wat je overhoudt in een <button class="term" data-t="slecht">slechte, gewone en goede toekomst</button>. Na belasting en verkoop, in <button class="term" data-t="nu">euro’s van nu</button>.</p>
+  <div class="ranges" id="ranges"></div>
+</section>
+
+<section>
+  <h2 class="step">Hoe is dit berekend?</h2>
+  <p class="sub wide">Met een <button class="term" data-t="mc">Monte Carlo-simulatie</button>: 2.000 toekomsten uit <button class="term" data-t="data">echte beursjaren, 1900–2025</button><sup><a href="#s9">9</a>,<a href="#s10">10</a></sup>, voor elk plan dezelfde. Een rekenvoorbeeld met een paar <button class="term" data-t="aannames">aannames</button>, geen belastingadvies.</p>
+</section>
+
+<footer>
+  <p class="mono">Bronnen, november 2026</p>
+  <ol>
+    <li id="s1"><a href="https://www.rijksoverheid.nl/onderwerpen/inkomstenbelasting/box-3">Rijksoverheid: wat is box 3</a></li>
+    <li id="s2"><a href="https://www.sra.nl/nieuwsoverzicht/2026/tweede-kamer-akkoord-met-nieuw-box-3-stelsel-vanaf-2028">SRA: Tweede Kamer akkoord met belasting op werkelijk rendement, 36% en € 1.800 vrij (12 feb. 2026)</a></li>
+    <li id="s3"><a href="https://www.sra.nl/nieuwsoverzicht/2026/wet-werkelijk-rendement-box-3-voorlopig-nog-niet-aangenomen">SRA: Eerste Kamer stelt stemming uit</a></li>
+    <li id="s4"><a href="https://www.castelijns-swaans.nl/novelle-uitbreiding-vermogenswinstbelasting-box-3-per-2029/">Novelle: belasting bij verkoop voor aandelen en ETF’s, per 2029</a> · <a href="https://www.rijksoverheid.nl/themas/werk/inkomstenbelasting/plannen-werkelijk-rendement-box-3/tijdlijn-werkelijk-rendement-box-3">tijdlijn Rijksoverheid</a></li>
+    <li id="s5"><a href="https://www.deloitte.com/nl/nl/services/tax/perspectives/novelle-box-3-aangenomen-door-tweede-kamer.html">Deloitte: novelle aangenomen, 35,5% en 38,5% met schijfgrens € 60.000</a></li>
+    <li id="s6"><a href="https://rekenbuddy.nl/nieuws/tarieven-box-3/">Box 3 in 2027: 36% over 6,37%</a></li>
+    <li id="s7"><a href="https://financiallifeplan.nl/box-3-2027/">Heffingsvrij vermogen 2027: € 60.098</a></li>
+    <li id="s8"><a href="https://www.belastingdienst.nl/wps/wcm/connect/nl/box-3/content/wat-is-mijn-werkelijk-rendement">Belastingdienst: wat is mijn werkelijk rendement (tegenbewijs)</a></li>
+    <li id="s9"><a href="https://www.macrohistory.net/database/">Jordà-Schularick-Taylor Macrohistory Database, 1900–2020</a></li>
+    <li id="s10"><a href="https://www.msci.com/indexes/index/704367">MSCI ACWI, 2021–2025</a></li>
+    <li id="s11"><a href="https://www.ecb.europa.eu/mopo/strategy/html/index.en.html">ECB: inflatiedoel van 2%</a></li>
+    <li id="s12"><a href="https://www.tweedekamer.nl/kamerstukken/wetsvoorstellen/detail?dossier=36748&id=2025Z09723">Tweede Kamer: Wet werkelijk rendement box 3 (36 748)</a></li>
+    <li id="s13"><a href="https://uitspraken.rechtspraak.nl/details?id=ECLI:NL:HR:2021:1963">Hoge Raad: het Kerstarrest over box 3 (ECLI:NL:HR:2021:1963)</a></li>
+    <li id="s14"><a href="https://www.eerstekamer.nl/behandeling/20260119/amendement_van_de_leden_stultiens/document3/f=/vmvili9u6rzu.pdf">Amendement Stultiens en Dijk: toptarief 49,5% boven € 78.426 (36 748, nr. 10)</a></li>
+  <li id="s15"><a href="https://www.ewmagazine.nl/economie/news/2026/02/box3-tweede-kamer-debat-1537581/">EW: tarief in box 3 blijft 36% (februari 2026)</a></li>
+  <li id="s16"><a href="https://www.vvd.nl/wp-content/uploads/2025/07/Verkiezingsprogramma-TK-VVD-2025.pdf">VVD-verkiezingsprogramma 2025</a></li>
+  <li id="s17"><a href="https://progressiefnederland.nl/nieuws/akkoord-miljonairsbelasting-pro-volt-cda-d66/">PRO: akkoord met Volt, CDA en D66</a> · <a href="https://vastgoedinsider.nl/belastingdeal-van-d66-en-cda-met-pro-en-volt-zet-kabinet-onder-druk-vvd-voelt-zich-gepasseerd/">VVD voelt zich gepasseerd</a></li>
+  </ol>
+</footer>
+</div>
+<div class="pop" id="pop" role="tooltip" hidden></div>
+
+<script src="/investing/returns.js"></script>
+<script>
+{
+const D={first:WORLD.first,s:WORLD.realEur,b:WORLD.bondsEur};
+const INF=0.02,N=2000,BLOCK=5,TMAX=50,NY=D.s.length;
+const SC=[
+  {kort:"Zonder belasting",naam:"Zonder belasting",het:"geen belasting"},
+  {kort:"Nu",naam:"Huidig stelsel",het:"het huidige stelsel"},
+  {kort:"Aanwas",naam:"Aanwas, 36%",het:"belasting op aanwas"},
+  {kort:"Aanwas PRO",naam:"Aanwas met toptarief (PRO)",het:"het PRO-voorstel met toptarief"},
+  {kort:"Verkoop 36%",naam:"Bij verkoop, 36% (kabinet)",het:"belasting bij verkoop tegen 36%"},
+  {kort:"Nieuw plan",naam:"Nieuw plan",het:"het nieuwe plan"}];
+const TERMS={
+  wereld:["We rekenen met een indexfonds dat de hele wereldbeurs volgt: aandelen van duizenden bedrijven in alle landen. Met de schuif Aandelen kun je er wereldwijde staatsobligaties bij mengen.","Meer op kvendrik.com/beleggen","/beleggen/"],
+  cStart:["Het bedrag dat je nu in één keer belegt, bijvoorbeeld spaargeld dat je naar een beleggingsrekening overmaakt.",null],
+  cMonth:["Wat je daarna elke maand bijlegt. Dit bedrag groeit elk jaar mee met de inflatie, zodat het in euro’s van nu gelijk blijft.",null],
+  cYears:["Hoe lang je belegt voordat je alles verkoopt. Bij het nieuwe plan betaal je pas bij die verkoop belasting over je koerswinst.",null],
+  cStock:["Welk deel van je geld in aandelen zit; de rest zit in staatsobligaties. Aandelen groeien op lange termijn harder, maar schommelen meer.","Meer op kvendrik.com/beleggen","/beleggen/"],
+  cFee:["Wat je fonds en je broker samen per jaar rekenen, als deel van je vermogen. Een wereldwijd indexfonds kost vaak 0,1 tot 0,3% per jaar.","Meer op kvendrik.com/beleggen","/beleggen/"],
+  eerlijk:["Nu betaal je over een rendement dat de Belastingdienst aanneemt, ook als je minder verdiende. In 2021 oordeelde de Hoge Raad dat dat in strijd is met je eigendomsrecht. Daarom komt er een stelsel dat kijkt naar je echte rendement.","Hoge Raad, 24 december 2021","#s13"],
+  box3:["Box 3 is het deel van de inkomstenbelasting voor spaargeld en beleggingen. Je eigen huis en je pensioen vallen er niet onder.","Rijksoverheid","#s1"],
+  mc:["Niemand weet hoe de beurs gaat. Daarom spelen we 2.000 keer een mogelijke toekomst na, telkens met vijf echte jaren uit 1900–2025 achter elkaar, in een andere volgorde. Zo blijven een crash en het herstel erna bij elkaar. Elk plan rekent met precies dezelfde toekomsten, dus elk verschil komt alleen door de belasting.","Bron van de jaren","#s9"],
+  data:["Wat de wereldbeurs en staatsobligaties echt deden in elk jaar sinds 1900, in guldens en euro’s, na Nederlandse inflatie. Dezelfde cijfers als op kvendrik.com/beleggen.","Macrohistory Database en MSCI","#s9"],
+  aannames:["We nemen aan dat elk plan meteen ingaat, dat prijzen 2% per jaar stijgen, dat je fondsen 2% dividend en 3% rente uitkeren en dat je geen schulden of spaargeld in box 3 hebt. De bedragen van de plannen zijn nog niet definitief.","Eerste Kamer stelt stemming uit","#s3"],
+  midden:["De mediaan: de helft van de 2.000 toekomsten eindigt hoger, de helft lager. Niet het beste en niet het slechtste scenario.",null],
+  slecht:["De streep loopt van een toekomst die slechter liep dan 9 van de 10 andere, tot een die beter liep dan 9 van de 10. Het blokje is de gewone uitkomst.",null],
+  nu:["Een euro is over 30 jaar minder waard. We rekenen alles terug naar wat je er vandaag mee kunt kopen, met 2% inflatie per jaar: het doel van de ECB.","ECB","#s11"],
+  cut:["Hoeveel minder je aan het eind hebt dan zonder box 3, in een gewone toekomst. Bij ‘verkoop’ betaal je de meeste belasting pas aan het eind; tot dan groeit dat geld voor jou mee.",null],
+  partner:["Ben je getrouwd of woon je samen met een fiscaal partner? Dan krijgen jullie samen twee keer de vrijstelling.","Rijksoverheid over box 3","#s1"],
+  forfait:["De Belastingdienst gaat ervan uit dat je beleggingen 6,37% per jaar opleveren, en daarover betaal je 36%: ongeveer 2,3% van je beleggingen per jaar. Verdiende je minder, dan mag je je echte rendement opgeven en betaal je alleen daarover.","Belastingdienst","#s8"],
+  hvv:["Over de eerste € 60.098 aan vermogen betaal je niets. Met een fiscaal partner is dat samen het dubbele.","Bron","#s7"],
+  aanwas:["Stijgen je beleggingen in een jaar van € 10.000 naar € 11.000, dan betaal je over die € 1.000, ook als je niets verkoopt. Daalt je vermogen in een jaar met meer dan € 500, dan mag je dat verlies later aftrekken.","Bron","#s2"],
+  hvr:["De eerste € 1.800 rendement per jaar per persoon is vrij van belasting.","Bron","#s2"],
+  pro:["Een amendement van Stultiens (PRO) en Dijk (SP), januari 2026: boven € 78.426 rendement per jaar, de grens van de hoogste schijf in box 1, betaal je 49,5%, net als bij inkomen uit werk. Het werd niet aangenomen; het tarief bleef 36%.","Amendement","#s14"],
+  winst:["Zolang je je beleggingen houdt, betaal je niets over de koerswinst. Dividend en rente blijven wel elk jaar belast. Dit plan staat in een wijziging (novelle) van november 2026.","Bron","#s4"],
+  vvd:["De VVD wil alleen rendement belasten dat je echt hebt behaald, en geen winst die je nog niet hebt verzilverd. Zo diende het kabinet de novelle ook in.","VVD-verkiezingsprogramma","#s16"],
+  deal:["Een afspraak van PRO, Volt, D66 en CDA: 35,5% over de eerste € 60.000 rendement per jaar, 38,5% daarboven. Het Belastingplan met deze afspraak haalde op 12 november 76 van de 150 stemmen in de Tweede Kamer; de VVD stemde tegen.","Bron","#s17"],
+  ek:["Een nieuwe wet geldt pas als ook de Eerste Kamer ja zegt. Die stemming moet nog komen, dus de regels kunnen nog veranderen.","Bron","#s3"]
+};
+
+const MAIN=[0,1,5],OTHER=[2,3,4];
+const PLAN={
+  0:["Ter vergelijking","","Wat je zou hebben als er geen box 3 bestond.",""],
+  1:["Geldt nu","dark",'Elk jaar 36% over een <button class="term" data-t="forfait">aangenomen rendement</button> van 6,37%<sup><a href="#s6">6</a></sup>.','<dt>Vrij</dt><dd><button class="term" data-t="hvv">€ 60.098</button> vermogen p.p.<sup><a href="#s7">7</a></sup></dd>'],
+  5:["Tweede Kamer, 12 nov. 2026","dark",'Over koerswinst betaal je pas als je <button class="term" data-t="winst">verkoopt</button>. Vanaf 2029, als de <button class="term" data-t="ek">Eerste Kamer</button> instemt<sup><a href="#s4">4</a></sup>.','<dt>Tarief</dt><dd><button class="term" data-t="deal">35,5% tot € 60.000, daarboven 38,5%</button><sup><a href="#s5">5</a>,<a href="#s17">17</a></sup></dd><dt>Vrij</dt><dd><button class="term" data-t="hvr">€ 1.800</button> rendement p.p.</dd>'],
+  2:["Tweede Kamer, feb. 2026","",'Elk jaar 36% over je echte rendement, ook als je <button class="term" data-t="aanwas">niets verkoopt</button><sup><a href="#s2">2</a>,<a href="#s12">12</a></sup>.','<dt>Vrij</dt><dd><button class="term" data-t="hvr">€ 1.800</button> rendement p.p.</dd>'],
+  3:["Niet aangenomen","",'Als aanwas, maar <button class="term" data-t="pro">49,5% boven € 78.426</button> rendement per jaar<sup><a href="#s14">14</a>,<a href="#s15">15</a></sup>.','<dt>Vrij</dt><dd>€ 1.800 rendement p.p.</dd>'],
+  4:["Kabinet, nov. 2026","",'Bij verkoop, zoals het kabinet de novelle indiende: 36% over alles. De <button class="term" data-t="vvd">VVD-lijn</button><sup><a href="#s4">4</a>,<a href="#s16">16</a></sup>.','<dt>Vrij</dt><dd>€ 1.800 rendement p.p.</dd>']};
+const st={all:false,start:50000,month:500,years:30,stock:100,fee:0.2,p:1,sel:5,seed:20261125};
+const $=id=>document.getElementById(id);
+const eur=v=>{const a=Math.abs(v);if(a>=1e6)return "€ "+(v/1e6).toLocaleString("nl-NL",{maximumFractionDigits:a>=1e7?1:2})+" mln";const r=a>=1e5?1000:100;return "€ "+(Math.round(v/r)*r).toLocaleString("nl-NL")};
+const eurFull=v=>"€ "+Math.round(v).toLocaleString("nl-NL");
+const x1=v=>v.toLocaleString("nl-NL",{maximumFractionDigits:1})+"×";
+let idx;
+function draw0(){let s=st.seed%2147483647||1;const r=()=>(s=s*16807%2147483647)/2147483647;idx=new Int16Array(N*TMAX);for(let p=0;p<N;p++){let t=0;while(t<TMAX){const a=Math.floor(r()*NY);for(let k=0;k<BLOCK&&t<TMAX;k++,t++)idx[p*TMAX+t]=(a+k)%NY}}}
+const tier=(x,lim)=>x<=0?0:.355*Math.min(x,lim)+.385*Math.max(0,x-lim);
+let R=null;
+function sim(){
+  const T=st.years,w=st.stock/100,fee=st.fee/100,p=st.p,dy=w*.02+(1-w)*.03,S=SC.length;
+  const L=[...Array(S)].map(()=>[...Array(T+1)].map(()=>new Float64Array(N)));
+  const tax=[...Array(S)].map(()=>new Float64Array(N)),inleg=[st.start];
+  for(let t=1;t<=T;t++)inleg[t]=inleg[t-1]+st.month*12;
+  const flat=r=>x=>x<=0?0:r*x,two=(a,b,lim)=>(x,p,ix)=>x<=0?0:a*Math.min(x,lim*p*ix)+b*Math.max(0,x-lim*p*ix);
+  const AAN=[[2,flat(.36)],[3,two(.36,.495,78426)]],VK=[[4,flat(.36)],[5,two(.355,.385,60000)]];
+  for(let q=0;q<N;q++){
+    const V=Array(S).fill(st.start),basis=Array(S).fill(st.start),loss=Array(S).fill(0);
+    for(let s=0;s<S;s++)L[s][0][q]=st.start;
+    for(let t=1;t<=T;t++){
+      const i=idx[q*TMAX+t-1],ix=(1+INF)**(t-1),df=(1+INF)**t,c=st.month*12*ix,hv=1800*p*ix;
+      const rn=(1+w*D.s[i]+(1-w)*D.b[i]-fee)*(1+INF)-1;
+      V[0]=(V[0]+c)*(1+rn);L[0][t][q]=V[0]/df;
+      {const A=V[1]+c,E=A*(1+rn),base=Math.max(0,A-60098*p*ix),tx=A>0?.36*Math.min(.0637*A,Math.max(0,E-A))*base/A:0;
+        V[1]=E-tx;tax[1][q]+=tx/df;L[1][t][q]=V[1]/df}
+      for(const [s,f] of AAN){const A=V[s]+c,E=A*(1+rn),g=E-A;let tx=0;
+        if(g<0){if(-g>500*ix)loss[s]+=-g}else{let b=g-hv;if(b>0){const u=Math.min(loss[s],b);loss[s]-=u;b-=u;tx=f(b,p,ix)}}
+        V[s]=E-tx;tax[s][q]+=tx/df;L[s][t][q]=V[s]/df}
+      for(const [s,f] of VK){const A=V[s]+c;basis[s]+=c;const E=A*(1+rn),div=dy*A,tx=f(div-hv,p,ix);
+        V[s]=E-tx;basis[s]+=div-tx;tax[s][q]+=tx/df;
+        const exit=Math.max(0,f(div+(V[s]-basis[s])-hv,p,ix)-tx);
+        L[s][t][q]=(V[s]-exit)/df;if(t===T)tax[s][q]+=exit/df}
+    }
+  }
+  const qs=[.05,.1,.25,.5,.75,.9,.95],P=[...Array(S)].map(()=>[]);
+  const qa=(a,f)=>a[Math.min(a.length-1,Math.floor(f*(a.length-1)))];
+  for(let s=0;s<S;s++)for(let t=0;t<=T;t++){const a=Float64Array.from(L[s][t]).sort();P[s][t]=qs.map(f=>qa(a,f))}
+  const tmed=[],win=[],cut=[];
+  for(let s=0;s<S;s++){const r=new Float64Array(N);for(let q=0;q<N;q++)r[q]=L[0][T][q]>0?1-L[s][T][q]/L[0][T][q]:0;r.sort();cut[s]=qa(r,.5);let u=0;for(let q=0;q<N;q++)if(L[s][T][q]>inleg[T])u++;win[s]=u/N;tmed[s]=qa(Float64Array.from(tax[s]).sort(),.5)}
+  R={T,P,tmed,win,cut,inleg};
+}
+function fmtCtl(){
+  $("oStart").innerHTML=eurFull(st.start).replace("€ ","<small>€ </small>");
+  $("oMonth").innerHTML=eurFull(st.month).replace("€ ","<small>€ </small>");
+  $("oYears").innerHTML=st.years+"<small> jaar</small>";
+  $("oStock").innerHTML=st.stock+"<small>%</small>";
+  $("oFee").innerHTML=st.fee.toLocaleString("nl-NL",{minimumFractionDigits:2})+"<small>%</small>";
+  for(const el of document.querySelectorAll(".slider input"))el.parentNode.style.setProperty("--p",((el.value-el.min)/(el.max-el.min)*100)+"%");
+}
+function text(){
+  const {T,P,inleg,win}=R,m=s=>P[s][T][3],in_=inleg[T],low=Math.min(m(1),m(2),m(3)),sel=st.sel;
+    $("stats").innerHTML=[[0,"Zonder belasting"],[1,"Nu"],[5,"Nieuw plan"]].map(([s,l])=>`<div><span class="mono">${l}</span><span class="n">${eur(m(s))}</span><span class="d">${s?(Math.round(R.cut[s]*100))+"% minder dan zonder belasting":`na ${T} jaar, in een <button class="term" data-t="midden">gewone toekomst</button>`}</span></div>`).join("");
+  initTerms();
+  $("figTitle").innerHTML=`Wat je na ${T} jaar overhoudt met een <button class="term" data-t="wereld">wereldwijd indexfonds</button>`;initTerms();
+    {const d=m(5)-m(1);$("rangeTitle").textContent=R.inleg[T]<=0?"Vul een bedrag in om de plannen te vergelijken":`Met het nieuwe plan houd je ${eur(Math.abs(d))} ${d>=0?"meer":"minder"} over dan nu`}
+}
+function ranges(){
+  const {T,P,cut}=R,mx=Math.max(...P.map(p=>p[T][5]))*1.02||1,x=v=>(v/mx*100).toFixed(2)+"%",ins=R.inleg[T];
+  const row=s=>{const c=SC[s],p=P[s][T],on=s===st.sel,[stt,cls,txt,dl]=PLAN[s],pc=Math.round(cut[s]*100);
+    return `<div class="pl${on?" sel":""}">
+    <div class="info"><span class="status ${cls}">${stt}</span><h3>${c.naam}</h3><p>${txt}</p>${dl?`<dl>${dl}</dl>`:""}</div>
+    <svg aria-hidden="true"><line x1="${x(ins)}" x2="${x(ins)}" y1="2" y2="38" stroke="var(--muted)" stroke-dasharray="2 3"/>
+    <line x1="${x(p[1])}" x2="${x(p[5])}" y1="20" y2="20" stroke="var(--down)" stroke-width="2"/>
+    <rect x="${x(p[2])}" width="${((p[4]-p[2])/mx*100).toFixed(2)}%" y="12" height="16" fill="${on?"var(--ink)":"var(--fill)"}" stroke="var(--ink)" stroke-width="1.5"/>
+    <rect x="${x(p[3])}" transform="translate(-3 0)" width="6" y="6" height="28" fill="${on?"var(--paper)":"var(--ink)"}" stroke="var(--ink)" stroke-width="1.5"/></svg>
+    <div class="num"><span class="a">${eur(p[3])}</span><span class="c">${s?(pc>0?"−":"")+pc+"% door belasting":"zonder belasting"}</span></div></div>`};
+  $("ranges").innerHTML=`<div class="pl head"><span class="mono">Plan</span><span class="mono"><button class="term" data-t="slecht">Slecht · gewoon · goed</button></span><span class="mono num"><button class="term" data-t="cut">Je houdt over</button></span></div>`
+    +MAIN.map(row).join("")+(st.all?`<div class="pl grp${R.enter?" enter":""}"><span class="mono">Andere plannen</span></div>`+OTHER.map((s,k)=>row(s).replace('class="pl',`style="animation-delay:${[40,80,110][k]}ms" class="pl${R.enter?" enter":""}`)).join(""):"")
+    +`<div class="tfoot"><button class="more" id="more" aria-expanded="${st.all}">${st.all?"Verberg andere plannen":"Toon andere plannen (3)"}</button><span class="mono">Stippellijn: wat je inlegde (${eur(ins)})</span></div>`;
+  initTerms();
+}
+const svg=$("svg"),fig=$("fig"),tip=$("tip");let geo=null;
+function chart(){
+  const W=fig.clientWidth,H=fig.clientHeight;if(!R||W<200)return;const {T,P}=R,sel=st.sel,narrow=W<560;
+  const room=document.documentElement.clientWidth-fig.getBoundingClientRect().right-6;
+  const m={l:8,r:narrow?8:Math.max(0,132-room),t:16,b:28},iw=W-m.l-m.r,ih=H-m.t-m.b;
+  const ymax=Math.max(P[0][T][4],P[sel][T][5])*1.08||1;
+  const nice=v=>{const e=10**Math.floor(Math.log10(v)),f=v/e;return (f<=1?1:f<=2?2:f<=5?5:10)*e};
+  const step=nice(ymax/(narrow?4:5)),X=t=>m.l+t/T*iw,Y=v=>m.t+ih-Math.min(v,ymax*1.2)/ymax*ih;
+  const area=(lo,hi)=>{let d="";for(let t=0;t<=T;t++)d+=(t?"L":"M")+X(t).toFixed(1)+","+Y(P[sel][t][hi]).toFixed(1);for(let t=T;t>=0;t--)d+="L"+X(t).toFixed(1)+","+Y(P[sel][t][lo]).toFixed(1);return d+"Z"};
+  const line=(s,k)=>{let d="";for(let t=0;t<=T;t++)d+=(t?"L":"M")+X(t).toFixed(1)+","+Y(P[s][t][k]).toFixed(1);return d};
+  let g=`<defs><clipPath id="cp"><rect x="${m.l}" y="${m.t-4}" width="${iw+2}" height="${ih+4}"/></clipPath></defs>`;
+  for(let v=step;v<ymax;v+=step)g+=`<line x1="${m.l}" x2="${m.l+iw}" y1="${Y(v)}" y2="${Y(v)}" stroke="var(--rule)"/><text x="${m.l}" y="${Y(v)-5}">${eur(v)}</text>`;
+  g+=`<line x1="${m.l}" x2="${m.l+iw}" y1="${Y(0)}" y2="${Y(0)}" stroke="var(--ink)"/>`;
+  const ts=T<=10?1:T<=25?5:10;for(let t=0;t<=T;t+=ts)if(!(narrow&&t%(ts*2)&&t!==T))g+=`<text x="${X(t)}" y="${H-8}" text-anchor="${t?t===T?"end":"middle":"start"}">${t?"jaar "+t:"nu"}</text>`;
+  g+=`<g clip-path="url(#cp)"><path d="${area(0,6)}" fill="var(--band)"/><path d="${area(2,4)}" fill="var(--fill)"/></g>`;
+  let inl="";for(let t=0;t<=T;t++)inl+=(t?"L":"M")+X(t).toFixed(1)+","+Y(R.inleg[t]).toFixed(1);
+  g+=`<path d="${inl}" fill="none" stroke="var(--muted)" stroke-width="1.5" stroke-dasharray="5 4"/>`;
+  const show=st.all?[0,1,5,2,3,4]:[...new Set([...MAIN,sel])];
+  for(const s of show)if(s!==sel)g+=`<path d="${line(s,3)}" fill="none" stroke="${s===0?"var(--ink-2)":"var(--down)"}" stroke-width="1.25" ${s===0?'stroke-dasharray="1.5 3" stroke-linecap="round"':""}/>`;
+  g+=`<path d="${line(sel,3)}" fill="none" stroke="var(--paper)" stroke-width="6" stroke-linejoin="round"/><path d="${line(sel,3)}" fill="none" stroke="var(--ink)" stroke-width="2.5" stroke-linejoin="round"/>`;
+  if(!narrow){
+    const labs=show.map(s=>({s,y:Y(P[s][T][3])})).sort((a,b)=>a.y-b.y);
+    for(let k=1;k<labs.length;k++)if(labs[k].y-labs[k-1].y<32)labs[k].y=labs[k-1].y+32;
+    const over=labs.at(-1).y-(m.t+ih-6);if(over>0)labs.forEach(l=>l.y-=over);
+    for(const l of labs){const ty=Y(P[l.s][T][3]);g+=`<line x1="${X(T)+3}" x2="${X(T)+10}" y1="${ty}" y2="${l.y}" stroke="var(--down)"/><text class="lab${l.s===sel?"":" q"}" x="${X(T)+14}" y="${l.y+1}">${SC[l.s].kort}</text><text x="${X(T)+14}" y="${l.y+15}" ${l.s===sel?'style="fill:var(--ink)"':""}>${eur(P[l.s][T][3])}</text>`}
+  }
+  g+=`<line id="hx" x1="0" x2="0" y1="${m.t}" y2="${m.t+ih}" stroke="var(--ink)" opacity="0"/><circle id="hd" r="4.5" fill="var(--ink)" stroke="var(--paper)" stroke-width="2" opacity="0"/>`;
+  svg.innerHTML=g;geo={X,Y,m,iw,T,W};
+}
+function hover(e){
+  if(!geo)return;const b=fig.getBoundingClientRect(),x=e.clientX-b.left,{X,Y,m,iw,T,W}=geo;
+  const t=Math.max(0,Math.min(T,Math.round((x-m.l)/iw*T))),P=R.P,sel=st.sel;
+  const hx=$("hx"),hd=$("hd");hx.setAttribute("x1",X(t));hx.setAttribute("x2",X(t));hx.setAttribute("opacity",.35);
+  hd.setAttribute("cx",X(t));hd.setAttribute("cy",Y(P[sel][t][3]));hd.setAttribute("opacity",1);
+  tip.innerHTML=`<div class="y">${t?"Na "+t+" jaar":"Nu"}</div>`+(st.all?[0,1,2,3,4,5]:[...new Set([...MAIN,sel])]).map(s=>`<div class="r${s===sel?" sel":""}"><span>${SC[s].kort}</span><span>${eur(P[s][t][3])}</span></div>`).join("")+`<div class="r" style="margin-top:6px"><span>Ingelegd</span><span>${eur(R.inleg[t])}</span></div>`;
+  const tw=tip.offsetWidth,left=X(t)+16+tw>W?X(t)-16-tw:X(t)+16;
+  tip.style.transform=`translate(${Math.max(0,left)}px,${m.t+8}px)`;tip.classList.add("on");
+}
+function unhover(){tip.classList.remove("on");const hx=$("hx"),hd=$("hd");if(hx){hx.setAttribute("opacity",0);hd.setAttribute("opacity",0)}}
+fig.addEventListener("pointermove",hover);fig.addEventListener("pointerdown",hover);fig.addEventListener("pointerleave",e=>{if(e.pointerType==="mouse")unhover()});document.addEventListener("pointerdown",e=>{if(e.pointerType!=="mouse"&&!fig.contains(e.target))unhover()});
+$("ranges").addEventListener("click",e=>{if(e.target.closest("#more")){st.all=!st.all;R.enter=st.all;ranges();R.enter=false;chart();$("more").focus()}});
+let raf=0;function update(){cancelAnimationFrame(raf);raf=requestAnimationFrame(()=>{sim();text();ranges();chart();if(open&&!open.isConnected)close()})}
+const map={cStart:"start",cMonth:"month",cYears:"years",cStock:"stock",cFee:"fee"};
+for(const [id,k] of Object.entries(map)){const el=$(id);el.value=st[k];el.addEventListener("input",()=>{st[k]=+el.value;fmtCtl();update()})}
+$("partner").addEventListener("click",e=>{const b=e.target.closest("button");if(!b)return;st.p=+b.dataset.v;for(const x of $("partner").children)x.setAttribute("aria-pressed",x===b);update()});
+// tooltips
+const pop=$("pop");let open=null,lastClose=0,openT=0,hideT=0;
+function close(){clearTimeout(openT);if(open){open.setAttribute("aria-expanded","false");open=null;lastClose=Date.now()}pop.hidden=true}
+function show(b,instant){
+  clearTimeout(openT);if(open===b)return;const warm=!!open||Date.now()-lastClose<400;close();
+  const [txt,lab,href]=TERMS[b.dataset.t];pop.textContent=txt;
+  if(lab){const a=document.createElement("a");a.href=href;a.textContent="Bron: "+lab+" →";pop.append(document.createElement("br"),a)}
+  pop.classList.toggle("instant",!!(instant||warm));pop.classList.add("pre");
+  pop.hidden=false;open=b;b.setAttribute("aria-expanded","true");
+  const r=b.getBoundingClientRect(),pw=pop.offsetWidth,ph=pop.offsetHeight,vw=document.documentElement.clientWidth;
+  const left=Math.max(16,Math.min(vw-16-pw,r.left+r.width/2-pw/2)),up=r.bottom+8+ph>innerHeight&&r.top-8-ph>0;
+  pop.style.left=left+scrollX+"px";pop.style.top=(up?r.top-8-ph:r.bottom+8)+scrollY+"px";
+  pop.style.transformOrigin=`${Math.round(r.left+r.width/2-left)}px ${up?"100%":"0"}`;
+  pop.offsetWidth;pop.classList.remove("pre");
+}
+const later=()=>{clearTimeout(hideT);hideT=setTimeout(close,160)};
+document.addEventListener("pointerover",e=>{if(e.pointerType!=="mouse")return;const b=e.target.closest(".term");
+  if(b){clearTimeout(hideT);if(open===b)return;if(open||Date.now()-lastClose<400)show(b);else{clearTimeout(openT);openT=setTimeout(()=>show(b),300)}}
+  else if(e.target.closest(".pop"))clearTimeout(hideT)});
+document.addEventListener("pointerout",e=>{if(e.pointerType!=="mouse")return;if(e.target.closest(".term,.pop")){clearTimeout(openT);later()}});
+document.addEventListener("focusin",e=>{const b=e.target.closest(".term");if(b&&b.matches(":focus-visible"))show(b)});
+document.addEventListener("click",e=>{
+  const b=e.target.closest(".term");
+  if(!b){if(!e.target.closest(".pop"))close();return}
+  e.preventDefault();e.stopPropagation();if(open===b&&!b.matches(":hover"))close();else show(b,open===b);
+},true);
+document.addEventListener("keydown",e=>{if(e.key==="Escape")close()});
+addEventListener("resize",close);
+const initTerms=()=>{for(const b of document.querySelectorAll(".term:not([type])")){b.setAttribute("aria-expanded","false");b.type="button"}};initTerms();
+draw0();fmtCtl();sim();text();ranges();
+const ro=new ResizeObserver(()=>chart());ro.observe(fig);
+}
+</script>
+</body>
+</html>
