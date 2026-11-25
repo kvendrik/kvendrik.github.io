@@ -1,86 +1,86 @@
-my_rating,vivino_avg,winery,wine,vintage,style,region,country,type,note
-4.8,4.2,Pierre Naigeon,Bourgogne Hautes-Côtes de Nuits,2020,Burgundy Red,Bourgogne Hautes-Côtes de Nuits,France,Red Wine,
-4.6,4.2,Benjamin Leroux,Gevrey-Chambertin,2020,Burgundy Côte de Nuits Red,Gevrey-Chambertin,France,Red Wine,
-4.5,4.2,Domaine Francois d'Allaines,Saint-Aubin Premier Cru 'Derrière Chez Edouard',2023,Burgundy Côte de Beaune Red,Saint-Aubin 1er Cru 'Derrière chez Edouard',France,Red Wine,Amazing wine. Buttery taste and subtle vanilla notes
-4.5,4.2,R. López de Heredia,Viña Gravonia,,Spanish Rioja White,Rioja Alta,Spain,White Wine,
-4.5,3.9,Château La Vieille France,Graves,2019,Bordeaux Graves Red,Graves,France,Red Wine,
-4.4,3.9,Integro,Negroamaro,,Southern Italy Red,Puglia,Italy,Red Wine,
-4.4,4.2,Cultus,Red,2017,Slovenian Red,Primorje,Slovenia,Red Wine,
-4.4,4.1,Roxanich,Sorelle,2016,Croatian Chardonnay White,Istria (Croatia),Croatia,White Wine,
-4.4,4.1,Alta Alella,Dolç Mataró,2019,,Alella,Spain,Dessert Wine,
-4.3,4.1,,Sotto Sopra Marche Bianco,,Central Italy White,Marche,Italy,White Wine,
-4.3,4.0,Casaletti,Valpolicella Ripasso Superiore,2020,Italian Ripasso,Valpolicella Ripasso,Italy,Red Wine,
-4.3,3.9,Abbaye Sylva Plana,La Closeraie Faugères,2021,Languedoc-Roussillon Grenache,Faugères,France,Red Wine,
-4.3,4.2,Cignomoro,6 Anime Puglia Rosso,2022,Southern Italy Red,Puglia,Italy,Red Wine,
-4.3,3.9,La Collina dei Ciliegi,Camponi,2020,Northern Italy Red,Veneto,Italy,Red Wine,
-4.3,4.1,Rinaldi,Bricco Cardogno Moscato d'Asti,2020,Italian Moscato d'Asti,Moscato d'Asti,Italy,Sparkling,
-4.2,4.0,Clos Sainte Magdeleine,Cassis Blanc,2018,French Provence White,Cassis,France,White Wine,
-4.2,3.8,Domaine Francois d'Allaines,Bourgogne Pinot Noir,2023,Burgundy Red,Bourgogne,France,Red Wine,
-4.2,4.2,Doladino,Pinot Nero,,,Veneto,it,Red Wine,Had to Doldada in the Dolomites. Only 300 made.
-4.2,3.9,Carlin Pinson,La Côte de Crézancy Sancerre,2023,Upper Loire Red,Sancerre,France,Red Wine,
-4.2,3.9,Brumas de Ayosa,Blanco Seco,,Spanish Islas Canarias White,Valle de Güímar,Spain,White Wine,
-4.2,4.1,Benvenuti,Livio Teran,2019,Croatian Red,Istria and Kvarner,Croatia,Red Wine,
-4.2,4.2,Castel di Salve,Cento Su Cento Primitivo,2008,Southern Italy Primitivo,Salento,Italy,Red Wine,
-4.2,4.0,Pãcina,Toscana,2013,Tuscan Red,Toscana,Italy,Red Wine,
-4.2,4.2,Sylvain Pataille,Marsannay 'Le Chapitre',2021,Burgundy Côte de Nuits Red,Marsannay,France,Red Wine,
-4.2,4.2,Schumann (Šuman),Moon Drops,2020,Slovenian White,Primorje,Slovenia,White Wine,
-4.1,4.1,Laherte Frères,Blanc de Blancs Brut Nature Champagne,,French Champagne,Champagne,France,Sparkling,
-4.1,3.9,Jeff Carrel,Dans l'air du Temps Chardonnay,2018,Languedoc-Roussillon White,Languedoc-Roussillon,France,White Wine,
-4.1,4.1,Le Vigne di Sammarco,Toto Salento Negroamaro,2021,Southern Italy Red,Salento,Italy,Red Wine,
-4.1,4.1,Domaine de la Tournelle,Au Lever du Rouge,,French Jura Red,Jura,France,Red Wine,
-4.1,4.0,Alex Foillard,Brouilly,2020,Beaujolais Red,Brouilly,France,Red Wine,
-4.1,4.0,Telmo Rodriguez,LG Valbuxan Tinto Lexitimo,2021,Spanish Red,Valdeorras,Spain,Red Wine,
-4.1,4.1,Marof,Goričko Blanc,2021,Slovenian Sauvignon Blanc White,Podravje,Slovenia,White Wine,
-4.1,3.9,Castello di Verduno,Basadone Pelaverga,2022,Northern Italy Red,Verduno,Italy,Red Wine,
-4.0,4.0,Rings,Kallstadt Spätburgunder,2023,German Spätburgunder,Pfalz,Germany,Red Wine,Oaky and Smokey. Nice with steak
-4.0,4.0,Weinbau Uwe Schiefer,Pinot Noir,2023,Austrian Pinot Noir,Südburgenland,Austria,Red Wine,
-4.0,3.8,Domaine de Malavieille,Roc & Lune,2016,Languedoc-Roussillon Red,Saint-Saturnin,France,Red Wine,
-4.0,3.9,A. Christmann,Aus den Lagen Riesling,2023,German Riesling,Pfalz,Germany,White Wine,
-4.0,4.0,Carpentiere,Armentario Nero di Troia Riserva,2012,Southern Italy Red,Castel del Monte,Italy,Red Wine,
-4.0,3.7,Ronco dei Tassi,Malvasia,2014,Northern Italy White,Collio,Italy,White Wine,
-4.0,3.9,Les Valseuses,Amore Disperato,2021,French Jura Red,Jura,France,Red Wine,
-4.0,3.9,Paolo Manzone,Fiorenza Barbera d'Alba Superiore,2022,Italian Barbera,Barbera d'Alba,Italy,Red Wine,
-4.0,4.0,Radacini,Reserve Cabernet Sauvignon Merlot & Syrah,2018,,Moldova,Moldova,Red Wine,
-4.0,4.0,Ça Boit Libre,Mon Blanc Orangé,2021,French Savoie White,Savoie,France,White Wine,
-4.0,3.9,Pinyolet,Sinestèsia Garnatxa Blanca,,Spanish Catalunya Grenache Blanc White,Montsant,Spain,White Wine,
-4.0,4.0,Benoit Girardin,Bourgogne Pinot Noir,2022,Burgundy Red,Bourgogne,France,Red Wine,
-4.0,4.0,Lenotti,Le Crosare Valpolicella Ripasso Classico Superiore,,Italian Ripasso,Valpolicella Ripasso Classico,Italy,Red Wine,
-4.0,4.1,Gazzetta,Susanna Bianco,,Central Italy White,Lazio,Italy,White Wine,
-4.0,3.9,Andre Clouet,Grande Réserve Brut Champagne Grand Cru 'Bouzy',,French Champagne,Champagne Grand Cru 'Bouzy',France,Sparkling,
-4.0,3.7,Maurer,Kadarka,2019,,Subotica-Horgos,Serbia,Red Wine,
-4.0,3.9,Maurer,Furmint,2018,,Subotica-Horgos,Serbia,White Wine,
-4.0,3.8,Progetti Agricoli,Saverio Faro Nero d'Avola,2018,Southern Italy Red,Sicilia,Italy,Red Wine,
-4.0,3.8,Castello di Verduno,Langhe Nebbiolo,2022,Italian Nebbiolo,Langhe,Italy,Red Wine,
-4.0,4.0,Poggio Al Cinghiale,Sangiovese,,Northern Italy Red,Rubicone,Italy,Red Wine,
-4.0,4.0,Fitapreta,O Ancestral Branco,2021,Southern Portugal White,Alentejano,Portugal,White Wine,
-4.0,4.0,Koehler-Ruprecht,Kallstadter Steinacker Riesling Kabinett,2021,German Riesling,Pfalz,Germany,White Wine,
-4.0,3.6,Pãcina,Il Secondo di Pãcina,2020,Tuscan Red,Toscana,Italy,Red Wine,
-4.0,4.2,Jean-Marc Vincent,Puligny-Montrachet Corvées des Vignes,2021,Burgundy Côte de Beaune White,Puligny-Montrachet,France,White Wine,
-3.9,3.8,Guido Porro,Barbera d'Alba,,Italian Barbera,Barbera d'Alba,Italy,Red Wine,
-3.9,3.9,Domaine de la Touraize,Rebelle Savagnin Arbois,2020,Jura White,Arbois,France,White Wine,
-3.9,4.0,Can Sumoi,Xarel-Lo,2025,Spanish White,Penedès,Spain,White Wine,
-3.9,3.9,Krasno,Pinot Noir,2020,Slovenian Pinot Noir Red,Goriška Brda,Slovenia,Red Wine,
-3.8,3.9,,Lowel Pinot Noir,,,,,Red Wine,
-3.8,4.2,Guido Porro,V. S. Caterina Barolo,,Italian Barolo,Barolo,Italy,Red Wine,
-3.8,4.1,Michele Chiarlo,Tortoniano Barolo,2021,Italian Barolo,Barolo,Italy,Red Wine,
-3.8,4.1,Tajinaste,CAN Listan Negro - Vijariego,,Spanish Red,Valle de la Orotava,Spain,Red Wine,
-3.8,3.7,Parajes del Valle,Monastrell,,Spanish Monastrell,Jumilla,Spain,Red Wine,
-3.8,3.7,Ca’ del Baio,Langhe Nebbiolo,2018,Italian Nebbiolo,Langhe,Italy,Red Wine,
-3.8,3.8,Guimaro,Ribeira Sacra Mencia,2020,Spanish Mencia,Ribeira Sacra,Spain,Red Wine,
-3.7,3.7,Vicara,.G Grignolino del Monferrato Casalese,,Northern Italy Red,Grignolino del Monferrato Casalese,Italy,Red Wine,
-3.7,3.9,Terra de Falanis,Llenca Plana Montsant,2016,Spanish Montsant Red,Montsant,Spain,Red Wine,
-3.7,4.0,Marie Bourdon,Vinyle,2021,Jura White,Jura,France,White Wine,
-3.7,4.0,Vinaria din Vale,7 Coline Saperavi - Malbec,,,Moldova,Moldova,Red Wine,
-3.7,3.6,Viajero,Viognier Reserva Privada,2021,Chilean Viognier,Central Valley,Chile,White Wine,
-3.6,3.6,Thierry Duval,Plaisirs de Loire Saumur Brut,,French Sparkling,Saumur,France,Sparkling,
-3.6,3.7,André Kleinknecht,Pinot Noir,,Alsace Pinot Noir,Alsace,France,Red Wine,
-3.5,3.9,Jean-Christophe Garnier,La Roche Bézigon,2019,Loire Chenin Blanc,Loire Valley,France,White Wine,
-3.5,3.9,Julien Sunier,Morgon,2022,Beaujolais Red,Morgon,France,Red Wine,
-3.5,3.7,Raddeck,Spätburgunder Trocken,,German Spätburgunder,Rheinhessen,Germany,Red Wine,
-3.5,4.1,Cultus,Zelen,2019,Slovenian White,Vipava,Slovenia,White Wine,
-3.5,3.9,Vigna San Lorenzo - Col Tamaríe,Bianco Frizzante,2019,Italian Sparkling,Veneto,Italy,Sparkling,
-3.5,3.8,Sassara,Misià,,Northern Italy White,Veneto,Italy,White Wine,
-3.5,4.0,Andréa Calek,Blonde,2021,French White,Vin de Pays,France,White Wine,
-3.5,3.6,San Donatino,Lunatico Bianco di Sangiovese,,Central Italy White,Toscana,Italy,White Wine,
-3.4,3.4,Alice Beaufort,Glouglou Charmoire,2022,French Red,Vin de France,France,Red Wine,
-3.0,3.4,Bodegas Piedemonte,Gamma Blanco,2022,Spanish White,Navarra,Spain,White Wine,
+my_rating,vivino_avg,winery,wine,vintage,style,region,country,type
+4.8,4.2,Pierre Naigeon,Bourgogne Hautes-Côtes de Nuits,2020,Burgundy Red,Bourgogne Hautes-Côtes de Nuits,France,Red Wine
+4.6,4.2,Benjamin Leroux,Gevrey-Chambertin,2020,Burgundy Côte de Nuits Red,Gevrey-Chambertin,France,Red Wine
+4.5,4.2,Domaine Francois d'Allaines,Saint-Aubin Premier Cru 'Derrière Chez Edouard',2023,Burgundy Côte de Beaune Red,Saint-Aubin 1er Cru 'Derrière chez Edouard',France,Red Wine
+4.5,4.2,R. López de Heredia,Viña Gravonia,,Spanish Rioja White,Rioja Alta,Spain,White Wine
+4.5,3.9,Château La Vieille France,Graves,2019,Bordeaux Graves Red,Graves,France,Red Wine
+4.4,3.9,Integro,Negroamaro,,Southern Italy Red,Puglia,Italy,Red Wine
+4.4,4.2,Cultus,Red,2017,Slovenian Red,Primorje,Slovenia,Red Wine
+4.4,4.1,Roxanich,Sorelle,2016,Croatian Chardonnay White,Istria (Croatia),Croatia,White Wine
+4.4,4.1,Alta Alella,Dolç Mataró,2019,,Alella,Spain,Dessert Wine
+4.3,4.1,,Sotto Sopra Marche Bianco,,Central Italy White,Marche,Italy,White Wine
+4.3,4.0,Casaletti,Valpolicella Ripasso Superiore,2020,Italian Ripasso,Valpolicella Ripasso,Italy,Red Wine
+4.3,3.9,Abbaye Sylva Plana,La Closeraie Faugères,2021,Languedoc-Roussillon Grenache,Faugères,France,Red Wine
+4.3,4.2,Cignomoro,6 Anime Puglia Rosso,2022,Southern Italy Red,Puglia,Italy,Red Wine
+4.3,3.9,La Collina dei Ciliegi,Camponi,2020,Northern Italy Red,Veneto,Italy,Red Wine
+4.3,4.1,Rinaldi,Bricco Cardogno Moscato d'Asti,2020,Italian Moscato d'Asti,Moscato d'Asti,Italy,Sparkling
+4.2,4.0,Clos Sainte Magdeleine,Cassis Blanc,2018,French Provence White,Cassis,France,White Wine
+4.2,3.8,Domaine Francois d'Allaines,Bourgogne Pinot Noir,2023,Burgundy Red,Bourgogne,France,Red Wine
+4.2,4.2,Doladino,Pinot Nero,,,Veneto,it,Red Wine
+4.2,3.9,Carlin Pinson,La Côte de Crézancy Sancerre,2023,Upper Loire Red,Sancerre,France,Red Wine
+4.2,3.9,Brumas de Ayosa,Blanco Seco,,Spanish Islas Canarias White,Valle de Güímar,Spain,White Wine
+4.2,4.1,Benvenuti,Livio Teran,2019,Croatian Red,Istria and Kvarner,Croatia,Red Wine
+4.2,4.2,Castel di Salve,Cento Su Cento Primitivo,2008,Southern Italy Primitivo,Salento,Italy,Red Wine
+4.2,4.0,Pãcina,Toscana,2013,Tuscan Red,Toscana,Italy,Red Wine
+4.2,4.2,Sylvain Pataille,Marsannay 'Le Chapitre',2021,Burgundy Côte de Nuits Red,Marsannay,France,Red Wine
+4.2,4.2,Schumann (Šuman),Moon Drops,2020,Slovenian White,Primorje,Slovenia,White Wine
+4.1,4.1,Laherte Frères,Blanc de Blancs Brut Nature Champagne,,French Champagne,Champagne,France,Sparkling
+4.1,3.9,Jeff Carrel,Dans l'air du Temps Chardonnay,2018,Languedoc-Roussillon White,Languedoc-Roussillon,France,White Wine
+4.1,4.1,Le Vigne di Sammarco,Toto Salento Negroamaro,2021,Southern Italy Red,Salento,Italy,Red Wine
+4.1,4.1,Domaine de la Tournelle,Au Lever du Rouge,,French Jura Red,Jura,France,Red Wine
+4.1,4.0,Alex Foillard,Brouilly,2020,Beaujolais Red,Brouilly,France,Red Wine
+4.1,4.0,Telmo Rodriguez,LG Valbuxan Tinto Lexitimo,2021,Spanish Red,Valdeorras,Spain,Red Wine
+4.1,4.1,Marof,Goričko Blanc,2021,Slovenian Sauvignon Blanc White,Podravje,Slovenia,White Wine
+4.1,3.9,Castello di Verduno,Basadone Pelaverga,2022,Northern Italy Red,Verduno,Italy,Red Wine
+4.0,4.0,Rings,Kallstadt Spätburgunder,2023,German Spätburgunder,Pfalz,Germany,Red Wine
+4.0,4.0,Weinbau Uwe Schiefer,Pinot Noir,2023,Austrian Pinot Noir,Südburgenland,Austria,Red Wine
+4.0,3.8,Domaine de Malavieille,Roc & Lune,2016,Languedoc-Roussillon Red,Saint-Saturnin,France,Red Wine
+4.0,3.9,A. Christmann,Aus den Lagen Riesling,2023,German Riesling,Pfalz,Germany,White Wine
+4.0,4.0,Carpentiere,Armentario Nero di Troia Riserva,2012,Southern Italy Red,Castel del Monte,Italy,Red Wine
+4.0,3.7,Ronco dei Tassi,Malvasia,2014,Northern Italy White,Collio,Italy,White Wine
+4.0,3.9,Les Valseuses,Amore Disperato,2021,French Jura Red,Jura,France,Red Wine
+4.0,3.9,Paolo Manzone,Fiorenza Barbera d'Alba Superiore,2022,Italian Barbera,Barbera d'Alba,Italy,Red Wine
+4.0,4.0,Radacini,Reserve Cabernet Sauvignon Merlot & Syrah,2018,,Moldova,Moldova,Red Wine
+4.0,4.0,Ça Boit Libre,Mon Blanc Orangé,2021,French Savoie White,Savoie,France,White Wine
+4.0,3.9,Pinyolet,Sinestèsia Garnatxa Blanca,,Spanish Catalunya Grenache Blanc White,Montsant,Spain,White Wine
+4.0,4.0,Benoit Girardin,Bourgogne Pinot Noir,2022,Burgundy Red,Bourgogne,France,Red Wine
+4.0,4.0,Lenotti,Le Crosare Valpolicella Ripasso Classico Superiore,,Italian Ripasso,Valpolicella Ripasso Classico,Italy,Red Wine
+4.0,4.1,Gazzetta,Susanna Bianco,,Central Italy White,Lazio,Italy,White Wine
+4.0,3.9,Andre Clouet,Grande Réserve Brut Champagne Grand Cru 'Bouzy',,French Champagne,Champagne Grand Cru 'Bouzy',France,Sparkling
+4.0,3.7,Maurer,Kadarka,2019,,Subotica-Horgos,Serbia,Red Wine
+4.0,3.9,Maurer,Furmint,2018,,Subotica-Horgos,Serbia,White Wine
+4.0,3.8,Progetti Agricoli,Saverio Faro Nero d'Avola,2018,Southern Italy Red,Sicilia,Italy,Red Wine
+4.0,3.8,Castello di Verduno,Langhe Nebbiolo,2022,Italian Nebbiolo,Langhe,Italy,Red Wine
+4.0,4.0,Poggio Al Cinghiale,Sangiovese,,Northern Italy Red,Rubicone,Italy,Red Wine
+4.0,4.0,Fitapreta,O Ancestral Branco,2021,Southern Portugal White,Alentejano,Portugal,White Wine
+4.0,4.0,Koehler-Ruprecht,Kallstadter Steinacker Riesling Kabinett,2021,German Riesling,Pfalz,Germany,White Wine
+4.0,3.6,Pãcina,Il Secondo di Pãcina,2020,Tuscan Red,Toscana,Italy,Red Wine
+4.0,4.2,Jean-Marc Vincent,Puligny-Montrachet Corvées des Vignes,2021,Burgundy Côte de Beaune White,Puligny-Montrachet,France,White Wine
+3.9,3.8,Guido Porro,Barbera d'Alba,,Italian Barbera,Barbera d'Alba,Italy,Red Wine
+3.9,3.9,Domaine de la Touraize,Rebelle Savagnin Arbois,2020,Jura White,Arbois,France,White Wine
+3.9,4.0,Can Sumoi,Xarel-Lo,2025,Spanish White,Penedès,Spain,White Wine
+3.9,3.9,Krasno,Pinot Noir,2020,Slovenian Pinot Noir Red,Goriška Brda,Slovenia,Red Wine
+3.8,3.9,,Lowel Pinot Noir,,,,,Red Wine
+3.8,4.2,Guido Porro,V. S. Caterina Barolo,,Italian Barolo,Barolo,Italy,Red Wine
+3.8,4.1,Michele Chiarlo,Tortoniano Barolo,2021,Italian Barolo,Barolo,Italy,Red Wine
+3.8,4.1,Tajinaste,CAN Listan Negro - Vijariego,,Spanish Red,Valle de la Orotava,Spain,Red Wine
+3.8,3.7,Parajes del Valle,Monastrell,,Spanish Monastrell,Jumilla,Spain,Red Wine
+3.8,3.7,Ca’ del Baio,Langhe Nebbiolo,2018,Italian Nebbiolo,Langhe,Italy,Red Wine
+3.8,3.8,Guimaro,Ribeira Sacra Mencia,2020,Spanish Mencia,Ribeira Sacra,Spain,Red Wine
+3.7,3.7,Vicara,.G Grignolino del Monferrato Casalese,,Northern Italy Red,Grignolino del Monferrato Casalese,Italy,Red Wine
+3.7,3.9,Terra de Falanis,Llenca Plana Montsant,2016,Spanish Montsant Red,Montsant,Spain,Red Wine
+3.7,4.0,Marie Bourdon,Vinyle,2021,Jura White,Jura,France,White Wine
+3.7,4.0,Vinaria din Vale,7 Coline Saperavi - Malbec,,,Moldova,Moldova,Red Wine
+3.7,3.6,Viajero,Viognier Reserva Privada,2021,Chilean Viognier,Central Valley,Chile,White Wine
+3.6,3.6,Thierry Duval,Plaisirs de Loire Saumur Brut,,French Sparkling,Saumur,France,Sparkling
+3.6,3.7,André Kleinknecht,Pinot Noir,,Alsace Pinot Noir,Alsace,France,Red Wine
+3.5,3.9,Jean-Christophe Garnier,La Roche Bézigon,2019,Loire Chenin Blanc,Loire Valley,France,White Wine
+3.5,3.9,Julien Sunier,Morgon,2022,Beaujolais Red,Morgon,France,Red Wine
+3.5,3.7,Raddeck,Spätburgunder Trocken,,German Spätburgunder,Rheinhessen,Germany,Red Wine
+3.5,4.1,Cultus,Zelen,2019,Slovenian White,Vipava,Slovenia,White Wine
+3.5,3.9,Vigna San Lorenzo - Col Tamaríe,Bianco Frizzante,2019,Italian Sparkling,Veneto,Italy,Sparkling
+3.5,3.8,Sassara,Misià,,Northern Italy White,Veneto,Italy,White Wine
+3.5,4.0,Andréa Calek,Blonde,2021,French White,Vin de Pays,France,White Wine
+3.5,3.6,San Donatino,Lunatico Bianco di Sangiovese,,Central Italy White,Toscana,Italy,White Wine
+3.4,3.4,Alice Beaufort,Glouglou Charmoire,2022,French Red,Vin de France,France,Red Wine
+3.0,3.4,Bodegas Piedemonte,Gamma Blanco,2022,Spanish White,Navarra,Spain,White Wine

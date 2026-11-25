@@ -1,4 +1,4 @@
-# Koen's taste profile
+# The user's taste profile
 
 Built from a Vivino export (85 ratings, May 2024 – Nov 2026). Average rating 3.99; about the same as
 the Vivino crowd (+0.05). 4.0 is the default "good" score (24 of 85). Anything 4.4+ is a real favourite.
@@ -6,10 +6,9 @@ the Vivino crowd (+0.05). 4.0 is the default "good" score (24 of 85). Anything 4
 ## Loves (strongest signals first)
 
 - **Red Burgundy (Pinot Noir).** Averages 4.33 against 3.99 overall, and holds all three top scores:
-  - 4.8 Pierre Naigeon, Bourgogne Hautes-Côtes de Nuits 2020 (crowd 4.2; paid €53 retail)
+  - 4.8 Pierre Naigeon, Bourgogne Hautes-Côtes de Nuits 2020 (crowd 4.2)
   - 4.6 Benjamin Leroux, Gevrey-Chambertin 2020
-  - 4.5 Domaine François d'Allaines, Saint-Aubin 1er Cru "Derrière Chez Edouard" 2023
-    (review: "Amazing wine. Buttery taste and subtle vanilla notes")
+  - 4.5 Domaine François d'Allaines, Saint-Aubin 1er Cru "Derrière Chez Edouard" 2023 — described as buttery with subtle vanilla
   - Village and regional level (Bourgogne, Hautes-Côtes, Saint-Aubin, Savigny, Marsannay, Fixin) is the sweet spot.
 - **Southern Italian reds** (Puglia, Salento, Negroamaro, Primitivo): average 4.16. Integro Negroamaro scored 4.4 (crowd 3.9).
 - **Valpolicella Ripasso**: average 4.15.
@@ -36,10 +35,9 @@ the Vivino crowd (+0.05). 4.0 is the default "good" score (24 of 85). Anything 4
 ## Preferences in practice
 
 - Reds over whites (4.03 vs 3.91), but a great white can be the top pick.
-- Retail comfort zone is €20–70 a bottle. Has paid €53–70 for Burgundy reds.
+- Typical retail budget is €20–70 a bottle.
 - Drinks mostly French and Italian (27 each), then Spain (11), with curiosity for Slovenia, Croatia, Serbia and Moldova.
-- Notes show they care about food pairing ("Oaky and Smokey. Nice with steak") and the story behind a wine
-  ("Only 300 made").
+- Cares about food pairing and the story behind a wine (small production, place).
 
 ## Quick scoring heuristic
 
