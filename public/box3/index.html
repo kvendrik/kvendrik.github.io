@@ -54,6 +54,8 @@ header{padding-block:clamp(40px,7vw,88px) 0}
 h1{margin-top:16px;font-size:clamp(44px,7vw,80px);letter-spacing:-.01em;max-width:13ch}
 .lede{margin-top:20px;font-family:var(--f-display);font-size:clamp(21px,2.6vw,28px);line-height:1.35;color:var(--ink-2);max-width:46ch;text-wrap:pretty}
 .lede b{font-weight:400;color:var(--ink);white-space:nowrap}
+.basis{margin-top:40px;font-size:16px;color:var(--ink-2)}
+.basis+.stats{margin-top:14px}
 .stats{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));max-width:980px;margin-top:40px;border-top:1px solid var(--ink)}
 .stats>div{padding:16px 16px 8px 0;display:grid;align-content:start;gap:6px}
 .stats>div+div{padding-left:24px;border-left:1px solid var(--rule)}
@@ -158,6 +160,7 @@ sup a{font-family:var(--f-mono);font-size:10px;text-decoration:none;padding:0 1p
   <p class="mono">Bijgewerkt op <time datetime="2026-11-25">25 november 2026</time></p>
   <h1>Een eerlijkere box 3 komt eraan</h1>
   <p class="lede"><button class="term" data-t="box3">Box 3</button> verandert. Straks betaal je over wat je <button class="term" data-t="eerlijk">echt verdient</button>, en pas <button class="term" data-t="winst">als je verkoopt</button>. Hier zie je wat dat voor jou betekent, naast de andere plannen die op tafel liggen.</p>
+  <p class="basis" id="basis"></p>
   <div class="stats" id="stats"></div>
 </header>
 
@@ -316,7 +319,8 @@ function fmtCtl(){
 }
 function text(){
   const {T,P,inleg,win}=R,m=s=>P[s][T][3],in_=inleg[T],low=Math.min(m(1),m(2),m(3)),sel=st.sel;
-    $("stats").innerHTML=[[0,"Zonder belasting"],[1,"Nu"],[5,"Nieuw plan"]].map(([s,l])=>`<div><span class="mono">${l}</span><span class="n">${eur(m(s))}</span><span class="d">${s?(Math.round(R.cut[s]*100))+"% minder dan zonder belasting":`na ${T} jaar, in een <button class="term" data-t="midden">gewone toekomst</button>`}</span></div>`).join("");
+    $("basis").innerHTML=`Wat je overhoudt als je ${eur(st.start)} inlegt en daarna ${eur(st.month)} per maand, na ${T} jaar in een <button class="term" data-t="midden">gewone toekomst</button>:`;
+    $("stats").innerHTML=[[0,"Zonder belasting"],[1,"Nu"],[5,"Nieuw plan"]].map(([s,l])=>`<div><span class="mono">${l}</span><span class="n">${eur(m(s))}</span><span class="d">${s?(Math.round(R.cut[s]*100))+"% minder dan zonder belasting":"ter vergelijking"}</span></div>`).join("");
   initTerms();
   $("figTitle").innerHTML=`Wat je na ${T} jaar overhoudt met een <button class="term" data-t="wereld">wereldwijd indexfonds</button>`;initTerms();
     {const d=m(5)-m(1);$("rangeTitle").textContent=R.inleg[T]<=0?"Vul een bedrag in om de plannen te vergelijken":`Met het nieuwe plan houd je ${eur(Math.abs(d))} ${d>=0?"meer":"minder"} over dan nu`}
