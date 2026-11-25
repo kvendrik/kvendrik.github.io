@@ -13,8 +13,8 @@ Live page: https://kvendrik.com/wine/ · This file: https://kvendrik.com/wine/ll
   An exact past rating beats any inference.
 - Wishlist and cellar: https://kvendrik.com/wine/wishlist-and-cellar.csv
   Columns: list (wishlist or cellar), winery, wine, vintage, style, type, vivino_avg.
-- Producer list: https://kvendrik.com/wine/producers.md
-  Their own list of Burgundy producers to explore, each marked start here / good bet / risky / trophy-priced.
+- Producer wishlist: https://kvendrik.com/wine/producers.md
+  Burgundy producers a friend recommended and they want to try (none tasted yet), each marked for fit: start here / good bet / risky / trophy-priced.
 - Vivino lookup script (optional): https://kvendrik.com/wine/vivino_lookup.py
   Python 3, standard library only. Prints Vivino crowd scores for one or more search queries.
 
@@ -32,7 +32,7 @@ Red Burgundy from a good small producer, classically made, around €50 retail. 
    - Same wine already rated: use that rating directly ("you gave this 4.3 on Vivino").
    - Same producer, different wine: strong signal; say which wine it was.
    - On the wishlist: big bonus, they already want it.
-   - In producers.md: bonus; mention its fit rating.
+   - Producer in producers.md: wishlist bonus, scaled by its fit rating (a friend's tip, not their own taste, so the taste profile still decides). Mention it: "on your Burgundy wishlist".
 4. **Cross-reference Vivino scores.** Look up the crowd score for every serious candidate (at least your top 5).
    - If you can run Python with access to www.vivino.com: `python3 vivino_lookup.py "<producer> <wine or appellation>" "<next wine>" ...`. It prints the vintage score, the all-vintage score and the number of ratings.
    - Otherwise: fetch https://www.vivino.com/search/wines?q=<producer+wine> or web-search "vivino <producer> <wine>".
@@ -47,7 +47,7 @@ Red Burgundy from a good small producer, classically made, around €50 retail. 
 ## Answer format
 
 **Order this:** <Producer> <Wine> <Vintage> — <price> — Vivino <score> (<n> ratings) → you ≈ <predicted>
-<one or two sentences: why it fits them specifically, tied to their ratings or producer list>
+<one or two sentences: why it fits them specifically, tied to their ratings or wishlist>
 
 **Also good:**
 - <Wine> — <price> — Vivino <score> — <short reason> (e.g. "cheaper", "by the glass", "if you want white")
