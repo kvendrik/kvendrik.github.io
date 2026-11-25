@@ -45,7 +45,7 @@ the Vivino crowd (+0.05). 4.0 is the default "good" score (24 of 85). Anything 4
 |---|---|
 | Already rated ≥4.3 | Top pick unless constraints rule it out |
 | Red Burgundy, village/regional, Côte de Beaune or Hautes-Côtes | ++ |
-| Producer on the "start here" list in `producers.md` | ++ |
+| Producer on the producer wishlist (`producers.md`) marked "start here" | ++ |
 | On wishlist | ++ |
 | Southern Italian red, Ripasso, structured Burgundy-style white | + |
 | Grower Champagne, Bordeaux at fair value, Balkan red | + |

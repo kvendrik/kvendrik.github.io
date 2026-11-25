@@ -1,6 +1,7 @@
-# The user's Burgundy producer list
+# Burgundy producer wishlist
 
-The user's own list of producers to explore, with a fit rating against taste-profile.md.
+Producers a friend recommended, which the user wants to try. Treat every name here as a wishlist entry.
+The sections and their titles are the friend's; the fit rating is ours, scored against taste-profile.md.
 None of these were in the Vivino history as of Nov 2026 (Benoit Girardin is a different producer from Pierre Girardin).
 
 Fit: ★★★ = start here, ★★ = good bet, ★ = risky for this drinker, $$$$ = trophy (usually €150+ retail, rare on lists at sane prices).
