@@ -19,7 +19,7 @@
 <meta property="og:image" content="https://kvendrik.com/box3/og.png">
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
-<meta property="og:image:alt" content="Een eerlijkere box 3 komt eraan. Na 30 jaar beleggen: € 828.000 zonder belasting, € 675.000 nu, € 572.000 met het nieuwe plan.">
+<meta property="og:image:alt" content="Een eerlijkere box 3 komt eraan. € 50.000 in een wereldwijd indexfonds wordt na 30 jaar € 279.000 zonder belasting, € 242.000 nu en € 196.000 met het nieuwe plan.">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:site" content="@kvendrik">
 <link rel="preload" href="/bodega/fonts/AlloVariable.woff2" as="font" type="font/woff2" crossorigin>
@@ -168,7 +168,7 @@ sup a{font-family:var(--f-mono);font-size:10px;text-decoration:none;padding:0 1p
   <h2 class="fight tt" id="figTitle">Wat je na 30 jaar overhoudt met een wereldwijd indexfonds</h2>
   <div class="controls" id="controls">
     <div class="slider"><span class="slider-fill"></span><span class="sl"><label for="cStart">Start</label><button class="term q s" data-t="cStart" aria-label="Uitleg: start">?</button></span><output id="oStart"></output><input type="range" id="cStart" min="0" max="500000" step="5000" value="50000"></div>
-    <div class="slider"><span class="slider-fill"></span><span class="sl"><label for="cMonth">Per maand</label><button class="term q s" data-t="cMonth" aria-label="Uitleg: per maand">?</button></span><output id="oMonth"></output><input type="range" id="cMonth" min="0" max="3000" step="50" value="500"></div>
+    <div class="slider"><span class="slider-fill"></span><span class="sl"><label for="cMonth">Per maand</label><button class="term q s" data-t="cMonth" aria-label="Uitleg: per maand">?</button></span><output id="oMonth"></output><input type="range" id="cMonth" min="0" max="3000" step="50" value="0"></div>
     <div class="slider"><span class="slider-fill"></span><span class="sl"><label for="cYears">Looptijd</label><button class="term q s" data-t="cYears" aria-label="Uitleg: looptijd">?</button></span><output id="oYears"></output><input type="range" id="cYears" min="5" max="50" step="1" value="30"></div>
     <div class="slider"><span class="slider-fill"></span><span class="sl"><label for="cStock">Aandelen</label><button class="term q s" data-t="cStock" aria-label="Uitleg: aandelen">?</button></span><output id="oStock"></output><input type="range" id="cStock" min="0" max="100" step="10" value="100"></div>
     <div class="slider"><span class="slider-fill"></span><span class="sl"><label for="cFee">Kosten</label><button class="term q s" data-t="cFee" aria-label="Uitleg: kosten">?</button></span><output id="oFee"></output><input type="range" id="cFee" min="0" max="1.5" step="0.05" value="0.2"></div>
@@ -244,6 +244,7 @@ const TERMS={
   mc:["Niemand weet hoe de beurs gaat. Daarom spelen we 2.000 keer een mogelijke toekomst na, telkens met vijf echte jaren uit 1900–2025 achter elkaar, in een andere volgorde. Zo blijven een crash en het herstel erna bij elkaar. Elk plan rekent met precies dezelfde toekomsten, dus elk verschil komt alleen door de belasting.","Bron van de jaren","#s9"],
   data:["Wat de wereldbeurs en staatsobligaties echt deden in elk jaar sinds 1900, in guldens en euro’s, na Nederlandse inflatie. Dezelfde cijfers als op kvendrik.com/beleggen.","Macrohistory Database en MSCI","#s9"],
   aannames:["We nemen aan dat elk plan meteen ingaat, dat prijzen 2% per jaar stijgen, dat je fondsen 2% dividend en 3% rente uitkeren en dat je geen schulden of spaargeld in box 3 hebt. De bedragen van de plannen zijn nog niet definitief.","Eerste Kamer stelt stemming uit","#s3"],
+  naj:["De uitkomst in een gewone toekomst: van de 2.000 gesimuleerde toekomsten eindigt de helft hoger en de helft lager. In euro’s van nu, na belasting en verkoop.",null],
   midden:["De mediaan: de helft van de 2.000 toekomsten eindigt hoger, de helft lager. Niet het beste en niet het slechtste scenario.",null],
   slecht:["De streep loopt van een toekomst die slechter liep dan 9 van de 10 andere, tot een die beter liep dan 9 van de 10. Het blokje is de gewone uitkomst.",null],
   nu:["Een euro is over 30 jaar minder waard. We rekenen alles terug naar wat je er vandaag mee kunt kopen, met 2% inflatie per jaar: het doel van de ECB.","ECB","#s11"],
@@ -268,7 +269,7 @@ const PLAN={
   2:["Tweede Kamer, feb. 2026","",'Elk jaar 36% over je echte rendement, ook als je <button class="term" data-t="aanwas">niets verkoopt</button><sup><a href="#s2">2</a>,<a href="#s12">12</a></sup>.','<dt>Vrij</dt><dd><button class="term" data-t="hvr">€ 1.800</button> rendement p.p.</dd>'],
   3:["Niet aangenomen","",'Als aanwas, maar <button class="term" data-t="pro">49,5% boven € 78.426</button> rendement per jaar<sup><a href="#s14">14</a>,<a href="#s15">15</a></sup>.','<dt>Vrij</dt><dd>€ 1.800 rendement p.p.</dd>'],
   4:["Kabinet, nov. 2026","",'Bij verkoop, zoals het kabinet de novelle indiende: 36% over alles. De <button class="term" data-t="vvd">VVD-lijn</button><sup><a href="#s4">4</a>,<a href="#s16">16</a></sup>.','<dt>Vrij</dt><dd>€ 1.800 rendement p.p.</dd>']};
-const st={all:false,start:50000,month:500,years:30,stock:100,fee:0.2,p:1,sel:5,seed:20261125};
+const st={all:false,start:50000,month:0,years:30,stock:100,fee:0.2,p:1,sel:5,seed:20261125};
 const $=id=>document.getElementById(id);
 const eur=v=>{const a=Math.abs(v);if(a>=1e6)return "€ "+(v/1e6).toLocaleString("nl-NL",{maximumFractionDigits:a>=1e7?1:2})+" mln";const r=a>=1e5?1000:100;return "€ "+(Math.round(v/r)*r).toLocaleString("nl-NL")};
 const eurFull=v=>"€ "+Math.round(v).toLocaleString("nl-NL");
@@ -319,7 +320,7 @@ function fmtCtl(){
 }
 function text(){
   const {T,P,inleg,win}=R,m=s=>P[s][T][3],in_=inleg[T],low=Math.min(m(1),m(2),m(3)),sel=st.sel;
-    $("basis").innerHTML=`Wat je overhoudt als je ${eur(st.start)} inlegt, na ${T} jaar in een <button class="term" data-t="midden">gewone toekomst</button>:`;
+    $("basis").innerHTML=`Wat je overhoudt als je ${eur(st.start)} inlegt${st.month?` (plus ${eur(st.month)} per maand)`:""}, <button class="term" data-t="naj">na ${T} jaar</button>, in een <button class="term" data-t="wereld">wereldwijd indexfonds</button>`;
     $("stats").innerHTML=[[0,"Zonder belasting"],[1,"Nu"],[5,"Nieuw plan"]].map(([s,l])=>`<div><span class="mono">${l}</span><span class="n">${eur(m(s))}</span><span class="d">${s?(Math.round(R.cut[s]*100))+"% minder dan zonder belasting":"ter vergelijking"}</span></div>`).join("");
   initTerms();
   $("figTitle").innerHTML=`Wat je na ${T} jaar overhoudt met een <button class="term" data-t="wereld">wereldwijd indexfonds</button>`;initTerms();
