@@ -15,6 +15,8 @@ known taste, and recommend what to order — fast, because they are sitting at a
 - `data/ratings.csv` — every wine Koen has rated (my_rating, vivino_avg, winery, wine, vintage, style, region, note).
   Grep it for each producer on the menu: an exact past rating beats any inference.
 - `data/wishlist_and_cellar.csv` — wishlisted wines, cellar bottles and prices Koen has paid.
+- `scripts/vivino_lookup.py` — fetches Vivino crowd scores from Vivino's public search page (needs
+  `www.vivino.com` allowed on the network).
 
 ## Workflow
 
@@ -31,22 +33,38 @@ known taste, and recommend what to order — fast, because they are sitting at a
    - Same producer, different wine → strong signal, say which wine it was.
    - On the wishlist → big bonus; they already want it.
    - In `producers.md` → bonus, and note which section it came from.
-4. **Score the rest by style** using `taste-profile.md`: likes, dislikes, and the "red flags" list.
+4. **Cross-reference Vivino scores.** Look up the crowd score for every serious candidate (at least
+   your top 5, ideally all bottles on the list) in one call:
+   `python3 -I scripts/vivino_lookup.py "<producer> <wine/appellation>" "<next wine>" ...`
+   (run from this skill's folder). It prints the vintage score, the all-vintage score and the number of ratings.
+   - Search is fuzzy. Only use a result whose producer and wine match the menu line. Prefer the
+     menu's vintage; otherwise use the all-vintage score and say so.
+   - If a search returns nothing, retry once with a shorter query (producer + appellation). If it still
+     misses, use `vivino_avg` from `data/ratings.csv` when the wine is there, else write "no Vivino score".
+     Never make up a score.
+   - Fewer than ~50 ratings = weak signal; say "few ratings".
+   - **How to weigh it:** Koen's ratings track the crowd closely overall (+0.05), so the Vivino score is
+     a solid baseline. Adjust it with `taste-profile.md`: Koen scores red Burgundy and Southern Italian
+     reds *above* the crowd (up to +0.6), and natural/funky wines and Barolo *below* it (up to −0.6).
+     So a 4.0 Hautes-Côtes red can beat a 4.3 natural white for Koen. Say so when it happens.
+5. **Score the rest by style** using `taste-profile.md`: likes, dislikes, and the "red flags" list.
    Use your own wine knowledge for producer reputation and house style (whole-cluster, oaky, natural, etc.).
-5. **Check value.** Restaurant markup is usually 2.5–4× retail. Koen's comfort zone is €20–70 retail,
+   Combine with the Vivino score into a predicted Koen rating (e.g. "Vivino 4.1 → you ≈ 4.3").
+6. **Check value.** Restaurant markup is usually 2.5–4× retail. Koen's comfort zone is €20–70 retail,
    so roughly €60–200 on a list. Flag a clear bargain or a clear rip-off if you know the retail price;
    if unsure about price, don't guess numbers.
-6. **Answer** in the format below. Keep it short enough to read at a table on a phone.
+   Vivino score per euro is a useful tiebreaker between similar-fit wines.
+7. **Answer** in the format below. Keep it short enough to read at a table on a phone.
 
 ## Answer format
 
 ```
-**Order this:** <Producer> <Wine> <Vintage> — <price>
+**Order this:** <Producer> <Wine> <Vintage> — <price> — Vivino <score> (<n> ratings) → you ≈ <predicted>
 <one or two sentences: why it fits Koen specifically, tied to their ratings or list>
 
 **Also good:**
-- <Wine> — <price> — <short reason> (e.g. "cheaper option", "by the glass", "if you want white")
-- <Wine> — <price> — <short reason>
+- <Wine> — <price> — Vivino <score> — <short reason> (e.g. "cheaper option", "by the glass", "if you want white")
+- <Wine> — <price> — Vivino <score> — <short reason>
 
 **Skip:** <wine(s) that look tempting but match the dislikes, one-line reason each> (only if relevant)
 ```
