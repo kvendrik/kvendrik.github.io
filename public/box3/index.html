@@ -76,12 +76,14 @@ h2.step{font-size:clamp(30px,4vw,44px);max-width:22ch}
 .slider:focus-within{transform:translate(-2px,-2px);box-shadow:var(--shadow-lg)}
 .slider-fill{position:absolute;inset:0;background:var(--fill);clip-path:inset(0 calc(100% - var(--p,0%)) 0 0);pointer-events:none}
 .slider label{position:relative;font:700 11px/16px var(--f-mono);letter-spacing:.12em;text-transform:uppercase;pointer-events:none;white-space:nowrap}
-.slider output{position:relative;font-family:var(--f-display);font-size:26px;line-height:1;font-variant-numeric:tabular-nums;white-space:nowrap;pointer-events:none}
-.slider output small{font-size:18px;color:var(--ink-2)}
+.slider .val{position:relative;z-index:2;display:flex;align-items:baseline;gap:3px;font-family:var(--f-display);font-size:26px;line-height:1;white-space:nowrap;pointer-events:none}
+.slider .val small{font-size:18px;color:var(--ink-2)}
+.slider .num{pointer-events:auto;width:4ch;min-width:1ch;margin:0;padding:6px 0;border:0;border-radius:0;outline:0;background:transparent;color:var(--ink);font:inherit;font-variant-numeric:tabular-nums;text-align:right;cursor:text;-webkit-appearance:none;appearance:none}
+.slider .num:focus{text-decoration:underline;text-decoration-thickness:1.5px;text-underline-offset:6px}
 .slider .sl{position:relative;z-index:2;display:flex;align-items:center;gap:8px;pointer-events:none}
 .slider .sl .term{pointer-events:auto}
 .term.q.s{width:20px;height:20px;font-size:10px;border-width:1.25px;background:var(--paper)}
-.slider input{position:absolute;inset:0;width:100%;height:100%;margin:0;opacity:0;cursor:ew-resize;touch-action:pan-y}
+.slider input[type=range]{position:absolute;inset:0;width:100%;height:100%;margin:0;opacity:0;cursor:ew-resize;touch-action:pan-y}
 .seg{display:flex;flex-wrap:wrap;padding:3px;border:2px solid var(--ink);background:var(--paper);box-shadow:var(--shadow);width:max-content;max-width:100%}
 .seg button{all:unset;cursor:pointer;padding:8px 12px;font:700 11px/16px var(--f-mono);letter-spacing:.1em;text-transform:uppercase;color:var(--ink-2);white-space:nowrap}
 .seg button{transition:transform 120ms var(--ease)}
@@ -127,6 +129,8 @@ section{padding-block:clamp(64px,9vw,112px) 0}
 .pl .num .c{font-family:var(--f-mono);font-size:12px;color:var(--ink-2);white-space:nowrap}
 .pl.head .num,.pl.head>span{align-self:end}
 .tfoot{display:flex;flex-wrap:wrap;justify-content:space-between;align-items:center;gap:12px;margin-top:20px}
+#others{overflow-anchor:none}
+#others .pl.grp{padding-top:28px}
 .more{all:unset;cursor:pointer;padding:9px 14px;border:2px solid var(--ink);background:var(--paper);box-shadow:var(--shadow);font:700 11px/16px var(--f-mono);letter-spacing:.1em;text-transform:uppercase}
 .more{transition:transform 120ms var(--ease),box-shadow 120ms var(--ease)}
 .more:active{transform:translate(2px,2px);box-shadow:1px 1px 0 0 var(--ink)}
@@ -150,7 +154,7 @@ sup a{font-family:var(--f-mono);font-size:10px;text-decoration:none;padding:0 1p
 .pop a{color:var(--paper);text-decoration-color:rgba(243,237,225,.5);display:inline-block;margin-top:6px;font-size:12px}
 @media(max-width:980px){.tool{grid-template-columns:minmax(0,1fr)}.figwrap{order:-1}.controls{grid-template-columns:repeat(2,minmax(0,1fr))}.controls>h2,.controls>.row{grid-column:1/-1}}
 @media(max-width:720px){.pl{grid-template-columns:minmax(0,1fr) auto;gap:12px 16px}.pl .info{grid-column:1/-1}.pl svg{grid-row:2}.pl.head{display:none}.stats>div+div{padding-left:14px}}
-@media(max-width:560px){.stats{grid-template-columns:minmax(0,1fr)}.stats>div{display:grid;grid-template-columns:minmax(0,1fr) auto;align-items:baseline;gap:2px 12px;padding:12px 0!important;border-left:0!important}.stats>div+div{border-top:1px solid var(--rule)}.stats .n{grid-column:2;grid-row:1/3;font-size:32px;text-align:right}.stats .d{font-size:13px}.controls{grid-template-columns:minmax(0,1fr)}.slider output{font-size:23px}.fig{height:380px}}
+@media(max-width:560px){.stats{grid-template-columns:minmax(0,1fr)}.stats>div{display:grid;grid-template-columns:minmax(0,1fr) auto;align-items:baseline;gap:2px 12px;padding:12px 0!important;border-left:0!important}.stats>div+div{border-top:1px solid var(--rule)}.stats .n{grid-column:2;grid-row:1/3;font-size:32px;text-align:right}.stats .d{font-size:13px}.controls{grid-template-columns:minmax(0,1fr)}.slider .val{font-size:23px}.fig{height:380px}}
 @media(prefers-reduced-motion:reduce){.slider,.seg button,.term.q,.more{transition:none}.pop{transition:opacity 125ms ease}.pop.pre{transform:none}.pl.enter{animation:fade 200ms ease backwards}@keyframes fade{from{opacity:0}}}
 </style>
 </head>
@@ -167,11 +171,11 @@ sup a{font-family:var(--f-mono);font-size:10px;text-decoration:none;padding:0 1p
 <div class="tool">
   <h2 class="fight tt" id="figTitle">Wat je na 30 jaar overhoudt met een wereldwijd indexfonds</h2>
   <div class="controls" id="controls">
-    <div class="slider"><span class="slider-fill"></span><span class="sl"><label for="cStart">Start</label><button class="term q s" data-t="cStart" aria-label="Uitleg: start">?</button></span><output id="oStart"></output><input type="range" id="cStart" min="0" max="1000" step="1" value="215"></div>
-    <div class="slider"><span class="slider-fill"></span><span class="sl"><label for="cMonth">Per maand</label><button class="term q s" data-t="cMonth" aria-label="Uitleg: per maand">?</button></span><output id="oMonth"></output><input type="range" id="cMonth" min="0" max="3000" step="50" value="0"></div>
-    <div class="slider"><span class="slider-fill"></span><span class="sl"><label for="cYears">Looptijd</label><button class="term q s" data-t="cYears" aria-label="Uitleg: looptijd">?</button></span><output id="oYears"></output><input type="range" id="cYears" min="5" max="50" step="1" value="30"></div>
-    <div class="slider"><span class="slider-fill"></span><span class="sl"><label for="cStock">Aandelen</label><button class="term q s" data-t="cStock" aria-label="Uitleg: aandelen">?</button></span><output id="oStock"></output><input type="range" id="cStock" min="0" max="100" step="10" value="100"></div>
-    <div class="slider"><span class="slider-fill"></span><span class="sl"><label for="cFee">Kosten</label><button class="term q s" data-t="cFee" aria-label="Uitleg: kosten">?</button></span><output id="oFee"></output><input type="range" id="cFee" min="0" max="1.5" step="0.05" value="0.2"></div>
+    <div class="slider"><span class="slider-fill"></span><span class="sl"><label for="cStart">Start</label><button class="term q s" data-t="cStart" aria-label="Uitleg: start">?</button></span><span class="val"><small>€</small><input class="num" id="oStart" type="text" inputmode="numeric" enterkeyhint="done" autocomplete="off" spellcheck="false" aria-label="Startbedrag in euro"></span><input type="range" id="cStart" min="0" max="1000" step="1" value="215"></div>
+    <div class="slider"><span class="slider-fill"></span><span class="sl"><label for="cMonth">Per maand</label><button class="term q s" data-t="cMonth" aria-label="Uitleg: per maand">?</button></span><span class="val"><small>€</small><input class="num" id="oMonth" type="text" inputmode="numeric" enterkeyhint="done" autocomplete="off" spellcheck="false" aria-label="Bedrag per maand in euro"></span><input type="range" id="cMonth" min="0" max="3000" step="50" value="0"></div>
+    <div class="slider"><span class="slider-fill"></span><span class="sl"><label for="cYears">Looptijd</label><button class="term q s" data-t="cYears" aria-label="Uitleg: looptijd">?</button></span><span class="val"><input class="num" id="oYears" type="text" inputmode="numeric" enterkeyhint="done" autocomplete="off" spellcheck="false" aria-label="Looptijd in jaren"><small>jaar</small></span><input type="range" id="cYears" min="5" max="50" step="1" value="30"></div>
+    <div class="slider"><span class="slider-fill"></span><span class="sl"><label for="cStock">Aandelen</label><button class="term q s" data-t="cStock" aria-label="Uitleg: aandelen">?</button></span><span class="val"><input class="num" id="oStock" type="text" inputmode="numeric" enterkeyhint="done" autocomplete="off" spellcheck="false" aria-label="Deel in aandelen, procent"><small>%</small></span><input type="range" id="cStock" min="0" max="100" step="10" value="100"></div>
+    <div class="slider"><span class="slider-fill"></span><span class="sl"><label for="cFee">Kosten</label><button class="term q s" data-t="cFee" aria-label="Uitleg: kosten">?</button></span><span class="val"><input class="num" id="oFee" type="text" inputmode="decimal" enterkeyhint="done" autocomplete="off" spellcheck="false" aria-label="Kosten per jaar, procent"><small>%</small></span><input type="range" id="cFee" min="0" max="1.5" step="0.05" value="0.2"></div>
     <div class="row">
       <div class="seg" id="partner" role="group" aria-label="Fiscaal partner"><button aria-pressed="true" data-v="1">Alleen</button><button aria-pressed="false" data-v="2">Met partner</button></div>
       <button class="term q" data-t="partner" aria-label="Wat is een fiscaal partner?">?</button>
@@ -234,7 +238,7 @@ const SC=[
   {kort:"Nieuw plan",naam:"Nieuw plan",het:"het nieuwe plan"}];
 const TERMS={
   wereld:["We rekenen met een indexfonds dat de hele wereldbeurs volgt: aandelen van duizenden bedrijven in alle landen. Met de schuif Aandelen kun je er wereldwijde staatsobligaties bij mengen.","Meer op kvendrik.com/beleggen","/beleggen/"],
-  cStart:["Het bedrag dat je nu in één keer belegt, bijvoorbeeld spaargeld dat je naar een beleggingsrekening overmaakt.",null],
+  cStart:["Het bedrag dat je nu in één keer belegt, bijvoorbeeld spaargeld dat je naar een beleggingsrekening overmaakt. Je kunt het getal ook aanklikken en een bedrag typen, ook hoger dan de schuif gaat, zoals 15 mln.",null],
   cMonth:["Wat je daarna elke maand bijlegt. Dit bedrag groeit elk jaar mee met de inflatie, zodat het in euro’s van nu gelijk blijft.",null],
   cYears:["Hoe lang je belegt voordat je alles verkoopt. Bij het nieuwe plan betaal je pas bij die verkoop belasting over je koerswinst.",null],
   cStock:["Welk deel van je geld in aandelen zit; de rest zit in staatsobligaties. Aandelen groeien op lange termijn harder, maar schommelen meer.","Meer op kvendrik.com/beleggen","/beleggen/"],
@@ -310,13 +314,14 @@ function sim(){
   for(let s=0;s<S;s++){const r=new Float64Array(N);for(let q=0;q<N;q++)r[q]=L[0][T][q]>0?1-L[s][T][q]/L[0][T][q]:0;r.sort();cut[s]=qa(r,.5);let u=0;for(let q=0;q<N;q++)if(L[s][T][q]>inleg[T])u++;win[s]=u/N;tmed[s]=qa(Float64Array.from(tax[s]).sort(),.5)}
   R={T,P,tmed,win,cut,inleg};
 }
+const nl0=v=>Math.round(v).toLocaleString("nl-NL");
+const FMT={oStart:()=>nl0(st.start),oMonth:()=>nl0(st.month),oYears:()=>String(st.years),oStock:()=>String(st.stock),oFee:()=>st.fee.toLocaleString("nl-NL",{minimumFractionDigits:2,maximumFractionDigits:2})};
+const cv=document.createElement("canvas").getContext("2d");
+const fit=el=>{const c=getComputedStyle(el);cv.font=`${c.fontStyle} ${c.fontWeight} ${c.fontSize} ${c.fontFamily}`;el.style.width=Math.ceil(cv.measureText(el.value||"0").width+2)+"px"};
+document.fonts&&document.fonts.ready.then(()=>{for(const id in FMT)fit($(id))});
 function fmtCtl(){
-  $("oStart").innerHTML=eurFull(st.start).replace("€ ","<small>€ </small>");
-  $("oMonth").innerHTML=eurFull(st.month).replace("€ ","<small>€ </small>");
-  $("oYears").innerHTML=st.years+"<small> jaar</small>";
-  $("oStock").innerHTML=st.stock+"<small>%</small>";
-  $("oFee").innerHTML=st.fee.toLocaleString("nl-NL",{minimumFractionDigits:2})+"<small>%</small>";
-  for(const el of document.querySelectorAll(".slider input"))el.parentNode.style.setProperty("--p",((el.value-el.min)/(el.max-el.min)*100)+"%");
+  for(const [id,f] of Object.entries(FMT)){const el=$(id);if(document.activeElement!==el){el.value=f();fit(el)}}
+  for(const el of document.querySelectorAll(".slider input[type=range]"))el.parentNode.style.setProperty("--p",((el.value-el.min)/(el.max-el.min)*100)+"%");
 }
 function text(){
   const {T,P,inleg,win}=R,m=s=>P[s][T][3],in_=inleg[T],low=Math.min(m(1),m(2),m(3)),sel=st.sel;
@@ -337,8 +342,9 @@ function ranges(){
     <rect x="${x(p[3])}" transform="translate(-3 0)" width="6" y="6" height="28" fill="${on?"var(--paper)":"var(--ink)"}" stroke="var(--ink)" stroke-width="1.5"/></svg>
     <div class="num"><span class="a">${eur(p[3])}</span><span class="c">${s?(pc>0?"−":"")+pc+"% door belasting":"zonder belasting"}</span></div></div>`};
   $("ranges").innerHTML=`<div class="pl head"><span class="mono">Plan</span><span class="mono"><button class="term" data-t="slecht">Slecht · gewoon · goed</button></span><span class="mono num"><button class="term" data-t="cut">Je houdt over</button></span></div>`
-    +MAIN.map(row).join("")+(st.all?`<div class="pl grp${R.enter?" enter":""}"><span class="mono">Andere plannen</span></div>`+OTHER.map((s,k)=>row(s).replace('class="pl',`style="animation-delay:${[40,80,110][k]}ms" class="pl${R.enter?" enter":""}`)).join(""):"")
-    +`<div class="tfoot"><button class="more" id="more" aria-expanded="${st.all}">${st.all?"Verberg andere plannen":"Toon andere plannen (3)"}</button><span class="mono">Stippellijn: wat je inlegde (${eur(ins)})</span></div>`;
+    +MAIN.map(row).join("")
+    +`<div class="tfoot"><button class="more" id="more" aria-expanded="${st.all}" aria-controls="others">${st.all?"Verberg andere plannen":"Toon andere plannen (3)"}</button><span class="mono">Stippellijn: wat je inlegde (${eur(ins)})</span></div>`
+    +`<div id="others">`+(st.all?`<div class="pl grp${R.enter?" enter":""}"><span class="mono">Andere plannen</span></div>`+OTHER.map((s,k)=>row(s).replace('class="pl',`style="animation-delay:${[40,80,110][k]}ms" class="pl${R.enter?" enter":""}`)).join(""):"")+`</div>`;
   initTerms();
 }
 const svg=$("svg"),fig=$("fig"),tip=$("tip");let geo=null;
@@ -381,7 +387,7 @@ function hover(e){
 }
 function unhover(){tip.classList.remove("on");const hx=$("hx"),hd=$("hd");if(hx){hx.setAttribute("opacity",0);hd.setAttribute("opacity",0)}}
 fig.addEventListener("pointermove",hover);fig.addEventListener("pointerdown",hover);fig.addEventListener("pointerleave",e=>{if(e.pointerType==="mouse")unhover()});document.addEventListener("pointerdown",e=>{if(e.pointerType!=="mouse"&&!fig.contains(e.target))unhover()});
-$("ranges").addEventListener("click",e=>{if(e.target.closest("#more")){st.all=!st.all;R.enter=st.all;ranges();R.enter=false;chart();$("more").focus()}});
+$("ranges").addEventListener("click",e=>{if(e.target.closest("#more")){st.all=!st.all;R.enter=st.all;ranges();R.enter=false;chart();$("more").focus({preventScroll:true})}});
 let raf=0;function update(){cancelAnimationFrame(raf);raf=requestAnimationFrame(()=>{sim();text();ranges();chart();if(open&&!open.isConnected)close()})}
 const map={cStart:"start",cMonth:"month",cYears:"years",cStock:"stock",cFee:"fee"};
 // Start: €0 to €5 mln on a curved scale, so small amounts stay easy to set
@@ -389,6 +395,20 @@ const toAmt=v=>{const a=5e6*(v/1000)**3,r=a<1e5?1000:a<1e6?5000:25000;return Mat
 for(const [id,k] of Object.entries(map)){const el=$(id),cur=id==="cStart";el.value=cur?toPos(st[k]):st[k];
   el.addEventListener("input",()=>{st[k]=cur?toAmt(+el.value):+el.value;if(cur)el.setAttribute("aria-valuetext",eurFull(st[k]));fmtCtl();update()})}
 $("cStart").setAttribute("aria-valuetext",eurFull(st.start));
+// Typing a value: "50.000", "50k", "2,5 mln", "0,15"
+const TYPE={oStart:["start","cStart",0,1e9,true],oMonth:["month","cMonth",0,1e6,true],oYears:["years","cYears",1,50,false],oStock:["stock","cStock",0,100,false],oFee:["fee","cFee",0,3,false]};
+const parse=(t,money)=>{t=t.trim().toLowerCase().replace(/\s|€|%|jaar/g,"");if(!t)return NaN;
+  const mul=/(mln|m|miljoen)$/.test(t)?1e6:/k$/.test(t)?1e3:1;t=t.replace(/(mln|miljoen|m|k)$/,"");
+  if(money&&mul===1)return +t.replace(/[.,]/g,"");
+  return parseFloat(t.replace(/\.(?=\d{3}(\D|$))/g,"").replace(",","."))*mul};
+for(const [id,[k,rid,lo,hi,money]] of Object.entries(TYPE)){const el=$(id),r=$(rid);
+  const apply=()=>{const v=parse(el.value,money);if(!isFinite(v))return false;st[k]=Math.min(hi,Math.max(lo,k==="years"||k==="stock"?Math.round(v):v));
+    r.value=k==="start"?toPos(st[k]):st[k];if(k==="start")r.setAttribute("aria-valuetext",eurFull(st[k]));fmtCtl();update();return true};
+  let fresh=false;el.addEventListener("focus",()=>{el.dataset.prev=el.value;fresh=true;el.select();setTimeout(()=>{if(document.activeElement===el&&fresh)el.select()},0)});
+  el.addEventListener("mouseup",e=>{if(fresh){e.preventDefault();fresh=false}});el.addEventListener("keydown",()=>{fresh=false});
+  el.addEventListener("input",()=>{fit(el);apply()});
+  el.addEventListener("keydown",e=>{if(e.key==="Enter")el.blur();if(e.key==="Escape"){el.value=el.dataset.prev||"";apply();el.blur()}});
+  el.addEventListener("blur",()=>{apply();el.value=FMT[id]();fit(el)});}
 $("partner").addEventListener("click",e=>{const b=e.target.closest("button");if(!b)return;st.p=+b.dataset.v;for(const x of $("partner").children)x.setAttribute("aria-pressed",x===b);update()});
 // tooltips
 const pop=$("pop");let open=null,lastClose=0,openT=0,hideT=0;
