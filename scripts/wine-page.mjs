@@ -12,14 +12,14 @@ const linkify = (s) =>
 
 const body = linkify(esc(text));
 const description =
-  'Instructions and data for an AI agent to recommend wine from a photo of a wine list, based on one drinker’s Vivino ratings.';
+  'Instructions and data for an AI agent to recommend wine from a photo of a wine list, based on Koen’s Vivino ratings.';
 
 const html = `<!doctype html>
 <html lang="en">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Wine picker</title>
+<title>Koen’s wine picker</title>
 <meta name="description" content="${description}">
 <link rel="canonical" href="https://kvendrik.com/wine/">
 <link rel="alternate" type="text/plain" href="llms.txt" title="llms.txt">

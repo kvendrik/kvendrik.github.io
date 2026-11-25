@@ -1,4 +1,4 @@
-# The user's taste profile
+# Koen's taste profile
 
 Built from a Vivino export (85 ratings, May 2024 – Nov 2026). Average rating 3.99; about the same as
 the Vivino crowd (+0.05). 4.0 is the default "good" score (24 of 85). Anything 4.4+ is a real favourite.
