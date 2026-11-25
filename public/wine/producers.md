@@ -1,10 +1,10 @@
 # Burgundy producer wishlist
 
-Producers a friend recommended, which the user wants to try. Treat every name here as a wishlist entry.
-The sections and their titles are the friend's; the fit rating is ours, scored against taste-profile.md.
+Producers Koen's friend Pablo recommended, which Koen wants to try. Treat every name here as a wishlist entry.
+The sections and their titles are Pablo's; the fit rating is ours, scored against taste-profile.md.
 None of these were in the Vivino history as of Nov 2026 (Benoit Girardin is a different producer from Pierre Girardin).
 
-Fit: ★★★ = start here, ★★ = good bet, ★ = risky for this drinker, $$$$ = trophy (usually €150+ retail, rare on lists at sane prices).
+Fit: ★★★ = start here, ★★ = good bet, ★ = risky for Koen, $$$$ = trophy (usually €150+ retail, rare on lists at sane prices).
 Prices are rough, from general knowledge. Check the menu price rather than trusting them.
 
 ## White Burgundy: precision, high craft
