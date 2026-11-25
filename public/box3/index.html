@@ -319,7 +319,7 @@ function fmtCtl(){
 }
 function text(){
   const {T,P,inleg,win}=R,m=s=>P[s][T][3],in_=inleg[T],low=Math.min(m(1),m(2),m(3)),sel=st.sel;
-    $("basis").innerHTML=`Wat je overhoudt als je ${eur(st.start)} inlegt en daarna ${eur(st.month)} per maand, na ${T} jaar in een <button class="term" data-t="midden">gewone toekomst</button>:`;
+    $("basis").innerHTML=`Wat je overhoudt als je ${eur(st.start)} inlegt, na ${T} jaar in een <button class="term" data-t="midden">gewone toekomst</button>:`;
     $("stats").innerHTML=[[0,"Zonder belasting"],[1,"Nu"],[5,"Nieuw plan"]].map(([s,l])=>`<div><span class="mono">${l}</span><span class="n">${eur(m(s))}</span><span class="d">${s?(Math.round(R.cut[s]*100))+"% minder dan zonder belasting":"ter vergelijking"}</span></div>`).join("");
   initTerms();
   $("figTitle").innerHTML=`Wat je na ${T} jaar overhoudt met een <button class="term" data-t="wereld">wereldwijd indexfonds</button>`;initTerms();
