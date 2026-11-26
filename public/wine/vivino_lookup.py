@@ -35,7 +35,7 @@ UA = ("Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 "
 VINTAGE = re.compile(
     r'"id":(\d+),"seo_name":"[^"]*","name":"((?:[^"\\]|\\.)*)","statistics":(\{[^{}]*\})')
 FILLER = {"domaine", "dom", "chateau", "maison", "bodegas", "cantina", "tenuta", "weingut", "cave",
-          "de", "des", "du", "la", "le", "les", "di", "del", "et", "and", "fils", "the", "rouge", "blanc",
+          "de", "des", "du", "la", "le", "les", "di", "del", "et", "and", "fils", "the",
           "vin", "wine", "aoc", "doc", "docg"}
 RATINGS = os.path.join(os.path.dirname(os.path.abspath(__file__)), "ratings.csv")
 
@@ -46,10 +46,18 @@ def norm(s):
 
 
 def words(s):
-    return [w for w in norm(s).split() if w not in FILLER and len(w) > 1]
+    # Years are left out: they only sort results, otherwise "2019" alone would match any 2019 wine.
+    return [w for w in norm(s).split() if w not in FILLER and len(w) > 1 and not re.fullmatch(r"(19|20)\d\d", w)]
+
+
+def closeness(name, rest):
+    need, have = words(rest), set(norm(name).split())
+    return sum(w in have for w in need) / len(need) if need else 1
 
 
 def matches(name, producer, rest, loose=False):
+    if loose and not words(rest):
+        return False
     have = set(norm(name).split())
     if producer:
         pw = words(producer) or norm(producer).split()
@@ -57,8 +65,7 @@ def matches(name, producer, rest, loose=False):
             pw = [max(pw, key=len)]
         if not all(w in have for w in pw):
             return False
-        need = words(rest)
-        return not need or sum(w in have for w in need) / len(need) >= 0.5
+        return closeness(name, rest) >= (0.75 if loose else 0.5)
     need = words(rest)
     return bool(need) and sum(w in have for w in need) / len(need) >= 0.6
 
@@ -104,8 +111,14 @@ def lookup(arg, limit=5):
     producer, _, rest = arg.partition("::") if "::" in arg else ("", "", arg)
     producer, rest = producer.strip(), rest.strip()
     print(f"## {arg}")
+    exact = False
     for r in own_ratings(producer, rest):
-        print(f"  KOEN RATED {r['my_rating']} (crowd {r['vivino_avg']}): {r['winery']} {r['wine']} {r['vintage']}")
+        same = closeness(f"{r['wine']} {r['vintage']}", rest) >= 0.75
+        exact = exact or same
+        tag = "KOEN RATED THIS WINE" if same else "Koen rated this producer"
+        print(f"  {tag}: {r['my_rating']} (Vivino {r['vivino_avg']}) {r['winery']} {r['wine']} {r['vintage']}")
+    if exact:
+        return  # the crowd score is already in Koen's ratings
     year = re.search(r"\b(19|20)\d\d\b", rest)
     tries = [(q, False) for q in variants(producer, rest)]
     if producer:
@@ -118,8 +131,7 @@ def lookup(arg, limit=5):
             print(f"  lookup failed ({e}); use a web search instead")
             return
         good = [(n, s) for n, s in results.items() if matches(n, producer, rest, loose)]
-        if year:
-            good.sort(key=lambda x: year.group(0) not in x[0])
+        good.sort(key=lambda x: (-closeness(x[0], rest), bool(year) and year.group(0) not in x[0]))
         if good:
             if loose:
                 print(f"  LOOSE MATCH (query: {q}): check it is the same producer before using it")
