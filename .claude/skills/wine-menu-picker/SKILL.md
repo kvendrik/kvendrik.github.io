@@ -11,7 +11,7 @@ for any agent. Read the local copies (they may be newer than the live site):
 1. `public/wine/llms.txt` — the full workflow, answer format and rules. Follow it.
 2. `public/wine/taste-profile.md`, `public/wine/producers.md`, `public/wine/ratings.csv`,
    `public/wine/wishlist-and-cellar.csv` — the data it refers to.
-3. Vivino scores: `python3 -I public/wine/vivino_lookup.py "<producer> <wine>" ...`
+3. Vivino scores: `python3 -I public/wine/vivino_lookup.py "<Producer> :: <wine> <vintage>" ...`
 
 When Koen reports a new rating, offer to append it to `public/wine/ratings.csv`.
 
