@@ -25,4 +25,6 @@ When Koen uploads a new Vivino export zip (or asks to refresh their wine data):
    and the "vs crowd" adjustments. Keep the "Eating out" section; those are Koen's own answers, not Vivino data.
 3. For each of Pablo's producers Koen has now tasted, check the match is real, then add the rating to its
    row in `public/wine/producers.md` and adjust its fit stars.
-4. Show Koen what changed in their taste (a few lines), then commit and ask before pushing it live.
+4. Update the numbers in `scripts/wine-template.html` (the page at kvendrik.com/wine): the chart's
+   `styles`, the top five in `fame`, the "85 wines rated" count, and any line in the copy the new data contradicts.
+5. Show Koen what changed in their taste (a few lines), then commit and ask before pushing it live.
