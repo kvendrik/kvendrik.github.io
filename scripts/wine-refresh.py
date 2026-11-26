@@ -15,9 +15,12 @@ Export your data. It can take 24-48 hours to be ready.
 import collections
 import csv
 import io
+import json
 import re
 import sys
+import time
 import unicodedata
+import urllib.request
 import zipfile
 
 OUT = "public/wine"
@@ -39,12 +42,34 @@ def norm(s):
     return re.sub(r"[^a-z0-9]+", " ", s.lower()).strip()
 
 
-def old_keys():
+def old_rows():
     try:
         with open(RATINGS, encoding="utf-8") as f:
-            return {(r["winery"], r["wine"], r["vintage"]): r["my_rating"] for r in csv.DictReader(f)}
+            return {(r["winery"], r["wine"], r["vintage"]): r for r in csv.DictReader(f)}
     except FileNotFoundError:
         return {}
+
+
+UA = ("Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 "
+      "(KHTML, like Gecko) Chrome/130.0 Safari/537.36")
+
+
+def fetch_grapes(link):
+    """Grapes of one wine from its public Vivino page, or "" if that fails (no network, layout change)."""
+    try:
+        req = urllib.request.Request(link, headers={"User-Agent": UA, "Accept-Language": "en"})
+        with urllib.request.urlopen(req, timeout=25) as f:
+            final, page = f.geturl(), f.read().decode("utf-8", "replace")
+        wid = re.search(r"/w/(\d+)", final)
+        for m in re.finditer(r'"id":%s,' % wid.group(1), page) if wid else []:
+            g = re.search(r'"grapes":(\[(?:[^\[\]]|\[[^\]]*\])*\])', page[m.start():m.start() + 20000])
+            if g:
+                names = [x["name"] for x in json.loads(g.group(1))]
+                if names:
+                    return "; ".join(names)
+    except Exception:
+        pass
+    return ""
 
 
 def main(path):
@@ -57,14 +82,22 @@ def main(path):
 
     rated = [r for r in wines if r.get("Your rating")]
     rated.sort(key=lambda r: -float(r["Your rating"]))
-    before = old_keys()
+    before = old_rows()
+    fetched = 0
+    for r in rated:
+        old = before.get((r["Winery"], r["Wine name"].strip(), r["Vintage"]))
+        r["grapes"] = old.get("grapes", "") if old else ""
+        if not r["grapes"] and r.get("Link to wine"):
+            r["grapes"] = fetch_grapes(r["Link to wine"])
+            fetched += 1
+            time.sleep(0.4)
 
     with open(RATINGS, "w", newline="", encoding="utf-8") as f:
         w = csv.writer(f)
-        w.writerow(["my_rating", "vivino_avg", "winery", "wine", "vintage", "style", "region", "country", "type"])
+        w.writerow(["my_rating", "vivino_avg", "winery", "wine", "vintage", "style", "region", "country", "type", "grapes"])
         for r in rated:
             w.writerow([r["Your rating"], r["Average rating"], r["Winery"], r["Wine name"].strip(), r["Vintage"],
-                        r["Regional wine style"], r["Region"], r["Country"], r["Wine type"]])
+                        r["Regional wine style"], r["Region"], r["Country"], r["Wine type"], r["grapes"]])
     with open(LISTS, "w", newline="", encoding="utf-8") as f:
         w = csv.writer(f)
         w.writerow(["list", "winery", "wine", "vintage", "style", "type", "vivino_avg"])
@@ -78,7 +111,8 @@ def main(path):
     total = avg([score(r) for r in rated])
     crowd = [score(r) - float(r["Average rating"]) for r in rated if r["Average rating"]]
     print(f"Wrote {len(rated)} ratings, {len(wish)} wishlist and {len(cellar)} cellar wines.")
-    print(f"Average {total:.2f}; vs Vivino crowd {avg(crowd):+.2f}\n")
+    print(f"Average {total:.2f}; vs Vivino crowd {avg(crowd):+.2f}")
+    print(f"Grapes: {sum(1 for r in rated if r['grapes'])} of {len(rated)} known ({fetched} looked up on Vivino)\n")
 
     new = [r for r in rated if (r["Winery"], r["Wine name"].strip(), r["Vintage"]) not in before]
     print(f"## New or changed since last refresh: {len(new) if before else 'n/a (first run)'}")
@@ -86,7 +120,10 @@ def main(path):
         print(f"  {r['Your rating']} {r['Winery']} | {r['Wine name'].strip()} {r['Vintage']} | "
               f"{r['Regional wine style']} | crowd {r['Average rating']}")
 
-    for key in ("Wine type", "Country", "Regional wine style"):
+    for r in rated:
+        g = [x.strip() for x in r["grapes"].split(";") if x.strip()]
+        r["Lead grape"] = {"Spätburgunder": "Pinot Noir", "Pinot Nero": "Pinot Noir"}.get(g[0], g[0]) if g else ""
+    for key in ("Wine type", "Country", "Regional wine style", "Lead grape"):
         groups = collections.defaultdict(list)
         for r in rated:
             groups[r[key] or "?"].append(score(r))

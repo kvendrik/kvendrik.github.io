@@ -11,7 +11,7 @@ Prices are rough, from general knowledge. Check the menu price rather than trust
 
 | Producer | Fit | Note |
 |---|---|---|
-| Hubert Lamy | ★★★ | Saint-Aubin reference producer; ties to their 4.5 Saint-Aubin. Leaner than "buttery". |
+| Hubert Lamy | ★★★ | Saint-Aubin reference producer, red and white; Koen's 4.5 Saint-Aubin is a red from the same village. |
 | Marc Colin | ★★★ | Saint-Aubin / Chassagne, more available than Lamy. |
 | Bruno Colin | ★★★ | Saint-Aubin / Chassagne. |
 | Paul Pillot | ★★★ | Chassagne; good-value entry wines. |

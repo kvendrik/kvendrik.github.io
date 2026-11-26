@@ -1,8 +1,8 @@
 // Builds public/wine/index.html from scripts/wine-template.html:
 // - writes the full agent instructions from public/wine/llms.txt into the page, so an agent
 //   that fetches /wine gets everything in one request and llms.txt stays the single source;
-// - renders Pablo's producer list from public/wine/producers.md and crosses off every producer
-//   Koen has rated in public/wine/ratings.csv, with Koen's score.
+// - renders "Wines I want to try": Koen's Vivino wishlist, then Pablo's producers from producers.md
+//   (tagged), crossing off anything Koen has rated in public/wine/ratings.csv, with the score.
 import fs from 'node:fs';
 
 const DIR = 'public/wine';
@@ -50,48 +50,40 @@ function tried(name) {
   return { score: parseFloat(best.my_rating).toFixed(1), wine: `${best.winery} ${best.wine} ${best.vintage}`.trim() };
 }
 
-// Pablo's sections and producers, in his order, from the tables in producers.md.
-const sections = [];
+// Pablo's producers, once each, in his order, from the tables in producers.md.
+const display = (name) => name.replace(/\s*\(.*?\)/g, '').trim();
+const pablo = new Map();
 for (const line of fs.readFileSync(`${DIR}/producers.md`, 'utf8').split('\n')) {
-  const h = line.match(/^## (.+)/);
-  if (h) { sections.push({ title: h[1].split(/[:,]/)[0].trim(), producers: [] }); continue; }
   const r = line.match(/^\| ([^|]+?) \| ★/);
-  if (r && sections.length) sections.at(-1).producers.push(r[1].trim());
+  if (r) pablo.set(norm(display(r[1])), display(r[1]));
 }
 
-const display = (name) => name.replace(/\s*\(.*?\)/g, '');
-function item(name, place = '') {
-  const t = tried(name);
-  const right = t
-    ? `<span class="score" title="${esc(t.wine)}">${t.score}</span>`
-    : place ? `<span>${esc(place)}</span>` : '';
-  return `<li${t ? ' class="tried"' : ''}>${t ? `<s>${esc(display(name))}</s>` : esc(display(name))}${right}</li>`;
+// Koen's Vivino wishlist; a wishlisted wine Koen has since rated is crossed off with that score.
+const wishlist = parseCsv(fs.readFileSync(`${DIR}/wishlist-and-cellar.csv`, 'utf8')).filter((w) => w.list === 'wishlist');
+function triedWine(w) {
+  const hit = ratings.find((r) => norm(r.winery) === norm(w.winery) && norm(r.wine) === norm(w.wine));
+  return hit ? parseFloat(hit.my_rating).toFixed(1) : null;
 }
 
-// The ones Koen starts with, shown before the full list.
-const firstUp = [
-  ['White', [['Hubert Lamy', 'Saint-Aubin'], ['Marc Colin', 'Saint-Aubin'], ['Paul Pillot', 'Chassagne'], ['Dureuil-Janthial', 'Rully']]],
-  ['Red', [['Simon Bize', 'Savigny'], ['Chandon de Briailles', 'Savigny'], ['Berthaut-Gerbet', 'Fixin'], ['Georges Noëllat', 'Vosne']]],
-  ['Lesser known', [['Claire Naudin', 'Hautes-Côtes'], ['Ami', 'Hautes-Côtes'], ['Domaine Rougeot', 'Meursault'], ['Génot-Boulanger', 'Meursault']]],
-];
-
-const all = new Map();
-for (const s of sections) for (const p of s.producers) all.set(norm(display(p)), p);
-const triedCount = [...all.values()].filter((p) => tried(p)).length;
-const pabloHtml = `<div class="cols">
-${firstUp.map(([h, ps]) => `      <div><h3>${esc(h)}</h3><ul>${ps.map(([p, a]) => item(p, a)).join('')}</ul></div>`).join('\n')}
-    </div>
+const sortKey = (s) => norm(s).replace(/^(domaine|maison|chateau|r) /, '');
+function li(name, sub, score, fromPablo) {
+  const label = `<b>${esc(name)}</b>${sub ? `<small>${esc(sub)}</small>` : ''}`;
+  const right = `${fromPablo ? '<span class="tag">Pablo</span>' : ''}${score ? `<span class="score">${score}</span>` : ''}`;
+  return `<li class="${score ? 'tried' : ''}"><span class="nm">${score ? `<s>${label}</s>` : label}</span><span class="rt">${right}</span></li>`;
+}
+const own = [...wishlist].sort((a, b) => sortKey(a.winery).localeCompare(sortKey(b.winery)))
+  .map((w) => li(w.winery, w.wine, triedWine(w), false));
+const fromPablo = [...pablo.values()].sort((a, b) => sortKey(a).localeCompare(sortKey(b)))
+  .map((p) => li(p, '', tried(p)?.score, true));
+const tryHtml = `<ul class="try">${own.join('')}</ul>
     <details class="all">
-      <summary class="mono">Pablo’s full list (${all.size} producers, ${triedCount} tried)</summary>
-      <p class="key">Crossed off means I’ve tried it, with my score.</p>
-      <div class="full">
-${sections.map((s) => `        <div><h3>${esc(s.title)}</h3><ul>${s.producers.map((p) => item(p)).join('')}</ul></div>`).join('\n')}
-      </div>
+      <summary class="mono">Show Pablo’s ${fromPablo.length} producers</summary>
+      <ul class="try">${fromPablo.join('')}</ul>
     </details>`;
 
 const llms = fs.readFileSync(`${DIR}/llms.txt`, 'utf8');
 const html = fs.readFileSync('scripts/wine-template.html', 'utf8')
   .replace('__LLMS__', () => esc(llms).replace(/&quot;/g, '"'))
-  .replace('__PABLO__', () => pabloHtml);
+  .replace('__TRY__', () => tryHtml);
 
 fs.writeFileSync(`${DIR}/index.html`, html);

@@ -44,10 +44,12 @@ h2{font-size:clamp(40px,7vw,60px);margin:16px 0 24px}
 @media(hover:hover) and (pointer:fine){.btn:hover{box-shadow:var(--shadow-lg);transform:translate(-3px,-3px)}}
 .btn:active{box-shadow:none;transform:translate(3px,3px);transition-duration:40ms}
 @media(prefers-reduced-motion:reduce){.btn{transition:none}.btn:hover,.btn:active{transform:none}}
-.dumb{display:grid;grid-template-columns:max-content minmax(0,1fr) max-content;column-gap:20px;margin-top:40px;border-top:1px solid var(--ink)}
-.dumb>*{border-bottom:1px solid var(--rule);min-height:54px;display:flex;align-items:center}
-.dumb .n{font-size:15px;white-space:nowrap}
-.track{position:relative}
+.dumb{display:grid;grid-template-columns:max-content minmax(0,1fr) max-content;column-gap:0;margin-top:40px;border-top:1px solid var(--ink)}
+.dumb>*{border-bottom:1px solid var(--rule);min-height:60px;display:flex;align-items:center}
+.dumb .n{font-size:15px;white-space:nowrap;line-height:1.3}
+.dumb .n small{display:block;font:400 11px/16px var(--f-mono);letter-spacing:.06em;text-transform:uppercase;color:var(--muted)}
+.track{position:relative;margin:0 20px}
+.dumb .n{padding-right:4px}
 .seg{position:absolute;top:50%;height:2px;margin-top:-1px;background:var(--ink)}
 .seg.down{background:var(--down)}
 .dot{position:absolute;top:50%;width:13px;height:13px;margin-top:-6.5px;border-radius:50%;transform:translateX(-50%)}
@@ -59,7 +61,7 @@ h2{font-size:clamp(40px,7vw,60px);margin:16px 0 24px}
 .legend{display:flex;flex-wrap:wrap;gap:8px 24px;margin-top:16px}
 .legend span{display:inline-flex;align-items:center;gap:8px}
 .legend i{display:inline-block;width:12px;height:12px;border-radius:50%}
-@media(max-width:560px){.dumb{column-gap:12px}}
+@media(max-width:560px){.track{margin:0 12px}}
 .verdicts{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:40px;margin-top:40px}
 .verdicts h3{font-size:clamp(30px,4.6vw,42px);padding-bottom:12px;border-bottom:1px solid var(--ink)}
 .verdicts li{list-style:none;padding:14px 0;border-bottom:1px solid var(--rule);font-size:16px;color:var(--ink-2)}
@@ -79,15 +81,17 @@ h2{font-size:clamp(40px,7vw,60px);margin:16px 0 24px}
 .cols li{display:flex;justify-content:space-between;gap:12px;padding:10px 0;border-bottom:1px solid var(--rule);font-size:15px}
 .cols li span{font:400 11px/24px var(--f-mono);letter-spacing:.1em;text-transform:uppercase;color:var(--muted);white-space:nowrap}
 @media(max-width:620px){.cols{grid-template-columns:minmax(0,1fr);gap:32px}}
-.cols li.tried s,.full li.tried s{text-decoration-thickness:1px;color:var(--muted)}
-.cols li .score,.full li .score{font:400 22px/24px var(--f-display);color:var(--ink);letter-spacing:0;text-transform:none}
-details.all{margin-top:48px}
-.all .key{font-size:14px;color:var(--muted);margin:-4px 0 8px}
-.full{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:32px 40px;padding-bottom:24px}
-.full h3{font-size:clamp(22px,2.6vw,26px);padding-bottom:8px;border-bottom:1px solid var(--ink)}
-.full ul{list-style:none;padding:0}
-.full li{display:flex;justify-content:space-between;gap:12px;padding:7px 0;border-bottom:1px solid var(--rule);font-size:15px}
-@media(max-width:620px){.full{grid-template-columns:minmax(0,1fr)}}
+.try{list-style:none;padding:0;margin-top:40px;border-top:1px solid var(--ink)}
+details.all .try{margin-top:0;border-top:0}
+.try li{display:flex;justify-content:space-between;align-items:center;gap:16px;padding:12px 0;border-bottom:1px solid var(--rule)}
+.try .nm b{font-weight:500}
+.try .nm small{display:block;font-size:14px;color:var(--muted)}
+.try s{text-decoration-thickness:1px;color:var(--muted)}
+.try s b{color:var(--muted)}
+.try .rt{display:flex;align-items:center;gap:12px;flex-shrink:0}
+.tag{font:400 10px/16px var(--f-mono);letter-spacing:.1em;text-transform:uppercase;padding:2px 8px;border:1px solid var(--ink);color:var(--ink)}
+.score{font:400 26px/1 var(--f-display);min-width:1.6em;text-align:right}
+details.all{margin-top:0;border-top:0}
 .agents{margin-top:40px;padding:24px;background:var(--card);border:2px solid var(--ink);box-shadow:var(--shadow)}
 .agents p{font-size:16px;color:var(--ink-2)}
 .agents ol{margin:12px 0 0;padding-left:20px;font-size:16px;color:var(--ink-2)}
@@ -117,9 +121,9 @@ footer a{color:inherit}
   </header>
 
   <section aria-labelledby="h-crowd">
-    <span class="mono">85 wines rated</span>
+    <span class="mono">81 wines with a known grape</span>
     <h2 id="h-crowd">Me vs. Vivino.</h2>
-    <p class="lede">Next to everyone else on Vivino, I’m a bit of a Burgundy fan. Barolo and natural wine I like less than most.</p>
+    <p class="lede">By grape and where it’s from. It turns out I don’t love Pinot Noir so much as I love Burgundy.</p>
     <div class="dumb" id="dumb"></div>
     <div class="legend mono"><span><i style="background:var(--ink)"></i>Me</span><span><i style="border:2px solid var(--ink)"></i>Everyone on Vivino</span></div>
   </section>
@@ -129,16 +133,16 @@ footer a{color:inherit}
     <h2 id="h-taste">What I like.</h2>
     <div class="verdicts">
       <div><h3>More of this</h3><ul>
-        <li><b>Red Burgundy</b>My three highest ratings. Hautes-Côtes, Saint-Aubin, Savigny.</li>
-        <li><b>Southern Italy</b>Negroamaro and Primitivo. And Ripasso.</li>
-        <li><b>Fuller whites</b>White Burgundy with some oak. Aged Rioja white.</li>
-        <li><b>Moscato d’Asti</b>A small glass after dinner.</li>
+        <li><b>Pinot Noir from Burgundy</b>My three highest ratings. Hautes-Côtes, Gevrey, Saint-Aubin.</li>
+        <li><b>Negroamaro and Primitivo from Puglia</b>Four tried, all 4.1 or more.</li>
+        <li><b>Corvina from Veneto</b>Ripasso especially.</li>
+        <li><b>Whites with some age</b>Viura from Rioja, Chardonnay from Istria.</li>
       </ul></div>
       <div class="no"><h3>Less of this</h3><ul>
-        <li><b>Natural wine</b>Pét-nat and cloudy whites haven’t won me over yet.</li>
-        <li><b>Light, plain whites</b>I like a white with a bit more going on.</li>
-        <li><b>Barolo</b>Two tries so far. Still looking for the one.</li>
-        <li><b>German Pinot</b>Nice, but Burgundy wins for me.</li>
+        <li><b>Pinot Noir from elsewhere</b>Germany, Alsace, Austria. Nice, but Burgundy wins.</li>
+        <li><b>Nebbiolo from Piedmont</b>Four tries so far. Still looking for the one.</li>
+        <li><b>Gamay from Beaujolais</b>Good, rarely great for me.</li>
+        <li><b>Natural wine, any grape</b>Pét-nat and cloudy whites haven’t won me over yet.</li>
       </ul></div>
     </div>
   </section>
@@ -149,11 +153,11 @@ footer a{color:inherit}
     <ol class="fame" id="fame"></ol>
   </section>
 
-  <section aria-labelledby="h-pablo">
-    <span class="mono">To try</span>
-    <h2 id="h-pablo">Pablo’s list.</h2>
-    <p class="lede">My friend Pablo sent me a list of Burgundy producers to try. These twelve are first up. I cross them off as I go.</p>
-    __PABLO__
+  <section aria-labelledby="h-try">
+    <span class="mono">Wishlist</span>
+    <h2 id="h-try">Wines I want to try.</h2>
+    <p class="lede">From my Vivino wishlist, plus the Burgundy producers my friend Pablo recommended. Crossed off means I’ve had it, with my score.</p>
+    __TRY__
   </section>
 
   <section aria-labelledby="h-agents">
@@ -180,11 +184,11 @@ footer a{color:inherit}
 
 <script>
 {
-const styles=[["Red Burgundy",4.38,4.10],["Southern Italy",4.17,4.03],["Ripasso",4.15,4.00],["Champagne",4.05,4.00],["Whites, overall",3.91,3.94],["German Pinot",3.75,3.85],["Barolo",3.80,4.15],["Natural wine",3.48,3.85]];
+const styles=[["Pinot Noir","Burgundy",6,4.38,4.10],["Negroamaro","Puglia",2,4.25,4.00],["Sangiovese","Tuscany",3,3.90,3.73],["Corvina","Veneto",2,4.15,4.00],["Barbera","Piedmont",2,3.95,3.85],["Primitivo","Puglia",2,4.25,4.20],["Pinot Noir","elsewhere",10,3.93,3.93],["Nebbiolo","Piedmont",4,3.85,3.95],["Gamay","Beaujolais",2,3.80,3.95]];
 const lo=3.3,hi=4.5,x=v=>((v-lo)/(hi-lo)*100).toFixed(1)+"%";
-document.getElementById("dumb").innerHTML=styles.map(([n,k,v])=>{
+document.getElementById("dumb").innerHTML=styles.map(([g,r,c,k,v])=>{
   const up=k>=v,a=Math.min(k,v),b=Math.max(k,v),d=(up?"+":"−")+Math.abs(k-v).toFixed(2);
-  return `<div class="n">${n}</div><div class="track"><div class="seg${up?"":" down"}" style="left:${x(a)};width:calc(${x(b)} - ${x(a)})"></div><div class="dot c${up?"":" down"}" style="left:${x(v)}"></div><div class="dot k" style="left:${x(k)}"></div></div><div class="diff${up?"":" down"}">${d}</div>`;
+  return `<div class="n"><span>${g}<small>${r} · ${c}</small></span></div><div class="track"><div class="seg${up?"":" down"}" style="left:${x(a)};width:calc(${x(b)} - ${x(a)})"></div><div class="dot c${up?"":" down"}" style="left:${x(v)}"></div><div class="dot k" style="left:${x(k)}"></div></div><div class="diff${up?"":" down"}">${d}</div>`;
 }).join("");
 const fame=[[4.8,"Pierre Naigeon","Bourgogne Hautes-Côtes de Nuits 2020"],[4.6,"Benjamin Leroux","Gevrey-Chambertin 2020"],[4.5,"Domaine François d’Allaines","Saint-Aubin 1er Cru 2023"],[4.5,"R. López de Heredia","Viña Gravonia, an old-school Rioja white"],[4.5,"Château La Vieille France","Graves 2019"]];
 document.getElementById("fame").innerHTML=fame.map(([s,w,m])=>`<li><span><b>${w}</b><small>${m}</small></span><span class="s">${s.toFixed(1)}</span></li>`).join("");
