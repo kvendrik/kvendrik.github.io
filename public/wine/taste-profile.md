@@ -39,6 +39,20 @@ the Vivino crowd (+0.05). 4.0 is the default "good" score (24 of 85). Anything 4
 - Drinks mostly French and Italian (27 each), then Spain (11), with curiosity for Slovenia, Croatia, Serbia and Moldova.
 - Cares about food pairing and the story behind a wine (small production, place).
 
+## Eating out (Koen's own answers, Nov 2026)
+
+- **Orders mostly by the glass.** Default to the by-the-glass (and Coravin) section. Recommend a bottle only
+  when asked, or when the glass list has nothing that fits.
+- **Restaurant bottle budget: €80–120.** Happy to pay for something good. Don't shy away from a €100 Burgundy,
+  but above €120 needs a clear reason.
+- **Glass budget:** not stated. Assume about €12–20 a glass, in line with the bottle budget.
+- **Usual food: red meat / steak, and vegetarian or small sharing plates.**
+  - Steak or red meat: the classic Burgundy and Bordeaux picks fit well. Southern Italian reds and Ripasso too.
+  - Veg and small plates: lighter-bodied red Burgundy, or a structured white (white Burgundy, aged Rioja white).
+    With mixed sharing plates, a versatile Pinot Noir or a textured white beats a big tannic red.
+- **Age: no preference.** Young and fruity or mature and savoury are both fine, so don't use vintage age
+  as a filter. Judge each wine on its own.
+
 ## Quick scoring heuristic
 
 | Signal on the menu | Adjust |
