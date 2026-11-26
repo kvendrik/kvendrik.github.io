@@ -9,7 +9,7 @@ Live page: https://kvendrik.com/wine/ · This file: https://kvendrik.com/wine/ll
 - Taste profile: https://kvendrik.com/wine/taste-profile.md
   What they like and dislike, distilled from 85 Vivino ratings, plus a scoring table. Read this first.
 - Past ratings: https://kvendrik.com/wine/ratings.csv
-  Every wine they have rated. Columns: my_rating, vivino_avg, winery, wine, vintage, style, region, country, type.
+  Every wine they have rated. Columns: my_rating, vivino_avg, winery, wine, vintage, style, region, country, type, grapes (from Vivino; semicolon-separated).
   An exact past rating beats any inference.
 - Wishlist and cellar: https://kvendrik.com/wine/wishlist-and-cellar.csv
   Columns: list (wishlist or cellar), winery, wine, vintage, style, type, vivino_avg.
@@ -22,7 +22,7 @@ Scale: ratings are Vivino stars, 1.0 to 5.0. Prices are euros unless the menu sa
 
 ## What Koen likes, in one line
 
-Red Burgundy from a good small producer, classically made, around €50 retail. Also Southern Italian reds, Ripasso and richer, aged whites. Avoid light funky natural wines, neutral whites, Barolo and German Pinot. Details and numbers are in the taste profile.
+Pinot Noir from Burgundy, from a good small producer, classically made, around €50 retail. Pinot from anywhere else is just average for Koen. Also Negroamaro and Primitivo from Puglia, Corvina (Ripasso) from Veneto, and whites with some age. Avoid light funky natural wines, plain whites, Nebbiolo/Barolo and Gamay. Details and numbers are in the taste profile.
 
 ## Workflow
 
