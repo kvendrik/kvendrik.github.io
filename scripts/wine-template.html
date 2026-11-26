@@ -79,6 +79,15 @@ h2{font-size:clamp(40px,7vw,60px);margin:16px 0 24px}
 .cols li{display:flex;justify-content:space-between;gap:12px;padding:10px 0;border-bottom:1px solid var(--rule);font-size:15px}
 .cols li span{font:400 11px/24px var(--f-mono);letter-spacing:.1em;text-transform:uppercase;color:var(--muted);white-space:nowrap}
 @media(max-width:620px){.cols{grid-template-columns:minmax(0,1fr);gap:32px}}
+.cols li.tried s,.full li.tried s{text-decoration-thickness:1px;color:var(--muted)}
+.cols li .score,.full li .score{font:400 22px/24px var(--f-display);color:var(--ink);letter-spacing:0;text-transform:none}
+details.all{margin-top:48px}
+.all .key{font-size:14px;color:var(--muted);margin:-4px 0 8px}
+.full{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:32px 40px;padding-bottom:24px}
+.full h3{font-size:clamp(22px,2.6vw,26px);padding-bottom:8px;border-bottom:1px solid var(--ink)}
+.full ul{list-style:none;padding:0}
+.full li{display:flex;justify-content:space-between;gap:12px;padding:7px 0;border-bottom:1px solid var(--rule);font-size:15px}
+@media(max-width:620px){.full{grid-template-columns:minmax(0,1fr)}}
 .agents{margin-top:40px;padding:24px;background:var(--card);border:2px solid var(--ink);box-shadow:var(--shadow)}
 .agents p{font-size:16px;color:var(--ink-2)}
 .agents ol{margin:12px 0 0;padding-left:20px;font-size:16px;color:var(--ink-2)}
@@ -143,8 +152,8 @@ footer a{color:inherit}
   <section aria-labelledby="h-pablo">
     <span class="mono">To try</span>
     <h2 id="h-pablo">Pablo’s list.</h2>
-    <p class="lede">My friend Pablo sent me a list of Burgundy producers to try. These twelve are first up.</p>
-    <div class="cols" id="pablo"></div>
+    <p class="lede">My friend Pablo sent me a list of Burgundy producers to try. These twelve are first up. I cross them off as I go.</p>
+    __PABLO__
   </section>
 
   <section aria-labelledby="h-agents">
@@ -179,8 +188,6 @@ document.getElementById("dumb").innerHTML=styles.map(([n,k,v])=>{
 }).join("");
 const fame=[[4.8,"Pierre Naigeon","Bourgogne Hautes-Côtes de Nuits 2020"],[4.6,"Benjamin Leroux","Gevrey-Chambertin 2020"],[4.5,"Domaine François d’Allaines","Saint-Aubin 1er Cru 2023"],[4.5,"R. López de Heredia","Viña Gravonia, an old-school Rioja white"],[4.5,"Château La Vieille France","Graves 2019"]];
 document.getElementById("fame").innerHTML=fame.map(([s,w,m])=>`<li><span><b>${w}</b><small>${m}</small></span><span class="s">${s.toFixed(1)}</span></li>`).join("");
-const pablo=[["White",[["Hubert Lamy","Saint-Aubin"],["Marc Colin","Saint-Aubin"],["Paul Pillot","Chassagne"],["Dureuil-Janthial","Rully"]]],["Red",[["Simon Bize","Savigny"],["Chandon de Briailles","Savigny"],["Berthaut-Gerbet","Fixin"],["Georges Noëllat","Vosne"]]],["Lesser known",[["Claire Naudin","Hautes-Côtes"],["Ami","Hautes-Côtes"],["Domaine Rougeot","Meursault"],["Génot-Boulanger","Meursault"]]]];
-document.getElementById("pablo").innerHTML=pablo.map(([h,ps])=>`<div><h3>${h}</h3><ul>${ps.map(([p,a])=>`<li>${p}<span>${a}</span></li>`).join("")}</ul></div>`).join("");
 const btn=document.getElementById("copy");
 btn.addEventListener("click",async()=>{try{await navigator.clipboard.writeText(document.getElementById("pr").textContent);btn.textContent="Copied";}catch(e){btn.textContent="Select to copy";}setTimeout(()=>btn.textContent="Copy prompt",2000);});
 }
