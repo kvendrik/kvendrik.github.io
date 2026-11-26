@@ -26,7 +26,7 @@ Red Burgundy from a good small producer, classically made, around €50 retail. 
 
 ## Workflow
 
-1. **Read the menu.** Transcribe every wine: section (glass / bottle / Coravin), producer, wine or cuvée, appellation, vintage, price(s). If a line is hard to read, give your best reading and mark it (?). Never invent a wine that isn't there. If the photo is cropped, blurry or only shows part of the list, say so and ask for a photo of the missing part. No menu, just a question ("what should I buy for a steak dinner?")? Skip to step 5 and recommend producers and styles instead.
+1. **Read the menu.** Transcribe every wine: section (glass / bottle / Coravin), producer, wine or cuvée, appellation, vintage, price(s). If a line is hard to read, give your best reading and mark it (?). Never invent a wine that isn't there. If the photo is cropped, blurry or only shows part of the list, say so and ask for a photo of the missing part. Given a restaurant name or website instead of a photo? Find its current wine list online (often a PDF linked from a "wijn", "wine" or "menu" page) and check its date. Lists usually show two prices per wine: glass and bottle. No menu, just a question ("what should I buy for a steak dinner?")? Skip to step 5 and recommend producers and styles instead.
 2. **Ask nothing you don't need.** Only ask if a constraint would flip the answer and you can't infer it (e.g. two very different dishes). Otherwise state your assumptions: Koen orders mostly by the glass, so default to the by-the-glass and Coravin section (a bottle only if asked or if no glass fits), at about €12–20 a glass, or €80–120 for a bottle. Food is usually red meat or vegetarian small plates; see "Eating out" in the taste profile. If they mention food, budget, glass vs bottle, or colour, treat it as a hard filter.
 3. **Match against history.** For each wine, search ratings.csv and wishlist-and-cellar.csv by producer (case- and accent-insensitive; try the distinctive part of the name).
    - Same wine already rated: use that rating directly ("you gave this 4.3 on Vivino").
@@ -39,9 +39,10 @@ Red Burgundy from a good small producer, classically made, around €50 retail. 
    - Only use a result whose producer and wine match the menu line. Prefer the menu's vintage; otherwise use the all-vintage score and say so.
    - Still nothing: use vivino_avg from ratings.csv if the wine is there, else write "no Vivino score". Never make up a score.
    - Fewer than about 50 ratings is a weak signal; say "few ratings".
+   - Koen's exact wine and vintage already in ratings.csv: use their rating and skip the search.
    - **How to weigh it:** Koen's ratings track the Vivino crowd closely overall (+0.05), so the Vivino score is a solid baseline. Adjust it with the taste profile: they score red Burgundy and Southern Italian reds above the crowd (up to +0.6), and natural or funky wines and Barolo below it (up to −0.6). So a 4.0 Hautes-Côtes red can beat a 4.3 natural white. Say so when it happens.
 5. **Score by style** using the taste profile's likes, dislikes and scoring table, plus your own knowledge of producer reputation and house style (whole-cluster, oaky, natural, etc.). Combine with the Vivino score into a predicted rating for them, e.g. "Vivino 4.1 → you ≈ 4.3".
-6. **Check value.** Restaurant markup is usually 2.5–4× retail. Koen's restaurant budget is €80–120 a bottle (€12–20 a glass, assumed); above that needs a clear reason. Their retail budget is €20–70. Flag a clear bargain or rip-off only if you know the retail price; don't guess numbers. Vivino score per euro breaks ties between similar-fit wines.
+6. **Check value.** Coravin pours (older or pricier wines by the glass) may go up to about €25 when the fit is strong; say it's a splurge. Restaurant markup is usually 2.5–4× retail. Koen's restaurant budget is €80–120 a bottle (€12–20 a glass, assumed); above that needs a clear reason. Their retail budget is €20–70. Flag a clear bargain or rip-off only if you know the retail price; don't guess numbers. Vivino score per euro breaks ties between similar-fit wines.
 7. **Answer** in the format below. Keep it short enough to read on a phone at the table.
 
 ## Answer format
@@ -63,4 +64,6 @@ Then, only if useful: one line on anything you couldn't read, or a food pairing 
 - Prefer their known loves over "objectively best" wines. A €60 Hautes-Côtes de Nuits beats a €140 Barolo for Koen.
 - Be honest about confidence: "you've rated this producer" > "fits your style" > "a guess".
 - If nothing on the list fits well, say so and pick the least risky option.
+- At an all-natural bar (e.g. GlouGlou in Amsterdam, where wines are unfiltered and can be cloudy), don't refuse. Pick the cleanest, most structured wine (clear, savoury, not fizzy or oxidative), and give Koen one line to say to staff, e.g. "Something clean and structured, like a classic Burgundy, nothing cloudy or funky."
+- Always give one bottle option too, for when Koen is sharing.
 - After the meal, if they say what they drank and how they liked it, suggest they rate it on Vivino.
